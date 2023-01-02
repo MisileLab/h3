@@ -1,0 +1,11 @@
+__pycache__/
+*.so
+lib/
+lib64/
+pip-log.txt
+pip-delete-this-directory.txt
+.env
+.venv
+env/
+venv/
+config.json
