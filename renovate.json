@@ -1,0 +1,18 @@
+{
+    "extends": [
+      "config:base"
+    ],
+    "packageRules": [
+      {
+        "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+        "automerge": true,
+        "ignoreTest": true
+      },
+      {
+        "matchDepTypes": ["devDependencies"],
+        "automerge": true,
+        "ignoreTest": true
+      }
+    ],
+    "platformAutomerge": true
+}
