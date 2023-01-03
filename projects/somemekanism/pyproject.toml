@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "somemekanism"
+version = "0.1.0"
+description = "Mekanismly game"
+authors = ["MisileLaboratory"]
+license = "MisileLab License"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.11.1"
+misilelibpy = { path = "libs/misilelib/misilelib-python" }
+textual = "0.9.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
