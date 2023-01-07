@@ -23,7 +23,7 @@ data "coder_workspace" "me" {
 resource "coder_agent" "main" {
   arch           = data.coder_provisioner.me.arch
   os             = "linux"
-  startup_script = "code-server --auth none"
+  startup_script = "code-server --auth none && coder dotfiles -y https://github.com/misilelaboratory/dotfiles"
 
   # These environment variables allow you to make Git commits right away after creating a
   # workspace. Note that they take precedence over configuration defined in ~/.gitconfig!
