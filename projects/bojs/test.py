@@ -4,15 +4,9 @@ from subprocess import Popen
 from bojapi import BaekjoonProb
 from tomli import loads
 from sys import argv
+from misilelibpy import read_once
 
 runs = 1
-
-def read_once(path: str):
-    """Read a file once"""
-    e = open(path, 'r', encoding="utf8")
-    f = e.read()
-    e.close()
-    return f
 
 langlist = [".py", ".rb"]
 a = loads(read_once('test.toml'))
@@ -27,7 +21,7 @@ for i in listdir(getcwd()):
 flist = list(filter(lambda x: x.isnumeric(), flist))
 try:
     argv[1]
-except (KeyError, ValueError):
+except IndexError:
     pass
 else:
     flist = [argv[1]]
@@ -39,14 +33,14 @@ for i, i2 in enumerate(flist):
     args = [f"hyperfine --runs {runs} --export-json test.json --output ./output.txt", "", "< input.txt'"]
     config = a.get(i2, globalvals)
     for i3 in config["lang"]:
-        if i3 == "python":
-            s = f"'python {i2}.py"
-        elif i3 == "pypy":
+        if i3 == "pypy":
             s = f"'pypy {i2}.py"
-        elif i3 == "rustpython":
-            s = f"'rustpython {i2}.py"
+        elif i3 == "python":
+            s = f"'python {i2}.py"
         elif i3 == "ruby":
             s = f"'ruby --enable-yjit {i2}.rb"
+        elif i3 == "rustpython":
+            s = f"'rustpython {i2}.py"
         else:
             raise ValueError("no support lang")
         args[1] = s
@@ -61,7 +55,7 @@ for i, i2 in enumerate(flist):
         print(outp)
         for i3 in jload(read_once('test.json'))["results"]:
             outpu = output.replace('\r', '')
-            if outp != outpu.removesuffix('\n') and outp != outpu:
+            if outp not in [outpu.removesuffix('\n'), outpu]:
                 print(f"{i3['command']} does not match with {output} so failed")
                 g.append(i3['command'])
             elif i3['times'][0] > bjp.time_limit:

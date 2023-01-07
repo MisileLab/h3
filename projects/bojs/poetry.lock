@@ -2,7 +2,7 @@
 
 [[package]]
 name = "baekjoonapi"
-version = "0.1.2"
+version = "0.1.3"
 description = "BaekjoonAPI for Python"
 category = "main"
 optional = false
@@ -20,7 +20,7 @@ requests = "2.28.1"
 type = "git"
 url = "https://github.com/MisileLab/baekjoonapi.git"
 reference = "HEAD"
-resolved_reference = "1a3a85dd7e7a781ca0fedde76a01eaec6ac30234"
+resolved_reference = "c73da20d2b98c8fbc94c85fe1ee75e808d6cd8e7"
 
 [[package]]
 name = "beautifulsoup4"
@@ -188,6 +188,20 @@ htmlsoup = ["BeautifulSoup4"]
 source = ["Cython (>=0.29.7)"]
 
 [[package]]
+name = "misilelibpy"
+version = "0.1.0"
+description = "MisileLib-Python"
+category = "main"
+optional = false
+python-versions = "3.11.1"
+files = []
+develop = false
+
+[package.source]
+type = "directory"
+url = "../../libraries/misilelib/misilelib-python"
+
+[[package]]
 name = "numpy"
 version = "1.24.1"
 description = "Fundamental package for array computing in Python"
@@ -303,4 +317,4 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "3.11.1"
-content-hash = "d6d889bea3d2e97903666a448670e7849f03b9e2660971227a14395317a9d30a"
+content-hash = "8f08ec9bfbda9d005e515f82d33153794c42bdec8c47a1b937bb8d85513b9a25"
