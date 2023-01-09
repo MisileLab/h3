@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "makeabug"
+version = "0.1.0"
+description = "Test Some(bug)"
+authors = ["MisileLaboratory"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.11.1"
+numpy = "1.24.1"
+misilelibpy = { path = "libs/misilelib/misilelib-python" }
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
