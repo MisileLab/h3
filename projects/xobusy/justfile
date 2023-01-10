@@ -1,2 +1,5 @@
 build:
   clang main.c -fuse-ld=lld -rtlib=compiler-rt -unwindlib=libunwind -Wl,--as-needed
+
+build-release:
+  clang main.c -O2 -fuse-ld=lld -rtlib=compiler-rt -unwindlib=libunwind -Wl,--as-needed
