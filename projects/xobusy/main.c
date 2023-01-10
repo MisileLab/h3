@@ -4,11 +4,8 @@
 #include <string.h>
 #include <dirent.h>
 #include <unistd.h>
+#include "libs/misilelib-c/misilelib.c"
 #define MAX_LEN 100
-
-bool compare_strs(char char1[], char char2[]) {
-    return strcmp(char1, char2) == 0;
-}
 
 void cat() {
     char filename[MAX_LEN];
@@ -53,8 +50,8 @@ int main() {
         "exit",
         "ls",
         "cd",
-				"clear",
-				"cdir"
+		"clear",
+		"cdir"
     };
 
     while (a) {
@@ -72,13 +69,13 @@ int main() {
         } else if (compare_strs(buffer, commands[4])) {
             printf("\e[1;1H\e[2J");
         } else if (compare_strs(buffer, commands[5])) {
-					char cwd[MAX_LEN];
-					if (getcwd(cwd, sizeof(cwd)) != NULL) {
-						 printf("현재 디렉토리: %s\n", cwd);
-				 	} else {
-						 printf("error\n");
-				 	}
-				} else {
+		    char cwd[MAX_LEN];
+			if (getcwd(cwd, sizeof(cwd)) != NULL) {
+				printf("현재 디렉토리: %s\n", cwd);
+			} else {
+				printf("error\n");
+			}
+		} else {
             printf("존재하지 않는 명령어입니다.\n");
         }
     }
