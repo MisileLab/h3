@@ -1,5 +1,11 @@
 build:
+  clang main.c -I /usr/include/x86_64-linux-musl -fuse-ld=lld -rtlib=compiler-rt -fuse-ld=lld -stdlib=libc++ -Wl,--as-needed
+
+build-clang:
   clang main.c -fuse-ld=lld -rtlib=compiler-rt -unwindlib=libunwind -Wl,--as-needed
 
 build-release:
+  clang main.c -I /usr/include/x86_64-linux-musl -O2 -fuse-ld=lld -rtlib=compiler-rt -fuse-ld=lld -stdlib=libc++ -Wl,--as-needed
+
+build-clang-release:
   clang main.c -O2 -fuse-ld=lld -rtlib=compiler-rt -unwindlib=libunwind -Wl,--as-needed
