@@ -56,5 +56,10 @@ def remove():
         del data[i]
     write_once("ALMdata.json", dumps(data))
 
+@app.command(name="sum")
+def sumlist():
+    """sum all result and print it"""
+    print(sum(int(i["value"]) for i in data))
+
 if __name__ == "__main__":
     app()
