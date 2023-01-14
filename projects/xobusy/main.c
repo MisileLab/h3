@@ -11,7 +11,7 @@ void cat() {
     char filename[MAX_LEN];
     printf("파일 이름: ");
     scanf("%s", filename);
-		printf("\n");
+	printf("\n");
     FILE* fs;
     fs = fopen(filename, "r");
     while (feof(fs) == 0) {
