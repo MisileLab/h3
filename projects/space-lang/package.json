@@ -1,0 +1,9 @@
+{
+  "name": "space-lang",
+  "version": "1.0.0",
+  "main": "main.js",
+  "license": "MIT",
+  "dependencies": {
+    "moo": "0.5.2"
+  }
+}
