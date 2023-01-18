@@ -1,1 +1,2 @@
-libs/misilelib/misilelib-python = :/libraries/misilelib/misilelib-python
+::gitmodules/
+libs/misilelib = :/libraries/misilelib
