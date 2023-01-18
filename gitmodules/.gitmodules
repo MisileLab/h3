@@ -1,6 +1,0 @@
-[submodule "libs/misilelib/misilelib-c"]
-	path = libs/misilelib/misilelib-c
-	url = https://gith.misilelaboratory.xyz/misilelib.git:/misilelib-c.git
-[submodule "libs/misilelib/misilelib-python"]
-	path = libs/misilelib/misilelib-python
-	url = https://gith.misilelaboratory.xyz/misilelib.git:/misilelib-python.git
