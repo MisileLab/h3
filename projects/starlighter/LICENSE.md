@@ -5,11 +5,11 @@ This program is open source.
 
 ## derivative works condition
 
-You can't change project's license.
+You can't change project's license.  
 You need give author information to other like this. ex) {Project or File name} by {author}.  
 Author doesn't have warranty.  
 
 ## music map condition
 
-Music must be warning about NSFW, gore, etc.
+Music must be warning about NSFW, gore, etc.  
 Music author can take down the map, if map author don't take down it, map author's name and ip, etc can be pubilc.
