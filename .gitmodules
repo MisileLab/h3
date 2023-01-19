@@ -4,6 +4,3 @@
 [submodule "libraries/misilelib/misilelib-python"]
 	path = libraries/misilelib/misilelib-python
 	url = https://gith.misilelaboratory.xyz/misilelib.git:/misilelib-python.git
-[submodule "projects/space-lang"]
-	path = projects/space-lang
-	url = https://github.com/misilelab/space-lang
