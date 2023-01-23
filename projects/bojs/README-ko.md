@@ -6,3 +6,4 @@
 
 - Python Poetry
 - Python 3.11
+- Hyperfine
