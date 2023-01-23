@@ -7,10 +7,7 @@ for _ in range(3):
 
 for i in a:
     i = int(i)
-    if c:
-        b += i
-    else:
-        b += i * 3
+    b += i if c else i * 3
     c = not c
- 
+
 print(f"The 1-3-sum is {b}")

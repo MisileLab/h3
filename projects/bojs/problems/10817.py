@@ -1,3 +1,1 @@
-a = list(map(int, input().split(" ")))
-a.sort()
-print(a[1])
+print(sorted(map(int, input().split(" ")))[1])

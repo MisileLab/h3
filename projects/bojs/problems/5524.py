@@ -1,7 +1,2 @@
-a = []
-
-for _ in range(int(input())):
-    a.append(input())
-
-for i in a:
+for i in [input() for _ in range(int(input()))]:
     print(i.lower())

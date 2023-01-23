@@ -1,7 +1,2 @@
 input()
-a = 0
-
-for i in input():
-    a += int(i)
-
-print(a)
+print(sum(int(i) for i in input()))

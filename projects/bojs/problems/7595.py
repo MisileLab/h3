@@ -9,8 +9,6 @@ while True:
 b = []
 
 for i in a:
-    for i2 in range(1, i+1):
-        b.append("*" * i2)
-
+    b.extend("*" * i2 for i2 in range(1, i+1))
 print('\n'.join(b))
 

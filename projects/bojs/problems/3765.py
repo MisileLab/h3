@@ -1,8 +1,3 @@
 from sys import stdin
-a = []
-
-for i in stdin:
-    a.append(i)
-
-for i in a:
+for i in list(stdin):
     print(i, end='')

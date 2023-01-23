@@ -8,7 +8,7 @@ class Timer:
     def add_second(self, s: int):
         if s >= 60:
             m = (s - s % 60) / 60
-            s = s % 60
+            s %= 60
             a = self.add_minute(m)
             if a is not None and a <= 24:
                 self.s = 0
@@ -21,19 +21,22 @@ class Timer:
     
     def add_minute(self, m: int):
         if m >= 60:
-            h = (m - m % 60) / 60
-            if h >= 24:
-                self.m = 0
-            m = m % 60
-            self.add_hour(h)
-            self.add_minute(m)
-            return h
+            return self._extracted_from_add_minute_3(m)
         elif m + self.m >= 60:
             self.add_hour(1)
             self.m = (m + self.m) - 60
         else:
             self.m += m
         return None
+
+    def _extracted_from_add_minute_3(self, m):
+        h = (m - m % 60) / 60
+        if h >= 24:
+            self.m = 0
+        m %= 60
+        self.add_hour(h)
+        self.add_minute(m)
+        return h
 
     def add_hour(self, h: int):
         if self.h + h >= 24:
@@ -44,10 +47,10 @@ class Timer:
     def add_time(self, s: int):
         if s >= 3600:
             self.add_hour((s - s % 3600) / 3600)
-            s = s % 3600
+            s %= 3600
         if s >= 60:
             self.add_minute((s - s % 60) / 60)
-            s = s % 60
+            s %= 60
         self.add_second(s)
         self.h = int(self.h)
         self.m = int(self.m)

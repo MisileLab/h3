@@ -1,8 +1,4 @@
-a = []
-
-for _ in range(5):
-    a.append(int(input()))
-
+a = [int(input()) for _ in range(5)]
 c = 0
 
 if a[0] < 0:

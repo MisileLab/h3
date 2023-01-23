@@ -1,8 +1,3 @@
-a = []
-
-for _ in range(int(input())):
-    a.append(input().split(" "))
-
-for i in a:
+for i in [input().split(" ") for _ in range(int(input()))]:
     b, c = map(int, i)
     print(b+c)

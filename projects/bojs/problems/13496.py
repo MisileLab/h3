@@ -5,7 +5,7 @@ for _ in range(int(input())):
     n, s, d = map(int, input().split(" "))
     b = {"s": s, "d": d, "data": []}
 
-    for i in range(n):
+    for _ in range(n):
         c, d = map(int, input().split(" "))
         b['data'].append([c, d])
 
@@ -13,10 +13,7 @@ for _ in range(int(input())):
 
 for i in a:
     f = i['d'] * i['s']
-    m = 0
-    for i2 in i['data']:
-        if i2[0] - f <= 0:
-            m += i2[1]
+    m = sum(i2[1] for i2 in i['data'] if i2[0] - f <= 0)
     e.append(m)
 
 for i, i2 in enumerate(e):

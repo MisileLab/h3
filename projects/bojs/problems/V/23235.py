@@ -1,8 +1,6 @@
 a = 0
 
-while True:
-    if input() == "0":
-        break
+while input() != "0":
     a += 1
 
 for i in range(1, a+1):

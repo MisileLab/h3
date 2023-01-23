@@ -1,6 +1,2 @@
-a = []
-
-for _ in range(2):
-    a.append(int(input(), 2))
-
+a = [int(input(), 2) for _ in range(2)]
 print(format(a[0]*a[1], 'b'))

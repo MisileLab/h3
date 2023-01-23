@@ -1,8 +1,3 @@
-a = 0
 b = int(input())
-
-for i in input().split(" "):
-    if int(i) == b:
-        a += 1
-
+a = sum(int(i) == b for i in input().split(" "))
 print(a)

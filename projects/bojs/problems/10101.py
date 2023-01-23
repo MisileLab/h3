@@ -1,8 +1,4 @@
-a = []
-
-for _ in range(3):
-    a.append(int(input()))
-
+a = [int(input()) for _ in range(3)]
 if a[0]+a[1]+a[2] != 180:
     print("Error")
 elif a[0] == a[1] and a[1] == a[2] and a[2] == a[0]:

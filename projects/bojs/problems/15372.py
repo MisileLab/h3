@@ -1,8 +1,2 @@
-a = []
-
-for _ in range(int(input())):
-    a.append(int(input()) ** 2)
-
-for i in a:
+for i in [int(input()) ** 2 for _ in range(int(input()))]:
     print(i)
-
