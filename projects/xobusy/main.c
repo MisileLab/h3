@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <string.h>
-#include <stdbool.h>
 #include <string.h>
 #include <dirent.h>
 #include <unistd.h>
@@ -44,7 +43,6 @@ void cd() {
 }
 
 int main() {
-    bool a = true;
     char* commands[] = {
         "cat",
         "exit",
@@ -54,7 +52,7 @@ int main() {
 	"cdir"
     };
 
-    while (a) {
+    while (true) {
         char buffer[MAX_LEN];
         printf("> ");
         scanf("%s", buffer);
