@@ -1,0 +1,10 @@
+N, M, K = int, int, int = a, b, c
+O, X -> true, false
+
+Front
+true = M
+false = N-M
+
+Back
+true = K
+false = N-K
