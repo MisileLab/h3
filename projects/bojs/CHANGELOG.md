@@ -24,5 +24,5 @@ and this project adheres to [Semantic Versioning].
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
-[unreleased]: https://github.com/Author/Repository/compare/h3-1...HEAD
-[0.0.1]: https://github.com/Author/Repository/releases/tag/h3-1
+[unreleased]: https://github.com/MisileLab/h3/compare/h3-1...HEAD
+[0.0.1]: https://github.com/MisileLab/h3/releases/tag/h3-1
