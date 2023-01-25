@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning].
 
 - Bronze IV
 
-## [0.0.1] - 2023-01-26
+## [0.0.1] - 2023-01-24
 
 - initial release
 
