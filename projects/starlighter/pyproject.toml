@@ -9,7 +9,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "3.11.1"
 misilelibpy = { path = "libs/misilelib/misilelib-python" }
-rich = "13.1.0"
+rich = "13.2.0"
 simple-term-menu = "1.6.1"
 
 [build-system]
