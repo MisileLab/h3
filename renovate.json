@@ -6,12 +6,12 @@
       {
         "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
         "automerge": true,
-        "ignoreTest": true
+        "ignoreTests": true
       },
       {
         "matchDepTypes": ["devDependencies"],
         "automerge": true,
-        "ignoreTest": true
+        "ignoreTests": true
       }
     ],
     "platformAutomerge": true
