@@ -44,10 +44,10 @@ void cd() {
 
 int main() {
     char* commands[] = {
-        "cat",
-        "exit",
-        "ls",
-        "cd",
+    "cat",
+    "exit",
+    "ls",
+    "cd",
 	"clear",
 	"cdir"
     };
