@@ -1,6 +1,5 @@
 # Python
 __pycache__/
-*.so
 lib/
 lib64/
 pip-log.txt
@@ -75,3 +74,27 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# Kotlin / Java
+*.class
+*.log
+*.ctxt
+.mtj.tmp/
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+hs_err_pid*
+replay_pid*
+.gradle
+**/build/
+!src/**/build/
+gradle-app.setting
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+.gradletasknamecache
+.project
+.classpath

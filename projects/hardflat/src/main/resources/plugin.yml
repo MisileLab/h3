@@ -1,0 +1,6 @@
+name: HardFlat
+version: 0.0.1
+main: xyz.misilelaboratory
+api-version: 1.19
+libraries:
+  - org.jetbrains.kotlin:kotlin-stdlib:1.7.21
