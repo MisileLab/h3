@@ -1,9 +1,6 @@
-n = []
 n2 = []
 
-for _ in range(int(input())):
-    n.append(int(input()))
-
+n = [int(input()) for _ in range(int(input()))]
 c = {}
 
 def fibo(d: int):
