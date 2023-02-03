@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "ping"
+version = "0.1.0"
+description = "Just funny"
+authors = ["MisileLaboratory, mine2960"]
+license = "MisileLab License"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.11.1"
+disnake = "2.7.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
