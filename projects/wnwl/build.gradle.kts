@@ -16,8 +16,15 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.19.2-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.10")
+    implementation("io.ktor:ktor-server-core:2.2.3")
+    implementation("io.ktor:ktor-server-netty:2.2.3")
+    implementation("io.ktor:ktor-server-rate-limit:2.2.3")
+    implementation("io.ktor:ktor-client-core:2.2.3")
+    implementation("io.ktor:ktor-client-cio:2.2.3")
+    implementation("io.github.monun:kommand-api:3.0.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0-RC")
 }
 
 project.extra.set("packageName", name.replace("-", ""))

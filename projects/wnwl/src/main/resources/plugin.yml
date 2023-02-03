@@ -1,6 +1,7 @@
-name: HardFlat
+name: wnwl
 version: 1.8.12
-main: xyz.misilelaboratory.HardFlat
+main: xyz.misilelaboratory.Wnwl
 api-version: 1.19
 libraries:
-  - org.jetbrains.kotlin:kotlin-stdlib:1.7.21
+  - org.jetbrains.kotlin:kotlin-stdlib:1.8.10
+  - io.github.monun:kommand-core:3.0.0
