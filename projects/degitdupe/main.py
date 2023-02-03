@@ -1,3 +1,5 @@
+from sys import argv
+
 def read_once(path: str):
     with open(path, 'r') as a:
         b = a.readlines()
@@ -5,7 +7,7 @@ def read_once(path: str):
 
 a = {}
 
-for i in read_once(".gitignore"):
+for i in read_once(argv[1]):
     i = i.strip('\n')
     if a.get(i, None) is None:
         a[i] = 0
