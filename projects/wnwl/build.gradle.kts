@@ -23,7 +23,7 @@ dependencies {
     implementation("io.ktor:ktor-server-rate-limit:2.2.3")
     implementation("io.ktor:ktor-client-core:2.2.3")
     implementation("io.ktor:ktor-client-cio:2.2.3")
-    implementation("io.github.monun:kommand-api:3.0.0")
+    implementation("io.github.monun:kommand-api:3.1.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0-RC")
 }
 
