@@ -172,14 +172,14 @@ unicode-backport = ["unicodedata2"]
 
 [[package]]
 name = "disnake"
-version = "2.7.0"
+version = "2.8.0"
 description = "A Python wrapper for the Discord API"
 category = "main"
 optional = false
-python-versions = ">=3.8.0"
+python-versions = ">=3.8"
 files = [
-    {file = "disnake-2.7.0-py3-none-any.whl", hash = "sha256:c13de5fcc6dc5442e6f1f5c62e7f24038ecbe7d629c0b3c5506bf1b3c706c26a"},
-    {file = "disnake-2.7.0.tar.gz", hash = "sha256:414a36c998826df2795aac946f867f3b13b6f15db456913425faa50b311f12d6"},
+    {file = "disnake-2.8.0-py3-none-any.whl", hash = "sha256:e49ea2ebc9f745ca60f8061e0c2adc32165e5edd869529994148b81ca8a0aa08"},
+    {file = "disnake-2.8.0.tar.gz", hash = "sha256:08f832b48b9fb70bf3bf710f6b798ae3f12081763bcd4f6f6f991c958d201dc2"},
 ]
 
 [package.dependencies]
@@ -462,4 +462,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "3.11.1"
-content-hash = "603e0c04258f09a77272a7b786e586dc9f2c66dd46ceb89cb17bb33ef0c10272"
+content-hash = "667cae014b6e1584543acfe437f02728dde913e8ee291b0db11611935ac5954f"
