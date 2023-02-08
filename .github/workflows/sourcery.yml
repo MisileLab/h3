@@ -18,3 +18,10 @@ jobs:
         with:
           in_place: true
           token: ${{ secrets.SOURCERY_TOKEN }}
+      
+      - name: push
+        run: |
+          git config --global user.name 'MisileLaboratory'
+          git config --global user.email 'MisileLaboratory@users.noreply.github.com'
+          git commit -am "sourcery change"
+          git push
