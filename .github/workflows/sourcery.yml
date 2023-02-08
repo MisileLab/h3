@@ -20,6 +20,7 @@ jobs:
           token: ${{ secrets.SOURCERY_TOKEN }}
       
       - name: push
+        continue-on-error: true
         run: |
           git config --global user.name 'MisileLaboratory'
           git config --global user.email 'MisileLaboratory@users.noreply.github.com'
