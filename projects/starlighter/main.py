@@ -8,9 +8,7 @@ version = "0.1.0pre"
 tm = TerminalMenu(["start", "options", "info", "exit"])
 tm.show()
 
-if tm.chosen_menu_entry == "start":
-    raise NotImplementedError
-elif tm.chosen_menu_entry == "options":
+if tm.chosen_menu_entry in ["start", "options"]:
     raise NotImplementedError
 elif tm.chosen_menu_entry == "info":
     print(f"Python {pversion}")

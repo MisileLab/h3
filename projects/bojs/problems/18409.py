@@ -1,8 +1,3 @@
 input()
-a = 0
-
-for i in input():
-    if i in ['a', 'e', 'i', 'o', 'u']:
-        a += 1
-
+a = sum(i in ['a', 'e', 'i', 'o', 'u'] for i in input())
 print(a)

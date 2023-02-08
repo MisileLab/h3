@@ -1,6 +1,6 @@
 n, _ = map(int, input().split(" "))
 
-for i in range(n):
+for _ in range(n):
     input()
 
 if n >= 8:
