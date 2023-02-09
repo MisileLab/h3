@@ -276,7 +276,7 @@ version = "0.1.0"
 description = "MisileLib-Python"
 category = "main"
 optional = false
-python-versions = "3.11.1"
+python-versions = "3.11.2"
 files = []
 develop = false
 
@@ -399,5 +399,5 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 
 [metadata]
 lock-version = "2.0"
-python-versions = "3.11.1"
-content-hash = "d2bfed3341955a3457a256f8b30d0928aad108f815bb60690a7d51a5c6f8b823"
+python-versions = "3.11.2"
+content-hash = "36d47121a6552242fab2293164e9d9c632e7e07898c1377590717174ef725739"
