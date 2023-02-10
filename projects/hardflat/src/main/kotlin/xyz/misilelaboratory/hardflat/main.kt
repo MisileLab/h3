@@ -48,6 +48,7 @@ class EHandler: Listener {
 
     private val rawFood = listOf(Material.PORKCHOP, Material.BEEF, Material.CHICKEN, Material.MUTTON, Material.RABBIT,
         Material.COD, Material.SALMON)
+    private val attributes = listOf(Attribute.GENERIC_MAX_HEALTH, Attribute.GENERIC_ATTACK_DAMAGE, Attribute.GENERIC_ATTACK_SPEED, Attribute.GENERIC_ARMOR)
 
     @EventHandler
     fun onDamage(e: EntityDamageEvent) {
@@ -86,6 +87,12 @@ class EHandler: Listener {
             e.player.sendMessage("no item")
         } else if ((1..10).random() == 1 && (e.block.type == Material.GLOW_BERRIES || e.block.type == Material.SWEET_BERRIES)) {
             e.player.addPotionEffect(PotionEffect(PotionEffectType.WITHER, 2, 1))
+        } else if ((1..20).random() == 1 && (e.block.type == Material.DIAMOND_ORE)) {
+            val a = attributes.random()
+            val b = e.player.getAttribute(a)
+            b!!.baseValue = b.baseValue / 100
+            e.player.registerAttribute(b.attribute)
+            e.player.sendMessage("added ${a.name} 1%")
         }
     }
 
