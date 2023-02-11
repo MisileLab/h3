@@ -313,6 +313,20 @@ files = [
 ]
 
 [[package]]
+name = "misilelibpy"
+version = "0.1.0"
+description = "MisileLib-Python"
+category = "main"
+optional = false
+python-versions = "3.11.2"
+files = []
+develop = false
+
+[package.source]
+type = "directory"
+url = "../../libraries/misilelib/misilelib-python"
+
+[[package]]
 name = "multidict"
 version = "6.0.4"
 description = "multidict implementation"
@@ -502,4 +516,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "3.11.2"
-content-hash = "f28a122d2b7b37a55029cc854a20ef17f711dfcf9f90729f7d16c00e3c9aeeb6"
+content-hash = "6bc23de7bf6e6e9dff4b49dd2dfb6e7f1bea47b8bac6dfb05ec75a17dfbfe39b"
