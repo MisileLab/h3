@@ -14,3 +14,5 @@ All chess move will sync with local or lichess.
 ## Requirements
 - Python 3.11
 - Python Poetry
+- .env file
+  - lichess_key=lichessapikey

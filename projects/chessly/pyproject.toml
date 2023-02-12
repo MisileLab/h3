@@ -10,10 +10,16 @@ readme = "README.md"
 python = "3.11.2"
 python-chess = "1.999"
 misilelibpy = { path = "libs/misilelib/misilelib-python" }
-berserk = "^0.10.0"
+
+[tool.poetry.group.lichess.dependencies]
+berserk = "0.10.0"
+python-dotenv = "0.21.1"
 
 [tool.poetry.group.dylan.dependencies]
 disnake = "2.8.0"
+
+[tool.poetry.group.lichess-pangyong.dependencies]
+simple-term-menu = "1.6.1"
 
 [build-system]
 requires = ["poetry-core"]
