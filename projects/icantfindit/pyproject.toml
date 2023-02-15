@@ -15,6 +15,7 @@ simple-term-menu = "1.6.1"
 misilelibpy = { path = "libs/misilelib/misilelib-python" }
 requests = "2.28.2"
 inquirer = "3.1.2"
+pyfiglet = "0.8.post1"
 
 [build-system]
 requires = ["poetry-core"]

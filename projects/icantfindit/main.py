@@ -1,43 +1,61 @@
 # https://github.com/PrismarineJS/minecraft-data/blob/master/data/pc/1.19.3/items.json
 
 from tabulate import tabulate
-from datetime import datetime
 from simple_term_menu import TerminalMenu
 from prompt_toolkit import PromptSession
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.history import InMemoryHistory
+from pyfiglet import figlet_format
 from requests import get
-from ast import literal_eval
-from validating import *
 import inquirer
 
+from datetime import datetime
 from misilelibpy import write_once, read_once, cls
 from json import loads, dumps
 from os.path import isfile
+from os import _exit
+from os import remove as fremove
+from subprocess import run
+from ast import literal_eval
+from validating import *
 
 today = datetime.now()
 minecraft_items = {i["name"]: i["stackSize"] for i in get("https://raw.githubusercontent.com/PrismarineJS/minecraft-data/master/data/pc/1.19.3/items.json").json()}
 if isfile("ICFdata.json") is False:
     print("please init data")
-else:
-    data = loads(read_once("ICFdata.json"))
+    _exit(1)
+data = loads(read_once("ICFdata.json"))
+banner = figlet_format("ICF", font="slant")
+_help = """a: add transaction
+e: edit transaction
+r: remove transaction
+l: list transaction
+le: list transaction and view with GNU less
+i: init data
+q: quit console
+"""
 
-def list_the_values():
-    """list the moneybook"""
+def list_the_values(less: bool):
+    """list transaction"""
     data = [(i["date"], i["owner"], i["item"], i["value"], i["borrowed"], i["comment"])for i in loads(read_once("ICFdata.json"))]
-    print(tabulate(data, headers=["date", "owner", "item", "amount", "borrowed", "comment"], tablefmt="rst"))
+    if not less:
+        print(tabulate(data, headers=["date", "owner", "item", "amount", "borrowed", "comment"], tablefmt="rst"))
+    else:
+        write_once(".tempicf", tabulate(data, headers=["date", "owner", "item", "amount", "borrowed", "comment"], tablefmt="rst"))
+        run("less .tempicf", shell=True)
+        fremove(".tempicf")
 
 def init():
     """init and reset the configuration and data"""
     write_once("ICFdata.json", '[]')
 
 def add(amount: int, item: str, borrowed: bool, comment: str, owner: str):
-    """add history to the moneybook"""
+    """add transaction"""
     data.append({"date": today.strftime("%Y-%m-%d %H:%M:%S"), "value": amount, "comment": comment, "borrowed": borrowed, "item": item, "owner": owner})
     write_once("ICFdata.json", dumps(data))
 
 def remove():
-    """remove history in the moneybook"""
+    """remove transaction"""
     _data = list(map(str, data))
     if not _data:
         print("no data to remove")
@@ -49,7 +67,7 @@ def remove():
     write_once("ICFdata.json", dumps(data))
 
 def edit():
-    """edit history in the moneybook"""
+    """edit transaction"""
     _data = list(map(str, data))
     if not _data:
         print("no data to edit")
@@ -71,31 +89,43 @@ def edit():
         write_once("ICFdata.json", dumps(data))
 
 if __name__ == "__main__":
-    a = input("add/remove/list/init/edit > ")
-    if a == "add":
-        _history = InMemoryHistory()
-        for i in minecraft_items.keys():
-            _history.append_string(i)
-        session = PromptSession(
-            history=_history,
-            auto_suggest=AutoSuggestFromHistory(),
-            enable_history_search=True
-        )
-        item = session.prompt("item: ")
-        _amount = input("amount(stack is end with s): ")
-        try:
-            amount = int(_amount)
-        except ValueError:
-            amount = int(_amount.strip('s')) * minecraft_items[item]
-        owner = input("owner: ")
-        borrowed = input("borrowed? (y/n): ") == "y"
-        comment = input("comment: ")
-        add(amount, item, borrowed, comment, owner)
-    elif a == "remove":
-        remove()
-    elif a == "list":
-        list_the_values()
-    elif a == "init":
-        init()
-    elif a == "edit":
-        edit()
+    while True:
+        cls()
+        print(banner, end="")
+        print("I Can't find it by MisileLaboratory")
+        print("Info: use h command if you don't know commands")
+        a = input("ICF console > ")
+        if a == "a":
+            _history = InMemoryHistory()
+            for i in minecraft_items.keys():
+                _history.append_string(i)
+            session = PromptSession(
+                history=_history,
+                auto_suggest=AutoSuggestFromHistory(),
+                enable_history_search=True
+            )
+            item = session.prompt("item: ")
+            _amount = input("amount(stack is end with s): ")
+            try:
+                amount = int(_amount)
+            except ValueError:
+                amount = int(_amount.strip('s')) * minecraft_items[item]
+            owner = input("owner: ")
+            borrowed = input("borrowed? (y/n): ") == "y"
+            comment = input("comment: ")
+            add(amount, item, borrowed, comment, owner)
+        elif a == "r":
+            remove()
+        elif a == "l":
+            list_the_values()
+        elif a == "le":
+            list_the_values(True)
+        elif a == "i":
+            init()
+        elif a == "e":
+            edit()
+        elif a == "h":
+            print(_help, end="")
+            input()
+        elif a == "q":
+            break
