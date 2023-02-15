@@ -7,8 +7,11 @@ from prompt_toolkit import PromptSession
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.history import InMemoryHistory
 from requests import get
+from ast import literal_eval
+from validating import *
+import inquirer
 
-from misilelibpy import write_once, read_once
+from misilelibpy import write_once, read_once, cls
 from json import loads, dumps
 from os.path import isfile
 
@@ -21,7 +24,8 @@ else:
 
 def list_the_values():
     """list the moneybook"""
-    print(tabulate(data, headers="keys", tablefmt="rst"))
+    data = [(i["date"], i["owner"], i["item"], i["value"], i["borrowed"], i["comment"])for i in loads(read_once("ICFdata.json"))]
+    print(tabulate(data, headers=["date", "owner", "item", "amount", "borrowed", "comment"], tablefmt="rst"))
 
 def init():
     """init and reset the configuration and data"""
@@ -33,7 +37,7 @@ def add(amount: int, item: str, borrowed: bool, comment: str, owner: str):
     write_once("ICFdata.json", dumps(data))
 
 def remove():
-    """remove history to the moneybook"""
+    """remove history in the moneybook"""
     _data = list(map(str, data))
     if not _data:
         print("no data to remove")
@@ -44,8 +48,30 @@ def remove():
         del data[i]
     write_once("ICFdata.json", dumps(data))
 
+def edit():
+    """edit history in the moneybook"""
+    _data = list(map(str, data))
+    if not _data:
+        print("no data to edit")
+        return
+    terminal_menu = TerminalMenu(_data)
+    _selectid = terminal_menu.show()
+    _select = literal_eval(_data[_selectid])
+    questions = [
+        inquirer.Text("date", message="date of transaction", validate=lambda _, x: validate_datetime_string(x), default=_select["date"]),
+        inquirer.Text("owner", message="owner of transaction", default=_select["owner"]),
+        inquirer.Text("item", message="item of transaction", validate=lambda _, x: x in minecraft_items, default=_select["item"]),
+        inquirer.Text("value", message="item amount of transaction", validate=lambda _, x: validate_int(x), default=_select["value"]),
+        inquirer.Confirm("borrowed", message="borrowed or not borrowed transaction", default=_select["borrowed"]),
+        inquirer.Text("comment", message="comment of transaction", default=_select["comment"])
+    ]
+    answer = inquirer.prompt(questions)
+    if answer is not None:
+        data[_selectid] = answer
+        write_once("ICFdata.json", dumps(data))
+
 if __name__ == "__main__":
-    a = input("add/remove/list/init > ")
+    a = input("add/remove/list/init/edit > ")
     if a == "add":
         _history = InMemoryHistory()
         for i in minecraft_items.keys():
@@ -71,3 +97,5 @@ if __name__ == "__main__":
         list_the_values()
     elif a == "init":
         init()
+    elif a == "edit":
+        edit()
