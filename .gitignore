@@ -98,3 +98,10 @@ gradle-app.setting
 .gradletasknamecache
 .project
 .classpath
+
+# Rust.gitignore by ignofierplus
+debug/
+target/
+Cargo.lock
+**/*.rs.bk
+*.pdb
