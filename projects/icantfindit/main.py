@@ -118,6 +118,7 @@ if __name__ == "__main__":
             remove()
         elif a == "l":
             list_the_values()
+            input()
         elif a == "le":
             list_the_values(True)
         elif a == "i":
