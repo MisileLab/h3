@@ -35,7 +35,7 @@ i: init data
 q: quit console
 """
 
-def list_the_values(less: bool):
+def list_the_values(less: bool = False):
     """list transaction"""
     data = [(i["date"], i["owner"], i["item"], i["value"], i["borrowed"], i["comment"])for i in loads(read_once("ICFdata.json"))]
     if not less:
