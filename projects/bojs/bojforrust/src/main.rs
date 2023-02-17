@@ -1,3 +1,5 @@
+pub mod a9772;
+
 fn main() {
-    println!("dummy");
+    a9772::main();
 }

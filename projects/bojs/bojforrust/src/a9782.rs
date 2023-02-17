@@ -14,7 +14,7 @@ fn median(numbers: &Vec<i32>) -> f32 {
     }
 }
 
-fn main() {
+pub fn main() {
     let stdin = _stdin();
     let mut a = Vec::<Vec<i32>>::new();
     loop {
