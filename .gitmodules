@@ -4,3 +4,6 @@
 [submodule "libraries/misilelib/misilelib-python"]
 	path = libraries/misilelib/misilelib-python
 	url = https://gith.misilelaboratory.xyz/misilelib.git:/misilelib-python.git
+[submodule "modpacks/basemodpack"]
+	path = modpacks/basemodpack
+	url = https://gith.misilelaboratory.xyz/additiveplus.git:/versions/fabric/1.19.3.git

@@ -1,0 +1,13 @@
+name = "AutoModpack"
+filename = "automodpack-3.0.3-1.19.3.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/k68glP2e/versions/CtIDl4Kk/automodpack-3.0.3-1.19.3.jar"
+hash-format = "sha1"
+hash = "60b9049bd8c1d1e6ccf2761569fa4838be171f68"
+
+[update]
+[update.modrinth]
+mod-id = "k68glP2e"
+version = "CtIDl4Kk"

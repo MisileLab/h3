@@ -1,0 +1,13 @@
+name = "Disable Train Trapdoors"
+filename = "disable-train-trapdoor-1.0.0.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/wlVgOop0/versions/Cnzw02JO/disable-train-trapdoor-1.0.0.jar"
+hash-format = "sha1"
+hash = "861a9d266281b7a4f82ef2815aa126e48682c734"
+
+[update]
+[update.modrinth]
+mod-id = "wlVgOop0"
+version = "Cnzw02JO"

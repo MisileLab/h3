@@ -1,0 +1,13 @@
+name = "Awesome Machines"
+filename = "Awesome-machines-0.8.0.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/aD5JZmKR/versions/81lcw99i/Awesome-machines-0.8.0.jar"
+hash-format = "sha1"
+hash = "3f2057bf220ec4a7d8dfde5ca5d8c4f44cfb5753"
+
+[update]
+[update.modrinth]
+mod-id = "aD5JZmKR"
+version = "81lcw99i"

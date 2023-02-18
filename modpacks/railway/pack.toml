@@ -1,0 +1,16 @@
+name = "Railway"
+author = "Misile"
+version = "0.0.1-rolling"
+pack-format = "packwiz:1.1.0"
+
+[index]
+file = "index.toml"
+hash-format = "sha256"
+hash = "1e04f1956f125850069d42c094eb2844be912a26c76609ddd5c9ac74abc1fa09"
+
+[versions]
+fabric = "0.14.14"
+minecraft = "1.19.3"
+
+[options]
+acceptable-game-versions = ["1.19.2", "1.19.3"]

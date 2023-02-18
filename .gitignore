@@ -105,3 +105,5 @@ target/
 Cargo.lock
 **/*.rs.bk
 *.pdb
+*.mrpack
+*.zip
