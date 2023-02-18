@@ -7,11 +7,16 @@ on:
       - 'modpacks/railway/*'
       - 'modpacks/basemodpack'
 
+env:
+  GIT_SSL_NO_VERIFY: true
+
 jobs:
   export:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+      with:
+        submodules: recursive
     - uses: actions/setup-go@v3
       with:
         go-version: '1.20.1'
