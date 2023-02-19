@@ -640,11 +640,6 @@ hash = "14c306c595c0331731d743eeb440c7a696266c8f1ec9cad8b499bca08c9206cd"
 metafile = true
 
 [[files]]
-file = "mods/techutils.pw.toml"
-hash = "571dcb69232bdca0a0ea8b285ed3a8ebc6288ae879bcd5b18df27957f42867a5"
-metafile = true
-
-[[files]]
 file = "mods/the-printer.pw.toml"
 hash = "071440dec3612f3b91a3b49ebccbbbae96fa6fe4bcbb1da31efbca4bb653acbe"
 metafile = true
