@@ -109,8 +109,8 @@ hash = "a29614fe8c0b61b633f3bae97f180acb6c4b42271569b0c7696c0a765d61a70f"
 metafile = true
 
 [[files]]
-file = "mods/automodpack.pw.toml"
-hash = "381502f461fd407d8796339dacaa5a75a5e8fe5831839a4bba07b7e03e5fbbe9"
+file = "mods/audioplayer.pw.toml"
+hash = "53baddcd243ed36dd148b38e8e0249a37e68f40d13b0d1a51149ebfa88b4b6b4"
 metafile = true
 
 [[files]]
@@ -549,6 +549,11 @@ hash = "e56239f990c12880bd65b454732a88cd77e292fac3ed17c17962001c8b243e56"
 metafile = true
 
 [[files]]
+file = "mods/replay-voice-chat.pw.toml"
+hash = "4c05c45962616dd1a20dd0de98762ef9818ef29600311f32c53e154cc6cea111"
+metafile = true
+
+[[files]]
 file = "mods/replaymod.pw.toml"
 hash = "d09ce4a7162e674a57a967255ea1c458db6c4ce75a840681c68dccf9881b1e99"
 metafile = true
@@ -621,6 +626,11 @@ metafile = true
 [[files]]
 file = "mods/sodium.pw.toml"
 hash = "1ab96020d0954a72b5cc150b375f57cf8968ac2c1809a000472076f8675eb9ea"
+metafile = true
+
+[[files]]
+file = "mods/sound-physics-remastered.pw.toml"
+hash = "da0d81fb8865755c58eccae520fafbef5bdcae6e5bc577e33e8798ba0c955369"
 metafile = true
 
 [[files]]
