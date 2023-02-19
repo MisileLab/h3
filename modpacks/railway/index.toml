@@ -396,7 +396,7 @@ metafile = true
 
 [[files]]
 file = "mods/lanterns-bow.pw.toml"
-hash = "6fbae4f1b894cdc261cd9e94f9d9028d6f685ac86b0b4942716e2190b38cb360"
+hash = "e337da3cc4432416d31ba4027472e08e8dad46dc63d9df4e31a51aabc405071b"
 metafile = true
 
 [[files]]
@@ -627,6 +627,11 @@ metafile = true
 [[files]]
 file = "mods/starlight.pw.toml"
 hash = "fc45b583ec8ca686b666c2cdaaab32c2dc013ce491bfbffa4b5fc20b4c758a70"
+metafile = true
+
+[[files]]
+file = "mods/statement.pw.toml"
+hash = "84092b7e65a95cd92d5a43bc9b4bd7a5ac324728e33ccd7c541da501d045d605"
 metafile = true
 
 [[files]]
