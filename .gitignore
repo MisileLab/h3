@@ -104,6 +104,9 @@ debug/
 target/
 Cargo.lock
 **/*.rs.bk
-*.pdb
 *.mrpack
-*.zip
+# Lua.gitignore by ignofierplus
+luac.out
+*.src.rock
+*.os
+*.def
