@@ -276,7 +276,7 @@ metafile = true
 
 [[files]]
 file = "mods/entityculling.pw.toml"
-hash = "b4ac16e8e0113ff8be8ec0de146d94c104bed2cb27b9ffcf1567c460a575b27e"
+hash = "9bc62d6ff782ff539dc26d753ff006bc576bfd0fddc6a82b9837080a08999ef8"
 metafile = true
 
 [[files]]
@@ -370,6 +370,11 @@ hash = "09d31307f81a06df5ab65ff57c2c830180bbc1138bb8326557172b0a883d6b8b"
 metafile = true
 
 [[files]]
+file = "mods/isometric-renders.pw.toml"
+hash = "ecf62efe01965ad05b936dd3f8ca3fbabb8a3483c766c2df11cdd0586c40ceb1"
+metafile = true
+
+[[files]]
 file = "mods/jade.pw.toml"
 hash = "02f270e345632a00de3ea629133e7d5ca7bf7adf0a261c6439cc7989469eab26"
 metafile = true
@@ -431,7 +436,7 @@ metafile = true
 
 [[files]]
 file = "mods/memoryleakfix.pw.toml"
-hash = "4716789e4a806c1cabcef27e67150215edb4c3d737e9a87d90f2f615d6c196cd"
+hash = "5b43c0fc6904ad4480c8ed596411c6e24172f8320ccd63de97b4ce2e7e0f90a5"
 metafile = true
 
 [[files]]
@@ -575,6 +580,11 @@ hash = "c9f8c764916df95c23fa7fa09738078d275d31f435f9e7a19e2b4b07952f9b58"
 metafile = true
 
 [[files]]
+file = "mods/scroll-for-worldedit.pw.toml"
+hash = "c5b590d6cf9bbea5704c080ad9afaf8281f4fd417e326f14bb6ec2a590bf0695"
+metafile = true
+
+[[files]]
 file = "mods/show-me-what-you-got.pw.toml"
 hash = "4dfad8315cf5b3367509e8a2ad20b960107260f9948c3a37d87e362d6eaf7e73"
 metafile = true
@@ -627,6 +637,11 @@ metafile = true
 [[files]]
 file = "mods/status.pw.toml"
 hash = "14c306c595c0331731d743eeb440c7a696266c8f1ec9cad8b499bca08c9206cd"
+metafile = true
+
+[[files]]
+file = "mods/techutils.pw.toml"
+hash = "571dcb69232bdca0a0ea8b285ed3a8ebc6288ae879bcd5b18df27957f42867a5"
 metafile = true
 
 [[files]]
@@ -687,6 +702,11 @@ metafile = true
 [[files]]
 file = "mods/wavey-capes.pw.toml"
 hash = "ecf0c6a4e1ea923de5149d8fbceb63c2030d9d89385c08289483695d012f5568"
+metafile = true
+
+[[files]]
+file = "mods/wets.pw.toml"
+hash = "f020ee876038b4b29a9fff822aaf8598d7d49f7cb76b76e09a10a8d70e541271"
 metafile = true
 
 [[files]]
