@@ -7,3 +7,6 @@
 [submodule "modpacks/basemodpack"]
 	path = modpacks/basemodpack
 	url = https://gith.misilelaboratory.xyz/additiveplus.git:/versions/fabric/1.19.3.git
+[submodule "docs/themes/terminal"]
+	path = docs/themes/terminal
+	url = https://github.com/panr/hugo-theme-terminal.git
