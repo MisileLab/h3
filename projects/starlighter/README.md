@@ -1,4 +1,0 @@
-
-# StarLighter
-
-StarLighting Rhythm Game
