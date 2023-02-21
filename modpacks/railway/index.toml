@@ -105,7 +105,7 @@ metafile = true
 
 [[files]]
 file = "mods/audaki-cart-engine.pw.toml"
-hash = "a29614fe8c0b61b633f3bae97f180acb6c4b42271569b0c7696c0a765d61a70f"
+hash = "9d60aced64f0e1cc797d87d200fa10b658bdd2448db48d713435f8def045ef9e"
 metafile = true
 
 [[files]]
@@ -200,7 +200,7 @@ metafile = true
 
 [[files]]
 file = "mods/chunks-fade-in.pw.toml"
-hash = "79c152783c7b0ed84a8d4c9cc4d83d7e109a6bbae63f86136a3518048b7a66c7"
+hash = "1940af9181e0a718a83f513f9a9283a63ea75f09f1faaf66558ead17f38f08cb"
 metafile = true
 
 [[files]]
@@ -690,7 +690,7 @@ metafile = true
 
 [[files]]
 file = "mods/universal-shops.pw.toml"
-hash = "b99517cdfef96ccb27dce80960c782cae2ffd100fe7eb549b4b4d16a86370a09"
+hash = "a73a5717603013d742a412ce8da4ed4537226c1e22b0614ac8e2e2d57187c273"
 metafile = true
 
 [[files]]
