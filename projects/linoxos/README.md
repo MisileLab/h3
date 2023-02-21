@@ -1,6 +1,6 @@
 # Linox
 
-CC: Tweaked, CC: Restiched Operating System (OS)
+CC: Tweaked, CC: Restiched Operating System (OS)  
 Has package manager (lp), boot manager (lpboot) and installer (lpinstaller)
 
 ## Official Packages
