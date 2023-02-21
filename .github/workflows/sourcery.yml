@@ -2,7 +2,9 @@ name: Check codebase using Sourcery
 
 on:
   push:
-    branches: [main]
+    paths:
+      - '.github/workflows/sourcery.yml'
+      - '*.py'
 
 jobs:
   review-with-sourcery:
@@ -18,7 +20,7 @@ jobs:
         with:
           in_place: true
           token: ${{ secrets.SOURCERY_TOKEN }}
-      
+
       - name: push
         continue-on-error: true
         run: |
