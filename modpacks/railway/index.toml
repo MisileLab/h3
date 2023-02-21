@@ -76,7 +76,7 @@ metafile = true
 
 [[files]]
 file = "mods/alternate-current.pw.toml"
-hash = "fda319290cfe268fdc7c6c6ca8dcad24e51c1de98442f23f2a41d657b26fc8d0"
+hash = "f30b15dc574856f6eca824f645537680ca12a6282bee89a33cbced66d6601dca"
 metafile = true
 
 [[files]]
@@ -391,7 +391,7 @@ metafile = true
 
 [[files]]
 file = "mods/lanterns-bow.pw.toml"
-hash = "6fbae4f1b894cdc261cd9e94f9d9028d6f685ac86b0b4942716e2190b38cb360"
+hash = "e337da3cc4432416d31ba4027472e08e8dad46dc63d9df4e31a51aabc405071b"
 metafile = true
 
 [[files]]
@@ -491,7 +491,7 @@ metafile = true
 
 [[files]]
 file = "mods/pack-it-up.pw.toml"
-hash = "6268b742f9fe4fae6c50a08478a955c477107dbc9687a13381161fb67d9dbf9e"
+hash = "0fc745d920638a50693b4a665f0f4d2ed589c108bcec12528eb70ec133988191"
 metafile = true
 
 [[files]]
