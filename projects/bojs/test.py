@@ -62,7 +62,7 @@ for i, i2 in enumerate(flist):
         print(outp)
         for i3 in jload(read_once('test.json'))["results"]:
             outpu = output.replace('\r', '')
-            if outp not in [outpu.removesuffix('\n'), outpu]:
+            if outp not in [outpu.removesuffix('\n'), outpu] and outp.strip("\n") not in [outpu.removesuffix('\n'), outpu]:
                 print(f"{i3['command']} does not match with {output} so failed")
                 g.append(i3['command'])
             elif i3['times'][0] > bjp.time_limit:
