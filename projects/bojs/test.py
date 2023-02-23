@@ -1,5 +1,5 @@
 from json import loads as jload
-from os import getcwd, listdir
+from os import getcwd, listdir, _exit
 from subprocess import Popen
 from bojapi import BaekjoonProb
 from tomli import loads
@@ -8,7 +8,7 @@ from misilelibpy import read_once
 
 runs = 1
 
-langlist = [".py", ".rb"]
+langlist = [".py", ".rb", ".c", ".cpp"]
 a = loads(read_once('test.toml'))
 globalvals = a['global']
 flist = []
@@ -41,6 +41,8 @@ for i, i2 in enumerate(flist):
             s = f"'ruby --enable-yjit {i2}.rb"
         elif i3 == "rustpython":
             s = f"'rustpython {i2}.py"
+        elif i3 in ["c", "cpp"]:
+            s = f"'clang -O2 {i2}.c -o main && ./main"
         else:
             raise ValueError("no support lang")
         args[1] = s
@@ -50,7 +52,12 @@ for i, i2 in enumerate(flist):
         with open("input.txt", "w", encoding="utf8") as file:
             file.write(inp.replace('\r', ''))
         p = Popen(' '.join(args), shell=True)
-        print(p.wait())
+        _wait = p.wait()
+        if _wait != 0:
+            print(f"Error Code {_wait}")
+            print(f"stdout: {p.stdout}")
+            print(f"stderr: {p.stderr}")
+            _exit(_wait)
         outp = read_once('output.txt')
         print(outp)
         for i3 in jload(read_once('test.json'))["results"]:
