@@ -1,0 +1,9 @@
+set positional-arguments := true
+alias b := build
+alias br := build-release
+
+@build build:
+  clang $1.c -fuse-ld=lld -rtlib=compiler-rt -unwindlib=libunwind -Wl,--as-needed -o $1
+
+@build-release build:
+  clang $1.c -O2 -fuse-ld=lld -rtlib=compiler-rt -unwindlib=libunwind -Wl,--as-needed -o $1
