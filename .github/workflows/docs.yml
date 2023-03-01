@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - '.github/workflows/docs.yml'
-      - 'web'
+      - 'web/**'
 
 jobs:
   deploy:
