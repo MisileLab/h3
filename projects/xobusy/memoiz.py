@@ -28,7 +28,7 @@ class DateData:
             write_once(CONFIG_FILE, r"[]")
         con = loads(read_once(CONFIG_FILE))
         self.data = []
-        for i in con:
+        for _ in con:
             self.data.append()
 
 
