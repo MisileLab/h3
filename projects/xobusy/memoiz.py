@@ -1,6 +1,36 @@
 from calendar import monthrange
 from datetime import datetime
 from tabulate import tabulate
+from misilelibpy import cls, read_once, write_once
+from os import _exit
+from os.path import isfile
+from json import dumps, loads
+
+CONFIG_FILE = "config.json"
+
+_help = """
+v = view calendar
+e = edit calendar
+q = quit
+""".removeprefix("\n")
+
+class DateDataClass:
+    def __init__(self, month: int, day: int, name: str, memos: dict):
+        self.month = month
+        self.day = day
+        self.name = name
+        self.memos = memos
+
+
+class DateData:
+    def __init__(self):
+        if isfile(CONFIG_FILE) is False:
+            write_once(CONFIG_FILE, r"[]")
+        con = loads(read_once(CONFIG_FILE))
+        self.data = []
+        for i in con:
+            self.data.append()
+
 
 def list_in_list(*appender: list):
     a = []
@@ -12,9 +42,21 @@ def list_in_list(*appender: list):
                 a[i2].append(i3)
     return a
 
-print(list_in_list(["a", "b", "c"], [3, 1, 2], [True, False, True]))
-
 today = datetime.now()
 _month = list_in_list(list(range(1, monthrange(today.year, today.month)[1]+1)))
 
-print(tabulate(_month, headers="month"))
+while True:
+    _input = False
+    print("Memoiz version git")
+    cmd = input("> ")
+    if cmd == "v":
+        print(tabulate(_month, headers="month"), end='')
+        _input = True
+    elif cmd == "h":
+        print(_help, end='')
+        _input = True
+    elif cmd == "q":
+        _exit(0)
+    if _input:
+        input()
+    cls()
