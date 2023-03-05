@@ -154,7 +154,7 @@ metafile = true
 
 [[files]]
 file = "mods/brewery.pw.toml"
-hash = "2a452a74cc6202128cd833276c79c868dfa380a79163a755155409b189890fdd"
+hash = "94d244ed28db127d951356632fe599bcee2839a6c6f2b4b86123d0c9cd2801b4"
 metafile = true
 
 [[files]]
@@ -189,7 +189,7 @@ metafile = true
 
 [[files]]
 file = "mods/cem.pw.toml"
-hash = "188b1f6587b9bcdc3788ae404ad891e5c552b64d3397257cdeab43dd611232df"
+hash = "4830a70a299bd27667a9cc64637364a65eb876175153a076c8da9398e9be89ff"
 metafile = true
 
 [[files]]
@@ -229,7 +229,7 @@ metafile = true
 
 [[files]]
 file = "mods/collective.pw.toml"
-hash = "04ea007b8d5549f4dcf74e349f7d152be503824d453fe2fe779f7e6631e2e4e1"
+hash = "8e0323ea83dd14a4e07315524f9d384ba84bba642ee58d9373ca4498cdba05cb"
 metafile = true
 
 [[files]]
@@ -264,7 +264,7 @@ metafile = true
 
 [[files]]
 file = "mods/eating-animation.pw.toml"
-hash = "990f14703c547528f630861e1ea699a1e4aeea4e40581635baa684160b9ad22a"
+hash = "ab54e36d690bb29c4eea744809a7f12f8fac20ca8e5a930671125f66c69cc7db"
 metafile = true
 
 [[files]]
@@ -334,7 +334,7 @@ metafile = true
 
 [[files]]
 file = "mods/first-person-model.pw.toml"
-hash = "037642da6cd5470a74db68df2f1d445ac1eeca74ee5930fcd2e6cb7da3459a9a"
+hash = "a9446c4a0ddeb25dd57bf0054d66b40e310acfbd7d21aef706c20ca692ea1f5d"
 metafile = true
 
 [[files]]
@@ -354,7 +354,7 @@ metafile = true
 
 [[files]]
 file = "mods/immersive-aircraft.pw.toml"
-hash = "05bf4dea365271ee75a64e4e1ca57e3ab41782ecb2a313b8dc6f4d2ddabca050"
+hash = "e511417402bb4907b839f774f854b67bf5dded414d03c49770d0b704dac5b42d"
 metafile = true
 
 [[files]]
@@ -374,7 +374,7 @@ metafile = true
 
 [[files]]
 file = "mods/isometric-renders.pw.toml"
-hash = "ecf62efe01965ad05b936dd3f8ca3fbabb8a3483c766c2df11cdd0586c40ceb1"
+hash = "17c41069187efe0054ef8a0380847756c1354256ab3c720ed93efd23a835b519"
 metafile = true
 
 [[files]]
@@ -419,7 +419,7 @@ metafile = true
 
 [[files]]
 file = "mods/lithium.pw.toml"
-hash = "feaedf6b6d73530c0289d9c7aa4149823343d2a7f9893f7b81e8c7c003763f31"
+hash = "6682a581b77e820ea340d3279b7a49f5d311d3fa0b08b53628c9bf56a7c668ac"
 metafile = true
 
 [[files]]
@@ -429,7 +429,7 @@ metafile = true
 
 [[files]]
 file = "mods/make_bubbles_pop.pw.toml"
-hash = "cc5cbb9430eea35ef7c057f811ce47e7b8da276689ec5783e0f234bc295e289d"
+hash = "a348cac6a82b65dd907d857f1893fb44d724cd3d912975fb7325253eb7e7503a"
 metafile = true
 
 [[files]]
@@ -609,7 +609,7 @@ metafile = true
 
 [[files]]
 file = "mods/smooth-swapping.pw.toml"
-hash = "69d620ddb80f05d210fbaf3d10fc81db97d5980585edd6c0717f6681440c3198"
+hash = "741f07735108747dfd4083ea061712221b72a85137a71012c33cfa144d1a185a"
 metafile = true
 
 [[files]]
@@ -704,7 +704,7 @@ metafile = true
 
 [[files]]
 file = "mods/visuality.pw.toml"
-hash = "2269ff794012bd79bfe01ee9815188d45bb3fe964eba30f0cfea4175dbdf42d0"
+hash = "f8f5e1897e2250f3a715b33b6c7efd3e7ec7142556d68e17a38c71833d23e3ba"
 metafile = true
 
 [[files]]
