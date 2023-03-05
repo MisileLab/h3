@@ -6,11 +6,10 @@ from os import _exit
 from os.path import isfile
 from json import dumps, loads
 
-CONFIG_FILE = "config.json"
+DATA_FILE = "datedata.json"
 
 _help = """
-v = view calendar
-e = edit calendar
+v = view memos
 q = quit
 """.removeprefix("\n")
 
@@ -24,17 +23,21 @@ class DateDataClass:
 
 class DateData:
     def __init__(self):
-        if isfile(CONFIG_FILE) is False:
-            write_once(CONFIG_FILE, r"[]")
-        con = loads(read_once(CONFIG_FILE))
+        if isfile(DATA_FILE) is False:
+            write_once(DATA_FILE, r"[]")
+        con = loads(read_once(DATA_FILE))
         self.data = []
         self.data.extend(
-            DateDataClass(i["month"], i["month"], i["day"], i["name"], i["memos"])
+            DateDataClass(i["month"], i["day"])
             for i in con
         )
 
+    def save_config(self):
+        write_once(DATA_FILE, dumps(self.data))
+
 
 def list_in_list(*appender: list):
+    # sourcery skip: instance-method-first-arg-name
     a = []
     for i in range(len(appender)):
         if i == 0:
@@ -45,20 +48,4 @@ def list_in_list(*appender: list):
     return a
 
 today = datetime.now()
-_month = list_in_list(list(range(1, monthrange(today.year, today.month)[1]+1)))
-
-while True:
-    _input = False
-    print("Memoiz version git")
-    cmd = input("> ")
-    if cmd == "v":
-        print(tabulate(_month, headers="month"), end='')
-        _input = True
-    elif cmd == "h":
-        print(_help, end='')
-        _input = True
-    elif cmd == "q":
-        _exit(0)
-    if _input:
-        input()
-    cls()
+print(tabulate(list_in_list(DateData().data), headers=["month", "day"]), end='')

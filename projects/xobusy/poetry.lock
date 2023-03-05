@@ -42,6 +42,18 @@ type = "directory"
 url = "../../libraries/misilelib/misilelib-python"
 
 [[package]]
+name = "simple-term-menu"
+version = "1.6.1"
+description = "A Python package which creates simple interactive menus on the command line."
+category = "dev"
+optional = false
+python-versions = "~=3.5"
+files = [
+    {file = "simple-term-menu-1.6.1.tar.gz", hash = "sha256:368b4158d1749b868552fb6c054b8301785086c71a7253dac8404cc3cb2d30e8"},
+    {file = "simple_term_menu-1.6.1-py3-none-any.whl", hash = "sha256:f12945d5c6998088e86a228e0aff12ff655f5bfad786c86677f23faa1d2afa50"},
+]
+
+[[package]]
 name = "tabulate"
 version = "0.9.0"
 description = "Pretty-print tabular data"
@@ -80,4 +92,4 @@ test = ["black (>=22.3.0,<23.0.0)", "coverage (>=6.2,<7.0)", "isort (>=5.0.6,<6.
 [metadata]
 lock-version = "2.0"
 python-versions = "3.11.2"
-content-hash = "02d36927d43b6fce81a0b2f4c608ca928d02539b658e7230c735a790dcb1d5e3"
+content-hash = "04a0087b2e8166705773127801a945b3eef32615e7250e7cf8b163393a8a36fd"
