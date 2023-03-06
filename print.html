@@ -71,10 +71,12 @@
         <!-- Hide / unhide sidebar before it is displayed -->
         <script>
             var html = document.querySelector('html');
-            var sidebar = 'hidden';
+            var sidebar = null;
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
             }
             html.classList.remove('sidebar-visible');
             html.classList.add("sidebar-" + sidebar);
@@ -146,6 +148,8 @@
                         <h1 id="xobusy"><a class="header" href="#xobusy">xobusy</a></h1>
 <ul>
 <li>xobusy.c / some shell command with c</li>
+<li>memoiz.py / memo with calendar</li>
+<li>gentoo-emerge-background / emerge but background and get log</li>
 </ul>
 
                     </main>
