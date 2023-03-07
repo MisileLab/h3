@@ -13,12 +13,14 @@ except IndexError:
 
 if argv[1] == "command":
     _example = argv
-    del _example[1]
+    del _example[0]
+    del _example[0]
+    print(_example)
     _org = getcwd()
     chdir(expanduser("~"))
-    run(f'nohup {" ".join(_example)} &')
+    run(f'nohup {" ".join(_example)} &', shell=True)
     chdir(_org)
 elif argv[1] == "viewlog":
-    run(f'tail -f {expanduser("~")}/nohup.out')
+    run(f'tail -f {expanduser("~")}/nohup.out', shell=True)
 else:
     print("Use: <gentoo emerge background file> <viewlog/command>")
