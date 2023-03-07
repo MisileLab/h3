@@ -37,7 +37,6 @@ class DateData:
 
 
 def list_in_list(*appender: list):
-    # sourcery skip: instance-method-first-arg-name
     a = []
     for i in range(len(appender)):
         if i == 0:
