@@ -1,6 +1,7 @@
 # xobusy
 
 - xobusy.c / some shell command with c
+  - require Linux
 - memoiz.py / memo with calendar
-- gentoo-emerge-background.pu / emerge but background and get log
-
+  - require GNU Less
+- gentoo-emerge-background.py / emerge but background and get log
