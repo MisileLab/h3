@@ -42,7 +42,7 @@ hash = "1e0ba1e744212f481d857e2c864104eb8853a825f6557874b739763e208f7e59"
 
 [[files]]
 file = "config/isxander-main-menu-credits.json"
-hash = "f14cf0cf9d9ccfdb39c9eb2a40beb68146c38e9c5c695e0cca112d3f21c7ed23"
+hash = "6cf8dc4dcee580a73a892a2299c12f5f2ee594a1f478604e77833acd28b41673"
 
 [[files]]
 file = "config/lambdabettergrass.toml"
@@ -289,7 +289,7 @@ metafile = true
 
 [[files]]
 file = "mods/entitytexturefeatures.pw.toml"
-hash = "3aad926de03af1573fb934fb5d3ebd98cc41cf5663f97b0f06a4e6d4b0b9f6f2"
+hash = "b9e92b5e0baed5a916779ef0016172d2d42ea310d9742744a8c920ecee4d7b9a"
 metafile = true
 
 [[files]]
@@ -574,7 +574,7 @@ metafile = true
 
 [[files]]
 file = "mods/roughly-enough-professions-rep.pw.toml"
-hash = "ca63d24da54890fc7c6345f56896444e3b519e5aba944f0d3906b683f8a5638a"
+hash = "fb57bda09abe002d7b94f1e9e3f6e836874c0de950d026da273853337d9aac87"
 metafile = true
 
 [[files]]
