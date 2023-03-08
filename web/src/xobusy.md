@@ -4,4 +4,5 @@
   - require Linux
 - memoiz.py / memo with calendar
   - require GNU Less
+  - require [glow](https://github.com/charmbracelet/glow)
 - gentoo-emerge-background.py / emerge but background and get log
