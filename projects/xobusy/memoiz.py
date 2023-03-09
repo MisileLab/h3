@@ -70,10 +70,11 @@ class DateData:
 
     def detect_memos(self):
         for i in listdir(NOTE_FOLDER):
-            _, mmonth, mday, mname = map(str, i.strip(".md").split("-", 3))
+            myear, mmonth, mday, mname = map(str, i.strip(".md").split("-", 3))
+            myear = int(myear)
             mmonth = int(mmonth)
             mday = int(mday)
-            if mmonth == self.month and Memo(i, mname) not in self.data[mday-1].memos:
+            if myear == _year and mmonth == self.month and Memo(i, mname) not in self.data[mday-1].memos:
                 self.data[mday-1].memos.append(Memo(i, mname))
 
     def length_memos(self):
