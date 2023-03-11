@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "sunrintbot"
+version = "0.1.0"
+description = ""
+authors = ["MisileLaboratory"]
+license = "MisileLab License"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.11.2"
+disnake = "2.8.1"
+requests = "2.28.2"
+tomli = "2.0.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
