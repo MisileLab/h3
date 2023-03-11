@@ -135,8 +135,8 @@ hash = "51d6c9ed6dd9dae972bf94b99ca25e97cb03eb035a012367c100f63aa159fe10"
 metafile = true
 
 [[files]]
-file = "mods/create-chromatic-return.pw.toml"
-hash = "2109e6389e6222550cd0ca154f31805326dcbb521e3ff3ad9a2c9aaddb59a052"
+file = "mods/create-chromaticreturn.pw.toml"
+hash = "238ae604106e61b050b28905cef6353d8120064fae8de4a013e6341a7ec36d97"
 metafile = true
 
 [[files]]
