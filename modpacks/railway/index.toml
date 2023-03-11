@@ -229,7 +229,7 @@ metafile = true
 
 [[files]]
 file = "mods/collective.pw.toml"
-hash = "8e0323ea83dd14a4e07315524f9d384ba84bba642ee58d9373ca4498cdba05cb"
+hash = "539bdf3ccf92f78c7faf3a740929fdacbaf512bfbdc5135c8e5186b97f1cfe87"
 metafile = true
 
 [[files]]
@@ -364,7 +364,7 @@ metafile = true
 
 [[files]]
 file = "mods/integrated-circuit.pw.toml"
-hash = "009a3be767c121f83e66951e2b360daeab29cd65532e582b0ae271bbdd3a335b"
+hash = "5bf2b2581ed3e43e5f1f2c748c22df781e1a22f2692ecf4229b9b17bc206d422"
 metafile = true
 
 [[files]]
@@ -439,7 +439,7 @@ metafile = true
 
 [[files]]
 file = "mods/memoryleakfix.pw.toml"
-hash = "5b43c0fc6904ad4480c8ed596411c6e24172f8320ccd63de97b4ce2e7e0f90a5"
+hash = "2f1393d78824d3e665be954e339affed26d8482d227aa3f13d6ca5d577469f8b"
 metafile = true
 
 [[files]]
