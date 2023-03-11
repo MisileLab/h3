@@ -16,7 +16,7 @@ metafile = true
 
 [[files]]
 file = "mods/alchemistry.pw.toml"
-hash = "62eda42bc1ad75171bd6b0bb69e5b51a7e1dd0b6bf4e14e6631bfee420bca6d0"
+hash = "8c06bb40b1d2e836f5dfd7d1c96fb573e44227e037cf10104da7a8b0a31ed574"
 metafile = true
 
 [[files]]
