@@ -1,0 +1,54 @@
+name: modpack export
+
+on:
+  push:
+    paths:
+      - '.github/workflows/modpacks.yml'
+      - 'modpacks/railway/**'
+      - 'modpacks/mekanically/**'
+      - 'modpacks/basemodpack'
+
+env:
+  GIT_SSL_NO_VERIFY: true
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+    - uses: dorny/paths-filter@v2
+      id: changes
+      with:
+        filters: .github/filters.yml
+
+    # - if: steps.changes.outputs.src == 'true'
+    - uses: actions/setup-go@v3
+      with:
+        go-version: '1.20.1'
+        check-latest: true
+    - run: |
+        go install github.com/packwiz/packwiz@latest
+    - if: steps.changes.outputs.railway == 'true'
+      run: |
+        cd modpacks/railway
+        packwiz mr export
+        cd -
+    - if: steps.changes.outputs.mekanically == 'true'
+      run: |
+        cd modpacks/mekanically
+        packwiz curseforge export
+        cd -
+    - name: Railway
+      if: steps.changes.outputs.railway == 'true'
+      uses: actions/upload-artifact@v3
+      with:
+        name: railway
+        path: modpacks/railway/*.mrpack
+    - name: Mekanically
+      if: steps.changes.outputs.mekanically == 'true'
+      uses: actions/upload-artifact@v3
+      with:
+        name: mekanically
+        path: modpacks/mekanically/*.mrpack

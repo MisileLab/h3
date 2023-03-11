@@ -1,0 +1,13 @@
+name = "CreateFoodAdditions"
+filename = "createfa-1.18.2-1.0.11.jar"
+side = "both"
+
+[download]
+hash-format = "sha1"
+hash = "a947531111a8c553b4cf74b72c6b8f285c73d121"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 3955938
+project-id = 485596
