@@ -214,7 +214,7 @@ metafile = true
 
 [[files]]
 file = "mods/cleanchat.pw.toml"
-hash = "2198fe18fbc33191a84af57a0c8dd76ebcde0de4423712a8e62f13f84d36ac07"
+hash = "033ee96ea458cfb805c2e976e3c35ded0af1d7f383c190bdf67ddabdba89cf72"
 metafile = true
 
 [[files]]
@@ -229,7 +229,7 @@ metafile = true
 
 [[files]]
 file = "mods/collective.pw.toml"
-hash = "539bdf3ccf92f78c7faf3a740929fdacbaf512bfbdc5135c8e5186b97f1cfe87"
+hash = "4a3d6a8e5cada5996e9e92d6c94a7eb7f3b50428d99a1bc27b521ce56097191c"
 metafile = true
 
 [[files]]

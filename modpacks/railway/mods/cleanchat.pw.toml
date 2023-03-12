@@ -1,13 +1,13 @@
 name = "Clean Chat"
-filename = "cleanchat-1.0.0+1.19.3.jar"
+filename = "cleanchat-1.0.1+1.19.3.jar"
 side = "client"
 
 [download]
-url = "https://cdn.modrinth.com/data/9FbtEclR/versions/MsNNbX9N/cleanchat-1.0.0%2B1.19.3.jar"
+url = "https://cdn.modrinth.com/data/9FbtEclR/versions/L1zBs5ks/cleanchat-1.0.1%2B1.19.3.jar"
 hash-format = "sha1"
-hash = "43c628ebfd15ddfa8c7ee54dc732651c4c36b3c6"
+hash = "52fafcbc311f1247404dd89d29af4a8e05e69e09"
 
 [update]
 [update.modrinth]
 mod-id = "9FbtEclR"
-version = "MsNNbX9N"
+version = "L1zBs5ks"
