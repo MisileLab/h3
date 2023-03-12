@@ -384,7 +384,7 @@ metafile = true
 
 [[files]]
 file = "mods/just-more-cakes.pw.toml"
-hash = "b6d870c9d14d94bef2f03bd9fdae3a0a9d99e7eac3d6e601afeabc4d144bebe1"
+hash = "a16be3a12bada5c3d634b982b57a1ac78d2b5c9e9567f3f6ef05171d5fc2bd52"
 metafile = true
 
 [[files]]
@@ -399,7 +399,7 @@ metafile = true
 
 [[files]]
 file = "mods/lanterns-bow.pw.toml"
-hash = "e337da3cc4432416d31ba4027472e08e8dad46dc63d9df4e31a51aabc405071b"
+hash = "3e1e354c8cd95de6d564eb8a6ad541f9bf34213514861e969a12da311a5a8768"
 metafile = true
 
 [[files]]

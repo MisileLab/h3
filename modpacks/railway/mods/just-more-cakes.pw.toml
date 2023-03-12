@@ -1,13 +1,13 @@
 name = "Just More Cakes"
-filename = "JustMoreCakes-fabric-1.19.3-1.7.0.jar"
+filename = "JustMoreCakes-fabric-1.19.3-1.7.1.jar"
 side = "both"
 
 [download]
-url = "https://cdn.modrinth.com/data/RW7zragP/versions/MMBSJUqD/JustMoreCakes-fabric-1.19.3-1.7.0.jar"
+url = "https://cdn.modrinth.com/data/RW7zragP/versions/tgOieSmB/JustMoreCakes-fabric-1.19.3-1.7.1.jar"
 hash-format = "sha1"
-hash = "9ef0c61bba67a49475057c262c5b09ee5938d1a7"
+hash = "832fa4d85f0298add77ff5d97f264bdbfb87fab8"
 
 [update]
 [update.modrinth]
 mod-id = "RW7zragP"
-version = "MMBSJUqD"
+version = "tgOieSmB"
