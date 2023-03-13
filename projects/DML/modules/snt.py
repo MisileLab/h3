@@ -5,8 +5,7 @@ from tomli import load
 from requests import get
 from datetime import datetime
 
-sunrin_ids = [921295966143926352]
-# sunrin_ids = [921295966143926352, 1082472876449476708]
+sunrin_ids = [921295966143926352, 1082472876449476708]
 
 class disnake_view(View):
     def __init__(self, views: list):
