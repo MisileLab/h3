@@ -18,6 +18,6 @@ async def on_ready():
 
 @bot.slash_command(name="ping", guild_ids=test_ids)
 async def ping(ctx: ApplicationCommandInteraction):
-    await ctx.send(f"pong(discord API latency): {ctx.bot.latency}s")
+    await ctx.send(f"pong(discord API latency): {round(ctx.bot.latency, 2) * 100}ms")
 
 bot.run(config["TOKEN"])
