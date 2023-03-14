@@ -4,9 +4,9 @@ from os import listdir
 from os.path import isfile
 from tomli import load
 
-test_ids = [921295966143926352, 1082472876449476708]
 bot = commands.Bot(intents=Intents.all(), command_prefix='/', help_command=None)
 config = load(open("config.toml", 'rb'))
+test_ids = config.get("TEST_GUILDS")
 
 @bot.event
 async def on_ready():
