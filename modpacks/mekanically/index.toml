@@ -115,6 +115,11 @@ hash = "d2cb726e8f3858610f8532b6e85891f6cf13dd3caf71d1caf9942bdecc6e5676"
 metafile = true
 
 [[files]]
+file = "mods/craftable-creative-ability.pw.toml"
+hash = "b28af13469343e17cbe29b21c11b67ccc70026b8c91a599927871aa5b22685ad"
+metafile = true
+
+[[files]]
 file = "mods/crash-utilities.pw.toml"
 hash = "2758d099575738f73fe355773bbd28fee02bcf0033a862c2fbddcf165bbbb122"
 metafile = true
@@ -197,6 +202,26 @@ metafile = true
 [[files]]
 file = "mods/createfoodadditions.pw.toml"
 hash = "99f4c2ef2f3a925f8cfac97d69a01e224fc83b3af6c63351d4d7bcff444e56dd"
+metafile = true
+
+[[files]]
+file = "mods/creative-crafter.pw.toml"
+hash = "59933b50fd2d36bed797dec85cf4e1bccb83ed5963da278bfcd281287f821327"
+metafile = true
+
+[[files]]
+file = "mods/creative-disk.pw.toml"
+hash = "902ccb49f4f6e85551f2449fff39ff2af6d2ca54aaecf69273ff305715486735"
+metafile = true
+
+[[files]]
+file = "mods/creative-tweaker.pw.toml"
+hash = "d8cc0f4a5089001bbe8cc5967b4f7226b545cd1693fcf29223074718b58a7440"
+metafile = true
+
+[[files]]
+file = "mods/creative-wireless-transmitter.pw.toml"
+hash = "3e9d04eeda2b607a2ec9292ce653502d10482d12b84a3e9a06c99a83c6094bee"
 metafile = true
 
 [[files]]
@@ -352,6 +377,11 @@ metafile = true
 [[files]]
 file = "mods/immersiveposts.pw.toml"
 hash = "6f679ecef8f40832d535fc8d277ea3a4d686a5751c3372370d55d29d3fc44f8a"
+metafile = true
+
+[[files]]
+file = "mods/inzhefop-core.pw.toml"
+hash = "dcedd166651bb63c662c098b76248ab90d482f1c76ab6267c07d6170aa072c1c"
 metafile = true
 
 [[files]]
@@ -562,6 +592,11 @@ metafile = true
 [[files]]
 file = "mods/smooth-chunk-save.pw.toml"
 hash = "7863c6ff5c8ee607d67b7f8065904f99a81903f983adc7dca35184e760358993"
+metafile = true
+
+[[files]]
+file = "mods/solargeneration.pw.toml"
+hash = "956a5fe3814ee25b5ee75285562b1663586a16da3ef1f2d77dcb68b7f6514495"
 metafile = true
 
 [[files]]

@@ -1,0 +1,13 @@
+name = "Creative Crafter"
+filename = "creativecrafter-1.18.2-1.0.jar"
+side = "both"
+
+[download]
+hash-format = "sha1"
+hash = "7594e3c10a6a99f964a85c9eba279a6db1319f8c"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 4318766
+project-id = 461245
