@@ -506,7 +506,7 @@ metafile = true
 
 [[files]]
 file = "mods/pluto.pw.toml"
-hash = "9a495d7e040fc3aa0100fcbc89bba4c9d5c115c4b0a2b71a6dbbe23bd5c574e9"
+hash = "b341fd8fba1905b7cab64f9c5b85d205bcb5e16b3d1b6097a0b5ae7ed7895646"
 metafile = true
 
 [[files]]
