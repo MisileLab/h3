@@ -196,7 +196,7 @@ metafile = true
 
 [[files]]
 file = "mods/createaddition.pw.toml"
-hash = "ce6293177a423fe37364c6eda54621a192aaef9f330033e1e9fc89e61bdc144a"
+hash = "07812fba8335ba94648fe700014b78cfb3e070ddb0508581cb3f5031baa04619"
 metafile = true
 
 [[files]]
@@ -406,7 +406,7 @@ metafile = true
 
 [[files]]
 file = "mods/journeymap.pw.toml"
-hash = "975739b9ad9c9cc01aeeb00459f26ff4af913d09beed4ac2cce162d37588bcb5"
+hash = "d71c183225e641efe08d99c19b36d64cdf0b9c5a9ebb5368061032b3d46d547f"
 metafile = true
 
 [[files]]
