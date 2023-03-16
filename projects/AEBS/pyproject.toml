@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "arona's external backend server"
+version = "0.1.0"
+description = ""
+authors = ["MisileLaboratory"]
+license = "MisileLab License"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.11.2"
+fastapi = "0.94.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

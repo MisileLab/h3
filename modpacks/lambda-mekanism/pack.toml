@@ -1,0 +1,13 @@
+name = "Lambda: Mekanism"
+author = "MisileLaboratory"
+version = "0.0.1-rolling"
+pack-format = "packwiz:1.1.0"
+
+[index]
+file = "index.toml"
+hash-format = "sha256"
+hash = "1644f9193b07bdc59c70571e3df212cf743f26586503ae7c989b8876aef2d128"
+
+[versions]
+forge = "40.0.2"
+minecraft = "1.18.2"
