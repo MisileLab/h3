@@ -1,0 +1,52 @@
+1. monitor
+
+--------------------
+coolant
+100%
+- name: water
+- amount: 50000mb / 50000mb
+- rate: 50mb/s
+heated
+10%
+- name: steam
+- amount: 5000mb / 50000mb
+- rate: -50mb/s
+fuel
+100%
+- name: uranium
+- amount: 50000mb / 50000mb
+- rate: 50mb/s
+heat: 500
+damage: 0%
+--------------------
+rate: 500mb/s
+usage rate: 500mb/s
+tank: 5000mb / 50000mb / 10%
+electric rate: 5000fe/s
+---------------------
+2. console
+---------------------
+reactOR v0.1 Administrator Console
+by MisileLaboratory
+> help
+stop reactor = stop the reactor
+stop turbine = stop the turbine
+stop uranium = stop the uranium pipe
+stop all = stop all
+start reactor = start the reactor
+start turbine = start the turbine
+start uranium = start the uranium pipe
+start all = start all
+emergency = stop all and give emergency electric to make water machine and give emergency water to reactor and Some(sound)
+> help alias
+sr = stop reactor
+su = stop uranium
+str = start reactor
+stt = start the turbine
+stu = start the uranium pipe
+sta = start all
+e = emergency (has confirm)
+eme = emergency (no confirm)
+> help event
+when has no water or damage is 1%, emergency with no confirm auto
+>
