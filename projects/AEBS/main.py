@@ -26,5 +26,5 @@ async def reactor(
         nuclear_fuel_tank = loads(nuclear_fuel_tank)
         nuclear_tank = loads(nuclear_tank)
         energy_cube = loads(energy_cube)
-    except ValueError:
-        raise HTTPException(status_code=422, detail="can't loads to json")
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail="can't loads to json") from e
