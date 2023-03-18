@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "arona's external backend server"
+name = "MBBS"
 version = "0.1.0"
 description = ""
 authors = ["MisileLaboratory"]
@@ -8,7 +8,8 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "3.11.2"
-fastapi = "0.94.1"
+misilelibpy = {path = "libs/misilelib/misilelib-python"}
+simple-websocket-server = "0.4.2"
 
 [build-system]
 requires = ["poetry-core"]
