@@ -1,0 +1,13 @@
+name = "Creative Wireless Transmitter"
+filename = "creativewirelesstransmitter-1.19.2-1.2.jar"
+side = "both"
+
+[download]
+hash-format = "sha1"
+hash = "e69b7ca442791573443421005804a94551e71471"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 4100631
+project-id = 452645

@@ -1,0 +1,13 @@
+name = "inzhefop's Core"
+filename = "inzheFoPCore-v.4.0.0-1.19.2.jar"
+side = "both"
+
+[download]
+hash-format = "sha1"
+hash = "61720895c87c2d3c1d11a3412dbd10dbad9df2b5"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 4021208
+project-id = 434516

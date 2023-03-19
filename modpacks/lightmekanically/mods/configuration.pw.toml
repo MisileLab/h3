@@ -1,0 +1,13 @@
+name = "Configuration [Fabric | Forge]"
+filename = "configuration-forge-1.19.2-2.1.0.jar"
+side = "both"
+
+[download]
+hash-format = "sha1"
+hash = "59ffd9b0b53387f207e4fa8deae8c2e9d32c3a88"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 4104223
+project-id = 444699

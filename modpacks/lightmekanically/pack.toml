@@ -1,0 +1,13 @@
+name = "LightMekanically"
+author = "MisileLaboratory"
+version = "0.0.1-rolling"
+pack-format = "packwiz:1.1.0"
+
+[index]
+file = "index.toml"
+hash-format = "sha256"
+hash = "000650f7eaaf1a2872da9d540e7626d605f81013b8c1fdb2515b2b192eeb0593"
+
+[versions]
+forge = "43.2.7"
+minecraft = "1.19.2"

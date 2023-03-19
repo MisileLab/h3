@@ -1,0 +1,13 @@
+name = "More Peripherals"
+filename = "MorePeripherals 1.19.2-1.8.jar"
+side = "both"
+
+[download]
+hash-format = "sha1"
+hash = "db83af785a51a3d9b1e0e4ee0bd6d2f114fe7d30"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 4183843
+project-id = 570908

@@ -1,0 +1,13 @@
+name = "Crash Utilities"
+filename = "crashutilities-6.2.jar"
+side = "both"
+
+[download]
+hash-format = "sha1"
+hash = "77f7831d5a267d85b997bed44fd5f95cad6f3a46"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 4406293
+project-id = 371813

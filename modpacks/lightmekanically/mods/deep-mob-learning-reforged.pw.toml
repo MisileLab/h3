@@ -1,0 +1,13 @@
+name = "Deep Mob Learning: Reforged"
+filename = "dmlreforged-1.0.7.jar"
+side = "both"
+
+[download]
+hash-format = "sha1"
+hash = "a053fc8a9798c2a5713750f2866f45920e2a08fa"
+mode = "metadata:curseforge"
+
+[update]
+[update.curseforge]
+file-id = 3923382
+project-id = 621711
