@@ -1,6 +1,10 @@
 hash-format = "sha256"
 
 [[files]]
+file = "README.md"
+hash = "5672d49c111d2951967cc3d552efdcee4817f42dbfdbeca289469eed7f7d0dfb"
+
+[[files]]
 file = "mods/advanced-peripherals.pw.toml"
 hash = "faba440c9dd8ebd1cec00884a2d1ef0ebb5cb9fd1b6da18b590f86ed01ebe8f5"
 metafile = true
@@ -43,6 +47,11 @@ metafile = true
 [[files]]
 file = "mods/balm.pw.toml"
 hash = "22f47db1058d619e0ed6c6531eac43dd9b504addff8a2f1fc8ba2d4856a2feba"
+metafile = true
+
+[[files]]
+file = "mods/better-fusion-reactor-for-mekanism.pw.toml"
+hash = "4e5c83304622c1f7e2ca29f2a8703ba8193abdc810562348c926b0e83ac4da76"
 metafile = true
 
 [[files]]
@@ -362,7 +371,7 @@ metafile = true
 
 [[files]]
 file = "mods/little-logistics.pw.toml"
-hash = "25cdd71f02454ca1d8154c8096f8c54e49280b0edcf314a3752709c33deec046"
+hash = "dfefbf3a86f5b23494c42785eba1e688f6d1156135d07b023945852312680557"
 metafile = true
 
 [[files]]
@@ -472,7 +481,7 @@ metafile = true
 
 [[files]]
 file = "mods/rubidium.pw.toml"
-hash = "d6a02b617d73812b20a2f8e483ea9791ecbf8de2649611bde123b6bb5d9ce365"
+hash = "94c5d47b41e62a7928d8c1b725e7e3434afe59c7bdb6dd19069db6e6069ebe02"
 metafile = true
 
 [[files]]
