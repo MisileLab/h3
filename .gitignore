@@ -108,8 +108,18 @@ target/
 Cargo.lock
 **/*.rs.bk
 *.mrpack
+
 # Lua.gitignore by ignofierplus
 luac.out
 *.src.rock
 *.os
 *.def
+
+# zig
+zig-cache/
+zig-out/
+/release/
+/debug/
+/build/
+/build-*/
+/docgen_tmp/
