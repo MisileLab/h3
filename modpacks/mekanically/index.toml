@@ -570,11 +570,6 @@ hash = "43375678708cd812b22ab1ecbc3f5452bc0910bac6f544c69f9ccf8bd14d420f"
 metafile = true
 
 [[files]]
-file = "mods/rubidium.pw.toml"
-hash = "dc1ace4b702d5953b4ff5aac59572a9fc03d077aee3c0d407db17a8f768f5268"
-metafile = true
-
-[[files]]
 file = "mods/saturn.pw.toml"
 hash = "b8e36189e8de79f382ee64c19413492e517fd4ca1f4fb9dd8efc09a05b2d16c1"
 metafile = true
