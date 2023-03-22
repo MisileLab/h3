@@ -4,5 +4,5 @@ Alarm start = A
 Alarm stop = AS
 Invaild command = IC
 info = I
-infodata = ID\n{"heat": 100, "cool": 10000, "coolmax": 100000, "damage": 0, "fuel": 1000, "fuelmax": 100000}
+infodata = ID\n{"heat": 100, "cool": 10000, "coolmax": 100000, "damage": 0, "fuel": 1000, "fuelmax": 100000, "status": True}
 burning rate change = B5000
