@@ -31,22 +31,11 @@ jobs:
         check-latest: true
     - run: |
         go install github.com/packwiz/packwiz@latest
-    - if: steps.changes.outputs.railway == 'true'
-      run: |
-        cd modpacks/railway
-        packwiz mr export
-        cd -
     - if: steps.changes.outputs.mekanically == 'true'
       run: |
         cd modpacks/mekanically
         packwiz curseforge export
         cd -
-    - name: Railway
-      if: steps.changes.outputs.railway == 'true'
-      uses: actions/upload-artifact@v3
-      with:
-        name: railway
-        path: modpacks/railway/*.mrpack
     - name: Mekanically
       if: steps.changes.outputs.mekanically == 'true'
       uses: actions/upload-artifact@v3
