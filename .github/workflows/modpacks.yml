@@ -4,10 +4,7 @@ on:
   push:
     paths:
       - '.github/workflows/modpacks.yml'
-      - 'modpacks/railway/**'
       - 'modpacks/mekanically/**'
-      - 'modpacks/basemodpack'
-      - 'modpakcs/'
 
 env:
   GIT_SSL_NO_VERIFY: true
