@@ -201,7 +201,7 @@ class Tetris:
 
         for col in zip(*board):
             tail = itertools.dropwhile(lambda x: x != Tetris.MAP_BLOCK, col)
-            n = Tetris.BOARD_HEIGHT - len([x for x in tail])
+            n = Tetris.BOARD_HEIGHT - len(list(tail))
             min_ys.append(n)
 
         for (y0, y1) in window(min_ys):
@@ -219,7 +219,7 @@ class Tetris:
 
         for col in zip(*board):
             tail = itertools.dropwhile(lambda x: x != Tetris.MAP_BLOCK, col)
-            height = len([x for x in tail])
+            height = len(list(tail))
 
             sum_height += height
             max_height = max(height, max_height)
@@ -240,18 +240,18 @@ class Tetris:
         states = {}
         piece_id = self.current_piece
 
-        if piece_id == 6:
-            rotations = [0]
-        elif piece_id == 0:
+        if piece_id == 0:
             rotations = [0, 90]
+        elif piece_id == 6:
+            rotations = [0]
         else:
             rotations = [0, 90, 180, 270]
 
         # For all rotations
         for rotation in rotations:
             piece = Tetris.TETROMINOS[piece_id][rotation]
-            min_x = min([p[0] for p in piece])
-            max_x = max([p[0] for p in piece])
+            min_x = min(p[0] for p in piece)
+            max_x = max(p[0] for p in piece)
 
             # For all positions
             for x in range(-min_x, Tetris.BOARD_WIDTH - max_x):

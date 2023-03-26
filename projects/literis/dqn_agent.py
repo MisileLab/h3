@@ -94,15 +94,14 @@ class DQNAgent:
         """Returns the best state for a given collection of states"""
         if random.random() <= self.epsilon:
             return random.choice(list(states))
-        else:
-            max_value: Optional[float] = None
-            best_state: Optional[List[int]] = None
-            for state in states:
-                # ask the neural network about the best value
-                value = self.predict_value(np.reshape(state, [1, self.state_size]))
-                if not max_value or value > max_value:
-                    max_value = value
-                    best_state = state
+        max_value: Optional[float] = None
+        best_state: Optional[List[int]] = None
+        for state in states:
+            # ask the neural network about the best value
+            value = self.predict_value(np.reshape(state, [1, self.state_size]))
+            if not max_value or value > max_value:
+                max_value = value
+                best_state = state
         return best_state
 
     def train(self, batch_size=32, epochs=3):
@@ -122,12 +121,7 @@ class DQNAgent:
 
             # Build xy structure to fit the model in batch (better performance)
             for i, (state, _, reward, done) in enumerate(batch):
-                if not done:
-                    # Partial Q formula
-                    new_q = reward + self.discount * next_qs[i]
-                else:
-                    new_q = reward
-
+                new_q = reward if done else reward + self.discount * next_qs[i]
                 x.append(state)
                 y.append(new_q)
 

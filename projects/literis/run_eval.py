@@ -22,7 +22,7 @@ def run_eval(dir_name: str, episodes: int = 100, render: bool = False) -> List[i
 
     # tetris-20190731-221411-nn=[32, 32]-mem=25000-bs=512-e=1 good
 
-    log_dir = 'logs/' + dir_name
+    log_dir = f'logs/{dir_name}'
 
     # load_model
     agent.model = load_model(f'{log_dir}/model.hdf')
@@ -36,12 +36,14 @@ def run_eval(dir_name: str, episodes: int = 100, render: bool = False) -> List[i
             next_states = env.get_next_states()
             best_state = agent.best_state(next_states.values())
 
-            # find the action, that corresponds to the best state
-            best_action = None
-            for action, state in next_states.items():
-                if state == best_state:
-                    best_action = action
-                    break
+            best_action = next(
+                (
+                    action
+                    for action, state in next_states.items()
+                    if state == best_state
+                ),
+                None,
+            )
             _, done = env.hard_drop([best_action[0], 0], best_action[1], render=render)
         scores.append(env.score)
         # print results at the end of the episode

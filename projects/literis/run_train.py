@@ -57,20 +57,21 @@ def dqn(conf: AgentConf):
         steps = 0
 
         # update render flag
-        render = True if conf.render_every and episode % conf.render_every == 0 else False
+        render = bool(conf.render_every and episode % conf.render_every == 0)
 
         # game
         while not done and (not conf.max_steps or steps < conf.max_steps):
             next_states = env.get_next_states()
             best_state = agent.best_state(next_states.values())
 
-            # find the action, that corresponds to the best state
-            best_action = None
-            for action, state in next_states.items():
-                if state == best_state:
-                    best_action = action
-                    break
-
+            best_action = next(
+                (
+                    action
+                    for action, state in next_states.items()
+                    if state == best_state
+                ),
+                None,
+            )
             reward, done = env.hard_drop([best_action[0], 0], best_action[1], render=render)
 
             agent.add_to_memory(current_state, next_states[best_action], reward, done)
