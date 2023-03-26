@@ -1,2 +1,2 @@
-mekanically:
-  - 'modpacks/mekanically/**'
+mekanically: 'modpacks/mekanically/**'
+lightmekanically: 'modpacks/lightmekanically/**'
