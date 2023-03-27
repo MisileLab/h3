@@ -2,7 +2,7 @@ hash-format = "sha256"
 
 [[files]]
 file = "README.md"
-hash = "5672d49c111d2951967cc3d552efdcee4817f42dbfdbeca289469eed7f7d0dfb"
+hash = "d2c4801b482d2bdafc015b161806f646a640a1ccaf5dbc6ae7b54cc6f398714a"
 
 [[files]]
 file = "mods/advanced-peripherals.pw.toml"
@@ -296,7 +296,7 @@ metafile = true
 
 [[files]]
 file = "mods/ftb-library-forge.pw.toml"
-hash = "30800f89601d48dda6a2fe21505f116b4b7c04460f6c0b9cf0f1b8f195380361"
+hash = "83f64bcfc2c9bb8b1ac7f6ba15008f00e91ec8ff2184d93a5100595326f4c398"
 metafile = true
 
 [[files]]
