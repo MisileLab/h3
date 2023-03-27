@@ -6,7 +6,7 @@ from datetime import datetime
 from statistics import mean
 from logs import CustomTensorBoard
 from tqdm import tqdm
-from keras.engine.saving import save_model
+from tf.keras.saving import save_model
 
 
 class AgentConf:
