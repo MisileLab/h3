@@ -13,6 +13,7 @@ download mrpack or curseforge zip in github actions
 
 - Mekanically Series
   - LightMekanically
+  - Mekanically: Above (aMekanically)
 
 ### LTS
 

@@ -166,7 +166,7 @@ metafile = true
 
 [[files]]
 file = "mods/create-enchantment-industry.pw.toml"
-hash = "ca4889c9c49d2a4846bb8d5574106233e283b2b08a6c6db567a2d9c2574c0ca4"
+hash = "103f38ff8da598842fd8846283100c87bc176a7a896a6f1352b2314eac9f5ca1"
 metafile = true
 
 [[files]]
@@ -341,7 +341,7 @@ metafile = true
 
 [[files]]
 file = "mods/forgeendertech.pw.toml"
-hash = "55755805129be271431a23232d8550a9e4eb186aa08791e564443bae4171273c"
+hash = "9b1f97e0a890618404ebeb1821cf9cf366c8869b958a516cf4d5f6b8d2e6d910"
 metafile = true
 
 [[files]]
@@ -351,7 +351,7 @@ metafile = true
 
 [[files]]
 file = "mods/ftb-essentials-forge.pw.toml"
-hash = "912bd5a6d70962c2c310a224f59941d462f188822d930227504486c4601ae4c9"
+hash = "b49c26a15abf81d01b5fb7e72ad115c939c38caeafed80f055dba1653d8e6484"
 metafile = true
 
 [[files]]
