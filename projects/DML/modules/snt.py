@@ -1,9 +1,9 @@
 from disnake.ext.commands import Cog, Bot, slash_command
-from disnake import ApplicationCommandInteraction, SelectOption, MessageInteraction
+from disnake import ApplicationCommandInteraction, MessageInteraction
 from disnake.ui import StringSelect, View
 from tomli import load
 from requests import get
-from datetime import datetime
+from datetime import datetime, timedelta
 
 config = load(open("config.toml", "rb"))
 sunrin_ids = config["TEST_GUILDS"]
@@ -53,11 +53,19 @@ class SNTModule(Cog):
     
     @slash_command(name="today", guild_ids=sunrin_ids)
     async def today(self, inter: ApplicationCommandInteraction):
-        await inter.send("\n".join(self.meal_backend()[0]["DISH"].split("<br/>")))
+        _data = self.validate(self.meal_backend())
+        if _data is None:
+            await inter.send("오늘의 급식은 없습니다.")
+        else:
+            await inter.send("\n".join(_data["DISH"].split("<br/>")))
     
     @slash_command(name="tomorrow", guild_ids=sunrin_ids)
     async def tomorrow(self, inter: ApplicationCommandInteraction):
-        await inter.send("\n".join(self.meal_backend()[1]["DISH"].split("<br/>")))
+        _data = self.validate(self.meal_backend(), 1)
+        if _data is None:
+            await inter.send("내일의 급식은 없습니다.")
+        else:
+            await inter.send("\n".join(_data["DISH"].split("<br/>")))
     
     def meal_backend(self) -> list[dict]:
         config = load(open("config.toml", "rb"))
@@ -71,6 +79,13 @@ class SNTModule(Cog):
         resp = get(f"https://open.neis.go.kr/hub/mealServiceDietInfo?ATPT_OFCDC_SC_CODE=B10&KEY={config['NEISAPIKEY']}&SD_SCHUL_CODE=7010536&TYPE=json&MLSV_FROM_YMD={date.year}{_month}{_day}")
         resp.raise_for_status()
         return [{"MLSV_YMD": i["MLSV_FROM_YMD"], "DISH": i["DDISH_NM"]} for i in resp.json()["mealServiceDietInfo"][1]['row']]
+
+    def validate(self, datas: list[dict], day: int=0) -> dict | None:
+        _cache = (datetime.now() + timedelta(days=day)).strftime("%Y%m%d")
+        for i in datas:
+            if i["MLSV_YMD"] == _cache:
+                return i
+        return None
 
 def setup(self: Bot):
     self.add_cog(SNTModule(self))
