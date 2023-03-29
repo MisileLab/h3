@@ -82,10 +82,7 @@ class SNTModule(Cog):
 
     def validate(self, datas: list[dict], day: int=0) -> dict | None:
         _cache = (datetime.now() + timedelta(days=day)).strftime("%Y%m%d")
-        for i in datas:
-            if i["MLSV_YMD"] == _cache:
-                return i
-        return None
+        return next((i for i in datas if i["MLSV_YMD"] == _cache), None)
 
 def setup(self: Bot):
     self.add_cog(SNTModule(self))
