@@ -5,8 +5,22 @@ from bojapi import BaekjoonProb
 from tomli import loads
 from sys import argv
 from misilelibpy import read_once
+from difflib import unified_diff
+from os import _exit
 
 runs = 1
+
+def _unidiff_output(expected, actual):
+    """
+    Helper function. Returns a string containing the unified diff of two multiline strings.
+    """
+
+    expected = list(expected.split('\n'))
+    actual=actual.splitlines(1)
+
+    diff=unified_diff(expected, actual)
+
+    return ''.join(diff)
 
 langlist = [".py", ".rb", ".c", ".cpp"]
 a = loads(read_once('test.toml'))
@@ -25,8 +39,6 @@ except IndexError:
     pass
 else:
     flist = [argv[1]]
-d = []
-g = []
 
 for i, i2 in enumerate(flist):
     print(i2)
@@ -64,15 +76,10 @@ for i, i2 in enumerate(flist):
             outpu = output.replace('\r', '')
             if outp not in [outpu.removesuffix('\n'), outpu] and outp.strip("\n") not in [outpu.removesuffix('\n'), outpu]:
                 print(f"{i3['command']} does not match with {output} so failed")
-                g.append(i3['command'])
+                print(_unidiff_output(output, outpu))
+                _exit(1)
             elif i3['times'][0] > bjp.time_limit:
                 print(f"{i3['command']} took {i3['times'][0]} seconds, which is more than {bjp.time_limit} seconds, so test failed")
-                d.append(i3['command'])
+                _exit(1)
             else:
                 print(f"{i3['command']} took {i3['times'][0]} seconds, which is less than {bjp.time_limit} seconds, so test passed")
-
-for i in d:
-    print(f"Test failed by time - {i}")
-
-for i in g:
-    print(f"Test failed by output - {i}")
