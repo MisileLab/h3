@@ -9,7 +9,7 @@ terraform {
   required_providers {
     coder = {
       source  = "coder/coder"
-      version = "0.6.23"
+      version = "0.7.0"
     }
     docker = {
       source  = "kreuzwerker/docker"
