@@ -9,15 +9,20 @@ download mrpack or curseforge zip in github actions
 - SLTS (Semi-Long-term support, discontinued any days, but maybe has update)
 - Discontinued (discontinued, no support)
 
+### Planned
+
+- Mekanically Series
+  - AMekanically (Mekanically: Above)
+
 ### Active
 
 - Mekanically Series
-  - LightMekanically
-  - Mekanically: Above (aMekanically)
+  - Not now
 
 ### LTS
 
 - Mekanically
+- LightMekanically
 
 ### Discontinued
 
