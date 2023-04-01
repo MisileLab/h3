@@ -1,13 +1,13 @@
 name = "Emotecraft"
-filename = "emotecraft-for-MC1.19.3-2.2.7-b.build.47-fabric.jar"
+filename = "emotecraft-for-MC1.19.4-2.2.7-b.build.48-fabric.jar"
 side = "both"
 
 [download]
-url = "https://cdn.modrinth.com/data/pZ2wrerK/versions/LVl8YFvF/emotecraft-for-MC1.19.3-2.2.7-b.build.47-fabric.jar"
+url = "https://cdn.modrinth.com/data/pZ2wrerK/versions/8usSPO0G/emotecraft-for-MC1.19.4-2.2.7-b.build.48-fabric.jar"
 hash-format = "sha1"
-hash = "59aaf5604d9a169c6ef3418a7bcf9be45b050c7a"
+hash = "fc1d08ee98bd39999f812df214fc3b75c0c0afee"
 
 [update]
 [update.modrinth]
 mod-id = "pZ2wrerK"
-version = "LVl8YFvF"
+version = "8usSPO0G"

@@ -1,13 +1,13 @@
 name = "TP Utils"
-filename = "TP-Utils-1.6.15-mc1.19.3.jar"
+filename = "TP-Utils-1.6.16-mc1.19.4.jar"
 side = "client"
 
 [download]
-url = "https://cdn.modrinth.com/data/vCk0Q3ZG/versions/l5NRQg4w/TP-Utils-1.6.15-mc1.19.3.jar"
+url = "https://cdn.modrinth.com/data/vCk0Q3ZG/versions/eO3UQdSS/TP-Utils-1.6.16-mc1.19.4.jar"
 hash-format = "sha1"
-hash = "1b471a658d406bd65a1c0859878f4c445103946b"
+hash = "2ebe25ed408b3fb88a4d9cfc6dcf79f224e4767f"
 
 [update]
 [update.modrinth]
 mod-id = "vCk0Q3ZG"
-version = "l5NRQg4w"
+version = "eO3UQdSS"

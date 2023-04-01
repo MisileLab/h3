@@ -1,13 +1,13 @@
 name = "CreativeCore"
-filename = "CreativeCore_FABRIC_v2.10.4_mc1.19.3.jar"
+filename = "CreativeCore_FABRIC_v2.10.7_mc1.19.4.jar"
 side = "both"
 
 [download]
-url = "https://cdn.modrinth.com/data/OsZiaDHq/versions/NBWDWypC/CreativeCore_FABRIC_v2.10.4_mc1.19.3.jar"
+url = "https://cdn.modrinth.com/data/OsZiaDHq/versions/AWyxmFgr/CreativeCore_FABRIC_v2.10.7_mc1.19.4.jar"
 hash-format = "sha1"
-hash = "86e270ac4998ff5bd383c8723e7f8bc1a7e16050"
+hash = "570afe4ee370618304ad7cd0c92605180a1d4cf9"
 
 [update]
 [update.modrinth]
 mod-id = "OsZiaDHq"
-version = "NBWDWypC"
+version = "AWyxmFgr"

@@ -1,13 +1,13 @@
 name = "More Berries"
-filename = "moreberries-1.5.2.jar"
+filename = "moreberries-1.5.4.jar"
 side = "both"
 
 [download]
-url = "https://cdn.modrinth.com/data/e3oX6jdP/versions/muxUmqD7/moreberries-1.5.2.jar"
+url = "https://cdn.modrinth.com/data/e3oX6jdP/versions/HQ9FPDLI/moreberries-1.5.4.jar"
 hash-format = "sha1"
-hash = "9096ef2972ce202a07aeae95f974becb355c5fd9"
+hash = "e7ece776e2dba1b25b3bbe0431a7fe9c1e21754a"
 
 [update]
 [update.modrinth]
 mod-id = "e3oX6jdP"
-version = "muxUmqD7"
+version = "HQ9FPDLI"

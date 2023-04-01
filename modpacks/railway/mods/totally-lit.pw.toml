@@ -1,13 +1,13 @@
 name = "Totally Lit"
-filename = "totally_lit-0.13.0+1.19.3.jar"
+filename = "totally_lit-0.13.1+1.19.4.jar"
 side = "both"
 
 [download]
-url = "https://cdn.modrinth.com/data/hbKDMT6l/versions/kfqSTXzZ/totally_lit-0.13.0%2B1.19.3.jar"
+url = "https://cdn.modrinth.com/data/hbKDMT6l/versions/juNcKfun/totally_lit-0.13.1%2B1.19.4.jar"
 hash-format = "sha1"
-hash = "7fbd5dbe060cd3715d7c7147e6293b315cdc58dc"
+hash = "5ef8e0cea16839f3e85c2cf489c1dfe5a860d157"
 
 [update]
 [update.modrinth]
 mod-id = "hbKDMT6l"
-version = "kfqSTXzZ"
+version = "juNcKfun"

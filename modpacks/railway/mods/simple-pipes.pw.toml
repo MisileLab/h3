@@ -1,13 +1,13 @@
 name = "Simple Pipes"
-filename = "simplepipes-all-0.9.0.jar"
+filename = "simplepipes-all-0.10.0-sources.jar"
 side = "both"
 
 [download]
-url = "https://cdn.modrinth.com/data/ls90k6B8/versions/DBYZxHUt/simplepipes-all-0.9.0.jar"
+url = "https://cdn.modrinth.com/data/ls90k6B8/versions/VULPxkIF/simplepipes-all-0.10.0-sources.jar"
 hash-format = "sha1"
-hash = "61223e4c6dbb579f18d4f0b51c12664709de3636"
+hash = "695baf52767467f929adea4ad6b241e497a3bc62"
 
 [update]
 [update.modrinth]
 mod-id = "ls90k6B8"
-version = "DBYZxHUt"
+version = "VULPxkIF"
