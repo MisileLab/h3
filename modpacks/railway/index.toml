@@ -173,11 +173,6 @@ hash = "47aa880171caf9c12c8db015cba01ed578bf126939f5de8f50f51be873c395d8"
 metafile = true
 
 [[files]]
-file = "mods/carpet-fixes.pw.toml"
-hash = "02d0411a37057bdb234f75c2063cdcbc3a37b84d8aa3c2f5aa67ec814352accb"
-metafile = true
-
-[[files]]
 file = "mods/carpet.pw.toml"
 hash = "9f787016e772d10343a5d1ffcc30019a722659e6e7c9f658407d354283b24286"
 metafile = true
@@ -393,11 +388,6 @@ hash = "f573cac2ec9cd88456c545e177753791c91a38ba0a46c4ad4c87e5a7878664ea"
 metafile = true
 
 [[files]]
-file = "mods/lanterns-bow.pw.toml"
-hash = "3e1e354c8cd95de6d564eb8a6ad541f9bf34213514861e969a12da311a5a8768"
-metafile = true
-
-[[files]]
 file = "mods/laser-bridges-and-doors.pw.toml"
 hash = "9472c9550a27a59ba5b5a17a071819fe2a36c8e8295185ab9d14049ce8451c30"
 metafile = true
@@ -513,11 +503,6 @@ hash = "817607c316fb5464af3a3362453df55e18fd16a14f32eb1e7b5449edb866cd84"
 metafile = true
 
 [[files]]
-file = "mods/pingspam.pw.toml"
-hash = "ce73d325e95d50521ac82b8c3f6856e608c3ceaf7f83fa058a7d2abfa1ebd2c1"
-metafile = true
-
-[[files]]
 file = "mods/prefab.pw.toml"
 hash = "db2cf1df271df171ce4f8a4eaaadfc19c77e5b1d74de9b9934678ccfd8bc5120"
 metafile = true
@@ -598,11 +583,6 @@ hash = "c85562edf658382d32f0e7a18a0c20829c91c63311e5da7a4a6b505bdf4a2105"
 metafile = true
 
 [[files]]
-file = "mods/simple-pipes.pw.toml"
-hash = "9050f2a722e942d7aac7f9a6fbec0b96e3267b0edb41af8e59fea3b6e828e366"
-metafile = true
-
-[[files]]
 file = "mods/simple-voice-chat.pw.toml"
 hash = "727534a2df2335f87451a4a277524c35856c0e0272cc4ee7b1e7c4a47147dc22"
 metafile = true
@@ -640,11 +620,6 @@ metafile = true
 [[files]]
 file = "mods/starlight.pw.toml"
 hash = "fc45b583ec8ca686b666c2cdaaab32c2dc013ce491bfbffa4b5fc20b4c758a70"
-metafile = true
-
-[[files]]
-file = "mods/statement.pw.toml"
-hash = "84092b7e65a95cd92d5a43bc9b4bd7a5ac324728e33ccd7c541da501d045d605"
 metafile = true
 
 [[files]]
@@ -715,11 +690,6 @@ metafile = true
 [[files]]
 file = "mods/wavey-capes.pw.toml"
 hash = "ecf0c6a4e1ea923de5149d8fbceb63c2030d9d89385c08289483695d012f5568"
-metafile = true
-
-[[files]]
-file = "mods/wireless-redstone.pw.toml"
-hash = "f8de9c989d3844a9f11f0153a30b5e07121501a676d9791d3e5ca070b6504725"
 metafile = true
 
 [[files]]
