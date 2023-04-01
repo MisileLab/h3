@@ -9,4 +9,5 @@ Train Construct modpack, not survival
 ## Planned
 - Create for fabric (no 1.19.3)
 - cc:c bridge (no 1.19.3)
+- adorn, cc: restitched (crash)
 

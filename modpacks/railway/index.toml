@@ -73,11 +73,6 @@ file = "config/vmp.properties"
 hash = "0d0549563aca08c87a22a9fd862cc6e7a9906f2d6fca84dcbfa7cbec14dff7e6"
 
 [[files]]
-file = "mods/adorn.pw.toml"
-hash = "950e49a84c05b84dc02814b028f26bce1f70d6022fe829d82daf36ba78e5f78b"
-metafile = true
-
-[[files]]
 file = "mods/advanced-networking.pw.toml"
 hash = "92f1bb152f862463bbedec709d181a395c0481a68c21be1616b3283d05c08bbb"
 metafile = true
@@ -115,16 +110,6 @@ metafile = true
 [[files]]
 file = "mods/audioplayer.pw.toml"
 hash = "9170bb8ae69d7a7ea46c26c9b19bf0ee6a70ffa01d07f740cb626f9c2f237c91"
-metafile = true
-
-[[files]]
-file = "mods/awesome-core.pw.toml"
-hash = "c2368b05ff2cbf55747732a9f2f599151cfdac52d9a1dc5e0a3f0d12fc3a80f9"
-metafile = true
-
-[[files]]
-file = "mods/awesome-machines.pw.toml"
-hash = "680a67a7fdb72123b00f8dafea3d5b6bf44a9affed70de6cc9f57fb196d83800"
 metafile = true
 
 [[files]]
@@ -178,11 +163,6 @@ hash = "9f787016e772d10343a5d1ffcc30019a722659e6e7c9f658407d354283b24286"
 metafile = true
 
 [[files]]
-file = "mods/cc-restitched.pw.toml"
-hash = "ae1acb8953c30ac121915e22913c8905c3a7d5f9fa4d7650abff16049c83d6ee"
-metafile = true
-
-[[files]]
 file = "mods/cem.pw.toml"
 hash = "2393668f05c9062f95075532c112a18df9d328996a34ad527411540fc07a42b7"
 metafile = true
@@ -190,11 +170,6 @@ metafile = true
 [[files]]
 file = "mods/chatwalk.pw.toml"
 hash = "986a8945058c4f7a36bb880be736fb48fc68cb83a24e716419104a4cb0cf975d"
-metafile = true
-
-[[files]]
-file = "mods/cheese.pw.toml"
-hash = "0983e26d6b517cd40e38f0d9ce5e12d3edd3e8f03f5b44f2022b8ca17d9689e6"
 metafile = true
 
 [[files]]
@@ -233,11 +208,6 @@ hash = "9ec56a224c0b32ae551909bbdabec0f87194682c3e498edda5d53d4a0dac314c"
 metafile = true
 
 [[files]]
-file = "mods/crafty-cuisine.pw.toml"
-hash = "23589c5c78966a131f514d846bdd4ea0d5543762bc16b0e6f181713d418a4129"
-metafile = true
-
-[[files]]
 file = "mods/creativecore.pw.toml"
 hash = "72873c61a1d442362ef1c7ccdccbdde6f01587484fafeabe9e8b6c84dad81c26"
 metafile = true
@@ -255,11 +225,6 @@ metafile = true
 [[files]]
 file = "mods/eating-animation.pw.toml"
 hash = "94b0c6f25c512431b6b9d6b305d39c2dbd84588e7fc3ce68e5b1ce4675aae46d"
-metafile = true
-
-[[files]]
-file = "mods/ebe.pw.toml"
-hash = "5d0871bb4dbf85c494447188feb58adb122c61f5f551a0239e6268d7c0327876"
 metafile = true
 
 [[files]]
@@ -448,11 +413,6 @@ hash = "9966fa77d57235f7460b84632e7b89188b2944787f23214f87a10908f5aed867"
 metafile = true
 
 [[files]]
-file = "mods/more-berries.pw.toml"
-hash = "1625a172518682115ecb1c77d14a93badd2d7db3f10445a4c92413e909e636c1"
-metafile = true
-
-[[files]]
 file = "mods/moreculling.pw.toml"
 hash = "b181531817e2f079d5ac74f78c410d7e978d18c111a81b38a29bb3809102291d"
 metafile = true
@@ -500,11 +460,6 @@ metafile = true
 [[files]]
 file = "mods/ping-wheel.pw.toml"
 hash = "817607c316fb5464af3a3362453df55e18fd16a14f32eb1e7b5449edb866cd84"
-metafile = true
-
-[[files]]
-file = "mods/prefab.pw.toml"
-hash = "db2cf1df271df171ce4f8a4eaaadfc19c77e5b1d74de9b9934678ccfd8bc5120"
 metafile = true
 
 [[files]]
@@ -565,11 +520,6 @@ metafile = true
 [[files]]
 file = "mods/roughly-enough-trades.pw.toml"
 hash = "44743a46e6f1af55144f3fcc91005499757cba9c34122ed759ae0bcde2ed5bb4"
-metafile = true
-
-[[files]]
-file = "mods/roughly-searchable.pw.toml"
-hash = "c9f8c764916df95c23fa7fa09738078d275d31f435f9e7a19e2b4b07952f9b58"
 metafile = true
 
 [[files]]
