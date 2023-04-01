@@ -6,7 +6,7 @@
 	url = https://gith.misilelaboratory.xyz/misilelib.git:/misilelib-python.git
 [submodule "modpacks/basemodpack"]
 	path = modpacks/basemodpack
-	url = https://gith.misilelaboratory.xyz/additiveplus.git:/versions/fabric/1.19.3.git
+	url = https://gith.misilelaboratory.xyz/additiveplus.git:/versions/fabric/1.19.4.git
 [submodule "projects/h4"]
 	path = projects/h4
 	url = https://gitlab.com/misilelab/h4.git
