@@ -1,0 +1,13 @@
+name = "Laser Bridges & Doors"
+filename = "laserbridges-1.19.3-1.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/wz31BboV/versions/KlR9ICht/laserbridges-1.19.3-1.jar"
+hash-format = "sha1"
+hash = "3aa21ab6a88bdaac1c312850fbb58c6055dacfc2"
+
+[update]
+[update.modrinth]
+mod-id = "wz31BboV"
+version = "KlR9ICht"

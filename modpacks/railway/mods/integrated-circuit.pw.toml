@@ -1,0 +1,13 @@
+name = "Integrated circuit"
+filename = "integrated-circuit-1.19.3-1.1.4.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/bybyRAPl/versions/IXTT4Kmr/integrated-circuit-1.19.3-1.1.4.jar"
+hash-format = "sha1"
+hash = "e340dd2cbc8af9008284c517b21d246b0bd1613d"
+
+[update]
+[update.modrinth]
+mod-id = "bybyRAPl"
+version = "IXTT4Kmr"

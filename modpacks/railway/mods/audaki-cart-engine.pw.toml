@@ -1,0 +1,13 @@
+name = "Audaki Cart Engine"
+filename = "audaki_cart_engine--fabric-mc1.19.4--v2.0.2.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/V8qsCwta/versions/BRN3y6vQ/audaki_cart_engine--fabric-mc1.19.4--v2.0.2.jar"
+hash-format = "sha1"
+hash = "49a79e0ea46fa520b3236c2d918871f1841e686a"
+
+[update]
+[update.modrinth]
+mod-id = "V8qsCwta"
+version = "BRN3y6vQ"

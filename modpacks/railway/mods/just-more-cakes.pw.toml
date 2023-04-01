@@ -1,0 +1,13 @@
+name = "Just More Cakes"
+filename = "JustMoreCakes-fabric-1.19.3-1.7.1.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/RW7zragP/versions/tgOieSmB/JustMoreCakes-fabric-1.19.3-1.7.1.jar"
+hash-format = "sha1"
+hash = "832fa4d85f0298add77ff5d97f264bdbfb87fab8"
+
+[update]
+[update.modrinth]
+mod-id = "RW7zragP"
+version = "tgOieSmB"

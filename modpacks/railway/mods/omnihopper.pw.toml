@@ -1,0 +1,13 @@
+name = "Omni-Hopper"
+filename = "omnihopper-1.2.0+1.19.3.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/i2u9r3li/versions/fU8R4Poy/omnihopper-1.2.0%2B1.19.3.jar"
+hash-format = "sha1"
+hash = "ec200b4bb0a161ffd899fb7b85e1eef7661f31e3"
+
+[update]
+[update.modrinth]
+mod-id = "i2u9r3li"
+version = "fU8R4Poy"

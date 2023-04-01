@@ -1,0 +1,13 @@
+name = "Statement"
+filename = "Statement-4.2.5+1.14.4-1.19.3.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/a9AsUNGn/versions/50RHZFfv/Statement-4.2.5%2B1.14.4-1.19.3.jar"
+hash-format = "sha1"
+hash = "280d6ce83ba92c19fc71c154bb69c51a4ed7158e"
+
+[update]
+[update.modrinth]
+mod-id = "a9AsUNGn"
+version = "50RHZFfv"

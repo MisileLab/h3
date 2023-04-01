@@ -1,0 +1,13 @@
+name = "Melon Wireless Redstone"
+filename = "wireless-redstone-mc1.19.3-3.0.2+build.27.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/I8Go3rfs/versions/HzCM7EhI/wireless-redstone-mc1.19.3-3.0.2%2Bbuild.27.jar"
+hash-format = "sha1"
+hash = "090e5c3a255d20984c8f34591786f3da64ce23b8"
+
+[update]
+[update.modrinth]
+mod-id = "I8Go3rfs"
+version = "HzCM7EhI"

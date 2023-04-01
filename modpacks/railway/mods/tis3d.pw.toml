@@ -1,0 +1,13 @@
+name = "TIS-3D"
+filename = "tis3d-MC1.19.3-fabric-1.7.2+7851f43.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/L23x7zL8/versions/TwBXkifS/tis3d-MC1.19.3-fabric-1.7.2%2B7851f43.jar"
+hash-format = "sha1"
+hash = "14ec6c7d5c7d8beb55fb05fbf2422dfed02016a6"
+
+[update]
+[update.modrinth]
+mod-id = "L23x7zL8"
+version = "TwBXkifS"

@@ -1,0 +1,13 @@
+name = "Faster Crouching"
+filename = "fastercrouching-1.19.3-2.1.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/lgEczyrc/versions/cAZfLDUC/fastercrouching-1.19.3-2.1.jar"
+hash-format = "sha1"
+hash = "4c8e57a035dad49622661e4d2d6507b6eae53c27"
+
+[update]
+[update.modrinth]
+mod-id = "lgEczyrc"
+version = "cAZfLDUC"
