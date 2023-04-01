@@ -248,11 +248,6 @@ hash = "72873c61a1d442362ef1c7ccdccbdde6f01587484fafeabe9e8b6c84dad81c26"
 metafile = true
 
 [[files]]
-file = "mods/cyberanner-ironchest.pw.toml"
-hash = "099100b9e5acfe0937abae91dc3e754075653f58c8615249280f2040b7b6080e"
-metafile = true
-
-[[files]]
 file = "mods/dark-loading-screen.pw.toml"
 hash = "ffcd22c001bb119abc9242031b3498c8bf2d43a4a0fa58458f8ca6167e205af7"
 metafile = true
@@ -388,11 +383,6 @@ hash = "f686311201a7a46d392bff8e1df8c21b161ce2283b2927f0ae9b0c71857fa830"
 metafile = true
 
 [[files]]
-file = "mods/just-more-cakes.pw.toml"
-hash = "a16be3a12bada5c3d634b982b57a1ac78d2b5c9e9567f3f6ef05171d5fc2bd52"
-metafile = true
-
-[[files]]
 file = "mods/krypton.pw.toml"
 hash = "ef2f37f8f7eb3481d6d379b54b6607fc7e2b51be0a8fabeccdb0e39ae01cba0c"
 metafile = true
@@ -510,11 +500,6 @@ metafile = true
 [[files]]
 file = "mods/owo-lib.pw.toml"
 hash = "f403c771795282b22ded95a62cca193f0561ff3c4d7ca6803a5e4f53618c38cd"
-metafile = true
-
-[[files]]
-file = "mods/pack-it-up.pw.toml"
-hash = "6268b742f9fe4fae6c50a08478a955c477107dbc9687a13381161fb67d9dbf9e"
 metafile = true
 
 [[files]]
@@ -730,11 +715,6 @@ metafile = true
 [[files]]
 file = "mods/wavey-capes.pw.toml"
 hash = "ecf0c6a4e1ea923de5149d8fbceb63c2030d9d89385c08289483695d012f5568"
-metafile = true
-
-[[files]]
-file = "mods/wets.pw.toml"
-hash = "f020ee876038b4b29a9fff822aaf8598d7d49f7cb76b76e09a10a8d70e541271"
 metafile = true
 
 [[files]]
