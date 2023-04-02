@@ -2,7 +2,7 @@ hash-format = "sha256"
 
 [[files]]
 file = "README.md"
-hash = "7bc18a25e14a08bc6473738b0062d342f2bcb6de643a9c8bbb3b504940550066"
+hash = "c311d0bb3b540a4a4b66fd36bc58f25fb187fd6b6a17e6f0406238957db9420b"
 
 [[files]]
 file = "config/c2me.toml"
@@ -34,7 +34,7 @@ hash = "1dc6a3aef057f6d08a802abba3c64af5d604078059787da31d253544c67e8904"
 
 [[files]]
 file = "config/fastload.properties"
-hash = "6e1454a7ef9b7ad494597928f04803db572cccc804027ad4f7f10205bf09bf98"
+hash = "61d20c951eee5418cafbc19c811a82dad1d019a2c86a764209b681bd6319a49a"
 
 [[files]]
 file = "config/ferritecore.mixin.properties"
@@ -42,7 +42,7 @@ hash = "1e0ba1e744212f481d857e2c864104eb8853a825f6557874b739763e208f7e59"
 
 [[files]]
 file = "config/isxander-main-menu-credits.json"
-hash = "2be6a9d9492834668b2bc88735d01820476a6c08d7367be6f29aba26dbdb07bc"
+hash = "499c0071facdbdc6ae7faaf4562df8a0f2803c436f8242877ef687bbeaf9091d"
 
 [[files]]
 file = "config/lambdabettergrass.toml"
@@ -154,7 +154,7 @@ metafile = true
 
 [[files]]
 file = "mods/capes.pw.toml"
-hash = "47aa880171caf9c12c8db015cba01ed578bf126939f5de8f50f51be873c395d8"
+hash = "83d8a8865dfe81276fabc0c7085106a760608c0a3d569716fc77b3d0cb4d4c0d"
 metafile = true
 
 [[files]]
@@ -534,7 +534,7 @@ metafile = true
 
 [[files]]
 file = "mods/simple-voice-chat.pw.toml"
-hash = "727534a2df2335f87451a4a277524c35856c0e0272cc4ee7b1e7c4a47147dc22"
+hash = "8d5da2bdd598ae31db7049b137748e0b1f35e747f452fef285155e28aa12cb9d"
 metafile = true
 
 [[files]]

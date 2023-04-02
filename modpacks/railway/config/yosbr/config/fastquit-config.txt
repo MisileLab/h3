@@ -1,0 +1,1 @@
+../../../../basemodpack/config/yosbr/config/fastquit-config.txt

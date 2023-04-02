@@ -341,7 +341,7 @@ metafile = true
 
 [[files]]
 file = "mods/forgeendertech.pw.toml"
-hash = "9b1f97e0a890618404ebeb1821cf9cf366c8869b958a516cf4d5f6b8d2e6d910"
+hash = "2ff66f058471ccddd7ce1d07cd733d00234eba97b54385ea6c9f2ef7f4bcc6cb"
 metafile = true
 
 [[files]]
@@ -541,7 +541,7 @@ metafile = true
 
 [[files]]
 file = "mods/pluto.pw.toml"
-hash = "b341fd8fba1905b7cab64f9c5b85d205bcb5e16b3d1b6097a0b5ae7ed7895646"
+hash = "d157980f6e4b7a62b870b9a86aafb8f07342800a6ffcffb945567c6b5203af2e"
 metafile = true
 
 [[files]]
@@ -576,7 +576,7 @@ metafile = true
 
 [[files]]
 file = "mods/rubidium.pw.toml"
-hash = "dc1ace4b702d5953b4ff5aac59572a9fc03d077aee3c0d407db17a8f768f5268"
+hash = "fb77d538004a30c70e644413abce31a9b72edaeaf6baad799129039717d8a8b4"
 metafile = true
 
 [[files]]
