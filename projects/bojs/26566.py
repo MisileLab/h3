@@ -6,8 +6,9 @@ for i in [
 ]:
     w1, w2 = i[0]
     s1, s2 = i[1]
-    r = ((s1 / (2 * pi)) ** 2 * pi) / s2
+    r = pi * (s1 ** 2) / s2
     r2 = w1 / w2
-    print((s1 / (2 * pi)) ** 2 * pi)
-    print(r2)
-    print(r)
+    if r < r2:
+        print("Slice of pizza")
+    else:
+        print("Whole pizza")
