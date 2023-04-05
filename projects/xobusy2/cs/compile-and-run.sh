@@ -1,3 +1,3 @@
-clang -O2 -pipe $1.c -o a.out
+clang -O2 -pipe $1.c -o $1.out
 echo compiled
-./a.out
+./$1.out
