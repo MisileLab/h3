@@ -326,11 +326,6 @@ hash = "bf041b31e947a9473ad3a349b1ba5f8514bfb2cc2dfaa0f020331228107d83b5"
 metafile = true
 
 [[files]]
-file = "mods/immersive-aircraft.pw.toml"
-hash = "87ed3392161b6144dc076aa48cbbd0302152577cdfb096530b6998675c7bee9e"
-metafile = true
-
-[[files]]
 file = "mods/indium.pw.toml"
 hash = "79317bd0768bd7d84ccd9f22db1e56d4a4e8e3c351e3192f719816abfaed1b85"
 metafile = true
@@ -368,11 +363,6 @@ metafile = true
 [[files]]
 file = "mods/lazydfu.pw.toml"
 hash = "3ffe2388740cc111a332082f56e37bb4b95764035dfe5d6dff81db8a35d4cc4d"
-metafile = true
-
-[[files]]
-file = "mods/linked-storage.pw.toml"
-hash = "1e6d99b9473d1e71420c269a293d02a305acde9d31e247e1b155e603993d6b21"
 metafile = true
 
 [[files]]
@@ -608,11 +598,6 @@ metafile = true
 [[files]]
 file = "mods/traverse.pw.toml"
 hash = "1a1fe77a77f1eca3924e372b930f3fdfcbe65dbee2779cf54c86baece94ba354"
-metafile = true
-
-[[files]]
-file = "mods/universal-shops.pw.toml"
-hash = "549b98fd03930029c20d579b3a33a1c8ab36ceddd1334e85f1a4fe7897c6fa11"
 metafile = true
 
 [[files]]
