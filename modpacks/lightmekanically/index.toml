@@ -181,7 +181,7 @@ metafile = true
 
 [[files]]
 file = "mods/createaddition.pw.toml"
-hash = "f34f82264fa68b8835a32e8f6ed507bd1cd2944a10cc566358ae2351e7b29437"
+hash = "4ea348ef14422e5621c08e7abab0cc5114c238f9fd340afaf4372b58596e0d24"
 metafile = true
 
 [[files]]
@@ -316,7 +316,7 @@ metafile = true
 
 [[files]]
 file = "mods/immersive-portals-for-forge.pw.toml"
-hash = "be6305aed53d7e919f1459fc85f2d6ed3a7dbb995412e940c5f09eb3a1cbf1ad"
+hash = "77293e2b9d9f7d856bd923fdefe228c1e6afd93c3c2547e23a8d8822748514e0"
 metafile = true
 
 [[files]]
@@ -346,7 +346,7 @@ metafile = true
 
 [[files]]
 file = "mods/journeymap.pw.toml"
-hash = "cd4aeeb3c7eb8f29f5c07d9a74f70d14311e1d6093633a2d4b5c926c931ee0e5"
+hash = "d5e3f7a5eabe0f06a6ef5bbd5ccb3ef787fd4cceb3e018d0735475d48e7b4b34"
 metafile = true
 
 [[files]]
@@ -376,7 +376,7 @@ metafile = true
 
 [[files]]
 file = "mods/mcjtylib.pw.toml"
-hash = "5d19b19a26583060c8923c080f04fd3486caab8a8d3754f86cae06513d6f3cf3"
+hash = "0d36f901d6a97ccaa3394494d0f2dcdef118e15a707450b4bb7a839f64c51e47"
 metafile = true
 
 [[files]]
