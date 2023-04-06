@@ -7,7 +7,7 @@ license = "MisileLab License"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "3.11.2"
+python = "3.11.3"
 tomli = "2.0.1"
 requests = "2.28.2"
 baekjoonapi = {git = "https://github.com/MisileLab/baekjoonapi.git"}
