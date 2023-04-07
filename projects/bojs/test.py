@@ -5,22 +5,35 @@ from bojapi import BaekjoonProb
 from tomli import loads
 from sys import argv
 from misilelibpy import read_once
-from difflib import unified_diff
+from difflib import SequenceMatcher
 from os import _exit
 
 runs = 1
 
-def _unidiff_output(expected, actual):
-    """
-    Helper function. Returns a string containing the unified diff of two multiline strings.
-    """
+def diff_strings(a: str, b: str, *, use_loguru_colors: bool = False) -> str:
+    output = []
+    matcher = SequenceMatcher(None, a, b)
+    if use_loguru_colors:
+        green = '<GREEN><black>'
+        red = '<RED><black>'
+        endgreen = '</black></GREEN>'
+        endred = '</black></RED>'
+    else:
+        green = '\x1b[38;5;16;48;5;2m'
+        red = '\x1b[38;5;16;48;5;1m'
+        endgreen = '\x1b[0m'
+        endred = '\x1b[0m'
 
-    expected = list(expected.split('\n'))
-    actual=actual.splitlines(1)
-
-    diff=unified_diff(expected, actual)
-
-    return ''.join(diff)
+    for opcode, a0, a1, b0, b1 in matcher.get_opcodes():
+        if opcode == 'delete':
+            output.append(f'{red}{a[a0:a1]}{endred}')
+        elif opcode == 'equal':
+            output.append(a[a0:a1])
+        elif opcode == 'insert':
+            output.append(f'{green}{b[b0:b1]}{endgreen}')
+        elif opcode == 'replace':
+            output.extend((f'{green}{b[b0:b1]}{endgreen}', f'{red}{a[a0:a1]}{endred}'))
+    return ''.join(output)
 
 langlist = [".py", ".rb", ".c", ".cpp"]
 a = loads(read_once('test.toml'))
@@ -76,7 +89,7 @@ for i, i2 in enumerate(flist):
             outpu = output.replace('\r', '')
             if outp not in [outpu.removesuffix('\n'), outpu] and outp.strip("\n") not in [outpu.removesuffix('\n'), outpu]:
                 print(f"{i3['command']} does not match with {output} so failed")
-                print(_unidiff_output(output, outpu))
+                print(diff_strings(outp, outpu))
                 _exit(1)
             elif i3['times'][0] > bjp.time_limit:
                 print(f"{i3['command']} took {i3['times'][0]} seconds, which is more than {bjp.time_limit} seconds, so test failed")
