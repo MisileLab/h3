@@ -1,1 +1,0 @@
-../../../basemodpack/config/yosbr/options.txt
