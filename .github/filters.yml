@@ -1,5 +1,1 @@
 mekanically: 'modpacks/mekanically/**'
-lightmekanically: 'modpacks/lightmekanically/**'
-railway:
-  - 'modpacks/basemodpack'
-  - 'modpacks/railway/**'
