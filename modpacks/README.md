@@ -11,19 +11,13 @@ download mrpack or curseforge zip in github actions
 
 ### Planned
 
-- Mekanically Series
-  - AMekanically (Mekanically: Above)
-
 ### Active
-
-- Mekanically Series
-  - Not now
 
 ### LTS
 
-- Mekanically
 - LightMekanically
 
 ### Discontinued
 
-- [Railway](https://github.com/MisileLab/h3/tree/489dbd9be69c3198b590559d3c8c39a6b84ded44)
+- [Mekanically](https://github.com/MisileLab/h3/tree/9dc0ddc53464b505f99ddfc7af548cf1ba9b4cdb)
+- [Railway](https://github.com/MisileLab/h3/tree/9dc0ddc53464b505f99ddfc7af548cf1ba9b4cdb)
