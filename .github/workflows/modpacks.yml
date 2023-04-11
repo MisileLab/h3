@@ -28,14 +28,25 @@ jobs:
         check-latest: true
     - run: |
         go install github.com/packwiz/packwiz@latest
-    - if: steps.changes.outputs.lightmekanically == 'true'
+    - if: steps.changes.outputs.lightmekanically == 'true' || steps.changes.outputs.modpackflow == 'true'
       run: |
         cd modpacks/lightmekanically
         packwiz curseforge export
         cd -
     - name: LightMekanically
-      if: steps.changes.outputs.lightmekanically == 'true'
+      if: steps.changes.outputs.lightmekanically == 'true' || steps.changes.outputs.modpackflow == 'true'
       uses: actions/upload-artifact@v3
       with:
         name: lightmekanically
         path: modpacks/lightmekanically/*.zip
+    - if: steps.changes.outputs.amekanically == 'true' || steps.changes.outputs.modpackflow == 'true'
+      run: |
+        cd modpacks/amekanically
+        packwiz mr export
+        cd -
+    - name: MekanicallyAbove
+      if: steps.changes.outputs.amekanically == 'true' || steps.changes.outputs.modpackflow == 'true'
+      uses: actions/upload-artifact@v3
+      with:
+        name: MekanicallyAbove
+        path: modpacks/amekanically/*.mrpack
