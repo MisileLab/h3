@@ -1,3 +1,5 @@
-modpackflow: '.github/workflows/filters.yml'
+modpackflow: |
+  '.github/filters.yml'
+  '.github/workflows/modpacks.yml'
 lightmekanically: 'modpacks/lightmekanically/**'
 mekanicallyabove: 'modpacks/amekanically/**'
