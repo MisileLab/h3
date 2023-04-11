@@ -1,0 +1,13 @@
+name = "Nether Wart Blocks to Nether Warts [Fabric/Forge]"
+filename = "netherwart-1.19.2-6-forge.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/CahyPDjh/versions/Bf9jdtps/netherwart-1.19.2-6-forge.jar"
+hash-format = "sha1"
+hash = "f8eae6fc2a69256916d45261765a7369935b8f8e"
+
+[update]
+[update.modrinth]
+mod-id = "CahyPDjh"
+version = "Bf9jdtps"

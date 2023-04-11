@@ -1,0 +1,13 @@
+name = "Factory API"
+filename = "FactoryAPI-Forge-1.19.2-0.1.1.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/nkTZHOLD/versions/xc1xZyrW/FactoryAPI-Forge-1.19.2-0.1.1.jar"
+hash-format = "sha1"
+hash = "2c4128da2e623cd6c7a4f27138daf2c5ec321d3f"
+
+[update]
+[update.modrinth]
+mod-id = "nkTZHOLD"
+version = "xc1xZyrW"

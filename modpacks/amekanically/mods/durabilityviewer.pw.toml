@@ -1,0 +1,13 @@
+name = "Durability Viewer"
+filename = "durabilityviewer-1.19.1-forge42.0.1-1.10.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/LTM1f0yY/versions/1.19.1-forge42.0.1-1.10/durabilityviewer-1.19.1-forge42.0.1-1.10.jar"
+hash-format = "sha1"
+hash = "f3ae32dcb804e382390a57a7379f0d9eb18a6f14"
+
+[update]
+[update.modrinth]
+mod-id = "LTM1f0yY"
+version = "SXIzKCm7"

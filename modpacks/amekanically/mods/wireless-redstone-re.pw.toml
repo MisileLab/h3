@@ -1,0 +1,13 @@
+name = "Wireless Redstone"
+filename = "WirelessRedstone-1.19.2-0.1.0b.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/2mBYHHZ5/versions/abFQHbtG/WirelessRedstone-1.19.2-0.1.0b.jar"
+hash-format = "sha1"
+hash = "fabd04f84767e63da0f8429c045157e32a56517d"
+
+[update]
+[update.modrinth]
+mod-id = "2mBYHHZ5"
+version = "abFQHbtG"

@@ -1,0 +1,13 @@
+name = "Better Advancements"
+filename = "BetterAdvancements-1.19.2-0.2.2.147.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/Q2OqKxDG/versions/AmRxRO80/BetterAdvancements-1.19.2-0.2.2.147.jar"
+hash-format = "sha1"
+hash = "58b1ad472710ad5898b8f30b13be43dd4d4352df"
+
+[update]
+[update.modrinth]
+mod-id = "Q2OqKxDG"
+version = "AmRxRO80"

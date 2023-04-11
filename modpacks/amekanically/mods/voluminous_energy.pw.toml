@@ -1,0 +1,13 @@
+name = "Voluminous Energy"
+filename = "VoluminousEnergy-1.19-0.4 Alpha 2a.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/FY87QDxY/versions/A07crSKO/VoluminousEnergy-1.19-0.4%20Alpha%202a.jar"
+hash-format = "sha1"
+hash = "cc1c3c95e11e837f24c9ab0a4bee0cc89cd5dac5"
+
+[update]
+[update.modrinth]
+mod-id = "FY87QDxY"
+version = "A07crSKO"

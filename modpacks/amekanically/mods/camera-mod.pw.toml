@@ -1,0 +1,13 @@
+name = "Camera Mod"
+filename = "camera-1.19.2-1.0.1.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/oiuNWinn/versions/GmRx7RYo/camera-1.19.2-1.0.1.jar"
+hash-format = "sha1"
+hash = "6267d8a57489219b118c20c54294637137fc1fd2"
+
+[update]
+[update.modrinth]
+mod-id = "oiuNWinn"
+version = "GmRx7RYo"

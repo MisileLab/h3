@@ -1,0 +1,13 @@
+name = "Fast Entity Transfer"
+filename = "Fast Entity Transfer-forge-1.19.x-1.0.2.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/inmPbeHN/versions/WmM98Pve/Fast%20Entity%20Transfer-forge-1.19.x-1.0.2.jar"
+hash-format = "sha1"
+hash = "86ab42bcc59752beef61ea6621987586596b2e85"
+
+[update]
+[update.modrinth]
+mod-id = "inmPbeHN"
+version = "WmM98Pve"

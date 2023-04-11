@@ -1,0 +1,13 @@
+name = "Redstone Detector"
+filename = "redstone-detector-1-1-0-for-1-19-2-forge.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/bFAa1n8S/versions/iglQ2aBP/redstone-detector-1-1-0-for-1-19-2-forge.jar"
+hash-format = "sha1"
+hash = "e98db6d295e612a57856e5ee21f85c5960914144"
+
+[update]
+[update.modrinth]
+mod-id = "bFAa1n8S"
+version = "iglQ2aBP"

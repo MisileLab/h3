@@ -315,11 +315,6 @@ hash = "f599c3d3755523a0317ededa74cf83515bf34c344466db4d274bc08c7fa275d3"
 metafile = true
 
 [[files]]
-file = "mods/immersive-portals-for-forge.pw.toml"
-hash = "77293e2b9d9f7d856bd923fdefe228c1e6afd93c3c2547e23a8d8822748514e0"
-metafile = true
-
-[[files]]
 file = "mods/inzhefop-core.pw.toml"
 hash = "80f00672d1ec43e00a0bd247c011ff262e4c6edc0c717def6b01dc4b50906015"
 metafile = true

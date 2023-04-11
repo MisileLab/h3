@@ -1,0 +1,13 @@
+name = "Detail Armor Bar"
+filename = "DetailArmorBar-2.6.4+1.19.2-forge.jar"
+side = "client"
+
+[download]
+url = "https://cdn.modrinth.com/data/hAt6ty93/versions/2.6.4%2B1.19.2-forge/DetailArmorBar-2.6.4%2B1.19.2-forge.jar"
+hash-format = "sha1"
+hash = "8ffb342b3b9acefde740031110be83a5570efc1a"
+
+[update]
+[update.modrinth]
+mod-id = "hAt6ty93"
+version = "kKIctwmh"

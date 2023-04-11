@@ -1,4 +1,4 @@
-name = "LightMekanically"
+name = "Mekanically-Above"
 author = "MisileLaboratory"
 version = "0.0.1-rolling"
 pack-format = "packwiz:1.1.0"
@@ -6,7 +6,7 @@ pack-format = "packwiz:1.1.0"
 [index]
 file = "index.toml"
 hash-format = "sha256"
-hash = "c5d7bf5af6204c304155efa2196284d7cc3c82f87a29f37566d991ebee315603"
+hash = "c321d67da7555207c4a97f345f6de27fb587e2ef022b04f638d8e459c0faa455"
 
 [versions]
 forge = "43.2.8"

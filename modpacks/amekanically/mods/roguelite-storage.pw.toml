@@ -1,0 +1,13 @@
+name = "RogueLite Storage"
+filename = "Roguelite-Storage-1.19.2-2.0.0.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/MAgBN7zz/versions/mxOx6jGg/Roguelite-Storage-1.19.2-2.0.0.jar"
+hash-format = "sha1"
+hash = "a3975d7f9b06acdad3d31c9a3458c8c06bb2974e"
+
+[update]
+[update.modrinth]
+mod-id = "MAgBN7zz"
+version = "mxOx6jGg"

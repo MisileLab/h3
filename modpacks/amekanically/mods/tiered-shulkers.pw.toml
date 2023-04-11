@@ -1,0 +1,13 @@
+name = "Tiered Shulkers"
+filename = "tieredshulkers-1.19.2-1.1.43.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/VDURs3FW/versions/Dg6mklnd/tieredshulkers-1.19.2-1.1.43.jar"
+hash-format = "sha1"
+hash = "70f559864d77b707faef37fa04c3332ea93d42c6"
+
+[update]
+[update.modrinth]
+mod-id = "VDURs3FW"
+version = "Dg6mklnd"

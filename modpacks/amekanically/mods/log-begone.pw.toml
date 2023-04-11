@@ -1,0 +1,13 @@
+name = "Log Begone"
+filename = "Log-Begone-Forge-1.19-1.0.5.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/9ON3zv6e/versions/ZI7qhVe3/Log-Begone-Forge-1.19-1.0.5.jar"
+hash-format = "sha1"
+hash = "0ba93d6795a278ec5addc19e9b3d4c0d409c0606"
+
+[update]
+[update.modrinth]
+mod-id = "9ON3zv6e"
+version = "ZI7qhVe3"

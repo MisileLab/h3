@@ -1,0 +1,13 @@
+name = "Beyond Earth (Forge)"
+filename = "Beyond-Earth-1.19.2-6.3.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/xSfkjdDu/versions/vuNTOmue/Beyond-Earth-1.19.2-6.3.jar"
+hash-format = "sha1"
+hash = "2f24d4ec1c0519de1b52706c37212d8ceb048934"
+
+[update]
+[update.modrinth]
+mod-id = "xSfkjdDu"
+version = "vuNTOmue"

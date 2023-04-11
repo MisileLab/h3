@@ -1,0 +1,13 @@
+name = "Fuel Canister"
+filename = "FuelCanister-[1.19]-1.4.3.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/lg1c9EtL/versions/px9PM9yO/FuelCanister-%5B1.19%5D-1.4.3.jar"
+hash-format = "sha1"
+hash = "feb9b78a26c628fdd77a2be5cd92f4dc438c32ee"
+
+[update]
+[update.modrinth]
+mod-id = "lg1c9EtL"
+version = "px9PM9yO"

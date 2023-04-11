@@ -1,0 +1,13 @@
+name = "Smelting Cobblestone In Blast a Furnace"
+filename = "smelting-cobblestone-in-blast-a-furnace-fabricforge-all.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/szwvGLF7/versions/GzVgF775/smelting-cobblestone-in-blast-a-furnace-fabricforge-all.jar"
+hash-format = "sha1"
+hash = "4ffbdca07611427551ada5c323cb769000c5cc9c"
+
+[update]
+[update.modrinth]
+mod-id = "szwvGLF7"
+version = "GzVgF775"

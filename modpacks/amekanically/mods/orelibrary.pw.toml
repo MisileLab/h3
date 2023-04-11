@@ -1,0 +1,13 @@
+name = "OreLibrary"
+filename = "OreLibrary-1.19.2-1.1.8.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/RMmS1cSd/versions/Xwz4Q16M/OreLibrary-1.19.2-1.1.8.jar"
+hash-format = "sha1"
+hash = "a6df1c1a4b723cc3b271fe8fb249e068ff6b4654"
+
+[update]
+[update.modrinth]
+mod-id = "RMmS1cSd"
+version = "Xwz4Q16M"

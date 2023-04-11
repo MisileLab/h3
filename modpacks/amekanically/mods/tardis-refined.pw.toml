@@ -1,0 +1,13 @@
+name = "TARDIS Refined"
+filename = "TARDIS Refined-1.19.2-0.1-PRE-RELEASE-forge.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/nqVt6aES/versions/rWN4dgkb/TARDIS%20Refined-1.19.2-0.1-PRE-RELEASE-forge.jar"
+hash-format = "sha1"
+hash = "2ccbe83088b58337c808c9ee3fadbd9fd86f3668"
+
+[update]
+[update.modrinth]
+mod-id = "nqVt6aES"
+version = "rWN4dgkb"

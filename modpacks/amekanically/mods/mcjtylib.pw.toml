@@ -1,0 +1,13 @@
+name = "McJtyLib"
+filename = "mcjtylib-1.19-7.2.3.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/1Zu0uTEE/versions/gvi0TIoY/mcjtylib-1.19-7.2.3.jar"
+hash-format = "sha1"
+hash = "ec6936703b25e36e7179a393e1de79755050b14c"
+
+[update]
+[update.modrinth]
+mod-id = "1Zu0uTEE"
+version = "gvi0TIoY"
