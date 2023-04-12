@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form>
+        <label for="title">제목</label>
+        <input type="text" id="title" name="title"><br>
+
+        <label for="content" style="vertical-align:center">내용</label>
+        <textarea id="content" name="content" rows="10" cols="30" style="vertical-align:center"></textarea><br>
+
+        <label for="file">추가 파일</label>
+        <input type="file" id="file" name="file" style="vertical-align:center"></input><br>
+
+        <button id="submit" onclick="submit()">제출</button>
+    </form>
+    <hr></hr>
+    <label for="otherposts" name="otherposts" id="otherposts">다른 사람들의 글</label><br>
+    <input list="posts" id="postsa" name="postsa">
+    <datalist id="posts">
+
+    </datalist>
+</body>
+<script>
+    function getCookies() {
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        return ca.map(function(c){
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            return c.split("=");
+        });
+    }
+    var b = getCookies()
+    var list = document.getElementById('posts');
+    
+    b.forEach(function(item){
+        var option = document.createElement('option');
+        option.value = item;
+        list.appendChild(option);
+    });
+</script>
+<script>
+    function submit() {
+        console.log('a');
+        var a = document.getElementsById("title").title;
+        document.cookie[a] = document.getElementById("content").value;
+        alert("제출되었습니다");
+    }
+</script>
+</html>
