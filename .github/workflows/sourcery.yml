@@ -5,6 +5,8 @@ on:
     paths:
       - '.github/workflows/sourcery.yml'
       - 'projects/**.py'
+      - 'projects/**.ts'
+      - 'projects/**.js'
 
 jobs:
   review-with-sourcery:
