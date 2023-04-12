@@ -18,7 +18,7 @@ def random_numbers(minn: int, maxn: int, count: int) -> list[int]:
 def random_percents(percent: float | int, count: int) -> list[bool]:
     return [random_percent(percent) for _ in tqdm(range(count))]
 
-def scp_sl_loot():
+def scp_sl_loot():  # sourcery skip: low-code-quality
     weapon_locker_large = int(input("Weapon Locker Type 21(Large): "))
     weapon_locker_small = int(input("Weapon Locker Type 21(Small): "))
     weapon_locker_small_hcz_ez = int(input("Weapon Locker Type 21(HCZ/EZ Checkpoint)"))

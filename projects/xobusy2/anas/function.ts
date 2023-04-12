@@ -22,7 +22,7 @@ check(20);
 check(10);
 
 function printStars(n: number) {
-    for (var i=1;i<=n;i++) {
+    for (let i=1;i<=n;i++) {
         stdout.write("*");
     }
 }
