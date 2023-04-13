@@ -606,11 +606,6 @@ hash = "6b327b5f5547e68f32496678875d7dac1134b37a112e297deff136fbdc99863e"
 metafile = true
 
 [[files]]
-file = "mods/redstonedevelopper.pw.toml"
-hash = "1158b6acfd566466b3201f9114fce9a31704f76d79f98d01bf51afd8ead924ee"
-metafile = true
-
-[[files]]
 file = "mods/resourceful-config.pw.toml"
 hash = "b551987417640fee1dd523b43db90757bbc0377be7638fff3b0d76a6b7785c93"
 metafile = true
@@ -698,16 +693,6 @@ metafile = true
 [[files]]
 file = "mods/supermartijn642s-core-lib.pw.toml"
 hash = "2dd04c6dd644fffd92097bbf5c33dec6dac7492d5bde6a63283653e2c8a69eb8"
-metafile = true
-
-[[files]]
-file = "mods/tardim-in-control.pw.toml"
-hash = "d608c9d98b21b91a036a1d90e0e19168374fc9031f995acd9afbba90ea451fc2"
-metafile = true
-
-[[files]]
-file = "mods/tardim.pw.toml"
-hash = "d011aa1dec7e034ef6e164741964008a2dcece89e6825f7b9b8a4a39bc1ada4a"
 metafile = true
 
 [[files]]
