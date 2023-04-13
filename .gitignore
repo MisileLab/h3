@@ -154,3 +154,12 @@ jspm_packages/
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+# Godot.gitignore by ignofierplus
+.godot/
+.import/
+export.cfg
+export_presets.cfg
+*.translation
+.mono/
+data_*/
+mono_crash.*.json
