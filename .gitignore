@@ -163,3 +163,15 @@ export_presets.cfg
 .mono/
 data_*/
 mono_crash.*.json
+# Julia.gitignore by ignofierplus
+*.jl.cov
+*.jl.*.cov
+*.jl.mem
+deps/deps.jl
+deps/build.log
+deps/downloads/
+deps/usr/
+deps/src/
+docs/build/
+docs/site/
+Manifest.toml
