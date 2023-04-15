@@ -9,7 +9,7 @@ a = {}
 
 for i in read_once(argv[1]):
     i = i.strip('\n')
-    if a.get(i, None) is None:
+    if a.get(i) is None:
         a[i] = 0
     else:
         a[i] += 1

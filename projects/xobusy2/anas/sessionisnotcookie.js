@@ -51,7 +51,7 @@ server.all("/login", (req, res) => {
         return res.status(405).send("this method not allowed")
     }
 
-    var tent = `
+    let tent = `
         <form method=post>
             <div>
                 <label>사용자 ID: <label><br>
