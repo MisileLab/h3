@@ -17,7 +17,7 @@ metafile = true
 
 [[files]]
 file = "mods/advancedperipherals.pw.toml"
-hash = "65cbaf06eaff45b3e0c184bd148e5e77206654552896d73300d55ff338850960"
+hash = "540897eb6c24087db6928e1f4de12e6449ceeace6a8ff00c33aa166a41bbdd2f"
 metafile = true
 
 [[files]]
@@ -217,7 +217,7 @@ metafile = true
 
 [[files]]
 file = "mods/create-enchantment-industry.pw.toml"
-hash = "55fa3931e906bcf19d26cc9b271cd1436f0f6b4fdc37846f8da11c59a4004a56"
+hash = "ac59167c4baa6a3701990bb9c41b3f724927f38efa6c3c67d73a8bec4ed67bc2"
 metafile = true
 
 [[files]]
@@ -387,7 +387,7 @@ metafile = true
 
 [[files]]
 file = "mods/integrated-dynamics.pw.toml"
-hash = "8213566c3e6c7ebb18b235c248e8ed59acdacd121f14690a3de787543e175493"
+hash = "4c6de9a16c29f200b8194d11467feea4fbc49dc9e421398d81ccceb40f2a56c0"
 metafile = true
 
 [[files]]
@@ -477,7 +477,7 @@ metafile = true
 
 [[files]]
 file = "mods/mcjtylib.pw.toml"
-hash = "d00835c6f6a7259d8510ff554c1c96b02d20e8687b45f4d2b861e3be925e17a8"
+hash = "52ca36ae8af6e2dd29ced8126151c8f0ec38c987023d875a1d70b58bdb94e0e2"
 metafile = true
 
 [[files]]
@@ -507,7 +507,7 @@ metafile = true
 
 [[files]]
 file = "mods/merequester.pw.toml"
-hash = "55ac72c73b83dfd450bcb4cfd1576630ba36da334358caa48676986352848b86"
+hash = "ceb9bb0f0948c3503d25dc8aeaddc5ef103faac0bd67bbd12cf1cc8ed87d1efd"
 metafile = true
 
 [[files]]
@@ -587,7 +587,7 @@ metafile = true
 
 [[files]]
 file = "mods/powah.pw.toml"
-hash = "5996b455b9eb2121504017ef27965c22363e90ac870ee670bc7ff24a8b5f837f"
+hash = "84bb22569a9d2b2d8986d3e2960c005a7750cb8a9a42d333b85fae3124085629"
 metafile = true
 
 [[files]]
@@ -767,7 +767,7 @@ metafile = true
 
 [[files]]
 file = "mods/travelersbackpack.pw.toml"
-hash = "0382df70f3f5b94751c67972c2d64af1354456508f44c89c14724c9c86ca3e8c"
+hash = "e361bc61f64e489fea8210b3a7053b029c1511e513f253d811646144095f1d84"
 metafile = true
 
 [[files]]

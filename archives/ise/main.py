@@ -16,5 +16,9 @@ def solve(latex: str):
         print(i)
     print(f"answer: {query.last()}")
 
+@app.command()
+def solve_raw():
+    solve(input())
+
 if __name__ == "__main__":
     app()
