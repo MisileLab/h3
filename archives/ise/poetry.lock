@@ -374,13 +374,13 @@ files = [
 
 [[package]]
 name = "latex2sympy2"
-version = "1.8.3"
+version = "1.9.0"
 description = "Convert latex to sympy with ANTLR and support Matrix, Linear Algebra and CAS functions."
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "latex2sympy2-1.8.3-py3-none-any.whl", hash = "sha256:fdcdaa0e1e1a4719d090de092b4df9f4139a695b0f65fac637768df1b08a5b1c"},
+    {file = "latex2sympy2-1.9.0-py3-none-any.whl", hash = "sha256:d21f7ce757d48202c799ec8bf7eb438236e025704c4c35d47c43fe852d83c5f7"},
 ]
 
 [package.dependencies]
@@ -910,4 +910,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "3.11.3"
-content-hash = "4cf668a6af714f3fd665ab784cb95f54f92dc919b3117d18e88d8be9e5b8a6d0"
+content-hash = "3bb1ec9812b082be86e6c223499b438c66502dda51df80af376a37d112256849"
