@@ -1,6 +1,5 @@
 from requests import get
-from os import chdir, getcwd, listdir
-from os import makedirs as mkdir
+from os import chdir, getcwd, listdir, mkdir
 from os.path import splitext, isfile, isdir
 from shutil import move
 from pathlib import Path

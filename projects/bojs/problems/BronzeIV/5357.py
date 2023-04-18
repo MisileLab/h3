@@ -4,7 +4,9 @@ b = []
 for i in a:
     c = []
     for i2 in list(i):
-        if not c or c[-1] != i2:
+        if c.__len__() == 0:
+            c.append(i2)
+        elif c[-1] != i2:
             c.append(i2)
     b.append(''.join(c))
 

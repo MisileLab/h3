@@ -18,7 +18,6 @@ if argv[1] == "command":
     print(_example)
     _org = getcwd()
     chdir(expanduser("~"))
-    # file deepcode ignore Python/CommandInjection: <please specify a reason of ignoring this>, file deepcode ignore CommandInjection: <please specify a reason of ignoring this>
     run(f'nohup {" ".join(_example)} &', shell=True)
     chdir(_org)
 elif argv[1] == "viewlog":

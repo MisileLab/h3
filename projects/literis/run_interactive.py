@@ -1,10 +1,9 @@
 # Play mode, when we can play the Tetris normally, with the keyboard
 import cv2
 from tetris import Tetris
-from sys import exit
 
 
-def run_interactive(): # NOSONAR
+def run_interactive():
     env = Tetris()
     env.reset()
     env.render(wait_key=False)
