@@ -45,7 +45,7 @@ for i in listdir(getcwd()):
             flist.append(i.removesuffix(i2))
             break
 
-flist = list(filter(lambda x: x.isnumeric(), flist))
+flist = list(bda x: x.isnumeric(), flist))
 try:
     argv[1]
 except IndexError:

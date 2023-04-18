@@ -6,6 +6,7 @@ from dqn_agent import DQNAgent
 from tetris import Tetris
 from run_train import AgentConf
 from keras.engine.saving import load_model
+from sys import exit
 
 
 def run_eval(dir_name: str, episodes: int = 100, render: bool = False) -> List[int]:

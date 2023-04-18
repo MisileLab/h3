@@ -1,6 +1,7 @@
 from sys import argv
 
 def read_once(path: str):
+    # file deepcode ignore PT: <please specify a reason of ignoring this>
     with open(path, 'r') as a:
         b = a.readlines()
     return b

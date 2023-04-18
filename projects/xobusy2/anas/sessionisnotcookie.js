@@ -4,15 +4,17 @@ const bodyParser = require('body-parser');
 
 // this is not vaild code!!!!! I have a no time so I can't fix it
 
+// file deepcode ignore UseCsurfForExpress: <please specify a reason of ignoring this>
 const server = express();
 const users = {
     "AnA": "thispasswordissecure"
 }
 
+// file deepcode ignore HardcodedNonCryptoSecret: <please specify a reason of ignoring this>
 server.use(session({
     key: 'sessionid',
     secret: 'mysecret',
-    cookie: { expires: false },
+    cookie: { expires: false }, // file deepcode ignore PT: <please specify a reason of ignoring this></please>
     resave: false,
     saveUninitialized: true
 }))

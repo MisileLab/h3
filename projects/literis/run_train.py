@@ -1,11 +1,11 @@
 from typing import Optional, Iterable
-
 from dqn_agent import DQNAgent
 from tetris import Tetris
 from datetime import datetime
 from statistics import mean
 from logs import CustomTensorBoard
 from tqdm import tqdm
+from sys import exit
 from tf.keras.saving import save_model
 
 

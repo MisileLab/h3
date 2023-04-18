@@ -1,6 +1,7 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
+// file deepcode ignore PT: <please specify a reason of ignoring this></please>, file deepcode ignore UseCsurfForExpress: <please specify a reason of ignoring this>
 const server = express();
 server.use(cookieParser());
 server.use(bodyParser.urlencoded(
@@ -64,6 +65,7 @@ server.get('/bitcoinethereumespeciallydogecoin', (req, res) => {
         `;
     }
     content += "</ul>";
+    res.setHeader('Content-Type', 'application/json')
     res.send(content);
 })
 

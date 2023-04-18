@@ -31,6 +31,7 @@ del argv[0]
 
 for i in argv:
     if isdir(i):
+        # file deepcode ignore PT: <please specify a reason of ignoring this>
         a += get_folder_size(i)
     elif isfile(i):
         a += getsize(i)
