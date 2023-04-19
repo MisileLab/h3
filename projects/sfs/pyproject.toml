@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "sfs"
+version = "0.1.0"
+description = "Simple File Server"
+authors = ["MisileLaboratory"]
+license = "MisileLab License"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.11.3"
+fastapi = "0.95.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
