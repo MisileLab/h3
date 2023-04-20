@@ -175,3 +175,5 @@ deps/src/
 docs/build/
 docs/site/
 Manifest.toml
+# infisical
+.infisical.json
