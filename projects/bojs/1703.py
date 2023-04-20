@@ -13,10 +13,10 @@ while True:
         break
     del _list[0]
     print(_list)
-    _list2 = []
-    for i in range(int(len(_list) / 2)):
-        # print(i)
-        _list2.append(map(int, [_list[i * 2], _list[i * 2 - 1]]))
+    _list2 = [
+        map(int, [_list[i * 2], _list[i * 2 - 1]])
+        for i in range(len(_list) // 2)
+    ]
     # print_recursively(_list2)
     a.append(_list2)
 
