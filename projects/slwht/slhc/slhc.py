@@ -1,7 +1,5 @@
-from typer import Typer
+from typer_builder import build_app_from_module
 
-app = Typer()
-
-@app.command(name="decompile", description="decompile the program to C")
-def decompile(program: str, output: str):
-    pass
+if __name__ == "__main__":
+    app = build_app_from_module("commands")
+    app()
