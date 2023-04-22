@@ -1,13 +1,13 @@
 name = "ForgeEndertech"
-filename = "ForgeEndertech-1.19.2-10.0.5.2-build.0735.jar"
+filename = "ForgeEndertech-1.19.2-10.0.6.0-build.0865.jar"
 side = "both"
 
 [download]
 hash-format = "sha1"
-hash = "6130b55ee3bb1c174b79be2ed5d41e37549bcfc5"
+hash = "1f2972ef4dc4bcf9fe402de73b5be77414937599"
 mode = "metadata:curseforge"
 
 [update]
 [update.curseforge]
-file-id = 4394653
+file-id = 4501023
 project-id = 244844

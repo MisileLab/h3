@@ -1,13 +1,13 @@
 name = "Generator Galore"
-filename = "generatorgalore-1.19.2-0.1.0.4.jar"
+filename = "generatorgalore-1.19.2-0.1.0.5.jar"
 side = "both"
 
 [download]
-url = "https://cdn.modrinth.com/data/blEO0qto/versions/hcZMIaHM/generatorgalore-1.19.2-0.1.0.4.jar"
+url = "https://cdn.modrinth.com/data/blEO0qto/versions/daL5dX2V/generatorgalore-1.19.2-0.1.0.5.jar"
 hash-format = "sha1"
-hash = "6d59c3794d2e5cda56220c0bcb8415191d18e95a"
+hash = "e9cb030a5b896b80255c85e2b1a1e3e9d64493be"
 
 [update]
 [update.modrinth]
 mod-id = "blEO0qto"
-version = "hcZMIaHM"
+version = "daL5dX2V"

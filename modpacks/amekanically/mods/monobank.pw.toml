@@ -1,13 +1,13 @@
 name = "Monobank"
-filename = "monobank-1.19.2-1.0.0.jar"
+filename = "monobank-1.19.2-1.1.2.jar"
 side = "both"
 
 [download]
-url = "https://cdn.modrinth.com/data/3bSjQuE3/versions/ERrtgDul/monobank-1.19.2-1.0.0.jar"
+url = "https://cdn.modrinth.com/data/3bSjQuE3/versions/OqQdMqEJ/monobank-1.19.2-1.1.2.jar"
 hash-format = "sha1"
-hash = "cd16888cba04767eebf7e978f0dce10a85356041"
+hash = "e7c87d40bc4da9cca0499b456679bf9ea8de7709"
 
 [update]
 [update.modrinth]
 mod-id = "3bSjQuE3"
-version = "ERrtgDul"
+version = "OqQdMqEJ"

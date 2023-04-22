@@ -1,13 +1,13 @@
 name = "Integrated REST"
-filename = "IntegratedREST-1.19.2-1.1.8.jar"
+filename = "IntegratedREST-1.19.2-1.1.9.jar"
 side = "both"
 
 [download]
-url = "https://cdn.modrinth.com/data/ovubcV3F/versions/obbumnms/IntegratedREST-1.19.2-1.1.8.jar"
+url = "https://cdn.modrinth.com/data/ovubcV3F/versions/BAyaHQfQ/IntegratedREST-1.19.2-1.1.9.jar"
 hash-format = "sha1"
-hash = "725fd7030cce8b172fdfde6c431659e4add1a133"
+hash = "42414f7f129ea4e4a8239accfe963e3ae38e1164"
 
 [update]
 [update.modrinth]
 mod-id = "ovubcV3F"
-version = "obbumnms"
+version = "BAyaHQfQ"
