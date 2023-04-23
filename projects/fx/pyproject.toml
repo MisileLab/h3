@@ -1,14 +1,15 @@
 [tool.poetry]
-name = "sfs"
+name = "fx"
 version = "0.1.0"
-description = "Simple File Server"
+description = ""
 authors = ["MisileLaboratory"]
 license = "MisileLab License"
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "3.11.3"
-fastapi = "0.95.1"
+manim = "^0.17.3"
+
 
 [build-system]
 requires = ["poetry-core"]
