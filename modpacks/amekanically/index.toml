@@ -187,7 +187,7 @@ metafile = true
 
 [[files]]
 file = "mods/colossal-chests.pw.toml"
-hash = "33d158a81f065b414eec147a2151631a4eb3c4bd1d508022307b646d1743a076"
+hash = "32040bb811e7f67defe22787e1a513e91b9ad97dfe8a27ac9a5ee956a243dce6"
 metafile = true
 
 [[files]]
@@ -217,7 +217,7 @@ metafile = true
 
 [[files]]
 file = "mods/create-enchantment-industry.pw.toml"
-hash = "ac59167c4baa6a3701990bb9c41b3f724927f38efa6c3c67d73a8bec4ed67bc2"
+hash = "db36825fa7122806bf5317efa92ae4e5d1c095f75fafcaea5fdafc804c541dcd"
 metafile = true
 
 [[files]]
@@ -292,7 +292,7 @@ metafile = true
 
 [[files]]
 file = "mods/energized-power.pw.toml"
-hash = "48154e1dd31c8a6005a4bf0be4061a1ff5a8e2a65209d3da2287ce3ef21c7e89"
+hash = "bda986b7bca51788eabbf39fd32d088e82df9b781cb5e103eb4981e084ad88b1"
 metafile = true
 
 [[files]]
@@ -452,7 +452,7 @@ metafile = true
 
 [[files]]
 file = "mods/libipn.pw.toml"
-hash = "03714f8e823bb0a2396895e8fa0fe4c91efa6dad7a4b3184e09cc5785b317419"
+hash = "35ba60ba944d65d68c1aa992b745773cd5948601b94b467e108f03f91aa5356d"
 metafile = true
 
 [[files]]
@@ -507,7 +507,7 @@ metafile = true
 
 [[files]]
 file = "mods/merequester.pw.toml"
-hash = "ceb9bb0f0948c3503d25dc8aeaddc5ef103faac0bd67bbd12cf1cc8ed87d1efd"
+hash = "d79fb005082f684ff2aa95354835c4453a8a65a70ee96c3eb3683f67d702b221"
 metafile = true
 
 [[files]]
@@ -542,7 +542,7 @@ metafile = true
 
 [[files]]
 file = "mods/moving-elevators.pw.toml"
-hash = "da0e757a0f1164698adbd6fb2c53ef15513b0698a8ebae5a3cf0029d4f5e5d3b"
+hash = "e9de946d5e68adb23613fbb1ba2f8ebc1f6702608e396d795e01aa8c5ff9080b"
 metafile = true
 
 [[files]]
@@ -772,7 +772,7 @@ metafile = true
 
 [[files]]
 file = "mods/trick_update_1-20.pw.toml"
-hash = "36aa6d793c576892ba7a05d0e3e8a3c17462c839e7db27123683f9fd71380c7e"
+hash = "84d366542f3f08507287c74d7f56db92349715920c2e9fbb1607896aa4c4c7aa"
 metafile = true
 
 [[files]]
@@ -787,7 +787,7 @@ metafile = true
 
 [[files]]
 file = "mods/voluminous_energy.pw.toml"
-hash = "6b807f3cca26d1d3ace5bec8ee9ea0a0d31ba1c044d09489ddcdc2bfaf4d68ed"
+hash = "b813e02da57788b7bea1526869aa51e37433b47505eee59a0ce172039edbf1b1"
 metafile = true
 
 [[files]]

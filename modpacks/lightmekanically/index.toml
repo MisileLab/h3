@@ -111,7 +111,7 @@ metafile = true
 
 [[files]]
 file = "mods/crash-utilities.pw.toml"
-hash = "946d9e4360fa1d91982340966e61bdd7b3c6d502fc1afdffc5092a5019ffcca8"
+hash = "06d8031d0ce0077c247d5d3ceea8f112f743d937a0bc7fe75f0f143e4cd28b59"
 metafile = true
 
 [[files]]
@@ -131,7 +131,7 @@ metafile = true
 
 [[files]]
 file = "mods/create-chromaticreturn.pw.toml"
-hash = "efc058b625fbd623225a203170bcccd6ba3033e4b277d1beeff4633c0208f6b9"
+hash = "e142b37cd995f4b6f3b980e44d44bf3f39ebd9398416b2e8fae58e7002ab9907"
 metafile = true
 
 [[files]]
@@ -151,12 +151,12 @@ metafile = true
 
 [[files]]
 file = "mods/create-deco.pw.toml"
-hash = "a4bc0ca0e08fa631a4021f1b3357d106800939fd0cea1b2b61f10fb04b6e144e"
+hash = "dd1dfe68b934f7a311aa513cee56dd00d1c33a29581a752c93f31260fa664bea"
 metafile = true
 
 [[files]]
 file = "mods/create-enchantment-industry.pw.toml"
-hash = "72aa4e3adffe9e271f25e1293ce0d291c1c677004e936e90e0cb5a75b032bd68"
+hash = "5c697f16c739c73ccbd52d98fdd5f753fdecb7c8635180e7176367cabe890ca5"
 metafile = true
 
 [[files]]
@@ -171,7 +171,7 @@ metafile = true
 
 [[files]]
 file = "mods/create-stuff-additions.pw.toml"
-hash = "71d3967e1e3eac0f2e8f1c55c00ffc153f26c56b92d30962405e07649d8cf92d"
+hash = "a2fe439dc00526d7e3d8b0b6c2d6ab72561f03cf8c5ed4788322d77c6e45eabb"
 metafile = true
 
 [[files]]
@@ -181,7 +181,7 @@ metafile = true
 
 [[files]]
 file = "mods/createaddition.pw.toml"
-hash = "c00b90f4ba88e8b77ccf1b35608f5380b0e182a2c77f0e7e1a8d2f13d4cb5665"
+hash = "5b9a6cc1eb37dea317debe134e5ee19a41d8c5822e003979fe866298657807c4"
 metafile = true
 
 [[files]]
@@ -221,7 +221,7 @@ metafile = true
 
 [[files]]
 file = "mods/easy-villagers.pw.toml"
-hash = "a683506e24b41565e53cb90565ab25461f4d76408e9d6bfcf3f5042704974522"
+hash = "5c667da42e58562a973ff8c83fd1f343d78da4b77fa260bc75ac39488ac0374d"
 metafile = true
 
 [[files]]
@@ -261,7 +261,7 @@ metafile = true
 
 [[files]]
 file = "mods/fastworkbench.pw.toml"
-hash = "5db298a5768d41bc516ac521d95588ff074e5af6bd17567628d10f319ebd85ae"
+hash = "ab09ecf0f07ee64186802e309c196c27337ff092eac196fa5f9c80b5a287badf"
 metafile = true
 
 [[files]]
@@ -501,7 +501,7 @@ metafile = true
 
 [[files]]
 file = "mods/spark.pw.toml"
-hash = "6c6bb1ec06e6a79bcc1c81af842faee68c0d8c39a3eb2147ed11d8cd2ce24e19"
+hash = "555c2ed7500d7deb9f0dbfbc6a597bfa76ae2a22ccdbe7ab3632cde4278169b4"
 metafile = true
 
 [[files]]
