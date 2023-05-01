@@ -1,1 +1,0 @@
-../mfc/main.py

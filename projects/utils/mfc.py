@@ -1,5 +1,7 @@
 from sys import argv
 
+# Misile's Flag Compiler embedded (MFC)
+
 lang = argv[1]
 release = argv[2] == "release"
 
