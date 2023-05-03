@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "hvc"
+version = "0.1.0"
+description = "Hacker's Vulnerability Cracker"
+authors = ["MisileLaboratory"]
+license = "MisileLab License"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.11.3"
+typer = {extras = ["all"], version = "0.8.0"}
+typing-extensions = "4.5.0"
+pyfiglet = "0.8.post1"
+tqdm = "4.65.0"
+requests = "2.29.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
