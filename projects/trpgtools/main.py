@@ -1,7 +1,9 @@
 from gradio import Blocks, Textbox, Button
 from secrets import SystemRandom
+from json import load
 
-strings = ["쥐", "9급 해결사", "말단 조직원", "뒷골목 잡범", "뒷골목 도축업자", "8급 해결사", "조직원", "7급 해결사"]
+data = load(open("data.json", "r", encoding="utf-8"))
+strings = [i["name"] for i in data]
 
 def speedy_and_healthy(*args, **kwargs):
     args = list(args)
@@ -11,20 +13,8 @@ def speedy_and_healthy(*args, **kwargs):
     for i, i2 in enumerate(args):
         b = []
         c = []
-        if i >= 8:
-            raise ValueError("too many")
-        if i2 == 0:
-            continue
-        sdices = 1
-        if i >= 6:
-            hdices = 3
-            sdices = 2
-        elif i >= 4:
-            hdices = 3
-        elif i >= 2:
-            hdices = 2
-        else:
-            hdices = 1
+        sdices = data[i]["SD"]
+        hdices = data[i]["HD"]
         for _ in range(i2):
             b.append(map(str, [SystemRandom().randint(1, 6) for _ in range(sdices)]))
             c.append(map(str, [SystemRandom().randint(1, 8) for _ in range(hdices)]))
