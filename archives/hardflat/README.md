@@ -1,3 +1,0 @@
-# Hardflat
-
-Just use paper

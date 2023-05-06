@@ -1,5 +1,0 @@
-a = h*v
-b = (n-h)*v
-c = h*(n-v)
-d = (n-h)*(n-v)
-maxnum = max(n-h, h) * max(n-v, v)

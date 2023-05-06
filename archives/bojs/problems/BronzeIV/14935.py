@@ -1,2 +1,0 @@
-input()
-print("FA")
