@@ -631,14 +631,14 @@ tqdm = ["tqdm"]
 
 [[package]]
 name = "gradio"
-version = "3.28.3"
+version = "3.29.0"
 description = "Python library for easily interacting with trained machine learning models"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "gradio-3.28.3-py3-none-any.whl", hash = "sha256:327b41ad5432c5fa95b35517ca78ea423517f33ec7a8489d51bb73eff0086e1a"},
-    {file = "gradio-3.28.3.tar.gz", hash = "sha256:88aa9242516101063baa60fb6ecadb51697454523a06b6365c30006d5ba6c596"},
+    {file = "gradio-3.29.0-py3-none-any.whl", hash = "sha256:e98c1e3efc030e303418e18f060f61605da90ec6f3d05842e74f79165b2a2dbd"},
+    {file = "gradio-3.29.0.tar.gz", hash = "sha256:08ff0007a003e82f765d91d2f202d5b8cf46937d14f605b690a719f6b4dfdc0b"},
 ]
 
 [package.dependencies]
@@ -647,7 +647,7 @@ aiohttp = "*"
 altair = ">=4.2.0"
 fastapi = "*"
 ffmpy = "*"
-gradio-client = ">=0.1.3"
+gradio-client = ">=0.2.1"
 httpx = "*"
 huggingface-hub = ">=0.13.0"
 jinja2 = "*"
@@ -667,19 +667,19 @@ pyyaml = "*"
 requests = "*"
 semantic-version = "*"
 typing-extensions = "*"
-uvicorn = "*"
+uvicorn = ">=0.14.0"
 websockets = ">=10.0"
 
 [[package]]
 name = "gradio-client"
-version = "0.2.0"
+version = "0.2.2"
 description = "Python library for easily interacting with trained machine learning models"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "gradio_client-0.2.0-py3-none-any.whl", hash = "sha256:3216a870549050f0666c97c808a3550010509c46dc9b5b8cdf1dd0e6019e2548"},
-    {file = "gradio_client-0.2.0.tar.gz", hash = "sha256:ba7db7c8d1646f3a37065a74cb80a3fc9f2b77732784379d3a060010e1a28897"},
+    {file = "gradio_client-0.2.2-py3-none-any.whl", hash = "sha256:8c91eb3fe697ba34f7def2b1a652e51f5db342ac794f9ac1da227cd8e9571b20"},
+    {file = "gradio_client-0.2.2.tar.gz", hash = "sha256:cad2e62c40ad0ea1d7a68becf8325312c39f626d4f8c7a5166e1bc0afb10ad59"},
 ]
 
 [package.dependencies]
@@ -2036,4 +2036,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "3.11.3"
-content-hash = "2cb5afd82a6ebc069bf458e5ddc00fa33a01a94bf18a4aa8906e8a137bc59e36"
+content-hash = "970f1bd5e0dc16f925bf41eae2c7e9c48ca80a60bf1f4889508f5ff0b4b77167"
