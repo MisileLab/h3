@@ -47,12 +47,14 @@ class SNTModule(Cog):
     
     @slash_command(name="meal", guild_ids=sunrin_ids)
     async def meal(self, inter: ApplicationCommandInteraction):
+        await inter.response.defer()
         meal = self.meal_backend()
         days = [i["MLSV_YMD"][6:8] for i in meal]
         await inter.send(view=disnake_view([SNTMealMenu(inter, days, meal)]))
     
     @slash_command(name="today", guild_ids=sunrin_ids)
     async def today(self, inter: ApplicationCommandInteraction):
+        await inter.response.defer()
         _data = self.validate(self.meal_backend())
         if _data is None:
             await inter.send("오늘의 급식은 없습니다.")
@@ -61,6 +63,7 @@ class SNTModule(Cog):
     
     @slash_command(name="tomorrow", guild_ids=sunrin_ids)
     async def tomorrow(self, inter: ApplicationCommandInteraction):
+        await inter.response.defer()
         _data = self.validate(self.meal_backend(), 1)
         if _data is None:
             await inter.send("내일의 급식은 없습니다.")
