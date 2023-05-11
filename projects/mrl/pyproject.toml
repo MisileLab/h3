@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "mrl"
+version = "0.1.0"
+description = "Misile's Reversing Library"
+authors = ["MisileLaboratory"]
+license = "MisileLab License"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.11.3"
+z3-solver = "4.12.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
