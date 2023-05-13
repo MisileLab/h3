@@ -1,13 +1,13 @@
 name = "Moving Elevators"
-filename = "movingelevators-1.4.1-forge-mc1.19.jar"
+filename = "movingelevators-1.4.2-forge-mc1.19.jar"
 side = "both"
 
 [download]
-url = "https://cdn.modrinth.com/data/9KZOe6HD/versions/aNeHlEtP/movingelevators-1.4.1-forge-mc1.19.jar"
+url = "https://cdn.modrinth.com/data/9KZOe6HD/versions/2FnM6HXg/movingelevators-1.4.2-forge-mc1.19.jar"
 hash-format = "sha1"
-hash = "0798f92443cd6b9e948ea59199a868c052f2888b"
+hash = "092ca690c7f5eb8a43ab2d0bab271660870e3bcf"
 
 [update]
 [update.modrinth]
 mod-id = "9KZOe6HD"
-version = "aNeHlEtP"
+version = "2FnM6HXg"
