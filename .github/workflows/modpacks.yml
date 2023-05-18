@@ -23,7 +23,7 @@ jobs:
     # - if: steps.changes.outputs.src == 'true'
     - uses: actions/setup-go@v4
       with:
-        go-version: '1.20.3'
+        go-version: '1.20.4'
         check-latest: true
     - run: |
         go install github.com/packwiz/packwiz@latest
@@ -49,3 +49,14 @@ jobs:
       with:
         name: MekanicallyAbove
         path: modpacks/amekanically/*.mrpack
+    - if: steps.changes.outputs.mekanically == 'true' || steps.changes.outputs.modpackflow == 'true'
+      run: |
+        cd modpacks/mekanically
+        packwiz cf export
+        cd -
+    - name: Mekanically
+      if: steps.changes.outputs.mekanically == 'true' || steps.changes.outputs.modpackflow == 'true'
+      uses: actions/upload-artifact@v3
+      with:
+        name: Mekanically
+        path: modpacks/mekanically/*.zip
