@@ -190,7 +190,7 @@ metafile = true
 
 [[files]]
 file = "mods/create-stuff-additions.pw.toml"
-hash = "a3d046b449699753a3c82e901eff9fba7d5a057e34f70b5df0ef1f646ae08562"
+hash = "17b0f6294579c5fa83bd8c13c57296f257d6545890abe1f80cc73ac787bb50a8"
 metafile = true
 
 [[files]]
@@ -405,7 +405,7 @@ metafile = true
 
 [[files]]
 file = "mods/jei.pw.toml"
-hash = "94609bc33550bb64bdb280d53156767318407a4a62d2273b6f9d0a0f40396e9a"
+hash = "ce5d2baed88bd178956579872719f896f6531ed3692dab4d368cf12445e8f231"
 metafile = true
 
 [[files]]

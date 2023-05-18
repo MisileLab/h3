@@ -1,13 +1,13 @@
 name = "Expanded Storage"
-filename = "expandedstorage-8.3.1+1.19.2-forge.jar"
+filename = "expandedstorage-8.3.3+1.19.2-forge.jar"
 side = "both"
 
 [download]
-url = "https://cdn.modrinth.com/data/F56tBubk/versions/JI5cEHvs/expandedstorage-8.3.1%2B1.19.2-forge.jar"
+url = "https://cdn.modrinth.com/data/F56tBubk/versions/3yyro06X/expandedstorage-8.3.3%2B1.19.2-forge.jar"
 hash-format = "sha1"
-hash = "58497aca6ddab075850388230286f66158539e2f"
+hash = "2c97171f0f6f1dd3feb430e47bb343ecd5b4654f"
 
 [update]
 [update.modrinth]
 mod-id = "F56tBubk"
-version = "JI5cEHvs"
+version = "3yyro06X"

@@ -142,7 +142,7 @@ metafile = true
 
 [[files]]
 file = "mods/canary.pw.toml"
-hash = "6382f1cb5838cfcc236f0c62da825f0b8079a1bd0289d48bbc652f2bb9b1d44d"
+hash = "1464f1f29a6bb4a036328abe0e71d3b2a00ec365d7b15aec5ae4f3fa5e58519e"
 metafile = true
 
 [[files]]
@@ -312,7 +312,7 @@ metafile = true
 
 [[files]]
 file = "mods/expanded-storage.pw.toml"
-hash = "260e92536c5b8b973d26cbd05d0f7e810e86063da5f2dce838900222e37e409c"
+hash = "2ccf3877e2820bfab4ad6b95da5a822340337bc096fae276e00301a8826dbf23"
 metafile = true
 
 [[files]]
@@ -337,7 +337,7 @@ metafile = true
 
 [[files]]
 file = "mods/fastentitytransfer.pw.toml"
-hash = "5e452a9cd8b09c8737f4cfb2d0a21c196526106dd700db023bc7736a34e84b57"
+hash = "88b33a248f1d588dc592d98c7fa3a1edae5ec884da3511af15e30c4d5023d3da"
 metafile = true
 
 [[files]]
@@ -377,17 +377,17 @@ metafile = true
 
 [[files]]
 file = "mods/immersiveengineering.pw.toml"
-hash = "c7a80168612aee5f95b6ac92b21b6dabc78404451cfe1e650a1bb3295aac3877"
+hash = "8e268847abdbca3537274c363bd0573711275aecf4009316dd3f94ee84d08a96"
 metafile = true
 
 [[files]]
 file = "mods/integrated-crafting.pw.toml"
-hash = "11f3178de2eb92b6647f2cb755a088e4b017e87d5957011c3a1c2ef51ae5381f"
+hash = "bf2937018975981765b3950a4315b9c8ec8a3fecb926b6a8af771519ee795734"
 metafile = true
 
 [[files]]
 file = "mods/integrated-dynamics.pw.toml"
-hash = "632e386bd3cad603ec5a04a703a3492730c5eb0661d392dbd9fd4872983785c0"
+hash = "c6eea006f532d85f3ee545434ee468bf6f3950f66607682af6aafd3cfe9d42db"
 metafile = true
 
 [[files]]
@@ -767,7 +767,7 @@ metafile = true
 
 [[files]]
 file = "mods/travelersbackpack.pw.toml"
-hash = "7687465134df05c71703cdc9e0453b3e24e855e4990dce2acb597ccafc625d42"
+hash = "85782a1561c5e626725572ec49a2e3351aad2d9d0b6491af4da8cadad64c1f27"
 metafile = true
 
 [[files]]
