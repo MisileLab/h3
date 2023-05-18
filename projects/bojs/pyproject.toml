@@ -9,7 +9,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "3.11.3"
 tomli = "2.0.1"
-requests = "2.29.0"
+requests = "2.30.0"
 baekjoonapi = {git = "https://github.com/MisileLab/baekjoonapi.git"}
 misilelibpy = {path = "libs/misilelib/misilelib-python"}
 
