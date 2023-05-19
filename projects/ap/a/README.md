@@ -1,5 +1,0 @@
-# Alice (A)
-
-## Requirements
-
-- Python
