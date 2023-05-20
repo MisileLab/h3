@@ -145,7 +145,7 @@ metafile = true
 
 [[files]]
 file = "mods/create-chromaticreturn.pw.toml"
-hash = "ddf4a19cfad68a6b6f94335e40f742d618a1786f8966c000ed089e7d9b616015"
+hash = "40ded72bed5738ad74428a0110d5bae053755cdfb865efa293e3313b1b51ad10"
 metafile = true
 
 [[files]]
@@ -190,7 +190,7 @@ metafile = true
 
 [[files]]
 file = "mods/create-stuff-additions.pw.toml"
-hash = "17b0f6294579c5fa83bd8c13c57296f257d6545890abe1f80cc73ac787bb50a8"
+hash = "c57c9e63ba686e0d4a4de4307bf38c7fc94b8d3951627fbe0f884b494723c2a8"
 metafile = true
 
 [[files]]
@@ -586,6 +586,11 @@ metafile = true
 [[files]]
 file = "mods/saturn.pw.toml"
 hash = "82bb69add7234aa50636277b38aa25eca2f9e6277253a62af1e6c4b3cbc05481"
+metafile = true
+
+[[files]]
+file = "mods/security-craft.pw.toml"
+hash = "5f40bd2cec68b9d129553e36997863dc216c2993d16b298353ccfa3aaf22c898"
 metafile = true
 
 [[files]]

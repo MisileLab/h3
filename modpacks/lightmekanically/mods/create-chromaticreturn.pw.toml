@@ -1,13 +1,13 @@
 name = "Create Chromatic Return"
-filename = "create-chromaticreturn1.19.2_v1.2.2.jar"
+filename = "create-chromaticreturn1.19.2_v1.3.jar"
 side = "both"
 
 [download]
 hash-format = "sha1"
-hash = "3dac8466654a5716e33c821ad066a7d58fdc08c8"
+hash = "97d2e416d8910cd50c9ee193bc0bc75407c16ae1"
 mode = "metadata:curseforge"
 
 [update]
 [update.curseforge]
-file-id = 4523164
+file-id = 4542890
 project-id = 503784

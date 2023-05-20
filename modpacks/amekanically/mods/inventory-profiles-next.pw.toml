@@ -1,13 +1,13 @@
 name = "Inventory Profiles Next"
-filename = "InventoryProfilesNext-forge-1.19-1.9.7.jar"
+filename = "InventoryProfilesNext-forge-1.19-1.10.1.jar"
 side = "client"
 
 [download]
-url = "https://cdn.modrinth.com/data/O7RBXm3n/versions/lRVCnGZY/InventoryProfilesNext-forge-1.19-1.9.7.jar"
+url = "https://cdn.modrinth.com/data/O7RBXm3n/versions/wV8nQpPd/InventoryProfilesNext-forge-1.19-1.10.1.jar"
 hash-format = "sha1"
-hash = "b8c7e71432e2adf6528359ccc96e69a317afdb62"
+hash = "9eb197fd296bc86cbbe4a5bf68e710d0ee8f34e5"
 
 [update]
 [update.modrinth]
 mod-id = "O7RBXm3n"
-version = "lRVCnGZY"
+version = "wV8nQpPd"

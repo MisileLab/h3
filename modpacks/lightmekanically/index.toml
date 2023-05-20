@@ -131,7 +131,7 @@ metafile = true
 
 [[files]]
 file = "mods/create-chromaticreturn.pw.toml"
-hash = "c391a36eb3c235fb31c0606c62dbc7ccda64d8381b47c1668122e0da60030126"
+hash = "8578476b4e273a8aebcf488e7e4954a05645964b5ac646f66c5e579444fb2034"
 metafile = true
 
 [[files]]
@@ -171,7 +171,7 @@ metafile = true
 
 [[files]]
 file = "mods/create-stuff-additions.pw.toml"
-hash = "a2fe439dc00526d7e3d8b0b6c2d6ab72561f03cf8c5ed4788322d77c6e45eabb"
+hash = "c47e5afc5661b98a7b2f79aec480636771ea3cb2f27ad4a7866ae53fb57a8411"
 metafile = true
 
 [[files]]

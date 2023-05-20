@@ -222,7 +222,7 @@ metafile = true
 
 [[files]]
 file = "mods/create-jetpack.pw.toml"
-hash = "b4fee3089c8ab14662e176e62d69d39a77d92859709673ca5e1d530fb54c11ce"
+hash = "7b6f3d66a0dd3a66be0ec1e88a2abe6d0e902f889c55befe07cccde4a5f0bb68"
 metafile = true
 
 [[files]]
@@ -407,7 +407,7 @@ metafile = true
 
 [[files]]
 file = "mods/inventory-profiles-next.pw.toml"
-hash = "708530efef7f52d0961305281bf26cf5c29f328d2258dabcef56b41f05a42966"
+hash = "0021987b869ed8fecadcaf0482c545db330e305ff9de46c801e9be7c9299419f"
 metafile = true
 
 [[files]]
@@ -452,7 +452,7 @@ metafile = true
 
 [[files]]
 file = "mods/libipn.pw.toml"
-hash = "6348af3f9103eb83eea2bde1fa7d685d53c8c450c40f314b68c89f5f6f854e36"
+hash = "824e5791a25c22f58d5dbae04fbed42277448bdff51036af60c6cd07b6f6ab04"
 metafile = true
 
 [[files]]
@@ -692,7 +692,7 @@ metafile = true
 
 [[files]]
 file = "mods/supermartijn642s-core-lib.pw.toml"
-hash = "2dd04c6dd644fffd92097bbf5c33dec6dac7492d5bde6a63283653e2c8a69eb8"
+hash = "f11b18c85ce30e05053f6e3fe1cb82345614254b6d859f0649d3b4f726e8f5a6"
 metafile = true
 
 [[files]]
