@@ -1,10 +1,6 @@
 hash-format = "sha256"
 
 [[files]]
-file = "mods/VS2_Nightly_Forge(2).jar"
-hash = "f3f50a1dd877f45438c557151a858fc393ef3436235d7b263da3655858d49bb8"
-
-[[files]]
 file = "mods/advanced-peripherals.pw.toml"
 hash = "0186e7f4f8fd2796123df62c8e6ac869b189df6beb7a601f9a5c825f0464292e"
 metafile = true
@@ -90,10 +86,6 @@ hash = "9f83b1068f6d7136d5fb13b84d665a4ef82d63bb2e8908d593455d0c6dfc2651"
 metafile = true
 
 [[files]]
-file = "mods/clockwork-forge-9d71707e9c1442328ec42ca7043ad10fac6071d7.jar"
-hash = "4921bcffd0620755bb266f633a7a253ac7e119a77d798ccc72b6149c8fdf0545"
-
-[[files]]
 file = "mods/cloth-config.pw.toml"
 hash = "a57e921f872596ca19e411d726b7f6db272267f2dd712322a3168ce0f404fd44"
 metafile = true
@@ -144,48 +136,13 @@ hash = "51d6c9ed6dd9dae972bf94b99ca25e97cb03eb035a012367c100f63aa159fe10"
 metafile = true
 
 [[files]]
-file = "mods/create-chromaticreturn.pw.toml"
-hash = "40ded72bed5738ad74428a0110d5bae053755cdfb865efa293e3313b1b51ad10"
-metafile = true
-
-[[files]]
-file = "mods/create-confectionery.pw.toml"
-hash = "3129a246581ef4ce97d572b7b62fccd9e1002a26fe222c7a1ba070fc0c402356"
-metafile = true
-
-[[files]]
 file = "mods/create-connected-block-textures.pw.toml"
 hash = "a71dd76fd2d4c67c6d4f0caa89289e90153406cf2f6550a58355764d5a17d434"
 metafile = true
 
 [[files]]
-file = "mods/create-crystal-clear.pw.toml"
-hash = "0586f6749e58dd39411b4bb131c417b83a0080f77be4cb3b83dfc4f9d04fe19e"
-metafile = true
-
-[[files]]
 file = "mods/create-deco.pw.toml"
 hash = "cfc1c30591c37dc6997800a0261e924d6991b9c60f1e4d892e4ffaf0f5716b01"
-metafile = true
-
-[[files]]
-file = "mods/create-enchantment-industry.pw.toml"
-hash = "4bdc2b976cc76b8a5b82dcc7f260903acfb4fab270efa570e93ac2fa24a62414"
-metafile = true
-
-[[files]]
-file = "mods/create-factory.pw.toml"
-hash = "a667a81f6ee2fbb112e0eda2660b0c44d4fc00cb2794fbb4ec24d30038429350"
-metafile = true
-
-[[files]]
-file = "mods/create-infinidrill.pw.toml"
-hash = "94838a4fb78eaacb3f9fc9475b44843598c15e49df438c06a03d5a31b79201cd"
-metafile = true
-
-[[files]]
-file = "mods/create-misc-and-things.pw.toml"
-hash = "742a9f78528742435f58af062cff491595aca212d201557e92bd120f402c7877"
 metafile = true
 
 [[files]]
@@ -204,23 +161,8 @@ hash = "3bad491224e4a972591b3898b419e7d8995ab1816f1fc7962793d36445d3ae7e"
 metafile = true
 
 [[files]]
-file = "mods/createfoodadditions.pw.toml"
-hash = "99f4c2ef2f3a925f8cfac97d69a01e224fc83b3af6c63351d4d7bcff444e56dd"
-metafile = true
-
-[[files]]
-file = "mods/creative-crafter.pw.toml"
-hash = "59933b50fd2d36bed797dec85cf4e1bccb83ed5963da278bfcd281287f821327"
-metafile = true
-
-[[files]]
 file = "mods/creative-disk.pw.toml"
 hash = "902ccb49f4f6e85551f2449fff39ff2af6d2ca54aaecf69273ff305715486735"
-metafile = true
-
-[[files]]
-file = "mods/creative-tweaker.pw.toml"
-hash = "d8cc0f4a5089001bbe8cc5967b4f7226b545cd1693fcf29223074718b58a7440"
 metafile = true
 
 [[files]]
@@ -429,23 +371,8 @@ hash = "38fbc001be74391f468243701fbde93eef6e067a433cdcd84acb7d0750b7054d"
 metafile = true
 
 [[files]]
-file = "mods/large-ore-deposits.pw.toml"
-hash = "07c93afb3e38bbb4f45102521f25553d27ffebda0dfd1541e06c634bd65f8386"
-metafile = true
-
-[[files]]
 file = "mods/libnonymous.pw.toml"
 hash = "35fabe0ac1bebd7cd8530db45a164838ee1a5687cefcb6bbef2b5d42afac8701"
-metafile = true
-
-[[files]]
-file = "mods/little-contraptions.pw.toml"
-hash = "2173881505b6ab22e56c011c63760d9de6d4f07e4e3fb866a93cfeadfd80dc4f"
-metafile = true
-
-[[files]]
-file = "mods/little-logistics.pw.toml"
-hash = "76be9410052988fbc5e72d37118e06d58307803daed9702b8ab4da96c994775f"
 metafile = true
 
 [[files]]
@@ -529,11 +456,6 @@ hash = "c7c3f6373959e1efe3f0c6aad9da00b109bb34ef27eeec1765dde28c7e29ae1a"
 metafile = true
 
 [[files]]
-file = "mods/one-twenty-backport.pw.toml"
-hash = "0fa094d61b295f8de1f07396bc36af304a92c1bc24604710d07cd729f3a5ae3e"
-metafile = true
-
-[[files]]
 file = "mods/patchouli.pw.toml"
 hash = "ae4c3617170709ac560c8113f1526193e79750735d12bbc2d5119f518b866799"
 metafile = true
@@ -614,11 +536,6 @@ hash = "7863c6ff5c8ee607d67b7f8065904f99a81903f983adc7dca35184e760358993"
 metafile = true
 
 [[files]]
-file = "mods/solargeneration.pw.toml"
-hash = "956a5fe3814ee25b5ee75285562b1663586a16da3ef1f2d77dcb68b7f6514495"
-metafile = true
-
-[[files]]
 file = "mods/spark.pw.toml"
 hash = "876452c253d68cd71df35dfcb9dd4438ebb5c2470c09b01ed19a16fd37f46436"
 metafile = true
@@ -689,23 +606,18 @@ hash = "f75a433059f1caf38c5548ea8949ecd24b717e7c14d2d2f47982aefdbdf50e84"
 metafile = true
 
 [[files]]
+file = "mods/valkyrien-skies.pw.toml"
+hash = "f12c2617cac977d43c28767d3f59543d5121754307cd509525fef38703dc96ec"
+metafile = true
+
+[[files]]
 file = "mods/valkyrien-tournament.pw.toml"
 hash = "93074308b16ece4d8868316503c6a666bd6d6ee4f3a6728b32a19d2f7dd35b7a"
 metafile = true
 
 [[files]]
-file = "mods/worldedit-items.pw.toml"
-hash = "7bbcb1810632ca0db77aeaaf6eaa4cb5afd3e1afb22abd0dd90957d15a70bd26"
-metafile = true
-
-[[files]]
 file = "mods/worldedit.pw.toml"
 hash = "9cba8becd46d571b7576be0d34fea48a7c38f5745265186c7baf1c79251ef373"
-metafile = true
-
-[[files]]
-file = "mods/worldtime.pw.toml"
-hash = "d8b8141145552c8390f77db462f622acf1bb1ac26c0f41df1e59f41ab4adad70"
 metafile = true
 
 [[files]]
