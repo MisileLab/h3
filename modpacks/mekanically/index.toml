@@ -147,12 +147,12 @@ metafile = true
 
 [[files]]
 file = "mods/create-stuff-additions.pw.toml"
-hash = "c57c9e63ba686e0d4a4de4307bf38c7fc94b8d3951627fbe0f884b494723c2a8"
+hash = "e5daf28b8d487bf8f909ec9e4ef0adbfe99ee8e2b62be0eff4728f8c705a118f"
 metafile = true
 
 [[files]]
 file = "mods/create.pw.toml"
-hash = "3d22456ed14c5f4abaf5a1b3dfcfaff3626f595f353176eec276f70dffdef6fd"
+hash = "44adf13d7981264098ef73a1e914bcf4c759f170b3aedad4038a6967f89864dd"
 metafile = true
 
 [[files]]

@@ -1,13 +1,13 @@
 name = "Upgraded Ender Chests"
-filename = "upgradedechests-forge-1.0.1-1.19.jar"
+filename = "upgradedechests-forge-1.0.2-1.19.2.jar"
 side = "both"
 
 [download]
-url = "https://cdn.modrinth.com/data/KmhsAdOt/versions/akCAClu2/upgradedechests-forge-1.0.1-1.19.jar"
+url = "https://cdn.modrinth.com/data/KmhsAdOt/versions/T0S9KN2N/upgradedechests-forge-1.0.2-1.19.2.jar"
 hash-format = "sha1"
-hash = "2bfa89418917367f9ba004b126f9dc1043877ed9"
+hash = "5e66cde7d0da3d9f58355fedd1a88a115d3843ec"
 
 [update]
 [update.modrinth]
 mod-id = "KmhsAdOt"
-version = "akCAClu2"
+version = "T0S9KN2N"

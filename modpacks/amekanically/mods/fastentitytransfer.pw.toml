@@ -1,13 +1,13 @@
 name = "Fast Entity Transfer"
-filename = "fastentitytransfer-forge-1.19.x-1.1.1.jar"
+filename = "fastentitytransfer-forge-1.19.x-1.1.2.jar"
 side = "both"
 
 [download]
-url = "https://cdn.modrinth.com/data/inmPbeHN/versions/2RCWnaHq/fastentitytransfer-forge-1.19.x-1.1.1.jar"
+url = "https://cdn.modrinth.com/data/inmPbeHN/versions/V2NmKvBN/fastentitytransfer-forge-1.19.x-1.1.2.jar"
 hash-format = "sha1"
-hash = "3038e616121b871aa0f5620b3725d5b8d95b0223"
+hash = "ce6aacafa8e8852a82404bd43a0333b3381db95d"
 
 [update]
 [update.modrinth]
 mod-id = "inmPbeHN"
-version = "2RCWnaHq"
+version = "V2NmKvBN"

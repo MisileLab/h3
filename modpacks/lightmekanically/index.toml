@@ -106,7 +106,7 @@ metafile = true
 
 [[files]]
 file = "mods/corn-delight.pw.toml"
-hash = "83134c6317cc25b5fac996e4ac09429540ea5233d6d677d08d9cb257ff34743a"
+hash = "7531dedbe00dfad362e57e99bf0ec977a05f72274d4e8f4e95bad838936def2b"
 metafile = true
 
 [[files]]
@@ -171,12 +171,12 @@ metafile = true
 
 [[files]]
 file = "mods/create-stuff-additions.pw.toml"
-hash = "c47e5afc5661b98a7b2f79aec480636771ea3cb2f27ad4a7866ae53fb57a8411"
+hash = "da47e08d21ffa5ed088071c062dbcf97dafcb54526ae9cf980582eafb16f454b"
 metafile = true
 
 [[files]]
 file = "mods/create.pw.toml"
-hash = "3263538e83dbfcdfccbe8b278cf163894a992672f97db3efb551c7a47cdf8ff3"
+hash = "4bc9e158aa43e1d629c456880ef37aa85ca872ec7e9d067aa43c4ca83f3ea12a"
 metafile = true
 
 [[files]]
@@ -411,7 +411,7 @@ metafile = true
 
 [[files]]
 file = "mods/mysterious-mountain-lib.pw.toml"
-hash = "f29c2e103718cfeef9aa8ac68420fa2797d6d9416301c981cd6a92f81e2e7614"
+hash = "f65cfa2126b833d6ea9ee2264259e0cbae0d91eadbce4e3418c6d256ecdfa8b1"
 metafile = true
 
 [[files]]
@@ -436,7 +436,7 @@ metafile = true
 
 [[files]]
 file = "mods/placebo.pw.toml"
-hash = "cb0af91d7b5f99b46022e3af2ef7e128028f6a2f91feb0a8f4fa22e9556f30b3"
+hash = "9656604f85b22fe3c05f27a507ca7ec6f17b5745faea6382f865b2774c0bb909"
 metafile = true
 
 [[files]]
