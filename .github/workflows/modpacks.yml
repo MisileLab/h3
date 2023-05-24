@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - '.github/workflows/modpacks.yml'
-      - '.github/filters.yml'
+      - '.github/workflows/filters.yml'
       - 'modpacks/**'
 
 env:
@@ -18,7 +18,7 @@ jobs:
     - uses: dorny/paths-filter@v2
       id: changes
       with:
-        filters: .github/filters.yml
+        filters: .github/workflows/filters.yml
 
     # - if: steps.changes.outputs.src == 'true'
     - uses: actions/setup-go@v4
@@ -38,17 +38,17 @@ jobs:
       with:
         name: lightmekanically
         path: modpacks/lightmekanically/*.zip
-    - if: steps.changes.outputs.amekanically == 'true' || steps.changes.outputs.modpackflow == 'true'
-      run: |
-        cd modpacks/amekanically
-        packwiz mr export
-        cd -
-    - name: MekanicallyAbove
-      if: steps.changes.outputs.amekanically == 'true' || steps.changes.outputs.modpackflow == 'true'
-      uses: actions/upload-artifact@v3
-      with:
-        name: MekanicallyAbove
-        path: modpacks/amekanically/*.mrpack
+    #- if: steps.changes.outputs.amekanically == 'true' || steps.changes.outputs.modpackflow == 'true'
+      #run: |
+        #cd modpacks/amekanically
+        #packwiz mr export
+        #cd -
+    #- name: MekanicallyAbove
+      #if: steps.changes.outputs.amekanically == 'true' || steps.changes.outputs.modpackflow == 'true'
+      #uses: actions/upload-artifact@v3
+      #with:
+      #name: MekanicallyAbove
+        #path: modpacks/amekanically/*.mrpack
     - if: steps.changes.outputs.mekanically == 'true' || steps.changes.outputs.modpackflow == 'true'
       run: |
         cd modpacks/mekanically

@@ -1,0 +1,4 @@
+modpackflow: [".github/workflows/modpacks.yml", ".github/workflows/filter.yml"]
+lightmekanically: 'modpacks/lightmekanically/**'
+#amekanically: 'modpacks/amekanically/**'
+mekanically: 'modpacks/mekanically/**'
