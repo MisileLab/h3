@@ -10,10 +10,9 @@ download mrpack or curseforge zip in github actions
 - Discontinued (discontinued, no support)
 
 ### Planned
-- Mekanically: Beyond (Fabric of Mekanically Series)
+- Mekanically: Above
 
 ### Active
-- Mekanically: Above
 - Mekanically
 
 ### LTS
