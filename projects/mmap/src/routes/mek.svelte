@@ -4,7 +4,7 @@
 
 <fieldset>
     <legend>Energy storage</legend>
-    <p>storage: 1000/100000</p>
+    <p>storage: 1000/100000 1%</p>
     <p>input: 0/100</p>
     <p>output: 0/100</p>
     unit:
