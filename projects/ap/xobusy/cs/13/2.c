@@ -3,7 +3,7 @@
 
 int main() {
     char a[100000];
-    int b, c;
+    int b=0, c=0;
     printf("문자열 입력 : ");
     scanf("%s", a);
     for (int i=0; a[i] != '\0' && i < 100000; i++) {
