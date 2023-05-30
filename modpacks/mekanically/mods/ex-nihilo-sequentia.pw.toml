@@ -1,13 +1,13 @@
 name = "Ex Nihilo: Sequentia"
-filename = "ExNihiloSequentia-1.18.2-20221113-044349.jar"
+filename = "ExNihiloSequentia-1.18.2-20230528-221633.jar"
 side = "both"
 
 [download]
 hash-format = "sha1"
-hash = "10062251e7c981a71f6f556fe856a6cfc6d949a2"
+hash = "15b6af13dfe5cb733fdb2f805e045d699e135daa"
 mode = "metadata:curseforge"
 
 [update]
 [update.curseforge]
-file-id = 4083676
+file-id = 4556977
 project-id = 400012

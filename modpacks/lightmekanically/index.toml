@@ -36,7 +36,7 @@ metafile = true
 
 [[files]]
 file = "mods/architectury-api.pw.toml"
-hash = "f7a3e7000b1babc57896bfc34200102ca75b951ef7dc67984301261ef8e999c7"
+hash = "e81baa549b913cf7d30a730d18846ff41aa833928328e3e1f2ec0686d815cd47"
 metafile = true
 
 [[files]]
@@ -131,7 +131,7 @@ metafile = true
 
 [[files]]
 file = "mods/create-chromaticreturn.pw.toml"
-hash = "8578476b4e273a8aebcf488e7e4954a05645964b5ac646f66c5e579444fb2034"
+hash = "f52ecab82a94b7fa88c7b443837ad44c4695040df373055f101ebaf561095d99"
 metafile = true
 
 [[files]]
@@ -146,12 +146,12 @@ metafile = true
 
 [[files]]
 file = "mods/create-crystal-clear.pw.toml"
-hash = "fcf5d03138839b03446ea18611d706102016071ac021b6a12c361abdbf848c68"
+hash = "b8d11969b1c0a76392e33cdb64c75ea35828fb0fae95cf4f5d70db497c2eec23"
 metafile = true
 
 [[files]]
 file = "mods/create-deco.pw.toml"
-hash = "6ddc3bbe998bc708a6d986368c3c798ea0df279b0de8a9a5cb67b0bc26cea5b8"
+hash = "b0bb61105e0ac0c763edfa41ea5b0406f157bc17e421af1bf8b2cbb49325ced6"
 metafile = true
 
 [[files]]
@@ -166,22 +166,22 @@ metafile = true
 
 [[files]]
 file = "mods/create-misc-and-things.pw.toml"
-hash = "2fb872708b9ecbb87969142dcae4a81072e4a889d2577dd5a92c1ef5dfd29bbb"
+hash = "77fa72a0d31e0d5bbd4fb7a95d00300f7d654bedf9a42e0e665e17dd937d764c"
 metafile = true
 
 [[files]]
 file = "mods/create-stuff-additions.pw.toml"
-hash = "da47e08d21ffa5ed088071c062dbcf97dafcb54526ae9cf980582eafb16f454b"
+hash = "5549e27f071c2e03163ed92198a63bfb9f1e0d8934d069afd1fe46cb3d41ee71"
 metafile = true
 
 [[files]]
 file = "mods/create.pw.toml"
-hash = "4bc9e158aa43e1d629c456880ef37aa85ca872ec7e9d067aa43c4ca83f3ea12a"
+hash = "89bf28ca15640301ff8cf651ccbcae3047cbaf6af30797f739bfa45d1f2299ce"
 metafile = true
 
 [[files]]
 file = "mods/createaddition.pw.toml"
-hash = "c14f367d6613911833f2b158642db0e9e9852cba78618cdf683233dbbc5c7b2a"
+hash = "dc215d12d87c9cc23a80637334dbed408a729ac9fb5310fb521d4750023931e6"
 metafile = true
 
 [[files]]
@@ -326,7 +326,7 @@ metafile = true
 
 [[files]]
 file = "mods/jade-addons.pw.toml"
-hash = "4b71171ba73da26c1582f013ebd49882b7d101da463a71ada07854c1aede2206"
+hash = "f41cbd4e04d52ac715dc243fe0cd0df327de89a155d5c2145aa26ba7667d43c8"
 metafile = true
 
 [[files]]
@@ -396,7 +396,7 @@ metafile = true
 
 [[files]]
 file = "mods/more-peripherals.pw.toml"
-hash = "a691e0cfeb13ee93b3c5317792d660a7506463145da18231c9cf14f5b02c5729"
+hash = "568d21557f25fb644ee7d8376ad455075df6348ef18a2a888cb56e54c8ccfda8"
 metafile = true
 
 [[files]]

@@ -1,13 +1,13 @@
 name = "Energized Power"
-filename = "energizedpower-1.19.2-1.6.2.jar"
+filename = "energizedpower-1.19.2-1.7.0.jar"
 side = "both"
 
 [download]
-url = "https://cdn.modrinth.com/data/6pku8gW1/versions/MI1FYhc2/energizedpower-1.19.2-1.6.2.jar"
+url = "https://cdn.modrinth.com/data/6pku8gW1/versions/HiqaUCZh/energizedpower-1.19.2-1.7.0.jar"
 hash-format = "sha1"
-hash = "35392f10459594db290e3859f20ecbe7b7a47aab"
+hash = "53f5334b4f4234b390d2b90d70ed2c9cfe8af276"
 
 [update]
 [update.modrinth]
 mod-id = "6pku8gW1"
-version = "MI1FYhc2"
+version = "HiqaUCZh"

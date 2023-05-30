@@ -1,13 +1,13 @@
 name = "Create: Crystal Clear"
-filename = "create_crystal_clear-0.1.2e-1.19.2.jar"
+filename = "create_crystal_clear-0.2.1-1.19.2.jar"
 side = "both"
 
 [download]
-url = "https://cdn.modrinth.com/data/h7QgiH72/versions/qB5j3ZVW/create_crystal_clear-0.1.2e-1.19.2.jar"
+url = "https://cdn.modrinth.com/data/h7QgiH72/versions/YEuo20pc/create_crystal_clear-0.2.1-1.19.2.jar"
 hash-format = "sha1"
-hash = "cb6aef56a66bb20b66b7f993a96ec66ee252e856"
+hash = "4dbc46ae21c6e34a47330eace1ffc2c2a241e078"
 
 [update]
 [update.modrinth]
 mod-id = "h7QgiH72"
-version = "qB5j3ZVW"
+version = "YEuo20pc"

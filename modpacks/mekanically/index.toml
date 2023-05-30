@@ -147,22 +147,22 @@ metafile = true
 
 [[files]]
 file = "mods/create-deco.pw.toml"
-hash = "cfc1c30591c37dc6997800a0261e924d6991b9c60f1e4d892e4ffaf0f5716b01"
+hash = "a870f4e08855ee1eb1845baa93c0f941f8b39842e20f6d43e78fa8b212508a87"
 metafile = true
 
 [[files]]
 file = "mods/create-stuff-additions.pw.toml"
-hash = "e5daf28b8d487bf8f909ec9e4ef0adbfe99ee8e2b62be0eff4728f8c705a118f"
+hash = "4b4d48215a75ec0e5e627bf01693246dad6acaf87bcca7c3eb79b6b43b287773"
 metafile = true
 
 [[files]]
 file = "mods/create.pw.toml"
-hash = "3d22456ed14c5f4abaf5a1b3dfcfaff3626f595f353176eec276f70dffdef6fd"
+hash = "722260d950673eedd85d141e00883d8899b5336a79cfaded12e96359875f4c09"
 metafile = true
 
 [[files]]
 file = "mods/createaddition.pw.toml"
-hash = "3bad491224e4a972591b3898b419e7d8995ab1816f1fc7962793d36445d3ae7e"
+hash = "51c03bc1964c9718590897fc58252c0ce24cd3b2c2716b06199750aa34dc227d"
 metafile = true
 
 [[files]]
@@ -222,22 +222,22 @@ metafile = true
 
 [[files]]
 file = "mods/ex-nihilo-sequentia-mekanism-addon.pw.toml"
-hash = "e2d3689c076a430c9d6fe17e8a57ad02dbf86fb9e057033df31eaf85f224bcf1"
+hash = "2d8e575a386f6fc43e66bfeac162461ba0900c9f5d8ce7bc03bbfdba6cf86319"
 metafile = true
 
 [[files]]
 file = "mods/ex-nihilo-sequentia-thermal-addon.pw.toml"
-hash = "1ce30444037f2141b6046aa5eee63cd159de5e2af0c79ac1509e9325cbb2cf77"
+hash = "c1de1b449ce2aebf9c5f4056716c48c7b6c8ac5466e1ab196ba8ae6fe44b3d89"
 metafile = true
 
 [[files]]
 file = "mods/ex-nihilo-sequentia-tinkers-addon.pw.toml"
-hash = "88bc464f0e4fa9a00fc8358bbf97d9971c99480cd91698d7457cdfdec5485743"
+hash = "abc7598e178e9eade9336c773657f3c6905d6696f7a2e9189cb47d6d735f12da"
 metafile = true
 
 [[files]]
 file = "mods/ex-nihilo-sequentia.pw.toml"
-hash = "abff5c08d0d2b6d96c25b88075aea9f4e27f46591f887e1c59dadf83bc3e2ed1"
+hash = "c1dbee87ecea8d45d65741b70f48ef7702e07534e0fd30c418692f0f1153e3bc"
 metafile = true
 
 [[files]]
@@ -342,7 +342,7 @@ metafile = true
 
 [[files]]
 file = "mods/jade-addons.pw.toml"
-hash = "95bb4e5153dc7c86dce16e067fbd8ff2c5d510cadc14b0fa641afc20bea1f405"
+hash = "aa0cb222f2497eb5f0788f83c2a9c88611748e82101fef9192801e817d7d6919"
 metafile = true
 
 [[files]]

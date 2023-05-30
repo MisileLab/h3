@@ -1,13 +1,13 @@
 name = "Ex Nihilo: Sequentia - Tinkers Addon"
-filename = "ExNihiloTinkers-1.18.2-20220711-043110.jar"
+filename = "ExNihiloTinkers-1.18.2-20230528-221633.jar"
 side = "both"
 
 [download]
 hash-format = "sha1"
-hash = "253bf3d8afd811a7ccecea51fed51517178c59b1"
+hash = "c31e803b2624c2a37b54989b8f401951fe3987f8"
 mode = "metadata:curseforge"
 
 [update]
 [update.curseforge]
-file-id = 3869038
+file-id = 4556981
 project-id = 480856

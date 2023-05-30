@@ -1,13 +1,13 @@
 name = "Voluminous Energy"
-filename = "VoluminousEnergy-1.19-0.4 Alpha 4.jar"
+filename = "VoluminousEnergy-1.19-0.4 Beta 1.jar"
 side = "both"
 
 [download]
-url = "https://cdn.modrinth.com/data/FY87QDxY/versions/VO7ykynX/VoluminousEnergy-1.19-0.4%20Alpha%204.jar"
+url = "https://cdn.modrinth.com/data/FY87QDxY/versions/a4ngjbtt/VoluminousEnergy-1.19-0.4%20Beta%201.jar"
 hash-format = "sha1"
-hash = "9d052529d25ab344fe5b51b96b79d6846b1bf3b2"
+hash = "7176c568183674ba4f6cc800edccd226c271079b"
 
 [update]
 [update.modrinth]
 mod-id = "FY87QDxY"
-version = "VO7ykynX"
+version = "a4ngjbtt"
