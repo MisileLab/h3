@@ -206,6 +206,11 @@ hash = "e0060f04907a26ffe73045102fdf2060eeb4249f1e9e3a4197b721f4160ada38"
 metafile = true
 
 [[files]]
+file = "mods/create-big-cannons.pw.toml"
+hash = "66e1f2dd3270ba592a425db035fd894655ee32389385843f08ec0e18b8e38d3d"
+metafile = true
+
+[[files]]
 file = "mods/create-crystal-clear.pw.toml"
 hash = "8520d6e202b7fd6b5edb0456e8974b45cdee30c2cc7df345c329cca3bd3e258a"
 metafile = true
