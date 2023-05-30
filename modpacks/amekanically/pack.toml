@@ -1,0 +1,13 @@
+name = "Mekanically-Above"
+author = "MisileLaboratory"
+version = "0.0.1-rolling"
+pack-format = "packwiz:1.1.0"
+
+[index]
+file = "index.toml"
+hash-format = "sha256"
+hash = "aed6930cc62ad49da079e8b3d54cf631179038c6dab3ecccf6c937a861583bd9"
+
+[versions]
+forge = "43.2.11"
+minecraft = "1.19.2"

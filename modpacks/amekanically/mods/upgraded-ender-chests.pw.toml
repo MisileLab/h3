@@ -1,0 +1,13 @@
+name = "Upgraded Ender Chests"
+filename = "upgradedechests-forge-1.0.2-1.19.2.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/KmhsAdOt/versions/T0S9KN2N/upgradedechests-forge-1.0.2-1.19.2.jar"
+hash-format = "sha1"
+hash = "5e66cde7d0da3d9f58355fedd1a88a115d3843ec"
+
+[update]
+[update.modrinth]
+mod-id = "KmhsAdOt"
+version = "T0S9KN2N"

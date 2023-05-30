@@ -1,0 +1,13 @@
+name = "Exponential Power"
+filename = "ExponentialPower-2.1.2.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/p8EuQNR0/versions/2.1.2/ExponentialPower-2.1.2.jar"
+hash-format = "sha1"
+hash = "09b1d8c06d23a78a7639d078dcc09af69f8bb315"
+
+[update]
+[update.modrinth]
+mod-id = "p8EuQNR0"
+version = "Au42e4YO"

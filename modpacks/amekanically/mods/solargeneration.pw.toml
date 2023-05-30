@@ -1,0 +1,13 @@
+name = "Solar Generation"
+filename = "SolarGeneration-1.19.2-5.2.0.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/jfd8j2j2/versions/QE0ROdpP/SolarGeneration-1.19.2-5.2.0.jar"
+hash-format = "sha1"
+hash = "4593d57e89017e43cea2d0827f0ce92dec0ddcdd"
+
+[update]
+[update.modrinth]
+mod-id = "jfd8j2j2"
+version = "QE0ROdpP"

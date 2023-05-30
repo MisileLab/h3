@@ -1,0 +1,13 @@
+name = "Colossal Chests"
+filename = "ColossalChests-1.19.2-1.9.0.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/V8HM9qmm/versions/cUASBVOU/ColossalChests-1.19.2-1.9.0.jar"
+hash-format = "sha1"
+hash = "2e79a9a4975244c6022635019f4fa30d5a5ddee3"
+
+[update]
+[update.modrinth]
+mod-id = "V8HM9qmm"
+version = "cUASBVOU"

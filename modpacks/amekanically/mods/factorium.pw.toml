@@ -1,0 +1,13 @@
+name = "Factorium"
+filename = "factorium-1.4.0.4-mc1.19.2.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/hxRQhIq5/versions/HIVMQHGA/factorium-1.4.0.4-mc1.19.2.jar"
+hash-format = "sha1"
+hash = "c8d9b7cf82a28fbbc258398a0c1ea52f1b1fe360"
+
+[update]
+[update.modrinth]
+mod-id = "hxRQhIq5"
+version = "HIVMQHGA"

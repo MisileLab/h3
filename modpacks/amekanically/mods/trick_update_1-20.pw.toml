@@ -1,0 +1,13 @@
+name = "Trick Update 1.20 - Not Official"
+filename = "Update-1.20_v2.3_1.19.2.jar"
+side = "client"
+
+[download]
+url = "https://cdn.modrinth.com/data/mw5eiJPH/versions/CBKU5y0B/Update-1.20_v2.3_1.19.2.jar"
+hash-format = "sha1"
+hash = "f19f554ac7abc954133eeb4ef0992dd9e3f7cfad"
+
+[update]
+[update.modrinth]
+mod-id = "mw5eiJPH"
+version = "CBKU5y0B"

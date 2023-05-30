@@ -1,0 +1,13 @@
+name = "Control Engineering"
+filename = "ControlEngineering-0.2.0.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/x4E7exfQ/versions/wkIKWJ11/ControlEngineering-0.2.0.jar"
+hash-format = "sha1"
+hash = "eae7cdaca5b6ea161b5b898d88e055fb60545368"
+
+[update]
+[update.modrinth]
+mod-id = "x4E7exfQ"
+version = "wkIKWJ11"

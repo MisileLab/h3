@@ -1,0 +1,13 @@
+name = "Redderstone"
+filename = "redderstone-0.2.6-forge.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/uEcJ3Ekq/versions/4Eh1h5rm/redderstone-0.2.6-forge.jar"
+hash-format = "sha1"
+hash = "e66745d15b8c9a02188e384682a98f644b59f732"
+
+[update]
+[update.modrinth]
+mod-id = "uEcJ3Ekq"
+version = "4Eh1h5rm"

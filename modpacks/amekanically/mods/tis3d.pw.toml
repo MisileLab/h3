@@ -1,0 +1,13 @@
+name = "TIS-3D"
+filename = "tis3d-MC1.19.2-forge-1.7.2+a05bbc1.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/L23x7zL8/versions/O0CjGjd9/tis3d-MC1.19.2-forge-1.7.2%2Ba05bbc1.jar"
+hash-format = "sha1"
+hash = "82ce3e040baf998fd0973b61877b3266a990eaea"
+
+[update]
+[update.modrinth]
+mod-id = "L23x7zL8"
+version = "O0CjGjd9"

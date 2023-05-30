@@ -1,0 +1,13 @@
+name = "Generator Galore"
+filename = "generatorgalore-1.19.2-0.1.0.5.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/blEO0qto/versions/daL5dX2V/generatorgalore-1.19.2-0.1.0.5.jar"
+hash-format = "sha1"
+hash = "e9cb030a5b896b80255c85e2b1a1e3e9d64493be"
+
+[update]
+[update.modrinth]
+mod-id = "blEO0qto"
+version = "daL5dX2V"

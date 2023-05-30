@@ -1,0 +1,13 @@
+name = "Markdown Manual"
+filename = "markdown_manual-MC1.19.2-forge-1.2.3+87774e1.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/nPQ9xkPg/versions/RjWNbcQa/markdown_manual-MC1.19.2-forge-1.2.3%2B87774e1.jar"
+hash-format = "sha1"
+hash = "06114c66d3d1226c0b0c3942100d51c2f7deee17"
+
+[update]
+[update.modrinth]
+mod-id = "nPQ9xkPg"
+version = "RjWNbcQa"
