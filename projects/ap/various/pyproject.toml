@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "various"
+version = "0.1.0"
+description = "Various things"
+authors = ["MisileLaboratory"]
+license = "MisileLab License"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.11.3"
+orjson = "3.8.14"
+misilelibpy = { path = "libs/misilelib/misilelib-python" }
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

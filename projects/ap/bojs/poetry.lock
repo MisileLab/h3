@@ -2,7 +2,7 @@
 
 [[package]]
 name = "baekjoonapi"
-version = "0.2.2"
+version = "0.2.3"
 description = "BaekjoonAPI for Python"
 category = "main"
 optional = false
@@ -14,13 +14,13 @@ develop = false
 bs4 = "0.0.1"
 lxml = "4.9.2"
 random-user-agent = "1.0.1"
-requests = "2.30.0"
+requests = "2.31.0"
 
 [package.source]
 type = "git"
 url = "https://github.com/MisileLab/baekjoonapi.git"
 reference = "HEAD"
-resolved_reference = "ac81f68329100cc0079426d1d14b3cfa4dd5fefd"
+resolved_reference = "71463dda8c2f976b1267cf380444bc07e3da2cd4"
 
 [[package]]
 name = "beautifulsoup4"
@@ -269,7 +269,7 @@ develop = false
 
 [package.source]
 type = "directory"
-url = "../../libraries/misilelib/misilelib-python"
+url = "../../../libraries/misilelib/misilelib-python"
 
 [[package]]
 name = "random-user-agent"
@@ -285,14 +285,14 @@ files = [
 
 [[package]]
 name = "requests"
-version = "2.30.0"
+version = "2.31.0"
 description = "Python HTTP for Humans."
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "requests-2.30.0-py3-none-any.whl", hash = "sha256:10e94cc4f3121ee6da529d358cdaeaff2f1c409cd377dbc72b825852f2f7e294"},
-    {file = "requests-2.30.0.tar.gz", hash = "sha256:239d7d4458afcb28a692cdd298d87542235f4ca8d36d03a15bfc128a6559a2f4"},
+    {file = "requests-2.31.0-py3-none-any.whl", hash = "sha256:58cd2187c01e70e6e26505bca751777aa9f2ee0b7f4300988b709f44e013003f"},
+    {file = "requests-2.31.0.tar.gz", hash = "sha256:942c5a758f98d790eaed1a29cb6eefc7ffb0d1cf7af05c3d2791656dbd6ad1e1"},
 ]
 
 [package.dependencies]
@@ -350,4 +350,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "3.11.3"
-content-hash = "db47eecd9c15449b6d6f487beaa741d761d9a4c1a9ad7ce5afd292156d4d03fc"
+content-hash = "0d78b8ccef60c5736d631ccb44652bd87f192c25a303bb3fe59785a9b293dd14"
