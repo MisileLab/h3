@@ -18,7 +18,7 @@ jobs:
     - uses: dorny/paths-filter@v2
       id: changes
       with:
-        filters: .github/workflows/filters.yml
+        filters: .github/filters.yml
 
     # - if: steps.changes.outputs.src == 'true'
     - uses: actions/setup-go@v4
