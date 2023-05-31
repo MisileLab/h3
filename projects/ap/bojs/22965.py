@@ -3,7 +3,7 @@ a = list(map(int, input().split(" ")))
 b = 1
 c = list(sorted(a))
 
-while a != c:
+while a != c and b != 3:
     b += 1
     d = []
     for i in range(2, len(a)):
