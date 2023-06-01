@@ -1,17 +1,11 @@
-import math
-
-def lcm(a: int, b: int) -> int:
-    return abs(a * b) // math.gcd(a, b)
-
-def find_largest_lcm(n: int) -> int:
-    answer = 0
-    for i in range(1, n - 1):
-        temp = lcm(i, lcm(i + 1, i + 2))
-        answer = max(answer, temp)
-    return answer
+from math import lcm
 
 num_cases = int(input(""))
 for _ in range(num_cases):
     n = int(input(""))
-    largest_lcm = find_largest_lcm(n)
-    print(largest_lcm)
+    tmp1 = lcm(lcm(n - 3, n - 2), n - 1)
+    tmp2 = lcm(lcm(n - 2, n - 1), n)
+    if n % 2 == 0:
+        print(max(max(tmp1, tmp2), lcm(lcm(n - 3, n - 1), n)))
+    else:
+        print(max(max(tmp1, tmp2), lcm(lcm(n - 3, n - 2), n)))
