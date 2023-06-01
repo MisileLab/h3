@@ -6,7 +6,7 @@ hash = "d2c4801b482d2bdafc015b161806f646a640a1ccaf5dbc6ae7b54cc6f398714a"
 
 [[files]]
 file = "mods/advanced-peripherals.pw.toml"
-hash = "8e686da2db44388474f16c6eba6da8529319ae3284622bd6600c1d460f5ac388"
+hash = "81b518296ec4db07259934cce1523228499c8c5b824f6425a207e84587cd980e"
 metafile = true
 
 [[files]]
@@ -136,7 +136,7 @@ metafile = true
 
 [[files]]
 file = "mods/create-confectionery.pw.toml"
-hash = "31ccc987a5d973083662a881aa0c35a0f5ae66cc01ee0bb612b23f9bfe4e37a6"
+hash = "46c8cc73b106105ec803b03a21e9638d7a4843214916d2fbd303359e0cb65646"
 metafile = true
 
 [[files]]

@@ -17,7 +17,7 @@ metafile = true
 
 [[files]]
 file = "mods/advancedperipherals.pw.toml"
-hash = "540897eb6c24087db6928e1f4de12e6449ceeace6a8ff00c33aa166a41bbdd2f"
+hash = "170f66de3557126c8671aa742ebfa6d15dfd3d94ce3648c84ba2cc2fa86167ea"
 metafile = true
 
 [[files]]
@@ -227,17 +227,12 @@ metafile = true
 
 [[files]]
 file = "mods/create-jetpack.pw.toml"
-hash = "570cc2b8b401b183104afa5b9cdc7c0dd4bc3f01edab13e85861ff2e319aa854"
+hash = "f54d71f089c8430c251184f7dae8f72f059d7469e02f3e444564f1017bb09c8f"
 metafile = true
 
 [[files]]
 file = "mods/create-mechanical-extruder.pw.toml"
 hash = "f07f337b0c176b7bb028672a9693847cc072bbf31baeb24a0641a6426b75c215"
-metafile = true
-
-[[files]]
-file = "mods/create-mechanical-spawner.pw.toml"
-hash = "1c154ccfaa2f99ed847f35a522dfc2a8cbf890f3b8587011926bd1e948a8c4bf"
 metafile = true
 
 [[files]]
@@ -342,7 +337,7 @@ metafile = true
 
 [[files]]
 file = "mods/fastentitytransfer.pw.toml"
-hash = "28eccd84f2ca7d2de5125b0aa09349a8a6d721729c9cc31b3a7ae9820a507504"
+hash = "40344ffc3e11ada777b700f82b24eb6a24781983f17661eb63bcdcd076444052"
 metafile = true
 
 [[files]]
@@ -457,7 +452,7 @@ metafile = true
 
 [[files]]
 file = "mods/liquid-burner.pw.toml"
-hash = "cf1bb6a5d73d52a80f7419e2a16d9a27d80b2cd72d222a78eeed799a889413f3"
+hash = "16c96b587f88a5f6cde8b3de578d5d96f64a39676372924f26a1e172485111b3"
 metafile = true
 
 [[files]]
@@ -777,7 +772,7 @@ metafile = true
 
 [[files]]
 file = "mods/upgraded-ender-chests.pw.toml"
-hash = "6240dd3536dbf6d1d11355702ac5c92faa318c4ca990aaafd8db4f8d19c4035b"
+hash = "7ade4473039dd06a305bb6367081a68f00926f183e94c7b17eb1452e6ca7f594"
 metafile = true
 
 [[files]]
