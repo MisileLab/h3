@@ -13,17 +13,10 @@ for _ in range(int(input())):
     a.append(list(map(int, input().split(" "))))
 
 for i in a:
+    c = []
     b = i.copy()
-    for i2, i3 in enumerate(i):
-        if get(b, i2-1) > i3 - (i2+1) + 1 and get(b, i2-1) > i3:
-            b[i2] = min(i3, i3-(i2+1)+1)
-        elif get(b, i2-1) > i3 - (i2+1) + 1:
-            b[i2] = i3 - (i2+1) + 1
-        elif get(b, i2-1) > i3:
-            b[i2] = i3
-        else:
-            break
-    else:
-        print("YES")
-        continue
-    print("NO")
+    d = False
+    while d:
+        for i2, i3 in enumerate(i):
+            b[i2] = i3-(i2+1)+1
+    
