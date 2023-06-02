@@ -611,13 +611,13 @@ tqdm = ["tqdm"]
 
 [[package]]
 name = "gradio"
-version = "3.32.0"
+version = "3.33.1"
 description = "Python library for easily interacting with trained machine learning models"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "gradio-3.32.0-py3-none-any.whl", hash = "sha256:68d2ebfadcabb0a088e90328fcde18dbc063237a092f3a414a2defe2b674f10f"},
-    {file = "gradio-3.32.0.tar.gz", hash = "sha256:bcdd97bccffe5dd904574d060cf685082ac7261a51164bb0854e9648fbd45ec1"},
+    {file = "gradio-3.33.1-py3-none-any.whl", hash = "sha256:6650232c88dad1b78f8df3795cf44c52600b5bb96166f18d233e5454547725ae"},
+    {file = "gradio-3.33.1.tar.gz", hash = "sha256:e79033692606b945dcc2bc8f38a3cd2c3a1acd37087365215c1bb00ad7f76aa3"},
 ]
 
 [package.dependencies]
@@ -628,7 +628,7 @@ fastapi = "*"
 ffmpy = "*"
 gradio-client = ">=0.2.4"
 httpx = "*"
-huggingface-hub = ">=0.13.0"
+huggingface-hub = ">=0.14.0"
 jinja2 = "*"
 markdown-it-py = {version = ">=2.0.0", extras = ["linkify"]}
 markupsafe = "*"
@@ -1971,4 +1971,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "3.11.3"
-content-hash = "04258c7044e064fdcb3cea4fafb78f296727df61297e88ca9d22ed1dc507a495"
+content-hash = "67cf221db6c975a93ac8772531fb34d247f7f29f02f11e2668731f2c69b4cc66"
