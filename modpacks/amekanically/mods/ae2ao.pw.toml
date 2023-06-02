@@ -1,13 +1,13 @@
 name = "AE2 Additional Opportunity"
-filename = "ae2ao-8.1.0-1.19.3.jar"
+filename = "ae2ao-6.1.0-1.19.2.jar"
 side = "both"
 
 [download]
-url = "https://cdn.modrinth.com/data/Wf9sAhOo/versions/IEr5QPym/ae2ao-8.1.0-1.19.3.jar"
+url = "https://cdn.modrinth.com/data/Wf9sAhOo/versions/3AqUl8cl/ae2ao-6.1.0-1.19.2.jar"
 hash-format = "sha1"
-hash = "818b6c205e1d082dbdf7c76ff8419b2746d0af16"
+hash = "bad9d0f654e85a2d54d5b4ca249cb6858af38dc9"
 
 [update]
 [update.modrinth]
 mod-id = "Wf9sAhOo"
-version = "IEr5QPym"
+version = "3AqUl8cl"
