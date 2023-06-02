@@ -12,10 +12,10 @@ for _ in range(int(input())):
     input()
     a.append(list(map(int, input().split(" "))))
 
+d = False
 for i in a:
     c = []
     b = i.copy()
-    d = False
     while d:
         for i2, i3 in enumerate(i):
             b[i2] = i3-(i2+1)+1
