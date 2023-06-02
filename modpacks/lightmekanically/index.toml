@@ -156,7 +156,7 @@ metafile = true
 
 [[files]]
 file = "mods/create-enchantment-industry.pw.toml"
-hash = "165e90a8cdbbfe61095bc0ba951fb4dc29a0480ee13431341e5bc3b1961f6370"
+hash = "1b17b879db7d52f612b27a1684031500d57615ff6ec987f9175ac713d3dbdad0"
 metafile = true
 
 [[files]]
