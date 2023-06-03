@@ -27,7 +27,7 @@ metafile = true
 
 [[files]]
 file = "mods/ae2ao.pw.toml"
-hash = "cd944d26d2b7a102655b2528b334800c2943ffaa07491329dbb851362df24512"
+hash = "5c818cecbed91caa1f95032cc5a69355d05cc59f7f7fa47ebaac13efa020e9d8"
 metafile = true
 
 [[files]]
@@ -222,7 +222,7 @@ metafile = true
 
 [[files]]
 file = "mods/create-enchantment-industry.pw.toml"
-hash = "8703effb92bb2953e6407d76fe56b062235c868af0329ad0a3ddbd14990b387a"
+hash = "93ccb6e350fbc611a1970261bbc18ee7d0b4e44ca0a1f67fb25b1a7c97475578"
 metafile = true
 
 [[files]]

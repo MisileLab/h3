@@ -1,3 +1,3 @@
 # DML (Discord(Disnake) Module Loader)
 
-use xobusy site
+- snt.py sunrint meal module (Discontinued)
