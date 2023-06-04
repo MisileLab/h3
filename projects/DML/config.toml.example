@@ -1,3 +1,7 @@
 TOKEN=""
-NEISAPIKEY="" // for snt.py
+NEISAPIKEY="" # for snt.py
 TEST_GUILDS=[01010]
+BLOCK_LIST=["thisisblockedmodule.py"]
+FINTECH_USE_NUM=0 # for bank.py
+BANK_TRAN_ID=0 # for bank.py
+KFTC_TOKEN=0 # for bank.py

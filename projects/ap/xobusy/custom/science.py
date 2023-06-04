@@ -1,3 +1,5 @@
+from unicode import join_jamos
+
 a = [
     'CTTTTTTAATTATCTTCCGTTAGATAAGTAGACTGACGTTGGTTAGACGTTGACTGATACGGACGAGACGTTGACATT',
     'AATCGATTAGGAT TGGACTGACGGT TGGGAGTAGGGCGAAGAGTTAGGTAGGTAGACTGGCGTTGATTGCACGTTGACTGATACGGACGAGACGTTGACATT',
@@ -56,6 +58,5 @@ def e(f: str):
             _buffer = ""
     return g
 
-for i in d:
-    print(i)
-    print(e(i))
+for i in b:
+    print(join_jamos(e(i)))

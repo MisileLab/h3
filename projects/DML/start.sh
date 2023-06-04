@@ -1,2 +1,1 @@
-rm nohup.out
-nohup poetry run python main.py &
+poetry run python main.py

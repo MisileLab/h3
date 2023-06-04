@@ -8,13 +8,18 @@ from disnake.ext.commands import CommandNotFound
 bot = commands.Bot(intents=Intents.all(), command_prefix='/', help_command=None)
 config = load(open("config.toml", 'rb'))
 test_ids = config.get("TEST_GUILDS")
+if test_ids is None:
+    test_ids = []
+block_list = config.get("BLOCK_LIST")
+if block_list is None:
+    block_list = []
 
 @bot.event
 async def on_ready():
     for i in listdir("modules"):
-        if isfile(f"modules/{i}") and i.endswith(".py"):
-            print(f"found {i}")
-    bot.load_extensions("modules")
+        if isfile(f"modules/{i}") and i.endswith(".py") and i not in block_list:
+            print(f"loading {i}")
+            bot.load_extension(f"modules/{i}")
     print("bot ready")
 
 @bot.event
