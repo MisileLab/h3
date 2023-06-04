@@ -252,24 +252,18 @@ def join_jamos(s, ignore_err=True):
 
     for c in s:
         if c not in CHARSET:
-            if queue:
-                new_c = flush() + c
-            else:
-                new_c = c
+            new_c = flush() + c if queue else c
             last_t = 0
         else:
             t = get_jamo_type(c)
             new_c = None
             if t & FINAL == FINAL:
-                if not (last_t == MEDIAL):
+                if last_t != MEDIAL:
                     new_c = flush()
             elif t == INITIAL:
                 new_c = flush()
             elif t == MEDIAL:
-                if last_t & INITIAL == INITIAL:
-                    new_c = flush(1)
-                else:
-                    new_c = flush()
+                new_c = flush(1) if last_t & INITIAL == INITIAL else flush()
             last_t = t
             queue.insert(0, c)
         if new_c:
