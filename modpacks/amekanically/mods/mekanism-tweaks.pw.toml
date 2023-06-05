@@ -1,13 +1,13 @@
 name = "MekanismTweaks"
-filename = "mekanismtweaks-1.0.jar"
+filename = "mekanismtweaks-1.1.jar"
 side = "both"
 
 [download]
-url = "https://cdn.modrinth.com/data/ZQaUJHDe/versions/CXTEvu7J/mekanismtweaks-1.0.jar"
+url = "https://cdn.modrinth.com/data/ZQaUJHDe/versions/58ztvzOp/mekanismtweaks-1.1.jar"
 hash-format = "sha1"
-hash = "3795148e9fe70ccc45aed355fd7a3a75b7381362"
+hash = "233543883d81ba7d0767b7784a6861cda1f4ecd3"
 
 [update]
 [update.modrinth]
 mod-id = "ZQaUJHDe"
-version = "CXTEvu7J"
+version = "58ztvzOp"

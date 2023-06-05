@@ -156,7 +156,7 @@ metafile = true
 
 [[files]]
 file = "mods/create-enchantment-industry.pw.toml"
-hash = "1b17b879db7d52f612b27a1684031500d57615ff6ec987f9175ac713d3dbdad0"
+hash = "766230d826e379b2f64da0cef639a8a6397cae81d92028af100fc864cbcdc9ee"
 metafile = true
 
 [[files]]
@@ -361,7 +361,7 @@ metafile = true
 
 [[files]]
 file = "mods/little-contraptions.pw.toml"
-hash = "6bf00bf499b93a28962bace1a8ac79e4baaa80020cce1ae509615df58713f92f"
+hash = "6db3aeb9a695e8e75048bf5dd0bc2cde03026396018dd848837683fb18f7bde8"
 metafile = true
 
 [[files]]

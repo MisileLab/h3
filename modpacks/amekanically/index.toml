@@ -222,7 +222,7 @@ metafile = true
 
 [[files]]
 file = "mods/create-enchantment-industry.pw.toml"
-hash = "93ccb6e350fbc611a1970261bbc18ee7d0b4e44ca0a1f67fb25b1a7c97475578"
+hash = "864ef1c12369c31a2550a4f172098ecd3e120688f43904d32e485a64f86cfaf0"
 metafile = true
 
 [[files]]
@@ -257,7 +257,7 @@ metafile = true
 
 [[files]]
 file = "mods/cyclops-core.pw.toml"
-hash = "26257c961941d3cf399ea550fe516c74a67bc60032cbb4d2520b7bd9584fcbf4"
+hash = "860660962ba9d0dc74888e60a35ccf935f6f678569435987c545738900bfe794"
 metafile = true
 
 [[files]]
@@ -292,7 +292,7 @@ metafile = true
 
 [[files]]
 file = "mods/energized-power.pw.toml"
-hash = "dcaf6220ab30e132a13e6edd35407986b3aa43ab4a5e40df7e4c9ce40dbd9287"
+hash = "527516516d49d7e648b315cb46301e0c2c342ac39778d40b82a329e30357bd47"
 metafile = true
 
 [[files]]
@@ -382,7 +382,7 @@ metafile = true
 
 [[files]]
 file = "mods/integrated-dynamics.pw.toml"
-hash = "60d783097954d359ce35e099321712f0d23f5d04f73544da63e8efa4b89c8eba"
+hash = "5d0527ab1c25ecc10b69c63754922a11fe5f47523f30c11afd8fd534a1c2d0ae"
 metafile = true
 
 [[files]]
@@ -487,7 +487,7 @@ metafile = true
 
 [[files]]
 file = "mods/mekanism-tweaks.pw.toml"
-hash = "374af8092f8510e8fe45bcb19760b789d86d4e4e6f1a0d9351284af5a4ee26ad"
+hash = "6d455c884d47872577587e6e9b513b07e389abf43009407dacb130672f17d390"
 metafile = true
 
 [[files]]

@@ -1,9 +1,10 @@
 update-packwiz:
 	go install github.com/packwiz/packwiz@latest
-	go install github.com/Merith-TK/packwiz-wrapper/cmd/pw@latest
 	clear
 	echo "Packwiz has been Updated"
+export:
+	./simple-packwiz-wrapper.sh export
 update:
-	pw -b -d modpacks update --all
+	./simple-packwiz-wrapper.sh update
 refresh:
-	pw -b -d modpacks refresh
+	./simple-packwiz-wrapper.sh refresh
