@@ -20,7 +20,9 @@ versions = Dict(
     2=>"BronzeIV",
     3=>"BronzeIII",
     4=>"BronzeII",
-    8=>"SilverIII"
+    5=>"BronzeI",
+    8=>"SilverIII",
+    12=>"GoldIV"
 )
 
 for i in readdir("problems")
