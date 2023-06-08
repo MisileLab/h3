@@ -8,7 +8,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "3.11.3"
-gradio = "3.33.1"
+gradio = "3.34.0"
 
 [build-system]
 requires = ["poetry-core"]

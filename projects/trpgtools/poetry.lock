@@ -600,13 +600,13 @@ tqdm = ["tqdm"]
 
 [[package]]
 name = "gradio"
-version = "3.33.1"
+version = "3.34.0"
 description = "Python library for easily interacting with trained machine learning models"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "gradio-3.33.1-py3-none-any.whl", hash = "sha256:6650232c88dad1b78f8df3795cf44c52600b5bb96166f18d233e5454547725ae"},
-    {file = "gradio-3.33.1.tar.gz", hash = "sha256:e79033692606b945dcc2bc8f38a3cd2c3a1acd37087365215c1bb00ad7f76aa3"},
+    {file = "gradio-3.34.0-py3-none-any.whl", hash = "sha256:1cd8b25b598d983561d64f0a039af819382f1376c676aa9f84972c46b6875741"},
+    {file = "gradio-3.34.0.tar.gz", hash = "sha256:fd7fa7257ffc749f9dc7c297eba554eaa1e5acd1a5f9c973250b2080932d6a41"},
 ]
 
 [package.dependencies]
@@ -615,7 +615,7 @@ aiohttp = "*"
 altair = ">=4.2.0"
 fastapi = "*"
 ffmpy = "*"
-gradio-client = ">=0.2.4"
+gradio-client = ">=0.2.6"
 httpx = "*"
 huggingface-hub = ">=0.14.0"
 jinja2 = "*"
@@ -640,13 +640,13 @@ websockets = ">=10.0"
 
 [[package]]
 name = "gradio-client"
-version = "0.2.5"
+version = "0.2.6"
 description = "Python library for easily interacting with trained machine learning models"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "gradio_client-0.2.5-py3-none-any.whl", hash = "sha256:922a5188c93797adce023b4caa655318b9c09834095d31763443c1e7a707e301"},
-    {file = "gradio_client-0.2.5.tar.gz", hash = "sha256:1a24dd7a09976db70fd32cdb5512b6f7b15c1a084f310b5f6b3021c9794d90a4"},
+    {file = "gradio_client-0.2.6-py3-none-any.whl", hash = "sha256:daa3e2f7697cc07821ccefa7486b923e71c1e459d5b3c6e35318f343b566d789"},
+    {file = "gradio_client-0.2.6.tar.gz", hash = "sha256:a5d5c5799ce33ae3107e1d30992c27050f50506f15dd70481a39b13ac47e2613"},
 ]
 
 [package.dependencies]
@@ -1955,4 +1955,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "3.11.3"
-content-hash = "67cf221db6c975a93ac8772531fb34d247f7f29f02f11e2668731f2c69b4cc66"
+content-hash = "fd3a436f3e5075d8163af6aa8f8be4f170289b841e99a81105df65fdb1e51b4f"
