@@ -8,7 +8,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "3.11.3"
-orjson = "3.9.0"
+orjson = "3.9.1"
 misilelibpy = { path = "libs/misilelib/misilelib-python" }
 
 [build-system]
