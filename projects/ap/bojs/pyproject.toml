@@ -13,6 +13,9 @@ requests = "2.31.0"
 baekjoonapi = {git = "https://github.com/MisileLab/baekjoonapi.git"}
 misilelibpy = {path = "libs/misilelib/misilelib-python"}
 
+[tool.poetry.group.extra.dependencies]
+tqdm = "4.65.0"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
