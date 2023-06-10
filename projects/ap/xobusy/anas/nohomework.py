@@ -19,3 +19,6 @@ while True:
         print(next(c), next(d))
     except StopIteration:
         break
+
+e, f = [x for x in collatz(400) if x != 2], [x for x in collatz(400) if x == 2]
+print(e, f)
