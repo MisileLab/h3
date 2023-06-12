@@ -7,9 +7,9 @@ license = "MisileLab License"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "3.11.3"
+python = "3.11.4"
 orjson = "3.9.1"
-misilelibpy = { path = "libs/misilelib/misilelib-python" }
+misilelibpy = {path="libs/misilelib/misilelib-python"}
 
 [build-system]
 requires = ["poetry-core"]
