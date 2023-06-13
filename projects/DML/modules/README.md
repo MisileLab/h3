@@ -1,3 +1,4 @@
-# DML (Discord(Disnake) Module Loader)
+# Disnake Modules
 
-- snt.py sunrint meal module (Discontinued)
+- scpsl.py SCP: SL status module
+- setofmention.py the multiple mention discord bot

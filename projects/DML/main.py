@@ -4,6 +4,7 @@ from os import listdir
 from os.path import isfile
 from tomli import load
 from disnake.ext.commands import CommandNotFound
+from requests import HTTPError
 
 bot = commands.Bot(intents=Intents.all(), command_prefix='/', help_command=None)
 config = load(open("config.toml", 'rb'))
@@ -24,7 +25,9 @@ async def on_ready():
 
 @bot.event
 async def on_command_error(ctx, error):
-    if not isinstance(error, CommandNotFound):
+    if isinstance(error, HTTPError):
+        await ctx.send(f"HTTP Error -> Status: {error.response.status_code}")
+    elif not isinstance(error, CommandNotFound):
         await ctx.send("An error occured while executing the command. Please try again later.")
         raise error
 
@@ -32,4 +35,5 @@ async def on_command_error(ctx, error):
 async def ping(ctx: ApplicationCommandInteraction):
     await ctx.send(f"pong(discord API latency): {round(ctx.bot.latency, 2) * 1000}ms")
 
+bot.i18n.load('locales')
 bot.run(config["TOKEN"])
