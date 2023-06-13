@@ -3,5 +3,5 @@
 
 ## Requirements
 
-- Python 3.11.2
+- Python 3.11.4
 - Python Poetry
