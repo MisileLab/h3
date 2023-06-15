@@ -600,13 +600,13 @@ tqdm = ["tqdm"]
 
 [[package]]
 name = "gradio"
-version = "3.34.0"
+version = "3.35.2"
 description = "Python library for easily interacting with trained machine learning models"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "gradio-3.34.0-py3-none-any.whl", hash = "sha256:1cd8b25b598d983561d64f0a039af819382f1376c676aa9f84972c46b6875741"},
-    {file = "gradio-3.34.0.tar.gz", hash = "sha256:fd7fa7257ffc749f9dc7c297eba554eaa1e5acd1a5f9c973250b2080932d6a41"},
+    {file = "gradio-3.35.2-py3-none-any.whl", hash = "sha256:6dc42dedaab583198dbbecc605759cbb154f6066f4f0515b26cf976331786c9a"},
+    {file = "gradio-3.35.2.tar.gz", hash = "sha256:72bafe6e0278e28df0a7ce729b5e4ad8cdb2e07f3cac853b0a73463f38d63bbb"},
 ]
 
 [package.dependencies]
@@ -615,7 +615,7 @@ aiohttp = "*"
 altair = ">=4.2.0"
 fastapi = "*"
 ffmpy = "*"
-gradio-client = ">=0.2.6"
+gradio-client = ">=0.2.7"
 httpx = "*"
 huggingface-hub = ">=0.14.0"
 jinja2 = "*"
@@ -634,19 +634,18 @@ python-multipart = "*"
 pyyaml = "*"
 requests = "*"
 semantic-version = "*"
-typing-extensions = "*"
 uvicorn = ">=0.14.0"
 websockets = ">=10.0"
 
 [[package]]
 name = "gradio-client"
-version = "0.2.6"
+version = "0.2.7"
 description = "Python library for easily interacting with trained machine learning models"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "gradio_client-0.2.6-py3-none-any.whl", hash = "sha256:daa3e2f7697cc07821ccefa7486b923e71c1e459d5b3c6e35318f343b566d789"},
-    {file = "gradio_client-0.2.6.tar.gz", hash = "sha256:a5d5c5799ce33ae3107e1d30992c27050f50506f15dd70481a39b13ac47e2613"},
+    {file = "gradio_client-0.2.7-py3-none-any.whl", hash = "sha256:4a7ec6bb1341c626051f1ed24d50cb960ff1a4cd1a5db031dd4caaf1ee7d2d0a"},
+    {file = "gradio_client-0.2.7.tar.gz", hash = "sha256:c83008df8a1dd3f81a290c0a24c03d0ab70317741991b60f713620ed39ad8f12"},
 ]
 
 [package.dependencies]
@@ -1955,4 +1954,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "3.11.3"
-content-hash = "fd3a436f3e5075d8163af6aa8f8be4f170289b841e99a81105df65fdb1e51b4f"
+content-hash = "63cf4b602b3b118c4a71135fc879537d923fa900ae5240a823d8483e2a7ea7a1"
