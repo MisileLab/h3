@@ -266,7 +266,7 @@ name = "misilelibpy"
 version = "0.1.0"
 description = "MisileLib-Python"
 optional = false
-python-versions = "3.11.3"
+python-versions = "3.11.4"
 files = []
 develop = false
 
@@ -367,5 +367,5 @@ zstd = ["zstandard (>=0.18.0)"]
 
 [metadata]
 lock-version = "2.0"
-python-versions = "3.11.3"
-content-hash = "0b3fc026dd009f3b7ac301c1f1c2ab2ea22fe9c5688d57ec92055eef9025dfc5"
+python-versions = "3.11.4"
+content-hash = "33c15b115dcac62e086b961d572b1133083877e924bcf0402fce80880997495a"
