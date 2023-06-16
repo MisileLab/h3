@@ -1,13 +1,17 @@
 from disnake.ext.commands import Cog, Bot
-from disnake import Member
 from tomli import load
+from datetime import datetime
+from time import mktime
 
 config = load(open("config.toml", "r"))
 
 class LogCog(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
+        self.channel = self.bot.get_channel(config["log_channel"])
+        if self.channel is None:
+            raise ValueError("Log channel not found")
 
-    @Cog.listener()
-    async def on_member_join(self, member: Member):
-        member.add_roles(member.guild.get_role(1067441932076318790))
+    @staticmethod()
+    def timestamp() -> str:
+        return f">>= <t:{int(mktime(datetime.now().timetuple()))}:F>"
