@@ -3,3 +3,4 @@ TEST_GUILDS=[01010]
 BLOCK_LIST=["thisisblockedmodule.py"]
 scpsl_acc_id=0
 scpsl_api_key=0
+log_channel=0

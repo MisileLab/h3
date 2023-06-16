@@ -1,5 +1,5 @@
 from disnake.ext.commands import Cog, Bot, slash_command
-from disnake import ApplicationCommandInteraction, Localized
+from disnake import ApplicationCommandInteraction, Embed
 from tomli import load
 from requests import get
 
@@ -22,6 +22,11 @@ class SCPSL(Cog):
         a.raise_for_status()
         return a.json()
     
-    @slash_command(name="list", description=Localized("scpsl_list_description"))
+    @slash_command(name="list", description="SCP: SL 서버의 리스트를 보여줍니다")
     async def scpsl_list(self, ctx: ApplicationCommandInteraction):
-        pass
+        a = self.backend_of_scpsl()
+        embed = Embed(title="SCP: SL list", description=f"현재 {len(i for i in a if i['online'])} 개의 서버가 온라인입니다.", color=0x00ff00)
+        for i in a:
+            embed.add_field(name=f"{i['name']}-{'online' if i['online'] else 'offline'}", value=f"현재 {i['players']}명이 접속중입니다.", inline=False)
+        embed.set_author(name="Misile", url="https://github.com/misilelab", icon_url="https://avatars.githubusercontent.com/u/74066467")
+        await ctx.send(embed=embed)

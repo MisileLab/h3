@@ -1,4 +1,4 @@
 # Disnake Modules
 
 - scpsl.py SCP: SL status module
-- setofmention.py the multiple mention discord bot
+- log.py Log the some events
