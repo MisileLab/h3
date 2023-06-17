@@ -23,6 +23,7 @@ class SCPSL(Cog):
     
     @slash_command(name="list", description="SCP: SL 서버의 리스트를 보여줍니다")
     async def scpsl_list(self, ctx: ApplicationCommandInteraction):
+        await ctx.response.defer()
         a = backend_of_scpsl()
         if a["Success"] == False:
             await ctx.send("Failed", ephemeral=True)
