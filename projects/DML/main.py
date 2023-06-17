@@ -25,7 +25,7 @@ async def on_ready():
     for i in listdir("modules"):
         if isfile(f"modules/{i}") and i.endswith(".py") and i not in block_list:
             print(f"loading {i}")
-            bot.load_extension(f"modules/{i}")
+            bot.load_extension(f"modules.{i.removesuffix('.py')}")
     print("bot ready")
 
 @bot.event
@@ -45,20 +45,19 @@ async def ping(ctx: ApplicationCommandInteraction):
 @bot.slash_command(name="load", guild_ids=test_ids)
 @is_owner()
 async def load(ctx: ApplicationCommandInteraction, module: str):
-    bot.load_extension(f"modules/{module}.py")
+    bot.load_extension(f"modules/{module}")
     await ctx.send(f"loaded {module}")
 
 @bot.slash_command(name="unload", guild_ids=test_ids)
 @is_owner()
 async def unload(ctx: ApplicationCommandInteraction, module: str):
-    bot.unload_extension(f"modules/{module}.py")
+    bot.unload_extension(f"modules/{module}")
     await ctx.send(f"unloaded {module}")
 
 @bot.slash_command(name="reload", guild_ids=test_ids)
 @is_owner()
 async def reload(ctx: ApplicationCommandInteraction, module: str):
-    bot.reload_extension(f"modules/{module}.py")
+    bot.reload_extension(f"modules/{module}")
     await ctx.send(f"reloaded {module}")
 
-bot.i18n.load('locales')
 bot.run(config["TOKEN"])
