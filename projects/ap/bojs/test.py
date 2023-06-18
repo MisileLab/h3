@@ -7,6 +7,7 @@ from sys import argv
 from misilelibpy import read_once
 from difflib import SequenceMatcher
 from os import _exit
+from typing import Tuple
 
 runs = 1
 
@@ -53,6 +54,21 @@ except IndexError:
 else:
     flist = [argv[1]]
 
+class UniversalProblemFormat:
+    def __init__(self, sample_input: list, sample_output: list, time_limit: float):
+        self.sample_input = sample_input
+        self.sample_output = sample_output
+        self.time_limit = time_limit
+
+def pb_info(prob: str, name: str) -> UniversalProblemFormat:
+    if prob == "boj":
+        bjp = BaekjoonProb(name)
+        dup = a.get(name, {"sample_input": [], "sample_output": []})
+        sinput, soutput = bjp.sample_input, bjp.sample_output
+        sinput.extend(dup.get("sample_input", []))
+        soutput.extend(dup.get("sample_output", []))
+        return UniversalProblemFormat(sinput, soutput, bjp.time_limit)
+
 for i, i2 in enumerate(flist):
     print(i2)
     args = [f"hyperfine --runs {runs} --export-json test.json --output ./output.txt", "", "< input.txt'"]
@@ -71,7 +87,7 @@ for i, i2 in enumerate(flist):
         else:
             raise ValueError("no support lang")
         args[1] = s
-    bjp = BaekjoonProb(i2)
+    bjp = pb_info("boj", i2)
     print(' '.join(args))
     for inp, output in zip(bjp.sample_input, bjp.sample_output):
         with open("input.txt", "w", encoding="utf8") as file:
