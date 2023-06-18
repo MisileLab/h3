@@ -7,7 +7,6 @@ from sys import argv
 from misilelibpy import read_once
 from difflib import SequenceMatcher
 from os import _exit
-from typing import Tuple
 
 runs = 1
 
