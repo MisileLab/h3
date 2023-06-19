@@ -43,7 +43,7 @@ class SCPSL(Cog):
     @tasks.loop(minutes=1)
     async def scpsl_presence(self):
         a = backend_of_scpsl()["Servers"]
-        await self.bot.change_presence(activity=Activity(type=ActivityType.playing, name=f"{a[0]['Players']}수"))
+        await self.bot.change_presence(activity=Activity(type=ActivityType.playing, name=f"{a[0]['Players']}명"))
         del a
 
 def setup(self: Bot):
