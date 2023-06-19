@@ -21,6 +21,10 @@ def backend_of_scpsl():
 class SCPSL(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
+        self.scpsl_presence.start()
+
+    def cog_unload(self):
+        self.scpsl_presence.cancel()
     
     @slash_command(name="list", description="SCP: SL 서버의 리스트를 보여줍니다")
     async def scpsl_list(self, ctx: ApplicationCommandInteraction):
