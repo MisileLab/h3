@@ -40,10 +40,10 @@ class SCPSL(Cog):
         embed.set_author(name="Misile", url="https://github.com/misilelab", icon_url="https://avatars.githubusercontent.com/u/74066467")
         await ctx.send(embed=embed, ephemeral=True)
 
-    @tasks.loop(seconds=5)
+    @tasks.loop(minutes=1)
     async def scpsl_presence(self):
         a = backend_of_scpsl()["Servers"]
-        await self.bot.change_presence(activity=Activity(type=ActivityType.playing, name=f"현재 scp sl 서버의 플레이어 수는 {a[0]['Players']}명 입니다."))
+        await self.bot.change_presence(activity=Activity(type=ActivityType.playing, name=f"{a[0]['Players']}수"))
         del a
 
 def setup(self: Bot):
