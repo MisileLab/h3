@@ -1,5 +1,6 @@
 from disnake.ext.commands import Cog, Bot, slash_command
-from disnake import ApplicationCommandInteraction, Embed
+from disnake.ext import tasks
+from disnake import ApplicationCommandInteraction, Embed, Activity, ActivityType
 from tomli import load
 from requests import get
 
@@ -33,7 +34,13 @@ class SCPSL(Cog):
         for i in a:
             embed.add_field(name=f"{i['ID']}-{'online' if i['Online'] else 'offline'}", value=f"현재 {i['Players']}명이 접속중입니다.", inline=False)
         embed.set_author(name="Misile", url="https://github.com/misilelab", icon_url="https://avatars.githubusercontent.com/u/74066467")
-        await ctx.send(embed=embed)
+        await ctx.send(embed=embed, ephemeral=True)
+
+    @tasks.loop(seconds=5)
+    async def scpsl_presence(self):
+        a = backend_of_scpsl()["Servers"]
+        await self.bot.change_presence(activity=Activity(ActivityType.listening, f"현재 scp sl 서버의 플레이어 수는 {a[0]['Players']}명 입니다."))
+        del a
 
 def setup(self: Bot):
     self.add_cog(SCPSL(self))
