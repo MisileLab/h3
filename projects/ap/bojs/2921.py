@@ -1,6 +1,11 @@
-a = int(input()) * 2
+a = int(input())
 
 def b(c: int):
-    return sum(range(1, c+1))
+    e = -c
+    for i in range(1, c+1): # 2
+        e += i
+        for i2 in range(i, c+1):
+            e += i+i2
+    return e
 
 print(b(a) + a)
