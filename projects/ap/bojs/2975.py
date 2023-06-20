@@ -1,6 +1,6 @@
 a = []
 
-for _ in range(int(input())):
+while True:
     b = input()
     if b == "0 W 0":
         break

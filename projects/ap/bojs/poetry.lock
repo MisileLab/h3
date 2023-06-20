@@ -2,7 +2,7 @@
 
 [[package]]
 name = "baekjoonapi"
-version = "0.2.3"
+version = "0.2.4"
 description = "BaekjoonAPI for Python"
 optional = false
 python-versions = ">=3.7,<4"
@@ -19,7 +19,7 @@ requests = "2.31.0"
 type = "git"
 url = "https://github.com/MisileLab/baekjoonapi.git"
 reference = "HEAD"
-resolved_reference = "3f971db06f8bd973a17e585feb8c8eafeb77995d"
+resolved_reference = "1c5d1003c0876102326cfbac13befbf1c2db1b32"
 
 [[package]]
 name = "beautifulsoup4"
