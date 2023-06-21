@@ -7,6 +7,7 @@ from requests import get
 config = load(open("config.toml", "rb"))
 api_key = config["scpsl_api_key"]
 acc_id = config["scpsl_acc_id"]
+test_ids = config["TEST_GUILDS"]
 
 def backend_of_scpsl():
     a = get("https://api.scpslgame.com/serverinfo.php", params={
@@ -26,7 +27,7 @@ class SCPSL(Cog):
     def cog_unload(self):
         self.scpsl_presence.cancel()
     
-    @slash_command(name="list", description="SCP: SL 서버의 리스트를 보여줍니다")
+    @slash_command(name="list", description="SCP: SL 서버의 리스트를 보여줍니다", guild_ids=test_ids)
     async def scpsl_list(self, ctx: ApplicationCommandInteraction):
         await ctx.response.defer()
         a = backend_of_scpsl()
@@ -43,7 +44,11 @@ class SCPSL(Cog):
     @tasks.loop(minutes=1)
     async def scpsl_presence(self):
         a = backend_of_scpsl()["Servers"]
-        await self.bot.change_presence(activity=Activity(type=ActivityType.playing, name=f"{a[0]['Players']}명"))
+        try:
+            await self.bot.change_presence(activity=Activity(type=ActivityType.playing, name=f"{a[0]['Players']}명"))
+        except KeyError as e:
+            print(a)
+            raise e
         del a
 
 def setup(self: Bot):
