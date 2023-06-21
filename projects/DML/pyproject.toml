@@ -8,7 +8,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "3.11.4"
-disnake = "2.8.1"
+disnake = "2.9.0"
 tomli = "2.0.1"
 requests = "2.31.0"
 
