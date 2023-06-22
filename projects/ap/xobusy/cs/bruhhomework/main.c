@@ -7,13 +7,13 @@
 #define RAND_SIZE 30
 
 void crack(int* entropy, int crack_speed);
-void pol_calc(int* pols, char character);
+void pol_calc(int* pols, char character, int streak);
 void time_print(int time);
 void pw_random();
 
 int main() {
     int entropy = 0;
-    int crack_speed = 10000000;
+    int crack_speed = 100000;
     crack(&entropy, crack_speed);
     printf("Entropy: %d\n", entropy);
     time_print(entropy);
@@ -63,14 +63,20 @@ void time_print(int time) {
 void crack(int* entropy, int crack_speed) {
     char password[MAX_SIZE];
     int pols[4] = {0,0,0,0}; // upper, lower, special, numbers
-    int ents[4] = {26,26,33,10}; // upper, lower, special, numbers
+    int ents[4] = {26,30,50,10}; // upper, lower, special, numbers
+    int streak = 0;
 
     printf("password: ");
     scanf("%s", password);
     int len_password = strlen(password);
 
     for (int i=0;i<len_password;i++) {
-        pol_calc(pols, password[i]);
+        if (i != 0 && password[i] == password[i-1]) {
+            streak += 1;
+        } else {
+            streak = 0;
+        }
+        pol_calc(pols, password[i], streak);
     }
 
     for (int i=0;i<4;i++) {
@@ -80,15 +86,15 @@ void crack(int* entropy, int crack_speed) {
     }
 }
 
-void pol_calc(int* pols, char character) {
+void pol_calc(int* pols, char character, int streak) {
     if (character >= 'A' && character <= 'Z') {
-        pols[0] += 1;
+        pols[0] += 4-streak;
     } else if (character >= 'a' && character <= 'z') {
-        pols[1] += 1;
+        pols[1] += 4-streak;
     } else if (character >= '0' && character <= '9') {
-        pols[3] += 1;
+        pols[3] += 4-streak;
     } else {
-        pols[2] += 1;
+        pols[2] += 4-streak;
     }
 }
 
