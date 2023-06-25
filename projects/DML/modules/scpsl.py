@@ -48,7 +48,6 @@ class SCPSL(Cog):
             await self.bot.change_presence(activity=Activity(type=ActivityType.playing, name=f"{a[0]['Players']}명"))
         except KeyError as e:
             print(a)
-            raise e
         del a
 
 def setup(self: Bot):
