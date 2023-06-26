@@ -1,1 +1,0 @@
-../bumpoetry.py
