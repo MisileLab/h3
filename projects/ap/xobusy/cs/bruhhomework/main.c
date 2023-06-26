@@ -37,6 +37,7 @@ int main() {
         for (int i = 0; i<RAND_SIZE; i++) {
             pw_random();
         }
+        printf("\n");
     }
 }
 
