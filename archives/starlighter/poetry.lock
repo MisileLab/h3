@@ -108,12 +108,13 @@ files = [
 
 [[package]]
 name = "keras"
-version = "2.12.0"
+version = "2.13.1"
 description = "Deep learning for humans."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "keras-2.12.0-py2.py3-none-any.whl", hash = "sha256:35c39534011e909645fb93515452e98e1a0ce23727b55d4918b9c58b2308c15e"},
+    {file = "keras-2.13.1-py3-none-any.whl", hash = "sha256:5ce5f706f779fa7330e63632f327b75ce38144a120376b2ae1917c00fa6136af"},
+    {file = "keras-2.13.1.tar.gz", hash = "sha256:5df12cc241a015a11b65ddb452c0eeb2744fce21d9b54ba48db87492568ccc68"},
 ]
 
 [[package]]
@@ -323,4 +324,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "3.11.4"
-content-hash = "747d8c662052a7bd4b669d0f48822bdc6f7624c53abe49aa79e77c1acf405f11"
+content-hash = "61e9459e7e14dbbf289675d6ab59fbbb775664906906f0d0271cbd2fe11f23df"
