@@ -1,0 +1,7 @@
+function = { "/" ~ !(" ")+ ~ (selector | ("a".."z" | "0".."9"))* ~ tags ~ args }
+selector = {"@" ~ ("a"|"e"|"r"|"p"|"s")}
+tags = {"[" ~ (tag | ",")* ~ "]"}
+tag = {!(" " | "=")+ ~ "=" ~ string}
+args = {(!"\n" | !"\r" | arg)+}
+arg = {(!"\n" | !"\r" | !" " | string)}
+string = {"\"" ~ !"\""* ~ "\""}
