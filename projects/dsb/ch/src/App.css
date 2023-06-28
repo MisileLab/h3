@@ -10,6 +10,11 @@ select#selectenc {
     border: none;
 }
 
+button {
+    width: 20%;
+    margin: auto;
+}
+
 textarea {
     width: 70%;
 }
