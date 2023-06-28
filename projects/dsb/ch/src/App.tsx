@@ -16,7 +16,7 @@ function App() {
     } else {
       a = "decrypt";
     }
-    invoke(a, { text, saltstr })
+    invoke(a, { summary: text, salt: saltstr })
     .then((text) => {
       restext.value = text as string;
     })
