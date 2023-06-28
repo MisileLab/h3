@@ -9,7 +9,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "3.11.4"
 keras = "2.13.1"
-scipy = "1.11.0"
+scipy = "1.11.1"
 Pillow = "9.5.0"
 
 [tool.poetry.group.scraping.dependencies]
