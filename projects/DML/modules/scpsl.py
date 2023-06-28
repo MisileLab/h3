@@ -16,6 +16,7 @@ def backend_of_scpsl():
         "players": True,
         "online": True
     })
+    print(a.headers)
     a.raise_for_status()
     return a.json()
 
@@ -31,7 +32,7 @@ class SCPSL(Cog):
     async def scpsl_list(self, ctx: ApplicationCommandInteraction):
         await ctx.response.defer()
         a = backend_of_scpsl()
-        if a["Success"] == False:
+        if not a["Success"]:
             await ctx.send("Failed", ephemeral=True)
             return
         a = a["Servers"]
@@ -46,7 +47,7 @@ class SCPSL(Cog):
         a = backend_of_scpsl()["Servers"]
         try:
             await self.bot.change_presence(activity=Activity(type=ActivityType.playing, name=f"{a[0]['Players']}명"))
-        except KeyError as e:
+        except KeyError:
             print(a)
         del a
 
