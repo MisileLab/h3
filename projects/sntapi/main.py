@@ -18,14 +18,6 @@ session.mount('https://', TLSAdapter())
 
 app = FastAPI()
 
-def list_replace(a: str, b: list, isdigit: bool):
-    for i in b:
-        a = a.replace(i, "")
-        if isdigit:
-            a = "".join([x for x in a if not x.isdigit()])
-    print(a)
-    return a
-
 def meal_backend(year: int, month: int):
     if month < 10:
         month = f"0{month}"
@@ -33,17 +25,19 @@ def meal_backend(year: int, month: int):
     if not r.ok:
         raise HTTPException(status_code=r.status_code)
     b = BeautifulSoup(r.content, "lxml")
-    c = b.find_all("tbody")[1].find_all("tr")
-    del c[0]
+    c = b.find_all("tbody")[1].find_all("tr")[1:]
     meallist = []
     for i in c:
         _elementlist = i.find_all("td")
-        print(_elementlist)
         meallist.append({
-            "meal": [x for x in list_replace(_elementlist[2].text, [" ", "\t", "(", ")", "."], True).split("\n") if x != ""][1:],  # noqa: E501
+            "meal": [x for x in _elementlist[2].text.replace("\t", "").replace(" ", "").split("\n") if x != ""][1:],  # noqa: E501
             "weekday": _elementlist[1].text,
             "day": int(_elementlist[0].text)
         })
+    for i in meallist:
+        for i4, i2 in enumerate(i["meal"]):
+            if i2.count(".") > 0:
+                i["meal"][i4] = "".join(i3 for i3 in i2 if not i3.isdigit() and i3 not in ["."])[:-2]  # noqa: E501
     return meallist
 
 @app.get("/{year}/{month}/{day}")
