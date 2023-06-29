@@ -42,8 +42,14 @@ def meal_backend(year: int, month: int):
 
 @app.get("/{year}/{month}/{day}")
 def get_meal(year: int, month: int, day: int):
-    return [x for x in meal_backend(year, month) if x["day"] == day]
+    if a := [x for x in meal_backend(year, month) if x["day"] == day]:
+        return a
+    else:
+        raise HTTPException(status_code=404)
 
 @app.get("/{year}/{month}")
 def get_meal_month(year: int, month: int):
-    return meal_backend(year, month)
+    if a := meal_backend(year, month):
+        raise HTTPException(status_code=404)
+    else:
+        return a
