@@ -4,10 +4,9 @@ from bs4 import BeautifulSoup
 import requests
 import ssl
 
-url = 'https://www.tauron-dystrybucja.pl/'
+DEF = {"_meal": ["\n"], "date": "년 월 일 요일", "title": ["\n"], "meal": ["\n"], "kcal": None}  # noqa: E501
 
 class TLSAdapter(requests.adapters.HTTPAdapter):
-
     def init_poolmanager(self, *args, **kwargs):
         ctx = ssl.create_default_context()
         ctx.set_ciphers('DEFAULT@SECLEVEL=1')
@@ -18,42 +17,39 @@ session = requests.session()
 session.mount('https://', TLSAdapter())
 
 app = FastAPI()
-mapping = {
-    "급식": "_meal",
-    "등록일": "date",
-    "제목": "title",
-    "식단": "meal",
-    "칼로리": "kcal"
-}
 
-@app.get("/{date}")
-def get_meal(date: int):
-    a = session.post("https://sunrint.sen.hs.kr/dggb/module/mlsv/selectMlsvDetailPopup.do", data={"mlsvId": date})
-    b = {
-        "_meal": "error",
-        "date": "date",
-        "title": "title",
-        "meal": "meal",
-        "kcal": "kcal"
-    }
-    if not a.ok:
-        raise HTTPException(status_code=a.status_code)
-    s = BeautifulSoup(a.content, "lxml")
-    for i in s.find_all("tr"):
-        b[mapping[i.th.text]] = [x for x in i.td.text.replace("\t", "").split("\r\n") if x != ""]
-    try:
-        b["kcal"] = int(b["kcal"][0].replace("kcal", ""))
-    except ValueError:
-        b["kcal"] = None
-    print(b["meal"])
-    for i3, i in enumerate(b["meal"]):
-        print(i)
-        org = ""
-        for i2 in reversed(i):
-            print(i2)
-            if not i2.isdigit() and i2 != '.':
-                org += i2
-            else:
-                continue
-        b["meal"][i3] = "".join(reversed(org))
-    return b
+def list_replace(a: str, b: list, isdigit: bool):
+    for i in b:
+        a = a.replace(i, "")
+        if isdigit:
+            a = "".join([x for x in a if not x.isdigit()])
+    print(a)
+    return a
+
+def meal_backend(year: int, month: int):
+    if month < 10:
+        month = f"0{month}"
+    r = session.post(f"https://school.koreacharts.com/school/meals/B000011299/{year}{month}.html")
+    if not r.ok:
+        raise HTTPException(status_code=r.status_code)
+    b = BeautifulSoup(r.content, "lxml")
+    c = b.find_all("tbody")[1].find_all("tr")
+    del c[0]
+    meallist = []
+    for i in c:
+        _elementlist = i.find_all("td")
+        print(_elementlist)
+        meallist.append({
+            "meal": [x for x in list_replace(_elementlist[2].text, [" ", "\t", "(", ")", "."], True).split("\n") if x != ""][1:],  # noqa: E501
+            "weekday": _elementlist[1].text,
+            "day": int(_elementlist[0].text)
+        })
+    return meallist
+
+@app.get("/{year}/{month}/{day}")
+def get_meal(year: int, month: int, day: int):
+    return [x for x in meal_backend(year, month) if x["day"] == day]
+
+@app.get("/{year}/{month}")
+def get_meal_month(year: int, month: int):
+    return meal_backend(year, month)
