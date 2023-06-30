@@ -3,7 +3,3 @@ repos:
     rev: v8.17.0
     hooks:
       - id: gitleaks
-  - repo: https://github.com/fabasoad/pre-commit-snyk
-    rev: v0.4.0
-    hooks:
-      - id: snyk-test
