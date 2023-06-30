@@ -1,9 +1,9 @@
 repos:
   - repo: https://github.com/zricethezav/gitleaks
-    rev: v8.16.4
+    rev: v8.17.0
     hooks:
       - id: gitleaks
   - repo: https://github.com/fabasoad/pre-commit-snyk
-    rev: v0.3.0
+    rev: v0.4.0
     hooks:
       - id: snyk-test
