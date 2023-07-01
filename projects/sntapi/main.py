@@ -18,7 +18,7 @@ session.mount('https://', TLSAdapter())
 
 app = FastAPI()
 
-def meal_backend(year: int, month: int):
+def _meal_backend(year: int, month: int):
     if month < 10:
         month = f"0{month}"
     r = session.post(f"https://school.koreacharts.com/school/meals/B000011299/{year}{month}.html")
@@ -39,6 +39,12 @@ def meal_backend(year: int, month: int):
             if i2.count(".") > 0:
                 i["meal"][i4] = "".join(i3 for i3 in i2 if not i3.isdigit() and i3 not in ["."])[:-2]  # noqa: E501
     return meallist
+
+def meal_backend(year: int, month: int):
+    try:
+        return _meal_backend(year, month)
+    except IndexError:
+        return []
 
 @app.get("/{year}/{month}/{day}")
 def get_meal(year: int, month: int, day: int):
