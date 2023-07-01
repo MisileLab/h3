@@ -1,7 +1,0 @@
-[package]
-name = "cpi"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-pest = "2.7.0"
