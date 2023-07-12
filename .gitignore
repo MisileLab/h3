@@ -205,3 +205,8 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+# community/Bazel.gitignore by ignofierplus
+bazel-*
+.ijwb/
+.aswb/
+.clwb/
