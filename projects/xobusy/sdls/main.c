@@ -1,7 +1,10 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_render.h>
 #include <stdio.h>
 #include "draw.h"
 #include "input.h"
+#include "image.h"
 #include <stdbool.h>
 #include <time.h>
 const int SCREEN_WIDTH = 640;
@@ -24,6 +27,10 @@ int main() {
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
 		printf("SDL moment. %s\n", SDL_GetError());
 	}
+	if (initImage()) {
+		SDL_Quit();
+		return 1;
+	}
 
 	window = SDL_CreateWindow("SDL Project",
 		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
@@ -40,6 +47,11 @@ int main() {
 		SDL_Quit();
 		return 1;
 	}
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+	SDL_RenderClear(renderer);
+	SDL_Texture* texture = loadTexture(renderer, "archbtw.png");
+	drawTexture(renderer, 0, 0, texture);
+	SDL_RenderPresent(renderer);
 
 	SDL_Event event;
 	struct timespec ts = {0, 100};
@@ -49,28 +61,11 @@ int main() {
 	while (!quit) {
 		updateKeyState();
 		updateMouseState();
-		_repeat(renderer, x, y);
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {
 				quit = true;
 				break;
 			}
-		}
-		if (getKeyState(SDL_SCANCODE_W) == KEY_PRESS) {
-			y--;
-			nanosleep(&ts, &ts);
-		}
-		if (getKeyState(SDL_SCANCODE_A) == KEY_PRESS) {
-			x--;
-			nanosleep(&ts, &ts);
-		}
-		if (getKeyState(SDL_SCANCODE_A) == KEY_PRESS) {
-			y++;
-			nanosleep(&ts, &ts);
-		}
-		if (getKeyState(SDL_SCANCODE_D) == KEY_PRESS) {
-			x++;
-			nanosleep(&ts, &ts);
 		}
 	}
 	SDL_DestroyRenderer(renderer);
