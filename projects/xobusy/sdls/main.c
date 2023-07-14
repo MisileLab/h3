@@ -1,97 +1,81 @@
-#include <stdio.h>
 #include <SDL2/SDL.h>
-#include <stdlib.h>
+#include <stdio.h>
+#include "draw.h"
+#include "input.h"
+#include <stdbool.h>
+#include <time.h>
+const int SCREEN_WIDTH = 640;
+const int SCREEN_HEIGHT = 480;
 
-#define VIDEO 0x01
-#define AUDIO 0x02
-#define KEY 0x04
-#define MOUSE 0x08
-#define JOYSTICK 0x10
-#define SPEAKER 0x20
-#define USB 0x40
-#define ALL 0xFF
-
-typedef struct node Node;
-typedef struct list List;
-struct node {
-    Node* next;
-    void* val;
-};
-struct list {
-    Node* head;
-    Node* tail;
-    int len;
-};
-void list_init(List* list) {
-    list->head = NULL;
-    list->tail = NULL;
-    list->len = 0;
-};
-void list_push(List* list, void* data) {
-    Node* newNode = (Node*)malloc(sizeof(Node));
-    newNode->next = NULL;
-    newNode->val = data;
-    if (list->head == NULL) {
-        list->head = newNode;
-        list->tail = newNode;
-    } else {
-        list->tail->next = newNode;
-        list->tail = newNode;
-    }
-    list->len++;
-}
-int list_insert(List* list, int index, void* data) {
-    if (index < 0 || index > list->len) return 1;
-    Node* newNode = (Node*)malloc(sizeof(Node));
-    newNode->val = data;
-    if (index == 0) {
-        newNode->next = list->head;
-        list->head = newNode;
-    }
-    return 0;
-}
-void* list_pop(List* list) {
-    if (list->len == 0) return NULL;
-    Node* node = list->head;
-    void* val = node->val;
-    list->head = node->next;
-    free(node);
-    list->len--;
-    return val;
-}
-
-void list_release(List* list) {
-    Node* current = list->head;
-    while (current != NULL) {
-        Node* next = current->next;
-        free(current->val);
-        free(current);
-        current = next;
-    }
-    list->head = NULL;
-    list->tail = NULL;
-    list->len = 0;
-}
-
-int initSDL() {
-    if (SDL_Init(ALL) != 0) {
-        fprintf(stderr, "SDL_Init Error: %s\n", SDL_GetError());
-        return 1;
-    }
-    List list;
-    list_init(&list);
-    int a = 10;int b = 10;int c = 10;
-    list_push(&list, &a);
-    list_push(&list, &b);
-    list_push(&list, &c);
-    Node* cur = list.head;
-    while (cur != NULL) {
-        printf("%d\n", *(int*)cur->val);
-        cur = cur->next;
-    }
-    return 0;
+void _repeat(SDL_Renderer* renderer, int x, int y) {
+	SDL_SetRenderDrawColor(renderer, 20, 80, 172, 0xFF);
+	SDL_RenderClear(renderer);
+	// drawFilledCircle(renderer, 320 - 100, 240 - 40, 50, 0, 0, 0, 255);
+	// drawFilledCircle(renderer, 320 + 100, 240 - 40, 50, 0, 0, 0, 255);
+	// drawFilledTriangle(renderer, 320, 240, 320 - 20, 240 + 50, 320 + 20, 240 + 50, 255, 0, 255, 255);
+	drawFilledRectangle(renderer, x, y, 100, 200, 0, 0, 0, 255);
+	SDL_RenderPresent(renderer);
 }
 
 int main() {
-    initSDL();
+	SDL_Window* window = NULL;
+	SDL_Surface* renderer = NULL;
+
+	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
+		printf("SDL moment. %s\n", SDL_GetError());
+	}
+
+	window = SDL_CreateWindow("SDL Project",
+		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+		SCREEN_WIDTH, SCREEN_HEIGHT, 0);
+	if (!window) {
+		printf("no window: %s \n", SDL_GetError());
+		SDL_Quit();
+		return 1;
+	}
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	if (!renderer) {
+		printf("no renderer: %s \n", SDL_GetError());
+		SDL_DestroyWindow(window);
+		SDL_Quit();
+		return 1;
+	}
+
+	SDL_Event event;
+	struct timespec ts = {0, 100};
+
+	bool quit = false;
+	int x = 320; int y = 240;
+	while (!quit) {
+		updateKeyState();
+		updateMouseState();
+		_repeat(renderer, x, y);
+		while (SDL_PollEvent(&event)) {
+			if (event.type == SDL_QUIT) {
+				quit = true;
+				break;
+			}
+		}
+		if (getKeyState(SDL_SCANCODE_W) == KEY_PRESS) {
+			y--;
+			nanosleep(&ts, &ts);
+		}
+		if (getKeyState(SDL_SCANCODE_A) == KEY_PRESS) {
+			x--;
+			nanosleep(&ts, &ts);
+		}
+		if (getKeyState(SDL_SCANCODE_A) == KEY_PRESS) {
+			y++;
+			nanosleep(&ts, &ts);
+		}
+		if (getKeyState(SDL_SCANCODE_D) == KEY_PRESS) {
+			x++;
+			nanosleep(&ts, &ts);
+		}
+	}
+	SDL_DestroyRenderer(renderer);
+	SDL_DestroyWindow(window);
+	SDL_Quit();
+
+	return 0;
 }
