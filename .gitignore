@@ -210,3 +210,8 @@ bazel-*
 .ijwb/
 .aswb/
 .clwb/
+# Go.gitignore by ignofierplus
+*.exe~
+*.test
+endor/
+go.work
