@@ -32,7 +32,7 @@ func main() {
 	srv := conf.New()
 	srv.CloseOnProgramEnd()
 
-	cmd.Register(cmd.New("stop", "Stops the server", nil, NoParamCommand{}))
+	cmd.Register(cmd.New("stop", "Stops the server", nil, StopCommand{}))
 
 	srv.Listen()
 	for srv.Accept(func(p *player.Player) {
