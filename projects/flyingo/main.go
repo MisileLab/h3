@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"os"
+
 	"github.com/df-mc/dragonfly/server"
+	"github.com/df-mc/dragonfly/server/cmd"
 	"github.com/df-mc/dragonfly/server/player"
 	"github.com/df-mc/dragonfly/server/player/chat"
 	"github.com/pelletier/go-toml"
@@ -30,9 +32,10 @@ func main() {
 	srv := conf.New()
 	srv.CloseOnProgramEnd()
 
+	cmd.Register(cmd.New("stop", "Stops the server", nil, NoParamCommand{}))
+
 	srv.Listen()
 	for srv.Accept(func(p *player.Player) {
-		// no u
 	}) {
 		
 	}
