@@ -10,6 +10,8 @@ import (
 	"github.com/df-mc/dragonfly/server/player/chat"
 	"github.com/pelletier/go-toml"
 	"github.com/sirupsen/logrus"
+
+	"xyz/misilelaboratory/flyingo/cmds"
 )
 
 func main() {
@@ -32,7 +34,7 @@ func main() {
 	srv := conf.New()
 	srv.CloseOnProgramEnd()
 
-	cmd.Register(cmd.New("stop", "Stops the server", nil, StopCommand{}))
+	cmd.Register(cmd.New("stop", "Stops the server", nil, cmds.StopCommand{}))
 
 	srv.Listen()
 	for srv.Accept(func(p *player.Player) {

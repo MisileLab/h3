@@ -211,6 +211,7 @@ bazel-*
 .aswb/
 .clwb/
 # Go.gitignore by ignofierplus
+!go.mod
 *.exe~
 *.test
 endor/

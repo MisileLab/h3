@@ -1,11 +1,12 @@
-package main
+package cmds
 
 import (
+	"syscall"
 	"github.com/df-mc/dragonfly/server/cmd"
 )
 
 type StopCommand struct {}
 
 func (c StopCommand) Run(source cmd.Source, output *cmd.Output) {
-	source.World().Close();
+	syscall.Kill(syscall.Getpid(), syscall.SIGINT)
 }
