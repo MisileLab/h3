@@ -27,7 +27,8 @@ int main() {
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
 		printf("SDL moment. %s\n", SDL_GetError());
 	}
-	if (initImage()) {
+	if (!initImage()) {
+		printf("no u");
 		SDL_Quit();
 		return 1;
 	}
