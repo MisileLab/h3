@@ -1,13 +1,13 @@
 name = "Canary"
-filename = "canary-mc1.19.2-0.2.4.jar"
+filename = "canary-mc1.19.2-0.2.7.jar"
 side = "both"
 
 [download]
-url = "https://cdn.modrinth.com/data/qa2H4BS9/versions/EWj5VGbH/canary-mc1.19.2-0.2.4.jar"
+url = "https://cdn.modrinth.com/data/qa2H4BS9/versions/LE99Zz6p/canary-mc1.19.2-0.2.7.jar"
 hash-format = "sha1"
-hash = "838760e262234a69f7dd4fb159a327229a92b414"
+hash = "4042eedfed80b07e806b528a097ce0c09ae5ad59"
 
 [update]
 [update.modrinth]
 mod-id = "qa2H4BS9"
-version = "EWj5VGbH"
+version = "LE99Zz6p"

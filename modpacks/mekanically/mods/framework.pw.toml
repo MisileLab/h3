@@ -1,13 +1,13 @@
 name = "Framework"
-filename = "framework-0.4.2-1.18.2.jar"
+filename = "framework-forge-1.18.2-0.4.3.jar"
 side = "both"
 
 [download]
 hash-format = "sha1"
-hash = "7186638dd2f2ae8706a651286826496b8a32d9d8"
+hash = "660e9f5fee1f99a28f15504940d068d99cb8345e"
 mode = "metadata:curseforge"
 
 [update]
 [update.curseforge]
-file-id = 4287475
+file-id = 4613856
 project-id = 549225
