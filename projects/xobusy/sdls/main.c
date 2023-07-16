@@ -48,10 +48,19 @@ int main() {
 		SDL_Quit();
 		return 1;
 	}
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0xFF);
 	SDL_RenderClear(renderer);
-	SDL_Texture* texture = loadTexture(renderer, "archbtw.png");
-	drawTexture(renderer, 0, 0, texture);
+	//SDL_Texture* texture = loadTexture(renderer, "archbtw.png");
+	//drawTexture(renderer, 0, 0, texture);
+	drawFilledRectangle(renderer, 320, 100, 10, 100, 255, 0, 0, 255);
+	SDL_RenderPresent(renderer);
+	drawFilledRectangle(renderer, 320, 200, 100, 10, 255, 0, 0, 255);
+	SDL_RenderPresent(renderer);
+	drawFilledCircle(renderer, 330, 200, 50, 255, 0, 0, 255);
+	SDL_RenderPresent(renderer);
+	drawFilledTriangle(renderer, 320 + 20, 240, 320, 240 + 50, 320 - 20, 240 + 50, 255, 0, 0, 255);
+	SDL_RenderPresent(renderer);
+	drawFilledCircle(renderer, 250, 150, 50, 255, 255, 0, 255);
 	SDL_RenderPresent(renderer);
 
 	SDL_Event event;

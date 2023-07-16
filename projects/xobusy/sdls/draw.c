@@ -31,6 +31,7 @@ void drawFilledCircle(SDL_Surface *renderer, int x, int y, int radius, Uint8 r, 
 
             if ((dx * dx + dy * dy) <= (radius * radius)) {
                 SDL_RenderDrawPoint(renderer, x + dx, y + dy);
+                SDL_RenderPresent(renderer);
             }
         }
     }
