@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from pymongo.mongo_client import MongoClient
 from dotenv import load_dotenv
+from bson.json_util import dumps
 from os import environ
 
 load_dotenv()
@@ -12,7 +13,11 @@ def meal_backend(finder: dict):
     database = db.get_database("local")
     if database.get_collection("sntmeal").count_documents(finder) == 0: # noqa: E501
         return []
-    return database.get_collection("sntmeal").find(finder) # noqa: E501
+    a = []
+    for i in list(database.get_collection("sntmeal").find(finder)):
+        del i["_id"]
+        a.append(i)
+    return a
 
 @app.get("/{year}/{month}/{day}")
 def get_meal(year: int, month: int, day: int):
@@ -30,7 +35,7 @@ def get_meal_month(year: int, month: int):
 
 @app.get("/{year}")
 def get_meal_year(year: int):
-    if a :=meal_backend({"year": year}):
+    if a := meal_backend({"year": year}):
         return a
     else:
         raise HTTPException(status_code=404)
