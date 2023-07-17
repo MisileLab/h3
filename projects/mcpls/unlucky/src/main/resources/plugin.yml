@@ -1,0 +1,6 @@
+name: Unlucky
+version: 0.0.1
+main: xyz.misilelaboratory.Unlucky
+api-version: 1.20
+libraries:
+  - org.jetbrains.kotlin:kotlin-stdlib:1.9.0
