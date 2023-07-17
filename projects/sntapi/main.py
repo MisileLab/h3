@@ -10,9 +10,9 @@ db = MongoClient(host=environ["HOST"], port=int(environ["PORT"]), username=envir
 
 def meal_backend(finder: dict):
     database = db.get_database("local")
-    if database.get_collection("meal").count_documents(finder) == 0: # noqa: E501
+    if database.get_collection("sntmeal").count_documents(finder) == 0: # noqa: E501
         return []
-    return database.get_collection("meal").find(finder) # noqa: E501
+    return database.get_collection("sntmeal").find(finder) # noqa: E501
 
 @app.get("/{year}/{month}/{day}")
 def get_meal(year: int, month: int, day: int):
