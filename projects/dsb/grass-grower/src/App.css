@@ -1,0 +1,27 @@
+body {
+  margin: 0;
+  line-height: normal;
+}
+
+:root {
+  /* fonts */
+  --font-suit: SUIT;
+
+  /* font sizes */
+  --font-size-29xl: 48px;
+  --font-size-5xl: 24px;
+  --font-size-xs: 12px;
+
+  /* Colors */
+  --color-white: #fff;
+  --color-black: #000;
+  --color-lightgray: #d4d4d4;
+  --color-limegreen: #54c147;
+
+  /* Gaps */
+  --gap-xs: 12px;
+
+  /* border radiuses */
+  --br-xs: 12px;
+}
+
