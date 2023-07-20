@@ -6,7 +6,6 @@ from tomli import loads
 from sys import argv
 from misilelibpy import read_once
 from difflib import SequenceMatcher
-from os import _exit
 
 runs = 1
 
@@ -70,7 +69,11 @@ def pb_info(prob: str, name: str) -> UniversalProblemFormat:
 
 for i, i2 in enumerate(flist):
     print(i2)
-    args = [f"hyperfine --runs {runs} --export-json test.json --output ./output.txt", "", "< input.txt'"]
+    args = [
+        f"hyperfine --runs {runs} --export-json test.json --output ./output.txt", 
+        "", 
+        "< input.txt'"
+        ]
     config = a.get(i2, globalvals)
     for i3 in config["lang"]:
         if i3 == "pypy":
@@ -81,8 +84,10 @@ for i, i2 in enumerate(flist):
             s = f"'ruby --enable-yjit {i2}.rb"
         elif i3 == "rustpython":
             s = f"'rustpython {i2}.py"
-        elif i3 in ["c", "cpp"]:
+        elif i3 == "c":
             s = f"'clang -O2 {i2}.c -o main && ./main"
+        elif i3 == "cpp":
+            s = f"'clang++ -O2 {i2}.c -o main && ./main"
         else:
             raise ValueError("no support lang")
         args[1] = s
@@ -102,12 +107,12 @@ for i, i2 in enumerate(flist):
         print(outp)
         for i3 in jload(read_once('test.json'))["results"]:
             outpu = output.replace('\r', '')
-            if outp not in [outpu.removesuffix('\n'), outpu] and outp.strip("\n") not in [outpu.removesuffix('\n'), outpu]:
+            if outp not in [outpu.removesuffix('\n'), outpu] and outp.strip("\n") not in [outpu.removesuffix('\n'), outpu]: # noqa: E501
                 print(f"{i3['command']} does not match with {output} so failed")
                 print(diff_strings(outp, outpu))
                 _exit(1)
             elif i3['times'][0] > bjp.time_limit:
-                print(f"{i3['command']} took {i3['times'][0]} seconds, which is more than {bjp.time_limit} seconds, so test failed")
+                print(f"{i3['command']} took {i3['times'][0]} seconds, which is more than {bjp.time_limit} seconds, so test failed") # noqa: E501
                 _exit(1)
             else:
-                print(f"{i3['command']} took {i3['times'][0]} seconds, which is less than {bjp.time_limit} seconds, so test passed")
+                print(f"{i3['command']} took {i3['times'][0]} seconds, which is less than {bjp.time_limit} seconds, so test passed") # noqa: E501

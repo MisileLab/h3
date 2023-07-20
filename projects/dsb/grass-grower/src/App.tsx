@@ -1,20 +1,74 @@
-import { createSignal } from "solid-js";
-import { invoke } from "@tauri-apps/api/tauri";
+import { open, Command } from '@tauri-apps/api/shell';
+import { writeFile, readTextFile, exists } from '@tauri-apps/api/fs';
 import "./App.css";
 import './index.css';
+import { createSignal } from 'solid-js';
+import { invoke } from '@tauri-apps/api/tauri';
 
-let repository = "";
+const [getState, modifyState] = createSignal("not growing now");
 
-function logging() {
-  console.log("asdsad");
-  return undefined;
+const sleep = (ms: number) => {
+  return new Promise(resolve=>{
+    setTimeout(resolve, ms)
+  })
 }
 
+let repository = ""
+let enabled: boolean = false;
+
 function set_repository() {
-  repository = prompt("Input Git Repository", "https://github.com/username/repository")!!;
+  repository = prompt("Input Git Repository", "git@github.com/username/repository.git")!!;
+}
+
+async function githubSSH() {
+  await open("https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent")
+}
+
+async function timerHandler() {
+  if (!exists) {
+    writeFile("grassgrower.txt", "MisileLaboratory | 1 >>= grass grower")
+  }
+  console.log("GrassGrower start")
+  let org = await readTextFile("grassgrower.txt")
+  let mod = org
+  while (org == mod) {
+    mod = `MisileLaboratory | ${invoke("random")} >>= grass grower`
+    writeFile("grassgrower.txt", mod)
+  }
+  new Command("cd", ["repository"]).spawn()
+  new Command("run-git-add", ["add", "-A"]).spawn()
+  new Command("run-git-commit", ["commit", "-m", "auto commit"]).spawn()
+  new Command("run-git-push", ["push"]).spawn()
+  new Command("cd", [".."]).spawn()
+  console.log("GrassGrower end")
+}
+
+async function buttonHandle() {
+  console.log(enabled);
+  enabled = !enabled
+  console.log(enabled);
+  if (enabled) {
+    try {
+      if (!exists("repository")) {
+        new Command("run-git-clone", ["clone", repository, "repository"]).spawn()
+      }
+    } catch(e) {
+      console.log(e)
+      return;
+    }
+    modifyState("grass growing...")
+    while (enabled) {
+      timerHandler()
+      sleep(86400000)
+    }
+  } else {
+    modifyState("not growing now")
+  }
+  writeFile("enabled.txt", String(enabled))
 }
 
 function App() {
+
   return (
     <div class="frame-parent">
       <div class="ua5fr1nbyxqstosvqxinmbvzdwrfsg-wrapper">
@@ -24,16 +78,16 @@ function App() {
           src="/0ua5fr1nbyxqstosvqxinmbvzdwrfsgucgczplda0enheepn-oxqcwtkyiyg2j1rpwj159exwalk399nmnsq-31@2x.png"
         />
       </div>
-      <button onClick={logging}>
+      <button onClick={buttonHandle}>
       <div class="run-wrapper">
         <div class="run">
           <div class="growing-grass-wrapper">
-          <b class="growing-grass">Growing Grass.......</b>
+          <b class="growing-grass">{getState()}</b>
           </div>
         </div>
       </div>
       </button>
-      <a href="https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent"><div class="gen-ssh-key">
+      <button onClick={githubSSH}><div class="gen-ssh-key">
         <div class="daco-68893-1-parent">
           <img
             class="daco-68893-1-icon"
@@ -41,7 +95,7 @@ function App() {
             src="/daco-68893-1@2x.png"
           />
 
-          <b class="generate-ssh-key">Generate ssh Key</b>
+          <b class="generate-ssh-key" style="font-family: SUIT;font-size: 24px; margin: none;">Generate ssh Key</b>
         </div>
         <b class="success">success!</b>
         <img
@@ -49,7 +103,7 @@ function App() {
           alt=""
           src="/arrow-forward-ios.svg"
         />
-      </div></a>
+      </div></button>
       <div class="real-log">
         <b class="logs">Logs</b>
       </div>

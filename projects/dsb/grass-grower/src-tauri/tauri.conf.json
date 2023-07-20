@@ -12,10 +12,44 @@
   },
   "tauri": {
     "allowlist": {
-      "all": false,
+      "all": true,
+      "fs": {
+        "all": true,
+        "readFile": true,
+        "writeFile": true,
+        "exists": true,
+        "readDir": true,
+        "scope": ["enabled.txt", "repository"]
+      },
       "shell": {
-        "all": false,
-        "open": true
+        "all": true,
+        "open": true,
+        "scope": [{
+          "name": "run-git-add",
+          "cmd": "git",
+          "args": ["add", "-A"]
+        },
+        {
+          "name": "run-git-commit",
+          "cmd": "git",
+          "args": ["commit", "-m", "auto commit"]
+        },
+        {
+          "name": "cd",
+          "cmd": "cd",
+          "args": [{"validator": ""}]
+        },
+        {
+          "name": "run-git-push",
+          "cmd": "git",
+          "args": ["push"]
+        },
+        {
+          "name": "run-git-clone",
+          "cmd": "git",
+          "args": [{"validator": ""}]
+        }
+      ]
       }
     },
     "bundle": {
@@ -38,8 +72,8 @@
         "fullscreen": false,
         "resizable": true,
         "title": "grass-grower",
-        "width": 800,
-        "height": 600
+        "width": 1920,
+        "height": 1080
       }
     ]
   }
