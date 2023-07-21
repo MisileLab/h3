@@ -16,12 +16,7 @@ def santa_claus(N):
 
     for i in range(3, N + 1):
         # 이동 횟수가 짝수일 때는 시계 방향으로 이동
-        if dp[i] % 2 == 0:
-            visit[i] = visit[i - 2]
-        # 이동 횟수가 홀수일 때는 반시계 방향으로 이동
-        else:
-            visit[i] = visit[i - 1]
-
+        visit[i] = visit[i - 2] if dp[i] % 2 == 0 else visit[i - 1]
     # 결과 출력
     print(dp[N])
     for i in range(1, N + 1):
