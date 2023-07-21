@@ -3,7 +3,7 @@ lister = list(map(int, input().split(" ")))
 _list = []
 for i in range(1, 101):
     a = [x-i for x in lister]
-    xa = sum(x for x in a)
+    xa = sum(a)
     print(xa)
     if xa >= k:
         _list.append(xa)
