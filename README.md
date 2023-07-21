@@ -7,7 +7,6 @@ monorepo for my projects
 - archives (archived projects - no support)
   - [first archives](https://github.com/misilelab/h3/commits/9b5fdfdbf22367ecf13ff3332eb74b9f49ff8e75)
 - libraries (library for projects)
-- modpacks (some minecraft modpack)
 - projects (active projects)
 - web (for experimental)
 
@@ -15,10 +14,6 @@ monorepo for my projects
 
 using my [josh](https://github.com/josh-project/josh) page: `https://gith.misilelaboratory.xyz/h3.git`  
 (and you probably need to download .gitmodules)
-
-### Git submodule depend
-
-- MisileLib in every written lang (ex: python need misilelib-python)
 
 ## License?
 
