@@ -17,14 +17,14 @@ devDependencies:
     specifier: 1.4.0
     version: 1.4.0
   '@types/node':
-    specifier: 20.4.3
-    version: 20.4.3
+    specifier: 20.4.4
+    version: 20.4.4
   typescript:
     specifier: 5.1.6
     version: 5.1.6
   vite:
     specifier: 4.4.6
-    version: 4.4.6(@types/node@20.4.3)
+    version: 4.4.6(@types/node@20.4.4)
   vite-plugin-solid:
     specifier: 2.7.0
     version: 2.7.0(solid-js@1.7.8)(vite@4.4.6)
@@ -734,8 +734,8 @@ packages:
       '@babel/types': 7.22.5
     dev: true
 
-  /@types/node@20.4.3:
-    resolution: {integrity: sha512-Yu3+r4Mn/iY6Mf0aihncZQ1qOjOUrCiodbHHY1hds5O+7BbKp9t+Li7zLO13zO8j9L2C6euz8xsYQP0rjGvVXw==}
+  /@types/node@20.4.4:
+    resolution: {integrity: sha512-CukZhumInROvLq3+b5gLev+vgpsIqC2D0deQr/yS1WnxvmYLlJXZpaQrQiseMY+6xusl79E04UjWoqyr+t1/Ew==}
     dev: true
 
   /ansi-styles@3.2.1:
@@ -1037,13 +1037,13 @@ packages:
       merge-anything: 5.1.7
       solid-js: 1.7.8
       solid-refresh: 0.5.3(solid-js@1.7.8)
-      vite: 4.4.6(@types/node@20.4.3)
+      vite: 4.4.6(@types/node@20.4.4)
       vitefu: 0.2.4(vite@4.4.6)
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /vite@4.4.6(@types/node@20.4.3):
+  /vite@4.4.6(@types/node@20.4.4):
     resolution: {integrity: sha512-EY6Mm8vJ++S3D4tNAckaZfw3JwG3wa794Vt70M6cNJ6NxT87yhq7EC8Rcap3ahyHdo8AhCmV9PTk+vG1HiYn1A==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
@@ -1071,7 +1071,7 @@ packages:
       terser:
         optional: true
     dependencies:
-      '@types/node': 20.4.3
+      '@types/node': 20.4.4
       esbuild: 0.18.13
       postcss: 8.4.26
       rollup: 3.26.2
@@ -1087,7 +1087,7 @@ packages:
       vite:
         optional: true
     dependencies:
-      vite: 4.4.6(@types/node@20.4.3)
+      vite: 4.4.6(@types/node@20.4.4)
     dev: true
 
   /yallist@3.1.1:
