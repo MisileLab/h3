@@ -600,13 +600,13 @@ tqdm = ["tqdm"]
 
 [[package]]
 name = "gradio"
-version = "3.38.0"
+version = "3.39.0"
 description = "Python library for easily interacting with trained machine learning models"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "gradio-3.38.0-py3-none-any.whl", hash = "sha256:3ac954349ab00e1d78c6b87940e49853e5fb800a1ef35ff0a24796eb2f4803f5"},
-    {file = "gradio-3.38.0.tar.gz", hash = "sha256:cc08db00efd8ab00fef2d655f80ee18d4330fe08d0d412914cb0606b4a05881b"},
+    {file = "gradio-3.39.0-py3-none-any.whl", hash = "sha256:29653ffc526b4b2485130b71f38bc43b75ad1b6898b3fe8d99ba456db9a102a3"},
+    {file = "gradio-3.39.0.tar.gz", hash = "sha256:441ec4d8ce289b20b105702e3507067300e827173bdf5c135d17d90883d482e3"},
 ]
 
 [package.dependencies]
@@ -615,7 +615,7 @@ aiohttp = ">=3.0,<4.0"
 altair = ">=4.2.0,<6.0"
 fastapi = "*"
 ffmpy = "*"
-gradio-client = ">=0.2.10"
+gradio-client = ">=0.3.0"
 httpx = "*"
 huggingface-hub = ">=0.14.0"
 jinja2 = "<4.0"
@@ -640,13 +640,13 @@ websockets = ">=10.0,<12.0"
 
 [[package]]
 name = "gradio-client"
-version = "0.2.10"
+version = "0.3.0"
 description = "Python library for easily interacting with trained machine learning models"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "gradio_client-0.2.10-py3-none-any.whl", hash = "sha256:8b1e32093f766812b91c65756e85ad8bbe6d60b885b87b47908a72359c8d72a0"},
-    {file = "gradio_client-0.2.10.tar.gz", hash = "sha256:d4f93c86649f7662ec16861506ae864d18667422e8c8ecc227360f2aedcffdc9"},
+    {file = "gradio_client-0.3.0-py3-none-any.whl", hash = "sha256:3144c347a080ec82a913dd329e2b50241294da0a633be03e409bc58c79cc7f4c"},
+    {file = "gradio_client-0.3.0.tar.gz", hash = "sha256:efb308d57c0ec8764f68bc136f77731d2dfdb4ac0ed546a9f396782968fe89fc"},
 ]
 
 [package.dependencies]
@@ -1941,4 +1941,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "3.11.3"
-content-hash = "d85adc7b65295d8f6880c7f767a746c61dfc621a7aaecb78c6ef30475c24e181"
+content-hash = "f4311b81dd9cab5f5f25f200f74ba040c14f66b35ce63a744cda2a076afb1f9b"
