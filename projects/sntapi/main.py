@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import RedirectResponse
 from pymongo.mongo_client import MongoClient
 from dotenv import load_dotenv
-from bson.json_util import dumps
 from os import environ
 
 load_dotenv()
@@ -39,3 +39,7 @@ def get_meal_year(year: int):
         return a
     else:
         raise HTTPException(status_code=404)
+
+@app.get("/")
+def donate_plz():
+    return RedirectResponse("https://github.com/sponsors/MisileLab")
