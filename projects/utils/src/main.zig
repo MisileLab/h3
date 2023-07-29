@@ -19,6 +19,6 @@ pub fn main() !void {
     const stdout_file = std.io.getStdOut().writer();
     var bw = std.io.bufferedWriter(stdout_file);
     const stdout = bw.writer();
-    try stdout.print("borg create ./backup::{s} ./{s}\n", .{string, arg});
+    try stdout.print("borg create --progress ./backup::{s} ./{s}\n", .{string, arg});
     try bw.flush();
 }
