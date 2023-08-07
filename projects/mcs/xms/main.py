@@ -42,5 +42,5 @@ def amount_end(
     st_type: Annotated[str | None, Header()] = None,
     amount: Annotated[int | None, Header()] = None
 ):
-    for ws in websocketlist[am_type]:
-        ws.send_text(f"set {st_type} {amount}")
+    for ws in websocketlist[st_type]:
+        ws.send_text(f"set {am_type} {amount}")
