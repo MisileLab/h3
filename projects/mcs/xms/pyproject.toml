@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "xms"
+version = "0.1.0"
+description = "eXpandable Minecraft Server"
+authors = ["MisileLaboratory"]
+license = "MisileLab License"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.11.4"
+pymongo = "4.4.1"
+fastapi = "0.101.0"
+websockets = "11.0.3"
+uvicorn = "0.23.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
