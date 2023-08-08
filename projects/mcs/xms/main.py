@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 
 from os import environ, getenv
 from typing import Annotated
+from urllib.parse import quote_plus
 
 envs = environ
 load_dotenv()
@@ -13,7 +14,7 @@ def get_env(a: str):
     return getenv(a) if envs[a] is None else envs[a]
 
 app = FastAPI()
-db = MongoClient(get_env("MONGO_URI"))["minecrafter"]
+db = MongoClient(quote_plus(get_env("MONGO_URI")))["minecrafter"]
 websocketlist = {
     "reactor": [],
     "turbine": [],
