@@ -1,12 +1,19 @@
 from fastapi import FastAPI, WebSocket, HTTPException, status, Header
 from starlette.endpoints import WebSocketEndpoint
 from pymongo import MongoClient
+from dotenv import load_dotenv
 
-from os import getenv
+from os import environ, getenv
 from typing import Annotated
 
+envs = environ
+load_dotenv()
+
+def get_env(a: str):
+    return getenv(a) if envs[a] is None else envs[a]
+
 app = FastAPI()
-db = MongoClient(getenv("MONGO_URI"))["minecrafter"]
+db = MongoClient(get_env("MONGO_URI"))["minecrafter"]
 websocketlist = {
     "reactor": [],
     "turbine": [],
