@@ -14,7 +14,7 @@ misilelibpy = {path="libs/misilelib/misilelib-python"}
 baekjoonapi = {git = "https://github.com/MisileLab/baekjoonapi.git"}
 
 [tool.poetry.group.extra.dependencies]
-tqdm = "4.65.1"
+tqdm = "4.65.2"
 
 [build-system]
 requires = ["poetry-core"]
