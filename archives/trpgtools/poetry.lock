@@ -600,13 +600,13 @@ tqdm = ["tqdm"]
 
 [[package]]
 name = "gradio"
-version = "3.39.0"
+version = "3.40.0"
 description = "Python library for easily interacting with trained machine learning models"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "gradio-3.39.0-py3-none-any.whl", hash = "sha256:29653ffc526b4b2485130b71f38bc43b75ad1b6898b3fe8d99ba456db9a102a3"},
-    {file = "gradio-3.39.0.tar.gz", hash = "sha256:441ec4d8ce289b20b105702e3507067300e827173bdf5c135d17d90883d482e3"},
+    {file = "gradio-3.40.0-py3-none-any.whl", hash = "sha256:c321a01e70176e22a1d1ae51dd9c0fbf57aa53157862b513d10cb08dd093d4ea"},
+    {file = "gradio-3.40.0.tar.gz", hash = "sha256:6449f28c0764ab7307af94670ee9cdba0ec619ddc7620c2f728eb99774e9e2ea"},
 ]
 
 [package.dependencies]
@@ -615,9 +615,10 @@ aiohttp = ">=3.0,<4.0"
 altair = ">=4.2.0,<6.0"
 fastapi = "*"
 ffmpy = "*"
-gradio-client = ">=0.3.0"
+gradio-client = ">=0.4.0"
 httpx = "*"
 huggingface-hub = ">=0.14.0"
+importlib-resources = ">=1.3,<7.0"
 jinja2 = "<4.0"
 markdown-it-py = {version = ">=2.0.0", extras = ["linkify"]}
 markupsafe = ">=2.0,<3.0"
@@ -638,15 +639,18 @@ typing-extensions = ">=4.0,<5.0"
 uvicorn = ">=0.14.0"
 websockets = ">=10.0,<12.0"
 
+[package.extras]
+oauth = ["authlib", "itsdangerous"]
+
 [[package]]
 name = "gradio-client"
-version = "0.3.0"
+version = "0.4.0"
 description = "Python library for easily interacting with trained machine learning models"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "gradio_client-0.3.0-py3-none-any.whl", hash = "sha256:3144c347a080ec82a913dd329e2b50241294da0a633be03e409bc58c79cc7f4c"},
-    {file = "gradio_client-0.3.0.tar.gz", hash = "sha256:efb308d57c0ec8764f68bc136f77731d2dfdb4ac0ed546a9f396782968fe89fc"},
+    {file = "gradio_client-0.4.0-py3-none-any.whl", hash = "sha256:7dd8e0bd5800445ea985c6bc49e4198197d7367fad30e56ac6deef320b8c51b5"},
+    {file = "gradio_client-0.4.0.tar.gz", hash = "sha256:aed2ddbe7801da2a7020170d60454d01c0816eddccc5586b8794b3cb21df1c0d"},
 ]
 
 [package.dependencies]
@@ -754,6 +758,21 @@ files = [
     {file = "idna-3.4-py3-none-any.whl", hash = "sha256:90b77e79eaa3eba6de819a0c442c0b4ceefc341a7a2ab77d7562bf49f425c5c2"},
     {file = "idna-3.4.tar.gz", hash = "sha256:814f528e8dead7d329833b91c5faa87d60bf71824cd12a7530b5526063d02cb4"},
 ]
+
+[[package]]
+name = "importlib-resources"
+version = "6.0.1"
+description = "Read resources from Python packages"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "importlib_resources-6.0.1-py3-none-any.whl", hash = "sha256:134832a506243891221b88b4ae1213327eea96ceb4e407a00d790bb0626f45cf"},
+    {file = "importlib_resources-6.0.1.tar.gz", hash = "sha256:4359457e42708462b9626a04657c6208ad799ceb41e5c58c57ffa0e6a098a5d4"},
+]
+
+[package.extras]
+docs = ["furo", "jaraco.packaging (>=9.3)", "jaraco.tidelift (>=1.4)", "rst.linker (>=1.9)", "sphinx (>=3.5)", "sphinx-lint"]
+testing = ["pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=2.2)", "pytest-mypy (>=0.9.1)", "pytest-ruff"]
 
 [[package]]
 name = "jinja2"
@@ -1941,4 +1960,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "3.11.3"
-content-hash = "f4311b81dd9cab5f5f25f200f74ba040c14f66b35ce63a744cda2a076afb1f9b"
+content-hash = "669aeabd84a88f83ef561a5a7e13bf725f6ed45ab0fe649c54098cf9098cba78"
