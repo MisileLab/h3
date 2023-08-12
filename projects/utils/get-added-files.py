@@ -17,4 +17,4 @@ c = [
 ]
 print(c)
 if c:
-    run(["7zz", "a", "added.zip", *c], shell=True, check=True)
+    run(["7zz", "a", "added.7z", *c], shell=True, check=True)
