@@ -20,6 +20,7 @@ pub fn main() !void {
     const stdin = br.reader();
     if (!(c_s(exe, "./utils") or c_s(exe, "utils"))) {
         try stdout.print("{s}", .{command});
+        try bw.flush();
         var a = try stdin.readAllAlloc(std.heap.page_allocator, 10);
         _ = try stdin.read(a);
     }
