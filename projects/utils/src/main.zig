@@ -1,5 +1,6 @@
 const std = @import("std");
 const rand = std.rand.DefaultPrng;
+const io = std.io;
 const stringl = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 // shortcut for comparing two string
@@ -12,16 +13,16 @@ pub fn main() !void {
     var exe = args.next() orelse "utils";
     var command = args.next() orelse "backup";
     var arg = args.next() orelse "bdsx";
-    const stdout_file = std.io.getStdOut().writer();
-    const stdin_file = std.io.getStdIn().reader();
-    var bw = std.io.bufferedWriter(stdout_file);
-    var br = std.io.bufferedReader(stdin_file);
+    var bw = io.bufferedWriter(io.getStdOut().writer());
+    var br = io.bufferedReader(io.getStdIn().reader());
     const stdout = bw.writer();
     const stdin = br.reader();
+    const palloc = std.heap.page_allocator;
     if (!(c_s(exe, "./utils") or c_s(exe, "utils"))) {
-        try stdout.print("{s}", .{command});
+        const file = try std.fs.cwd().createFile("output.txt", .{ .read = true, .truncate = true });
+        _ = try file.write(command);
         try bw.flush();
-        var a = try stdin.readAllAlloc(std.heap.page_allocator, 10);
+        var a = try stdin.readAllAlloc(palloc, 10);
         _ = try stdin.read(a);
     }
     else if (c_s(command, "backup")) {
