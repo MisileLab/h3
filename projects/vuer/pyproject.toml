@@ -9,7 +9,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "3.11.4"
 streamlit = "1.25.0"
-orjson = "3.9.4"
+orjson = "3.9.5"
 
 [build-system]
 requires = ["poetry-core"]
