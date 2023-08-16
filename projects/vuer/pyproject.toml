@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "vuer"
+version = "0.1.0"
+description = ""
+authors = ["MisileLaboratory"]
+license = "MisileLab License"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.11.4"
+streamlit = "1.25.0"
+orjson = "3.9.4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
