@@ -1,6 +1,3 @@
-# Custom
-dragonpang
-
 # Python
 __pycache__/
 lib/
@@ -216,3 +213,6 @@ bazel-*
 *.test
 endor/
 go.work
+
+# Custom
+!*.module.css
