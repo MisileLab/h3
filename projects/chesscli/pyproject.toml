@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "chesscli"
+version = "0.1.0"
+description = "Normal lichess"
+authors = ["MisileLaboratory"]
+license = "MisileLab License"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.11.4"
+chess = "1.10.0"
+berserk = "0.12.8"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
