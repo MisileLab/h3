@@ -95,7 +95,7 @@ def timetable(grade: int, _class: int):
 def classes():
     op = Options()
     op.headless = True
-    driver = webdriver.Chrome(options=op)
+    driver = webdriver.Firefox(options=op)
     driver.get("http://comci.net:4082/st")
     driver.find_element(value="sc").send_keys("선린인터넷고")
     driver.execute_script("sc2_search()")
