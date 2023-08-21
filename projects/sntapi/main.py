@@ -106,7 +106,7 @@ def classes():
     WebDriverWait(driver, 10).until(
         EC.text_to_be_present_in_element((By.ID, "ba"), "1-1")
     )
-    return [x.text for x in Select(driver.find_element(value="ba")).options]
+    return [x.text for x in Select(driver.find_element(value="ba")).options][1:]
 
 @app.get("/")
 def donate_plz():
