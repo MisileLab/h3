@@ -73,20 +73,20 @@ def get_meal_year(year: int):
     else:
         raise HTTPException(status_code=404)
 
-@app.get("/timetable/{grade}/{_class}/{day}")
-def timetable_day(grade: int, _class: int, day: int):
+@app.get("/timetable/{grader}/{day}")
+def timetable_day(grader: str, day: int):
     if day not in [1,2,3,4,5]:
         return HTTPException(status_code=404)
     try:
-        return timetable_backend(f"{grade}-{_class}")[day]
+        return timetable_backend(grader)[day]
     except Exception as e:
         print(e)
         raise HTTPException(status_code=500) from e
 
-@app.get("/timetable/{grade}/{_class}")
-def timetable(grade: int, _class: int):
+@app.get("/timetable/{grader}")
+def timetable(grader: str):
     try:
-        return timetable_backend(f"{grade}-{_class}")
+        return timetable_backend(grader)
     except Exception as e:
         print(e)
         raise HTTPException(status_code=500) from e
