@@ -91,6 +91,23 @@ def timetable(grade: int, _class: int):
         print(e)
         raise HTTPException(status_code=500) from e
 
+@app.get("/classes")
+def classes():
+    op = Options()
+    op.headless = True
+    driver = webdriver.Chrome(options=op)
+    driver.get("http://comci.net:4082/st")
+    driver.find_element(value="sc").send_keys("선린인터넷고")
+    driver.execute_script("sc2_search()")
+    WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.LINK_TEXT, "선린인터넷고"))
+    ).click()
+    driver.execute_script("sc_disp(41896)")
+    WebDriverWait(driver, 10).until(
+        EC.text_to_be_present_in_element((By.ID, "ba"), "1-1")
+    )
+    return [x.text for x in Select(driver.find_element(value="ba")).options]
+
 @app.get("/")
 def donate_plz():
     return RedirectResponse("https://github.com/sponsors/MisileLab")
