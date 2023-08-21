@@ -1,6 +1,6 @@
-# Bruh sunrin meal api
+# Sntapi
 
-real neis why no data
+A Sunrint-related API
 
 ## Requirements
 
