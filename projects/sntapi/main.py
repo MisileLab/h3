@@ -12,6 +12,9 @@ from os import environ
 
 load_dotenv()
 
+op = Options()
+op.headless = True
+driver = webdriver.Firefox(options=op)
 app = FastAPI()
 db = MongoClient(host=environ["HOST"], port=int(environ["PORT"]), username=environ["USERNAME"], password=environ["PASSWORD"]) # noqa: E501
 
@@ -26,9 +29,6 @@ def meal_backend(finder: dict):
     return a
 
 def timetable_backend(grader: str) -> list:
-    op = Options()
-    op.headless = True
-    driver = webdriver.Chrome(options=op)
     driver.get("http://comci.net:4082/st")
     driver.find_element(value="sc").send_keys("선린인터넷고")
     driver.execute_script("sc2_search()")
@@ -93,9 +93,6 @@ def timetable(grader: str):
 
 @app.get("/classes")
 def classes():
-    op = Options()
-    op.headless = True
-    driver = webdriver.Firefox(options=op)
     driver.get("http://comci.net:4082/st")
     driver.find_element(value="sc").send_keys("선린인터넷고")
     driver.execute_script("sc2_search()")
