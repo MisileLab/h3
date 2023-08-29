@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/df-mc/dragonfly v0.9.8
-	github.com/pelletier/go-toml/v2 v2.0.9
+	github.com/pelletier/go-toml/v2 v2.1.0
 	github.com/sirupsen/logrus v1.9.3
 )
 
