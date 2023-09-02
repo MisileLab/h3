@@ -4,9 +4,6 @@
 [submodule "libraries/misilelib/misilelib-python"]
 	path = libraries/misilelib/misilelib-python
 	url = https://gith.misilelaboratory.xyz/misilelib.git:/misilelib-python.git
-[submodule "projects/h4"]
-	path = projects/h4
-	url = https://gitlab.com/misilelab/h4.git
 [submodule "libraries/misilelib/libraries/misilelib/misilelib-javascript"]
 	path = libraries/misilelib/libraries/misilelib/misilelib-javascript
 	url = https://gith.misilelaboratory.xyz/misilelib.git:/misilelib-javascript.git
