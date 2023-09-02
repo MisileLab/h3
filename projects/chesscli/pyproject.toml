@@ -9,7 +9,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "3.11.5"
 chess = "1.10.0"
-berserk = "0.12.8"
+berserk = "0.12.10"
 
 [build-system]
 requires = ["poetry-core"]

@@ -2,13 +2,13 @@
 
 [[package]]
 name = "berserk"
-version = "0.12.8"
+version = "0.12.10"
 description = "Python client for the lichess API"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "berserk-0.12.8-py3-none-any.whl", hash = "sha256:46380a1291fb8079a819400844a7ca0b76a5b3cfbfc1c1474be1733e0e3df04b"},
-    {file = "berserk-0.12.8.tar.gz", hash = "sha256:8ada8f3536e1c4a14046191341a8b2d5ec15ca18c6c9e6db731a6fa866d6c298"},
+    {file = "berserk-0.12.10-py3-none-any.whl", hash = "sha256:7f26cafa5764fab0a1de8ba2b5826152ec5605995aa6e79943ed2eb6e9dc1dc6"},
+    {file = "berserk-0.12.10.tar.gz", hash = "sha256:ec97ad2d958e8d448c0cfeee17292d71a851f060b97a8ea873972cbd34943c4b"},
 ]
 
 [package.dependencies]
@@ -16,6 +16,7 @@ deprecated = ">=1.2.14,<2.0.0"
 ndjson = ">=0.3.1,<0.4.0"
 python-dateutil = ">=2.8.2,<3.0.0"
 requests = ">=2.28.2,<3.0.0"
+typing-extensions = ">=4.7.1,<5.0.0"
 
 [[package]]
 name = "certifi"
@@ -209,6 +210,17 @@ files = [
 ]
 
 [[package]]
+name = "typing-extensions"
+version = "4.7.1"
+description = "Backported and Experimental Type Hints for Python 3.7+"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "typing_extensions-4.7.1-py3-none-any.whl", hash = "sha256:440d5dd3af93b060174bf433bccd69b0babc3b15b1a8dca43789fd7f61514b36"},
+    {file = "typing_extensions-4.7.1.tar.gz", hash = "sha256:b75ddc264f0ba5615db7ba217daeb99701ad295353c45f9e95963337ceeeffb2"},
+]
+
+[[package]]
 name = "urllib3"
 version = "2.0.4"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
@@ -312,4 +324,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "3.11.5"
-content-hash = "2573c434fe0c1dad65fc28c71bc2a1f1979c80db694737f310305b40199bfb7a"
+content-hash = "462fd5be9135a4ff58d3c26f120c76b66cd27a490ded7c5eb181993405fda253"
