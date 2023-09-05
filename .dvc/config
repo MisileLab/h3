@@ -1,4 +1,5 @@
 [core]
     remote = remote
+    autostage = true
 ['remote "remote"']
     url = ../OneDrive_Onedrive/h3
