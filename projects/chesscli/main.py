@@ -1,55 +1,78 @@
 from chess import Board, Move
 from berserk import Client, TokenSession
 from pathlib import Path
+import os
+import time
 
-from time import sleep
+# Function to clear the console screen
+def clear_screen():
+    os.system('clear' if os.name == 'posix' else 'cls')
 
-b = Path("token.txt").read_text()
-c = Client(session=TokenSession(b))
-name = c.account.get()["username"]
-nl = "\n"
-while True:
-    a = Board()
-    me = False
-    whitename = ""
-    for x in c.board.stream_incoming_events():
-        if x["type"] == "gameStart":
-            print(x["game"]["gameId"])
-            while not a.is_game_over():
-                gstate = c.board.stream_game_state(x["game"]["gameId"])
-                me = True
-                for i in gstate:
-                    print(me)
-                    if i["type"] == "gameFull":
-                        whitename = i["white"]["id"]
-                        if i["white"]["id"] != name:
-                            me = False
-                            continue
-                    elif i["type"] == "gameState" and i["moves"] != "":
-                        print(a)
-                        a.push(Move.from_uci(i["moves"].split(" ")[-1]))
-                    print(f"{chr(27)}[2J")
-                    print(f"""{
-                        nl.join(
-                            f'{8-x2 if whitename == name else x2+1} {x}' 
-                            for x2, x in enumerate(reversed(str(a).split(nl)) 
-                            if whitename != name else str(a).split(nl))
-                        )
-                    }\n  A B C D E F G H""")
-                    if me:
+# Read the API token from a file
+def read_token():
+    token = Path("token.txt").read_text()
+    return token.strip()
+
+# Create a Berserk client with the token
+def create_client(token):
+    session = TokenSession(token)
+    return Client(session=session)
+
+# Print the chess board
+def print_board(board, username, opponent_id):
+    if username != opponent_id:
+        board = board[::-1]
+    board_display = "\n".join(
+        [f"{8 - i} {row}" for i, row in enumerate(board.split("\n"))]
+    )
+    print(f"{board_display}\n  A B C D E F G H")
+
+# Play the chess game
+def play_game(client, username):
+    chess_board = Board()
+    is_my_turn = False
+
+    for event in client.board.stream_incoming_events():
+        if event["type"] == "gameStart":
+            game_id = event["game"]["gameId"]
+            print(f"Game ID: {game_id}")
+
+            while not chess_board.is_game_over():
+                game_state = client.board.stream_game_state(game_id)
+                is_my_turn = True
+
+                for state in game_state:
+                    if state["type"] == "gameFull":
+                        opponent_id = state["white"]["id"]
+                        is_my_turn = opponent_id == username
+                    elif state["type"] == "gameState" and state["moves"] != "":
+                        last_move = Move.from_uci(state["moves"].split(" ")[-1])
+                        chess_board.push(last_move)
+
+                    clear_screen()
+                    print_board(chess_board, username, opponent_id)
+
+                    if is_my_turn:
                         while True:
-                            e = input(">")
-                            m = Move.from_uci(e)
-                            if m in a.legal_moves:
-                                c.board.make_move(x["game"]["gameId"], e)
+                            move_input = input("Enter your move (e.g., 'e2e4'): ")
+                            move = Move.from_uci(move_input)
+                            if move in chess_board.legal_moves:
+                                client.board.make_move(game_id, move_input)
                                 break
-                            print("inv move")
-                    me = not me
-                print(f"""{
-                nl.join(
-                    f'{8-x2 if whitename == name else x2+1} {x}' 
-                    for x2, x in enumerate(reversed(str(a).split(nl)) 
-                    if whitename != name else str(a).split(nl))
-                )
-                }\n  A B C D E F G H""")
-    sleep(0.1)
+                            print("Invalid move")
+
+                    is_my_turn = not is_my_turn
+
+                clear_screen()
+                print_board(chess_board, username, opponent_id)
+
+        time.sleep(0.1)
+
+def main():
+    token = read_token()
+    client = create_client(token)
+    username = client.account.get()["username"]
+    play_game(client, username)
+
+if __name__ == "__main__":
+    main()
