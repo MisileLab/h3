@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<body>
+	<h2 id='clock'></h2>
+    <script>
+        function setClock() {
+            let now = new Date();
+            let s = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds()
+			document.getElementById('clock').innerHTML = s;
+            setTimeout('setClock()', 1000);
+        }
+        setClock()
+    </script>
+</body>
+</html>
