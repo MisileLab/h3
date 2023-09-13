@@ -4,10 +4,13 @@ from subprocess import Popen
 from bojapi import BaekjoonProb
 from tomli import loads
 from sys import argv
-from misilelibpy import read_once
 from difflib import SequenceMatcher
+from pathlib import Path
 
 runs = 1
+
+def read_once(a: str) -> str:
+    return Path(a).read_text()
 
 def diff_strings(a: str, b: str, *, use_loguru_colors: bool = False) -> str:
     output = []

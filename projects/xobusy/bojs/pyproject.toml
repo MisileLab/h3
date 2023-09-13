@@ -7,10 +7,10 @@ license = "MisileLab License"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "3.11.4"
+python = "3.11.5"
 tomli = "2.0.1"
 requests = "2.31.0"
-misilelibpy = {path="libs/misilelib/misilelib-python"}
+#misilelibpy = {path="libs/misilelib/misilelib-python"}
 baekjoonapi = {git = "https://github.com/MisileLab/baekjoonapi.git"}
 
 [tool.poetry.group.extra.dependencies]
