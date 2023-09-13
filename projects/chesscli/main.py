@@ -28,7 +28,7 @@ def print_board(board, username, opponent_id):
     print(f"{board_display}\n  A B C D E F G H")
 
 # Play the chess game
-def play_game(client, username):
+def play_game(client, username): # sourcery skip
     chess_board = Board()
     is_my_turn = False
 
