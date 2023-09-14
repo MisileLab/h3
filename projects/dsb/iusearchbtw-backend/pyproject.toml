@@ -1,16 +1,16 @@
 [tool.poetry]
-name = "jupyters"
+name = "iusearchbtw-backend"
 version = "0.1.0"
-description = "Julia, Python, Not using r"
+description = ""
 authors = ["MisileLaboratory"]
 license = "MisileLab License"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "3.11.4"
-numpy = "1.25.2"
-jupyterlab = "4.0.5"
-ipykernel = "6.25.2"
+python = "3.11.5"
+pymongo = "4.5.0"
+fastapi = "0.103.1"
+uvicorn = "0.23.2"
 
 [build-system]
 requires = ["poetry-core"]

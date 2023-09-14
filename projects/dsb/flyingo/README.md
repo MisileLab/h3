@@ -1,3 +1,0 @@
-# Flyingo
-
-Modified dragonfly bukkit

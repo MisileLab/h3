@@ -1,9 +1,0 @@
-.divide {
-    display: inline-block;
-    border: 1px solid white;
-    vertical-align: auto;
-}
-
-.container > * {
-    align-content: center;
-}
