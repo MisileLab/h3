@@ -29,7 +29,7 @@ func main() {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	log.Info("MisileLaboratory | Flyingo >>= Dragonfly")
+	log.Info("Flyingo Powered by Dragonfly")
 
 	srv := conf.New()
 	srv.CloseOnProgramEnd()
@@ -38,6 +38,7 @@ func main() {
 
 	srv.Listen()
 	for srv.Accept(func(p *player.Player) {
+		p.Message("Flyingo Powered by Dragonfly")
 	}) {
 		
 	}
