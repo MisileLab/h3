@@ -1,0 +1,6 @@
+outs:
+- md5: 36107c10712a3d3a0f776f12b334c448
+  size: 20900785
+  isexec: true
+  hash: md5
+  path: flyingo
