@@ -4,9 +4,17 @@ from typing import Annotated
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 from fastapi import FastAPI, Header, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 
 a = MongoClient(Path("MONGO_URI").read_text().strip())["iusearchbtw"]
 b = FastAPI()
+
+b.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @b.get("/post/{id}")
 def get_post(id: str):
