@@ -1,8 +1,12 @@
 input()
-input()
+f = list(map(int, input().split(" ")))
 a = list(map(int, input().split(" ")))
 e = 0
 _cac = len(a)-1
+
+if a == f:
+    print("POSSIBLE")
+    exit()
 
 def is_sorted(b, c, d):
     return list(sorted([b, c, d])) == [b, c, d] or list(
