@@ -1,6 +1,13 @@
-/* @refresh reload */
-import { render } from "solid-js/web";
+import { render } from 'solid-js/web';
+import { Router, Routes, Route } from '@solidjs/router';
+import Desktop4 from './pages/Desktop4';
 
-import App from "./App";
-
-render(() => <App />, document.getElementById("root") as HTMLElement);
+render(
+  () => (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Desktop4 />} />
+      </Routes>
+    </Router>
+  ), document.getElementById('root')!!
+)
