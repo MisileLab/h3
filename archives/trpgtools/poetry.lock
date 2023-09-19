@@ -384,13 +384,13 @@ tqdm = ["tqdm"]
 
 [[package]]
 name = "gradio"
-version = "3.41.0"
+version = "3.44.4"
 description = "Python library for easily interacting with trained machine learning models"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "gradio-3.41.0-py3-none-any.whl", hash = "sha256:f6576881919ba1e1523febb70d963b42324c64c87c2417beabc2a2a015e61d81"},
-    {file = "gradio-3.41.0.tar.gz", hash = "sha256:762dec6947fe00457d3d76398ee1363f92403de4838796f9a10fd0644c9ed18d"},
+    {file = "gradio-3.44.4-py3-none-any.whl", hash = "sha256:803566d7b4b10d30b73e14d063302f496e8e165d539112c01dc9ad85f31e3b16"},
+    {file = "gradio-3.44.4.tar.gz", hash = "sha256:e094e12bd5e9914f50c8563d596c25433edba932eff279518a43613fbe219416"},
 ]
 
 [package.dependencies]
@@ -398,7 +398,7 @@ aiofiles = ">=22.0,<24.0"
 altair = ">=4.2.0,<6.0"
 fastapi = "*"
 ffmpy = "*"
-gradio-client = "0.5.0"
+gradio-client = "0.5.1"
 httpx = "*"
 huggingface-hub = ">=0.14.0"
 importlib-resources = ">=1.3,<7.0"
@@ -425,13 +425,13 @@ oauth = ["authlib", "itsdangerous"]
 
 [[package]]
 name = "gradio-client"
-version = "0.5.0"
+version = "0.5.1"
 description = "Python library for easily interacting with trained machine learning models"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "gradio_client-0.5.0-py3-none-any.whl", hash = "sha256:8e07bddd4c21f76fd218897703df8012c7e95dc74e3660edde78ac89fe4cf284"},
-    {file = "gradio_client-0.5.0.tar.gz", hash = "sha256:709e91c1e0738abe46ad9f4565d490ef36b0f17ce347050017afaa469ed79a6a"},
+    {file = "gradio_client-0.5.1-py3-none-any.whl", hash = "sha256:e8899878e63c8b9d03dffd2dfb63a96ef43d71f659108931a7d2233a33d67a26"},
+    {file = "gradio_client-0.5.1.tar.gz", hash = "sha256:d60a00deabaea47002acbcbd0d471acd25a5beac51127a42817cd5b7ece66e05"},
 ]
 
 [package.dependencies]
@@ -1492,4 +1492,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "3.11.5"
-content-hash = "7699a7589e5303e1a9bd42cff40433e0d676e401ded2357b651b60958ae3cd4f"
+content-hash = "bb43924bde192d2f92407155cd4b5fe292c7fb80873e55aa2a8c1dc9aab77b79"
