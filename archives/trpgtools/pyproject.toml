@@ -7,7 +7,7 @@ license = "MisileLab License"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "3.11.3"
+python = "3.11.5"
 gradio = "3.41.0"
 
 [build-system]
