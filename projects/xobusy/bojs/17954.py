@@ -1,58 +1,31 @@
 #2n..2n-2 2n-1
 #n..n-3 n-2 n-1
 from copy import deepcopy
-a, b = (False, False)
-c = [[],[]]
-d = int(input())
-e = 0
+a = int(input())
+b = [[2*a], [a]]
 
-for i in range(1, d*2+1):
-    if a:
-        if not b:
-            c[0].insert(0, i)
-        else:
-            c[0].insert(-1, i)
-            a = not a
-    elif not b:
-        c[1].insert(0, i)
-    else:
-        c[1].insert(-1, i)
-        a = not a
-    b = not b
+for i in range(3, a*2, 2):
+    b[0].append(i)
 
-if d % 2 == 1:
-    c[0].insert(-1, max(c[1][0], c[1][-1]))
-    c[1].remove(max(c[1][0], c[1][-1]))
-t = 1
-answer = deepcopy(c)
+for i in range(1, a):
+    b[1].append(i)
 
-while len(c[0]) != 0 or len(c[1]) != 0:
-    try:
-        f = min(c[0][0], c[0][-1])
-    except IndexError:
-        g = min(c[1][0], c[1][-1])
-        c[1].remove(g)
-        for i in c:
-            for i2 in i:
-                e += t * i2
-        continue
-    try:
-        g = min(c[1][0], c[1][-1])
-    except IndexError:
-        c[0].remove(f)
-        for i in c:
-            for i2 in i:
-                e += t * i2
-        continue
-    if f <= g:
-        c[0].remove(f)
-    else:
-        c[1].remove(g)
-    for i in c:
-        for i2 in i:
-            e += t * i2
+c = 0
+t = 0
+f = deepcopy(b)
+
+while len(b[1]) > 0:
+    d = min(b[1])
+    c += t * d
+    b[1].remove(d)
     t += 1
 
-print(e)
-print(*answer[0])
-print(*answer[1])
+while len(b[0]) > 0:
+    d = min(b[0])
+    c += t * d
+    b[0].remove(d)
+    t += 1
+
+print(c)
+print(*f[0])
+print(*f[1])
