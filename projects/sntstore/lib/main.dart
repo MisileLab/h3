@@ -10,11 +10,11 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        home: Scaffold(
+        home: const Scaffold(
           body: Padding(
-              padding: EdgeInsets.symmetric(vertical: 20), child: const TopBar()),
+              padding: EdgeInsets.symmetric(vertical: 20), child: TopBar()),
         ),
-        theme: new ThemeData(scaffoldBackgroundColor: const Color(0xFFFFFFFF)));
+        theme: ThemeData(scaffoldBackgroundColor: const Color(0xFFFFFFFF)));
   }
 }
 
@@ -28,18 +28,18 @@ class TopBar extends StatefulWidget {
 class TopBarState extends State<TopBar> {
   int selected = 0;
   List<Widget> selector = [
-    new Text("전체"),
-    new Text("동아리"),
-    new Text("앱/게임"),
-    new Text("웹/서버"),
-    new Text("기타")
+    const Text("전체"),
+    const Text("동아리"),
+    const Text("앱/게임"),
+    const Text("웹/서버"),
+    const Text("기타")
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-      title: new Row(children: selector),
+      title: Row(children: selector),
       shadowColor: const Color(0x000000FF),
     ));
   }
