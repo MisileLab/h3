@@ -7,13 +7,9 @@ def main():
         print(2)
         return
 
-    seq = []
-    for i in range(2 * n - 3, n - 2, -1):
-        seq.append(i)
-    seq.append(2 * n - 2)
-    seq.append(2 * n - 1)
-    for i in range(n - 2, 0, -1):
-        seq.append(i)
+    seq = list(range(2 * n - 3, n - 2, -1))
+    seq.extend((2 * n - 2, 2 * n - 1))
+    seq.extend(iter(range(n - 2, 0, -1)))
     seq.append(2 * n)
 
     sum_val = 1 * n * (2 * n + 1)
