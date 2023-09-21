@@ -1,3 +1,0 @@
-# sntstore
-
-real sntstore
