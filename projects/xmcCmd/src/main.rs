@@ -1,6 +1,6 @@
 use std::{
     fs::read_to_string,
-    env::args, collections::HashMap
+    env::args, collections::HashMap, iter::zip
 };
 
 #[derive(PartialEq, Clone, Debug)]
@@ -38,7 +38,7 @@ enum Value {
 #[derive(Debug)]
 enum LexType {
     Function(String, HashMap<String, Type>, Vec<LexType>),
-    Variable(Type, Value),
+    Variable(String, Type, Value),
     FunctionCall(String, Vec<Value>)
 }
 
@@ -53,6 +53,12 @@ fn compare_token_type(tokens: &Vec<Token>, token_type: TokenType) -> bool {
 struct Token {
     token_type: TokenType,
     value: String
+}
+
+#[derive(Debug, Clone)]
+struct Function<'a> {
+    args: &'a HashMap<String, Type>,
+    scope: &'a Vec<LexType>
 }
 
 fn tokenizer(filecontent: Vec<String>) -> Vec<Token> {
@@ -125,20 +131,21 @@ fn tokenizer(filecontent: Vec<String>) -> Vec<Token> {
         } else if compare_token_type(&tokens, TokenType::None) && buffer_without2.starts_with("/") && buffer_without2.ends_with(" ") {
             token_found = true;
             token.token_type = TokenType::TokenFunCall;
-            token.value = buffer_without[1..buffer_without.len()-1].to_string();
+            token.value = buffer_without2[0..buffer_without2.len()-1].to_string();
         } else if compare_token_type(&tokens, TokenType::TokenFunCall) && t == ";" {
             let args = buffer.split(" ").map(|x| x.to_string()).collect::<Vec<String>>();
             for j in args {
                 tokens.push(Token {
                     token_type: TokenType::TokenFunCallArg,
-                    value: j
+                    value: j.strip_prefix('"').unwrap_or(&j).strip_suffix('"').unwrap_or(&j).to_string()
                 });
             }
             buffer = String::new();
         } else if compare_token_type(&tokens, TokenType::None) && buffer == "#" {
-            token_found = true;
             token.token_type = TokenType::TokenFunScopeEnd;
-            token.value = buffer.clone();
+            token.value = "#".to_string();
+            tokens.push(token.clone());
+            ignored = true;
         } else if !compare_token_type(&tokens, TokenType::None) && buffer_without.ends_with("#") {
             token_found = true;
             token.token_type = TokenType::TokenScope;
@@ -179,9 +186,9 @@ fn parse(tokens: &Vec<Token>, i: Option<usize>, end: Option<usize>) -> Vec<LexTy
                 while tokens[i].token_type == TokenType::TokenFunArgKey && tokens[i+1].token_type == TokenType::TokenFunArgValue {
                     let typearg: Type;
                     if tokens[i+1].value == "int" {
-                        typearg = Type::String;
-                    } else if tokens[i+1].value == "string" {
                         typearg = Type::Int;
+                    } else if tokens[i+1].value == "string" {
+                        typearg = Type::String;
                     } else if tokens[i+1].value == "bool" {
                         typearg = Type::Bool;
                     } else if tokens[i+1].value == "float" {
@@ -200,6 +207,7 @@ fn parse(tokens: &Vec<Token>, i: Option<usize>, end: Option<usize>) -> Vec<LexTy
                 lexs.push(LexType::Function(name, args, scope));
             }
         } else if t.token_type == TokenType::TokenVarName {
+            let name = t.value.clone();
             i += 4;
             let typearg: Type;
             let rvalue = &tokens[i+1].value;
@@ -219,22 +227,22 @@ fn parse(tokens: &Vec<Token>, i: Option<usize>, end: Option<usize>) -> Vec<LexTy
             } else {
                 panic!("error when parse type")
             }
-            lexs.push(LexType::Variable(typearg, value));
+            lexs.push(LexType::Variable(name, typearg, value));
         } else if t.token_type == TokenType::TokenFunCall {
-            let name = t.value.strip_prefix("   ").unwrap_or(&t.value);
-            let name = name[1..name.len()].to_string();
-            i += 1;
             let mut arguments: Vec<Value> = Vec::new();
+            i += 1;
             while tokens[i].token_type == TokenType::TokenFunCallArg {
                 match &tokens[i].value.parse::<f64>() {
                     Ok(a) => {
                         arguments.push(Value::Float(a.to_owned()));
+                        i += 1;
                         continue;
                     }, Err(_) => {}
                 }
                 match &tokens[i].value.parse::<isize>() {
                     Ok(a) => {
                         arguments.push(Value::Int(a.to_owned()));
+                        i += 1;
                         continue;
                     }, Err(_) => {}
                 }
@@ -247,11 +255,65 @@ fn parse(tokens: &Vec<Token>, i: Option<usize>, end: Option<usize>) -> Vec<LexTy
                 }
                 i += 1;
             }
-            lexs.push(LexType::FunctionCall(name, arguments))
+            lexs.push(LexType::FunctionCall(t.value.clone()[1..t.value.len()].to_string(), arguments))
         }
         i += 1;
     }
     return lexs;
+}
+
+fn run(
+    lexs: &Vec<LexType>,
+    functions: Option<HashMap<String, Function>>,
+    variables: Option<HashMap<String, &Value>>
+) {
+    let mut functions: HashMap<String, Function> = functions.unwrap_or_default();
+    let mut variables: HashMap<String, &Value> = variables.unwrap_or_default();
+    for lex in lexs {
+        match lex {
+            LexType::Function(a, b, c) => {
+                functions.insert(a.to_string(), Function{args: b, scope: c});
+            },
+            LexType::Variable(a, _, c) => {
+                variables.insert(a.to_string(), c);
+            },
+            LexType::FunctionCall(a, b) => {
+                if a == "say" {
+                    match b[0] {
+                        Value::String(ref a) => {
+                            let mut b = a.clone();
+                            while b.find("@").is_some() && b.find("*").is_some() {
+                                let r1 = b.find("@").unwrap();
+                                let r2 = b.find("*").unwrap();
+                                let value = match variables[&b[r1+1..r2].to_string()] {
+                                    Value::String(a) => a.to_string(),
+                                    Value::Bool(a) => a.to_string(),
+                                    Value::Float(a) => a.to_string(),
+                                    Value::Int(a) => a.to_string()
+                                };
+                                b.replace_range(r1..r2+1, &value);
+                            }
+                            println!("{b}");
+                        },
+                        _ => { panic!("No string allowed") }
+                    }
+                } else {
+                    match functions.get(a) {
+                        None => {
+                            panic!("function not found {a}");
+                        },
+                        Some(a) => {
+                            let mut arguments: HashMap<String, &Value> = HashMap::new();
+                            for (i, i2) in zip(a.args, b) {
+                                arguments.insert(i.0.to_string(), i2);
+                            }
+                            run(a.scope, Some(functions.clone()), Some(arguments));
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 fn main() {
@@ -266,4 +328,5 @@ fn main() {
     for i in &lexs {
         println!("lextype: {:#?}", i);
     }
+    run(&lexs, None, None);
 }
