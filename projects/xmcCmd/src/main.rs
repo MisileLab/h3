@@ -6,17 +6,18 @@ use std::{
 #[derive(PartialEq, Clone, Debug)]
 enum TokenType {
     None,
+    TokenScope,
+    TokenFunScopeEnd,
+    TokenFunScopeStart,
     TokenIdentifier,
     TokenVarName,
     TokenVarOptionKey,
     TokenVarOptionValue,
     TokenVarOptionSep,
     TokenFunStart,
-    TokenFunEnd,
     TokenFunName,
     TokenFunArgKey,
     TokenFunArgValue,
-    TokenFunScope,
     TokenFunCall,
     TokenFunCallArg
 }
@@ -37,7 +38,8 @@ enum Value {
 #[derive(Debug)]
 enum LexType {
     Function(String, HashMap<String, Type>, Vec<LexType>),
-    Variable(Type, Value)
+    Variable(Type, Value),
+    FunctionCall(String, Vec<Value>)
 }
 
 fn compare_token_type(tokens: &Vec<Token>, token_type: TokenType) -> bool {
@@ -59,13 +61,14 @@ fn tokenizer(filecontent: Vec<String>) -> Vec<Token> {
     let mut i: usize = 0;
     while filecontent.get(i).is_some() {
         let buffer_without = buffer.strip_prefix("   ").unwrap_or(&buffer).strip_prefix(" ").unwrap_or(&buffer).strip_suffix(" ").unwrap_or(&buffer).strip_suffix("   ").unwrap_or(&buffer);
+        let buffer_without2 = buffer.strip_prefix("   ").unwrap_or(&buffer).strip_prefix(" ").unwrap_or(&buffer);
         let mut token_found = false;
         let mut token_semi_found = false;
         let mut ignored = false;
         let t = &filecontent[i];
         let mut token = Token{token_type: TokenType::None, value: ";".to_string()};
-        println!("{buffer}");
-        if (tokens.len() == 0 || compare_token_type(&tokens, TokenType::None)) && buffer == "@ " {
+        println!("{buffer_without2}");
+        if (tokens.len() == 0 || compare_token_type(&tokens, TokenType::None) || compare_token_type(&tokens, TokenType::TokenScope) || compare_token_type(&tokens, TokenType::TokenFunScopeStart)) && buffer_without2 == "@ " {
             token_found = true;
             token.token_type = TokenType::TokenIdentifier;
             token.value = buffer.clone();
@@ -97,8 +100,14 @@ fn tokenizer(filecontent: Vec<String>) -> Vec<Token> {
                 }
             }
             buffer = String::new();
+            while &filecontent[i] != "#" {
+                i += 1;
+            }
+            tokens.push(Token {
+                token_type: TokenType::TokenFunScopeStart,
+                value: "#".to_string()
+            });
             ignored = true;
-            let mut i2 = i;
         }
         else if (compare_token_type(&tokens, TokenType::TokenVarName) || compare_token_type(&tokens, TokenType::TokenVarOptionSep)) && buffer.ends_with("=") {
             token_found = true;
@@ -113,7 +122,7 @@ fn tokenizer(filecontent: Vec<String>) -> Vec<Token> {
                 token.token_type = TokenType::TokenVarOptionSep;
                 token.value = ",".to_string();
             }
-        } else if compare_token_type(&tokens, TokenType::None) && buffer_without.starts_with("/") && buffer_without.ends_with(" ") {
+        } else if compare_token_type(&tokens, TokenType::None) && buffer_without2.starts_with("/") && buffer_without2.ends_with(" ") {
             token_found = true;
             token.token_type = TokenType::TokenFunCall;
             token.value = buffer_without[1..buffer_without.len()-1].to_string();
@@ -126,6 +135,14 @@ fn tokenizer(filecontent: Vec<String>) -> Vec<Token> {
                 });
             }
             buffer = String::new();
+        } else if compare_token_type(&tokens, TokenType::None) && buffer == "#" {
+            token_found = true;
+            token.token_type = TokenType::TokenFunScopeEnd;
+            token.value = buffer.clone();
+        } else if !compare_token_type(&tokens, TokenType::None) && buffer_without.ends_with("#") {
+            token_found = true;
+            token.token_type = TokenType::TokenScope;
+            token.value = buffer_without.to_string();
         }
         if !compare_token_type(&tokens, TokenType::None) && t == ";" {
             token_semi_found = true;
@@ -158,6 +175,7 @@ fn parse(tokens: &Vec<Token>, i: Option<usize>, end: Option<usize>) -> Vec<LexTy
             if tokens[i-1].token_type == TokenType::TokenFunName {
                 let mut args: HashMap<String, Type> = HashMap::new();
                 let mut scope: Vec<LexType> = Vec::new();
+                let name = tokens[i-1].value.clone();
                 while tokens[i].token_type == TokenType::TokenFunArgKey && tokens[i+1].token_type == TokenType::TokenFunArgValue {
                     let typearg: Type;
                     if tokens[i+1].value == "int" {
@@ -175,12 +193,61 @@ fn parse(tokens: &Vec<Token>, i: Option<usize>, end: Option<usize>) -> Vec<LexTy
                     i += 2;
                 }
                 let i2 = i;
-                while tokens[i].token_type != TokenType::TokenFunEnd {
+                while tokens[i].token_type != TokenType::TokenFunScopeEnd {
                     i += 1;
                 }
                 scope.extend(parse(&tokens, Some(i2), Some(i)));
-                lexs.push(LexType::Function(tokens[i-1].value.to_string(), args, scope));
+                lexs.push(LexType::Function(name, args, scope));
             }
+        } else if t.token_type == TokenType::TokenVarName {
+            i += 4;
+            let typearg: Type;
+            let rvalue = &tokens[i+1].value;
+            let value: Value;
+            if tokens[i-2].value == "string" {
+                typearg = Type::String;
+                value = Value::String(rvalue.to_owned());
+            } else if tokens[i-2].value == "int" {
+                typearg = Type::Int;
+                value = Value::Int(rvalue.parse().expect("error while parsing int"))
+            } else if tokens[i-2].value == "bool" {
+                typearg = Type::Bool;
+                value = Value::Bool(if rvalue == "true" {true} else {false})
+            } else if tokens[i-2].value == "float" {
+                typearg = Type::Float;
+                value = Value::Float(rvalue.parse().expect("error while parsing float"))
+            } else {
+                panic!("error when parse type")
+            }
+            lexs.push(LexType::Variable(typearg, value));
+        } else if t.token_type == TokenType::TokenFunCall {
+            let name = t.value.strip_prefix("   ").unwrap_or(&t.value);
+            let name = name[1..name.len()].to_string();
+            i += 1;
+            let mut arguments: Vec<Value> = Vec::new();
+            while tokens[i].token_type == TokenType::TokenFunCallArg {
+                match &tokens[i].value.parse::<f64>() {
+                    Ok(a) => {
+                        arguments.push(Value::Float(a.to_owned()));
+                        continue;
+                    }, Err(_) => {}
+                }
+                match &tokens[i].value.parse::<isize>() {
+                    Ok(a) => {
+                        arguments.push(Value::Int(a.to_owned()));
+                        continue;
+                    }, Err(_) => {}
+                }
+                if &tokens[i].value == "true" {
+                    arguments.push(Value::Bool(true))
+                } else if &tokens[i].value == "false" {
+                    arguments.push(Value::Bool(false))
+                } else {
+                    arguments.push(Value::String(tokens[i].value.clone()))
+                }
+                i += 1;
+            }
+            lexs.push(LexType::FunctionCall(name, arguments))
         }
         i += 1;
     }
