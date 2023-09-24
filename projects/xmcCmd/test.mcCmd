@@ -1,7 +1,0 @@
-@ zig[type=int,value=1];
-@ /a g@int a@int #
-    @ iusearchbtw[type=string,value=c];
-    /say "@iusearchbtw*";
-    /say "sus";
-#;
-/a 1 3;
