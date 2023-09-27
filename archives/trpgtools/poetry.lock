@@ -384,13 +384,13 @@ tqdm = ["tqdm"]
 
 [[package]]
 name = "gradio"
-version = "3.44.4"
+version = "3.45.0"
 description = "Python library for easily interacting with trained machine learning models"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "gradio-3.44.4-py3-none-any.whl", hash = "sha256:803566d7b4b10d30b73e14d063302f496e8e165d539112c01dc9ad85f31e3b16"},
-    {file = "gradio-3.44.4.tar.gz", hash = "sha256:e094e12bd5e9914f50c8563d596c25433edba932eff279518a43613fbe219416"},
+    {file = "gradio-3.45.0-py3-none-any.whl", hash = "sha256:5263ef0ff829895d18e80256639eade1873dc71f8fa99366f7a5216ca72f5182"},
+    {file = "gradio-3.45.0.tar.gz", hash = "sha256:ea2c90b95a013d51d197d2298b1485472cbdcd04b0c16a00a3635c22033cb089"},
 ]
 
 [package.dependencies]
@@ -398,7 +398,7 @@ aiofiles = ">=22.0,<24.0"
 altair = ">=4.2.0,<6.0"
 fastapi = "*"
 ffmpy = "*"
-gradio-client = "0.5.1"
+gradio-client = "0.5.2"
 httpx = "*"
 huggingface-hub = ">=0.14.0"
 importlib-resources = ">=1.3,<7.0"
@@ -425,13 +425,13 @@ oauth = ["authlib", "itsdangerous"]
 
 [[package]]
 name = "gradio-client"
-version = "0.5.1"
+version = "0.5.2"
 description = "Python library for easily interacting with trained machine learning models"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "gradio_client-0.5.1-py3-none-any.whl", hash = "sha256:e8899878e63c8b9d03dffd2dfb63a96ef43d71f659108931a7d2233a33d67a26"},
-    {file = "gradio_client-0.5.1.tar.gz", hash = "sha256:d60a00deabaea47002acbcbd0d471acd25a5beac51127a42817cd5b7ece66e05"},
+    {file = "gradio_client-0.5.2-py3-none-any.whl", hash = "sha256:45638e46bab98c663576d28a9976720de8c8424a03b41c835bd67a69aef502d5"},
+    {file = "gradio_client-0.5.2.tar.gz", hash = "sha256:2351a738b522fb7edfd8e8b54cfbcd86be23c6d0665d27f12a7fcd2a1494562e"},
 ]
 
 [package.dependencies]
@@ -1489,4 +1489,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "3.11.5"
-content-hash = "bb43924bde192d2f92407155cd4b5fe292c7fb80873e55aa2a8c1dc9aab77b79"
+content-hash = "007b56d37ac931480f7bc597c9c7f5f021cadf03c533bc7ede7e24f2344ed8a9"
