@@ -14,6 +14,7 @@ load_dotenv()
 
 op = Options()
 op.headless = True
+op.add_argument("--headless")
 driver = webdriver.Firefox(options=op)
 app = FastAPI()
 db = MongoClient(host=environ["HOST"], port=int(environ["PORT"]), username=environ["USERNAME"], password=environ["PASSWORD"]) # noqa: E501
