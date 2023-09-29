@@ -1,2 +1,9 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script>
+import { goto } from "$app/navigation";
+</script>
+<h1>This is Level 0, password is this level number</h1>
+<input type="text" placeholder="password input" on:input={() => {
+    if (event.target.value == "0") {
+        goto('/1')
+    }
+}}/>
