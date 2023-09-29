@@ -384,13 +384,13 @@ tqdm = ["tqdm"]
 
 [[package]]
 name = "gradio"
-version = "3.45.1"
+version = "3.45.2"
 description = "Python library for easily interacting with trained machine learning models"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "gradio-3.45.1-py3-none-any.whl", hash = "sha256:755d6f7821854b33d1244e673bc037817dd7ec706bc246f473fe9efa8523d920"},
-    {file = "gradio-3.45.1.tar.gz", hash = "sha256:d4482655782a4a7905b29ae9474d49ce01988aeb59da8c9674c38075fa9c3738"},
+    {file = "gradio-3.45.2-py3-none-any.whl", hash = "sha256:d07792f1ea6b28cabe3b8d26b51dd345148c7ae5ec912eaa8b208f427a678812"},
+    {file = "gradio-3.45.2.tar.gz", hash = "sha256:7fe5b792b888ec95a7012b5e65d7ebff796bc59d2af24bbf0d6e982f294a2158"},
 ]
 
 [package.dependencies]
@@ -398,7 +398,7 @@ aiofiles = ">=22.0,<24.0"
 altair = ">=4.2.0,<6.0"
 fastapi = "*"
 ffmpy = "*"
-gradio-client = "0.5.2"
+gradio-client = "0.5.3"
 httpx = "*"
 huggingface-hub = ">=0.14.0"
 importlib-resources = ">=1.3,<7.0"
@@ -425,13 +425,13 @@ oauth = ["authlib", "itsdangerous"]
 
 [[package]]
 name = "gradio-client"
-version = "0.5.2"
+version = "0.5.3"
 description = "Python library for easily interacting with trained machine learning models"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "gradio_client-0.5.2-py3-none-any.whl", hash = "sha256:45638e46bab98c663576d28a9976720de8c8424a03b41c835bd67a69aef502d5"},
-    {file = "gradio_client-0.5.2.tar.gz", hash = "sha256:2351a738b522fb7edfd8e8b54cfbcd86be23c6d0665d27f12a7fcd2a1494562e"},
+    {file = "gradio_client-0.5.3-py3-none-any.whl", hash = "sha256:4b0c84b6f07029260270afa317789ff6171e6ebc83aac65dfba7ad0983c34736"},
+    {file = "gradio_client-0.5.3.tar.gz", hash = "sha256:5f7f8c25c7d963a3ec805e135030a2283eea49dd4fc0c69c6b119ae56b33bc6b"},
 ]
 
 [package.dependencies]
@@ -1489,4 +1489,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "3.11.5"
-content-hash = "061d1474c78c58943fba9535b68b183b75e04a9119e41e979c7aa12ff0102aaf"
+content-hash = "1ae75980b222681c29cffa6531fb3ebef9108202fe4748e451064c5721a26dac"
