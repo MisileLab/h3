@@ -26,9 +26,8 @@ pub fn main() !void {
             char.* = stringl[rnd.random().intRangeLessThan(u8, 0, stringl.len - 1)];
         }
         try stdout.print("{s}\n", .{ string });
-        try bw.flush();
     } else {
         try stdout.print("./utils random\n", .{});
-        try bw.flush();
     }
+    try bw.flush();
 }
