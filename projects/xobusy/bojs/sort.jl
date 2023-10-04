@@ -35,6 +35,11 @@ asyncmap(probs) do i
     noextension = Filesystem.splitext(i)[1]
     ver = parse(String(HTTP.get("https://solved.ac/api/v3/problem/lookup?problemIds=$noextension").body))[1]["level"]
     println(ver)
-    version = versions[ver]
-    move_path("problems/$i", "problems/$version/$i")
+    try
+        version = versions[ver]
+        move_path("problems/$i", "problems/$version/$i")
+    catch KeyError
+        move_path("problems/$i", "problems/idks/$i")
+        println("some error here")
+    end
 end
