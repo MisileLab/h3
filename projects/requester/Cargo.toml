@@ -1,0 +1,11 @@
+[package]
+name = "requester"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+dioxus = "0.4.0"
+dioxus-desktop = "0.4.0"
+log = "0.4.20"
+pretty_env_logger = "0.5.0"
+reqwest = "0.11.22"
