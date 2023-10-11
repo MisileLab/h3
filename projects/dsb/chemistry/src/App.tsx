@@ -43,7 +43,7 @@ const App: Component = () => {
       setIon(getRandomElement(getRandomElement(PorM())));
       setValue("");
       setAnswer(_getAnswer(getIon()));
-    } else if(point > 0 && getValue() != "") {
+    } else if(getValue() != "") {
       alert(`failed, point is ${point}, high point is ${hpoint}, answer is ${getAnswer()}`)
       if (point > hpoint) {hpoint = point}
       point = 0;
