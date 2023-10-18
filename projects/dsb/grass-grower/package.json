@@ -19,6 +19,6 @@
     "@types/node": "20.8.7",
     "typescript": "5.2.2",
     "vite": "4.4.11",
-    "vite-plugin-solid": "2.7.1"
+    "vite-plugin-solid": "2.7.2"
   }
 }
