@@ -20,8 +20,8 @@ devDependencies:
     specifier: 4.4.11
     version: 4.4.11
   vite-plugin-solid:
-    specifier: 2.7.0
-    version: 2.7.0(solid-js@1.8.1)(vite@4.4.11)
+    specifier: 2.7.2
+    version: 2.7.2(solid-js@1.8.1)(vite@4.4.11)
 
 packages:
 
@@ -1104,8 +1104,8 @@ packages:
     resolution: {integrity: sha512-hGdgQozCsQJMyfK5urgFcWEqsSSrK63Awe0t/IMR0bZ0QMtnuaiHzThW81guu3qx9abLi99NEuiaN6P9gVYsNg==}
     dev: true
 
-  /vite-plugin-solid@2.7.0(solid-js@1.8.1)(vite@4.4.11):
-    resolution: {integrity: sha512-avp/Jl5zOp/Itfo67xtDB2O61U7idviaIp4mLsjhCa13PjKNasz+IID0jYTyqUp9SFx6/PmBr6v4KgDppqompg==}
+  /vite-plugin-solid@2.7.2(solid-js@1.8.1)(vite@4.4.11):
+    resolution: {integrity: sha512-GV2SMLAibOoXe76i02AsjAg7sbm/0lngBlERvJKVN67HOrJsHcWgkt0R6sfGLDJuFkv2aBe14Zm4vJcNME+7zw==}
     peerDependencies:
       solid-js: ^1.7.2
       vite: ^3.0.0 || ^4.0.0
