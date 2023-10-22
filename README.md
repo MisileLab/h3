@@ -8,6 +8,7 @@ monorepo for my projects
   - [first archives](https://github.com/misilelab/h3/commits/9b5fdfdbf22367ecf13ff3332eb74b9f49ff8e75)
 - libraries (library for projects)
 - projects (active projects)
+- modpacks (minecraft modpacks)
 - web (for experimental)
 
 ## Partial checkout (or clone)
