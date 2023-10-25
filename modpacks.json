@@ -225,6 +225,12 @@
           }
         },
         {
+          "name": "Easy Villagers",
+          "identifier": {
+            "ModrinthProject": "Kaov2qgi"
+          }
+        },
+        {
           "name": "Entity Culling",
           "identifier": {
             "ModrinthProject": "NNAgCjsB"
@@ -270,6 +276,12 @@
           "name": "Get It Together, Drops!",
           "identifier": {
             "ModrinthProject": "T0OUgf8P"
+          }
+        },
+        {
+          "name": "GraveStone Mod",
+          "identifier": {
+            "ModrinthProject": "RYtXKJPr"
           }
         },
         {
