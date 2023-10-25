@@ -225,12 +225,6 @@
           }
         },
         {
-          "name": "Embeddium",
-          "identifier": {
-            "ModrinthProject": "sk9rgfiA"
-          }
-        },
-        {
           "name": "Entity Culling",
           "identifier": {
             "ModrinthProject": "NNAgCjsB"
@@ -445,7 +439,8 @@
           "name": "PneumaticCraft: Repressurized",
           "identifier": {
             "ModrinthProject": "ncAcdgk7"
-          }
+          },
+          "check_mod_loader": false
         },
         {
           "name": "Radium Reforged",
