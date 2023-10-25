@@ -9,9 +9,33 @@
       "mod_loader": "Forge",
       "mods": [
         {
+          "name": "Ad Astra",
+          "identifier": {
+            "ModrinthProject": "3ufwT9JF"
+          }
+        },
+        {
+          "name": "Advanced Peripherals",
+          "identifier": {
+            "ModrinthProject": "SOw6jD6x"
+          }
+        },
+        {
           "name": "AI Improvements",
           "identifier": {
             "CurseForgeProject": 233019
+          }
+        },
+        {
+          "name": "Alchemistry",
+          "identifier": {
+            "CurseForgeProject": 293425
+          }
+        },
+        {
+          "name": "AlchemyLib",
+          "identifier": {
+            "CurseForgeProject": 293426
           }
         },
         {
@@ -51,6 +75,12 @@
           }
         },
         {
+          "name": "Better Advancements",
+          "identifier": {
+            "ModrinthProject": "Q2OqKxDG"
+          }
+        },
+        {
           "name": "Better Fps - Render Distance[Forge]",
           "identifier": {
             "CurseForgeProject": 551520
@@ -66,6 +96,18 @@
           "name": "Botany Pots",
           "identifier": {
             "ModrinthProject": "U6BUTZ7K"
+          }
+        },
+        {
+          "name": "Botany Trees",
+          "identifier": {
+            "ModrinthProject": "mvs7RoIW"
+          }
+        },
+        {
+          "name": "Botarium",
+          "identifier": {
+            "ModrinthProject": "2u6LRnMa"
           }
         },
         {
@@ -87,9 +129,21 @@
           }
         },
         {
+          "name": "ChemLib",
+          "identifier": {
+            "CurseForgeProject": 340666
+          }
+        },
+        {
           "name": "Cloth Config API",
           "identifier": {
             "ModrinthProject": "9s6osm5g"
+          }
+        },
+        {
+          "name": "Compressed Creativity",
+          "identifier": {
+            "ModrinthProject": "Mt3rcQKj"
           }
         },
         {
@@ -135,6 +189,18 @@
           }
         },
         {
+          "name": "Create Slice & Dice",
+          "identifier": {
+            "ModrinthProject": "GmjmRQ0A"
+          }
+        },
+        {
+          "name": "Create: Steam 'n' Rails",
+          "identifier": {
+            "ModrinthProject": "ZzjhlDgM"
+          }
+        },
+        {
           "name": "Cucumber Library",
           "identifier": {
             "ModrinthProject": "Rw1NrDzF"
@@ -168,6 +234,12 @@
           "name": "Entity Culling",
           "identifier": {
             "ModrinthProject": "NNAgCjsB"
+          }
+        },
+        {
+          "name": "Eureka!",
+          "identifier": {
+            "ModrinthProject": "EO8aSHxh"
           }
         },
         {
@@ -226,6 +298,12 @@
           }
         },
         {
+          "name": "Jade Addons (Forge)",
+          "identifier": {
+            "ModrinthProject": "xuDOzCLy"
+          }
+        },
+        {
           "name": "Jade 🔍",
           "identifier": {
             "ModrinthProject": "nvQzSEkH"
@@ -256,9 +334,21 @@
           }
         },
         {
+          "name": "Kotlin for Forge",
+          "identifier": {
+            "ModrinthProject": "ordsPcFz"
+          }
+        },
+        {
           "name": "Krypton Reforged",
           "identifier": {
             "CurseForgeProject": 549394
+          }
+        },
+        {
+          "name": "KubeJS",
+          "identifier": {
+            "ModrinthProject": "umyGl7zF"
           }
         },
         {
@@ -358,6 +448,12 @@
           }
         },
         {
+          "name": "PneumaticCraft: Repressurized",
+          "identifier": {
+            "ModrinthProject": "ncAcdgk7"
+          }
+        },
+        {
           "name": "Radium Reforged",
           "identifier": {
             "CurseForgeProject": 570017
@@ -373,6 +469,24 @@
           "name": "Refined Storage Addons",
           "identifier": {
             "ModrinthProject": "Z4Z5ccuT"
+          }
+        },
+        {
+          "name": "REI Plugin Compatibilities",
+          "identifier": {
+            "ModrinthProject": "1PfY6b5p"
+          }
+        },
+        {
+          "name": "Resourceful Config",
+          "identifier": {
+            "ModrinthProject": "M1953qlQ"
+          }
+        },
+        {
+          "name": "Resourceful Lib",
+          "identifier": {
+            "ModrinthProject": "G1hIVOrD"
           }
         },
         {
@@ -418,6 +532,18 @@
           }
         },
         {
+          "name": "Rhino",
+          "identifier": {
+            "ModrinthProject": "sk9knFPE"
+          }
+        },
+        {
+          "name": "Roughly Enough Items (REI)",
+          "identifier": {
+            "ModrinthProject": "nfn13YXA"
+          }
+        },
+        {
           "name": "Searchables",
           "identifier": {
             "ModrinthProject": "fuuu3xnx"
@@ -445,6 +571,12 @@
           "name": "Titanium",
           "identifier": {
             "ModrinthProject": "1Ro7m06l"
+          }
+        },
+        {
+          "name": "Valkyrien Skies",
+          "identifier": {
+            "ModrinthProject": "V5ujR2yw"
           }
         }
       ]
