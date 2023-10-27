@@ -1,7 +1,5 @@
 [core]
-    remote = remote2
+    remote = remote
     autostage = true
 ['remote "remote"']
-    url = webdavs://space.chizstudio.com:5006/home/dvcs/h3
-['remote "remote2"']
-    url = ../../OneDrive_Onedrive/h3
+    url = /home/misile/nas/repos/h3
