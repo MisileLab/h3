@@ -15,6 +15,12 @@
           }
         },
         {
+          "name": "Additional Enchanted Miner",
+          "identifier": {
+            "ModrinthProject": "jhxX1zVW"
+          }
+        },
+        {
           "name": "Advanced Peripherals",
           "identifier": {
             "ModrinthProject": "SOw6jD6x"
@@ -442,6 +448,12 @@
           }
         },
         {
+          "name": "Pipez",
+          "identifier": {
+            "ModrinthProject": "iRmWy6ga"
+          }
+        },
+        {
           "name": "Placebo",
           "identifier": {
             "CurseForgeProject": 283644
@@ -542,6 +554,12 @@
           "name": "Roughly Enough Items (REI)",
           "identifier": {
             "ModrinthProject": "nfn13YXA"
+          }
+        },
+        {
+          "name": "Scalable Cat's Force",
+          "identifier": {
+            "ModrinthProject": "zr0QMQMo"
           }
         },
         {
