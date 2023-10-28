@@ -15,7 +15,7 @@ async def register(
     name: Union[str, None] = Header(default=None),
     password: Union[str, None] = Header(default=None)
 ):
-    if name == None or password == None:
+    if name is None or password is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
 
     if db.find_one({"name":name}):
