@@ -3,9 +3,12 @@ from pathlib import Path
 
 from fastapi import FastAPI, Header, status, HTTPException
 from pymongo import MongoClient
+from tomli import loads
+from requests import get
 
+config = loads(Path("config.toml").read_text())
 app = FastAPI()
-db = MongoClient(Path("MONGO_URI").read_text().strip())["local"]["schoolfinder"]
+db = MongoClient(config["MONGO_URI"])["schoolfinder"]["login"]
 
 async def is_valid(name: str, password: str) -> bool:
     return db.find_one({"name":name,"password":password}) != None
@@ -22,4 +25,10 @@ async def register(
         raise HTTPException(status_code=status.HTTP_409_CONFLICT)
 
     db.insert_one({"name":name,"password":password})
+
+@app.get("/school/search")
+async def school_search(name: str):
+    a = get("https://open.neis.go.kr/hub/schoolinfo",params={"KEY":config["NEIS_KEY"],"TYPE":"json","SCHUL_NM":name})
+    a.raise_for_status()
+    return a.json()["schoolInfo"][2]["row"]
 
