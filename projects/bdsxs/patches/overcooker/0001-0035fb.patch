@@ -1,0 +1,42 @@
+diff --git a/scripts/index.ts b/scripts/index.ts
+index 3f89b03..4633337 100644
+--- a/scripts/index.ts
++++ b/scripts/index.ts
+@@ -1 +1 @@
+-import "./playerjoin";
++import "./overcooker/main";
+diff --git a/scripts/overcooker/main.ts b/scripts/overcooker/main.ts
+new file mode 100644
+index 0000000..6dcd1a0
+--- /dev/null
++++ b/scripts/overcooker/main.ts
+@@ -0,0 +1,29 @@
++import { GameType } from "bdsx/bds/player";
++import { MobEffectIds, MobEffectInstance } from "../../bdsx/bds/effects";
++import { CANCEL } from "../../bdsx/common";
++import { events } from "../../bdsx/event";
++
++events.playerJoin.on((e)=>{
++    // this is debug
++    if (e.player.getGameType() != GameType.Survival) {e.player.setGameType(GameType.Creative);}
++})
++
++events.blockInteractedWith.on((e)=>{
++    if (e.player.hasEffect(MobEffectIds.Slowness)) {
++        return CANCEL;
++    }
++    const block = e.player.getRegion().getBlock(e.blockPos);
++    if (block.blockLegacy.getCommandName() == "minecraft:furnace") {
++
++    } else {
++        return CANCEL;
++    }
++    e.player.addEffect(MobEffectInstance.create(MobEffectIds.Slowness, 5 * 20, 255, false, true, false));
++    return CANCEL;
++})
++
++events.playerDropItem.on((e)=>{
++    if (e.player.hasEffect(MobEffectIds.Slowness)) {
++        return CANCEL;
++    }
++})
