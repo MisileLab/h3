@@ -412,6 +412,12 @@
           }
         },
         {
+          "name": "More Mekanism Processing",
+          "identifier": {
+            "CurseForgeProject": 511965
+          }
+        },
+        {
           "name": "Mouse Tweaks",
           "identifier": {
             "ModrinthProject": "aC3cM3Vq"
