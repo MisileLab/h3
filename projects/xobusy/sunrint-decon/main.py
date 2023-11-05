@@ -3,6 +3,7 @@ from pathlib import Path
 import base64
 
 from fastapi import FastAPI, Header, status, HTTPException
+from pydantic import BaseModel
 from pymongo import MongoClient
 from tomli import loads
 from requests import get
@@ -10,6 +11,20 @@ from requests import get
 config = loads(Path("config.toml").read_text())
 app = FastAPI()
 db = MongoClient(config["MONGO_URI"])["schoolfinder"]
+
+class School(BaseModel):
+    name: str
+    kind: str
+    code: int
+    homepage: str
+    address: str
+    callnumber: str
+    created: str
+
+class Review(BaseModel):
+    username: str
+    review: str
+    star: float
 
 def is_valid(name: str, password: str) -> bool:
     return db["login"].find_one({"name":name,"password":password}) != None
@@ -27,8 +42,8 @@ async def register(
 
     db["login"].insert_one({"name":name,"password":password})
 
-@app.get("/school/search")
-async def school_search(name: Union[str, None] = Header(default=None)) -> list[dict]:
+@app.get("/school/search", response_model=list[School])
+async def school_search(name: Union[str, None] = Header(default=None)):
     if name is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
     name = base64.b64decode(name).decode("utf-8")
@@ -44,7 +59,7 @@ async def school_search(name: Union[str, None] = Header(default=None)) -> list[d
         "created": i["FOND_YMD"]
     } for i in a.json()["schoolInfo"][1]["row"]]
 
-@app.get("/school/review")
+@app.get("/school/review", response_model=list[Review])
 async def school_review(code: int) -> list[dict]:
     return list(db["info"].find({"code":code}))[0]["reviews"]
 
