@@ -1,6 +1,7 @@
 from typing import List, Optional
 import strawberry
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from strawberry.asgi import GraphQL
 from tomli import loads
 from pymongo import MongoClient
@@ -189,6 +190,13 @@ class Mutation:
 schema = strawberry.Schema(query=Query, mutation=Mutation)
 graphql_app = GraphQL(schema=schema)
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
 app.add_route("/graphql", graphql_app)
 app.add_websocket_route("/graphql", graphql_app)
 
