@@ -6,6 +6,8 @@ from tomli import loads
 from pymongo import MongoClient
 from requests import get
 from pathlib import Path
+import hashlib
+import colorsys
 
 config = loads(Path("config.toml").read_text())
 db = MongoClient(config["MONGO_URI"])["schoolfinder"]
@@ -50,6 +52,7 @@ class Account:
     reviews: List[Review]
     school: str
     description: str
+    hex_codes: List[str]
 
 @strawberry.type
 class School:
@@ -61,6 +64,27 @@ class School:
     questions: List[Question]
     school_type: str
 
+
+def hsl_to_rgb(h, s, l):
+    r, g, b = colorsys.hls_to_rgb(h, l, s)
+    return "#{:02x}{:02x}{:02x}".format(int(r * 255), int(g * 255), int(b * 255))
+
+def generate_gradient(uid, type='diagonal'):
+    if uid:
+        n = int(hashlib.sha256(uid.encode()).hexdigest(), 16) % 360
+        h = n / 360.0
+        s = 0.95
+        l = 0.5
+
+        c1_hex = hsl_to_rgb(h, s, l)
+
+        triad_h = (h + 120) % 360
+        c2_hex = hsl_to_rgb(triad_h / 360.0, s, l)
+
+        return c1_hex, c2_hex
+
+    raise TypeError('uid is required')
+
 @strawberry.type
 class Query:
     @strawberry.field
@@ -68,7 +92,7 @@ class Query:
         data = db["login"].find_one({"email":email})
         if data is None:
             return None
-        return Account(name=data["name"], email=data["email"], password="", user_type=data["user_type"], question=data["question"], answer=data["answer"], solved=data["solved"], reviews=[Review(stars=i["stars"],name=i["name"],description=i["description"]) for i in data["reviews"]], school=data["school"], description=data["description"])
+        return Account(name=data["name"], email=data["email"], password="", user_type=data["user_type"], question=data["question"], answer=data["answer"], solved=data["solved"], reviews=[Review(stars=i["stars"],name=i["name"],description=i["description"]) for i in data["reviews"]], school=data["school"], description=data["description"], hex_codes=data["hex_codes"])
 
     @strawberry.field
     def school(self, name: str) -> List[School]:
@@ -84,7 +108,6 @@ class Query:
             i.questions = [Question(name=i["name"], description=i["description"], answers=[Answer(name=i2["name"], description=i2["description"], confirmed=i2["confirmed"]) for i2 in i["answers"]]) for i in data["questions"]]
         return first_stage
 
-# 채택 api(학교 관련 사람만 가능) 추가 필요
 @strawberry.type
 class Mutation:
     @strawberry.mutation
@@ -92,14 +115,14 @@ class Mutation:
         if db["login"].find_one({"email":email}) is not None:
             raise ValueError("Already registered")
         db["login"].insert_one({"name":name,"email":email,"password":password,"user_type":user_type,"question":0,"answer":0,"solved":0,"reviews":[],"school":""})
-        return Account(name=name, email=email, password="", user_type=user_type, question=0, answer=0, solved=0, reviews=[], school="", description="")
+        return Account(name=name, email=email, password="", user_type=user_type, question=0, answer=0, solved=0, reviews=[], school="", description="", hex_codes=list(generate_gradient(email)))
 
     @strawberry.mutation
     def login(self, email: str, password: str) -> Optional[Account]:
         data = db["login"].find_one({"email":email,"password":password})
         if data is None:
             return None
-        return Account(name=data["name"], email=data["email"], password="", user_type=data["user_type"], question=data["question"], answer=data["answer"], solved=data["solved"], reviews=data["reviews"], school=data["school"], description=data["description"])
+        return Account(name=data["name"], email=data["email"], password="", user_type=data["user_type"], question=data["question"], answer=data["answer"], solved=data["solved"], reviews=data["reviews"], school=data["school"], description=data["description"], hex_codes=data["hex_codes"])
 
     @strawberry.mutation
     def set_description(self, email: str, password: str, description: str) -> None:
