@@ -18,11 +18,6 @@ class UserType:
     student = "student"
     teacher = "teacher"
 
-#@strawberry.type
-#class Comment:
-    #name: str
-    #description: str
-
 @strawberry.type
 class Answer:
     name: str
