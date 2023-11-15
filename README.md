@@ -19,7 +19,7 @@ using my [josh](https://github.com/josh-project/josh) page: `https://gith.misile
 ## DVC (Data Version Control)
 
 currently, i'm using my onedrive and linux client, link remote to ../OneDrive_Onedrive/h3  
-[share link](https://sen0733-my.sharepoint.com/:f:/g/personal/misile1_munchang_sen_ms_kr/EtwSKAzf-w5NjyrUq39cQOMBqJmm1ZBglQPOVp-yh7gZsQ?e=YfgrAD)
+[share link](https://space.chizstudio.com/sharing/hRgFkzd4o)
 
 ## License?
 
