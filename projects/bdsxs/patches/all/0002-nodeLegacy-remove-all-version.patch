@@ -1,0 +1,54 @@
+From df7edcd325d3462039cd8e267e2bb04732380029 Mon Sep 17 00:00:00 2001
+From: misilelab <misileminecord@gmail.com>
+Date: Fri, 17 Nov 2023 13:06:38 +0900
+Subject: [PATCH] nodeLegacy remove - all version
+
+Signed-off-by: MisileLab <misileminecord@gmail.com>
+---
+ .vscode/extensions.json | 2 +-
+ .vscode/launch.json     | 6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/.vscode/extensions.json b/.vscode/extensions.json
+index b906394c..d8244449 100644
+--- a/.vscode/extensions.json
++++ b/.vscode/extensions.json
+@@ -1,3 +1,3 @@
+ {
+-    "recommendations": ["dbaeumer.vscode-eslint", "ms-vscode.node-debug", "esbenp.prettier-vscode"]
++    "recommendations": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
+ }
+diff --git a/.vscode/launch.json b/.vscode/launch.json
+index d7ef825d..9fce0c19 100644
+--- a/.vscode/launch.json
++++ b/.vscode/launch.json
+@@ -7,7 +7,7 @@
+         {
+             "runtimeExecutable": "${workspaceFolder}/bedrock_server/bedrock_server.exe",
+             "cwd": "${workspaceFolder}/bedrock_server",
+-            "type": "legacy-node",
++            "type": "node",
+             "request": "launch",
+             "name": "Launch BDSX",
+             "args": ["${workspaceFolder}"],
+@@ -44,7 +44,7 @@
+         },
+         {
+             "runtimeExecutable": "${workspaceFolder}/bedrock_server/bedrock_server.exe",
+-            "type": "legacy-node",
++            "type": "node",
+             "request": "launch",
+             "name": "Launch Assembly Tests",
+             "skipFiles": ["<node_internals>/**"],
+@@ -63,7 +63,7 @@
+         {
+             "runtimeExecutable": "${workspaceFolder}/bedrock_server/bedrock_server.exe",
+             "cwd": "${workspaceFolder}/bedrock_server",
+-            "type": "legacy-node",
++            "type": "node",
+             "request": "launch",
+             "name": "Launch PDB Parser",
+             "args": ["${workspaceFolder}/bdsx/pdbparser"],
+-- 
+2.42.1
+
