@@ -249,6 +249,20 @@
           }
         },
         {
+          "name": "Ex Machinis",
+          "identifier": {
+            "ModrinthProject": "kETAhKGy"
+          },
+          "check_mod_loader": false
+        },
+        {
+          "name": "Ex Nihilo: Sequentia",
+          "identifier": {
+            "ModrinthProject": "WhVa4xyw"
+          },
+          "check_mod_loader": false
+        },
+        {
           "name": "Farmer's Delight",
           "identifier": {
             "ModrinthProject": "R2OftAxM"
@@ -446,6 +460,13 @@
           "identifier": {
             "ModrinthProject": "qQyHxfxd"
           }
+        },
+        {
+          "name": "NovaCore",
+          "identifier": {
+            "ModrinthProject": "engHtMVe"
+          },
+          "check_mod_loader": false
         },
         {
           "name": "Patchouli",
