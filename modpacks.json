@@ -249,6 +249,13 @@
           }
         },
         {
+          "name": "Ex Machinis",
+          "identifier": {
+            "ModrinthProject": "kETAhKGy"
+          },
+          "check_mod_loader": false
+        },
+        {
           "name": "Ex Nihilo: Sequentia",
           "identifier": {
             "ModrinthProject": "WhVa4xyw"
@@ -332,6 +339,12 @@
           "name": "JourneyMap",
           "identifier": {
             "ModrinthProject": "lfHFW1mp"
+          }
+        },
+        {
+          "name": "Just Enough Items",
+          "identifier": {
+            "ModrinthProject": "u6dRKJwZ"
           }
         },
         {
@@ -505,12 +518,6 @@
           }
         },
         {
-          "name": "REI Plugin Compatibilities",
-          "identifier": {
-            "ModrinthProject": "1PfY6b5p"
-          }
-        },
-        {
           "name": "Resourceful Config",
           "identifier": {
             "ModrinthProject": "M1953qlQ"
@@ -568,12 +575,6 @@
           "name": "Rhino",
           "identifier": {
             "ModrinthProject": "sk9knFPE"
-          }
-        },
-        {
-          "name": "Roughly Enough Items (REI)",
-          "identifier": {
-            "ModrinthProject": "nfn13YXA"
           }
         },
         {
