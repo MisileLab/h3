@@ -249,13 +249,6 @@
           }
         },
         {
-          "name": "Ex Machinis",
-          "identifier": {
-            "ModrinthProject": "kETAhKGy"
-          },
-          "check_mod_loader": false
-        },
-        {
           "name": "Ex Nihilo: Sequentia",
           "identifier": {
             "ModrinthProject": "WhVa4xyw"
