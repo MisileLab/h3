@@ -618,6 +618,12 @@
           "identifier": {
             "ModrinthProject": "V5ujR2yw"
           }
+        },
+        {
+          "name": "WorldEdit",
+          "identifier": {
+            "CurseForgeProject": 225608
+          }
         }
       ]
     }
