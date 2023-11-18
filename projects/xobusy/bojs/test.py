@@ -1,6 +1,6 @@
+from os import getcwd, listdir
+from subprocess import Popen, run
 from json import loads as jload
-from os import getcwd, listdir, _exit
-from subprocess import Popen
 from bojapi import BaekjoonProb
 from tomli import loads
 from sys import argv
@@ -9,8 +9,10 @@ from pathlib import Path
 
 runs = 1
 
+
 def read_once(a: str) -> str:
     return Path(a).read_text()
+
 
 def diff_strings(a: str, b: str, *, use_loguru_colors: bool = False) -> str:
     output = []
@@ -34,10 +36,13 @@ def diff_strings(a: str, b: str, *, use_loguru_colors: bool = False) -> str:
         elif opcode == 'insert':
             output.append(f'{green}{b[b0:b1]}{endgreen}')
         elif opcode == 'replace':
-            output.extend((f'{green}{b[b0:b1]}{endgreen}', f'{red}{a[a0:a1]}{endred}'))
+            output.extend(
+                (f'{green}{b[b0:b1]}{endgreen}', f'{red}{a[a0:a1]}{endred}'))
     return ''.join(output)
 
+
 langlist = [".py", ".rb", ".c", ".cpp"]
+probtypes = ["boj"]
 a = loads(read_once('test.toml'))
 globalvals = a['global']
 flist = []
@@ -55,13 +60,20 @@ except IndexError:
 else:
     flist = [argv[1]]
 
+
 class UniversalProblemFormat:
-    def __init__(self, sample_input: list, sample_output: list, time_limit: float):
+
+    def __init__(self, sample_input: list, sample_output: list,
+                 time_limit: float):
         self.sample_input = sample_input
         self.sample_output = sample_output
         self.time_limit = time_limit
 
+
 def pb_info(prob: str, name: str) -> UniversalProblemFormat:
+    # sourcery skip: extract-method
+    if prob not in probtypes:
+        raise NotImplementedError("no support prob")
     if prob == "boj":
         bjp = BaekjoonProb(name)
         dup = a.get(name, {"sample_input": [], "sample_output": []})
@@ -69,14 +81,15 @@ def pb_info(prob: str, name: str) -> UniversalProblemFormat:
         sinput.extend(dup.get("sample_input", []))
         soutput.extend(dup.get("sample_output", []))
         return UniversalProblemFormat(sinput, soutput, bjp.time_limit)
+    raise NotImplementedError("Unreachable")
+
 
 for i, i2 in enumerate(flist):
     print(i2)
     args = [
-        f"hyperfine --runs {runs} --export-json test.json --output ./output.txt", 
-        "", 
-        "< input.txt'"
-        ]
+        f"hyperfine --runs {runs} --export-json test.json --output ./output.txt",
+        "", "< input.txt'"
+    ]
     config = a.get(i2, globalvals)
     for i3 in config["lang"]:
         if i3 == "pypy":
@@ -105,17 +118,34 @@ for i, i2 in enumerate(flist):
             print(f"Error Code {_wait}")
             print(f"stdout: {p.stdout}")
             print(f"stderr: {p.stderr}")
-            _exit(_wait)
+            exit(_wait)
         outp = read_once('output.txt')
         print(outp)
         for i3 in jload(read_once('test.json'))["results"]:
             outpu = output.replace('\r', '')
-            if outp not in [outpu.removesuffix('\n'), outpu] and outp.strip("\n") not in [outpu.removesuffix('\n'), outpu]: # noqa: E501
-                print(f"{i3['command']} does not match with {output} so failed")
+            if outp not in [outpu.removesuffix('\n'), outpu
+                            ] and outp.strip("\n") not in [
+                                outpu.removesuffix('\n'), outpu
+                            ]:  # noqa: E501
+                print(
+                    f"{i3['command']} does not match with {output} so failed")
                 print(diff_strings(outp, outpu))
-                _exit(1)
+                exit(1)
             elif i3['times'][0] > bjp.time_limit:
-                print(f"{i3['command']} took {i3['times'][0]} seconds, which is more than {bjp.time_limit} seconds, so test failed") # noqa: E501
-                _exit(1)
+                print(
+                    f"{i3['command']} took {i3['times'][0]} seconds, which is more than {bjp.time_limit} seconds, so test failed"
+                )  # noqa: E501
+                exit(1)
             else:
-                print(f"{i3['command']} took {i3['times'][0]} seconds, which is less than {bjp.time_limit} seconds, so test passed") # noqa: E501
+                print(
+                    f"{i3['command']} took {i3['times'][0]} seconds, which is less than {bjp.time_limit} seconds, so test passed"
+                )  # noqa: E501
+
+if len(flist) != 1:
+    exit(0)
+
+ans = ""
+while ans not in ["y", "n"]:
+    ans = input("all test passed so do u want some copy? [y/n]")
+if ans == "y":
+    run(f"cat {flist[0]}.py | wl-copy", shell=True)
