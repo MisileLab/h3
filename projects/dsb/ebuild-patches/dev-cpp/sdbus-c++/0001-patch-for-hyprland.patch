@@ -1,0 +1,26 @@
+From ac96c145ef8df13d7d52bf8e6cc46c8d0aa6a8fc Mon Sep 17 00:00:00 2001
+From: MisileLab <misileminecord@gmail.com>
+Date: Mon, 20 Nov 2023 01:46:50 +0900
+Subject: [PATCH] patch for hyprland
+
+Signed-off-by: MisileLab <misileminecord@gmail.com>
+---
+ CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 2803722..43ca7f3 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -23,7 +23,7 @@ if(NOT BUILD_LIBSYSTEMD)
+         message(WARNING "libsystemd not found, checking for libelogind instead")
+         pkg_check_modules(Systemd IMPORTED_TARGET GLOBAL libelogind>=236)
+         if(TARGET PkgConfig::Systemd)
+-            set(LIBSYSTEMD "elogind")
++            set(LIBSYSTEMD "libelogind")
+             string(REPLACE "." ";" VERSION_LIST ${Systemd_VERSION})
+             list(GET VERSION_LIST 0 Systemd_VERSION)
+ 	else()
+-- 
+2.42.1
+

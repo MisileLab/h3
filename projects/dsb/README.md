@@ -7,5 +7,5 @@ a small projects folder
 All version needs latest release version
 
 - Python && Jupyter
-- Clang/LLVM, GCC(Not tested, not fix)
+- Clang/LLVM, GCC(Not tested)
 - And many other things
