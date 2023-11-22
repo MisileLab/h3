@@ -13,7 +13,7 @@ uvicorn = "0.24.0.post1"
 pymongo = "4.6.0"
 python-dotenv = "1.0.0"
 selenium = "4.15.2"
-pydantic = "2.5.1"
+pydantic = "2.5.2"
 
 [build-system]
 requires = ["poetry-core"]
