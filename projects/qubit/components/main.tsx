@@ -65,13 +65,13 @@ export function Main() {
           <nav className="mt-5 px-2 space-y-1">
             <Link
               className="flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-200 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
-              href="#"
+              href="/newScan"
             >
               New Scan
             </Link>
             <Link
               className="flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-600 hover:bg-gray-200 hover:text-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
-              href="#"
+              href="/savedScans"
             >
               Saved Scans
             </Link>
