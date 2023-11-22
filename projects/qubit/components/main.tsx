@@ -29,15 +29,15 @@ export function Main() {
           <nav className="hidden lg:flex space-x-2">
             <Link
               className="px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white"
-              href="#"
+              href="/"
             >
               Home
             </Link>
             <Link
               className="px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white"
-              href="#"
+              href="/newScan"
             >
-              Scans
+              New Scan
             </Link>
             {/*<Link
               className="px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white"
