@@ -17,14 +17,14 @@ devDependencies:
     specifier: 1.5.5
     version: 1.5.5
   '@types/node':
-    specifier: 20.9.3
-    version: 20.9.3
+    specifier: 20.9.4
+    version: 20.9.4
   typescript:
     specifier: 5.3.2
     version: 5.3.2
   vite:
     specifier: 5.0.2
-    version: 5.0.2(@types/node@20.9.3)
+    version: 5.0.2(@types/node@20.9.4)
   vite-plugin-solid:
     specifier: 2.7.2
     version: 2.7.2(solid-js@1.8.5)(vite@5.0.2)
@@ -828,8 +828,8 @@ packages:
       '@babel/types': 7.23.0
     dev: true
 
-  /@types/node@20.9.3:
-    resolution: {integrity: sha512-nk5wXLAXGBKfrhLB0cyHGbSqopS+nz0BUgZkUQqSHSSgdee0kssp1IAqlQOu333bW+gMNs2QREx7iynm19Abxw==}
+  /@types/node@20.9.4:
+    resolution: {integrity: sha512-wmyg8HUhcn6ACjsn8oKYjkN/zUzQeNtMy44weTJSM6p4MMzEOuKbA3OjJ267uPCOW7Xex9dyrNTful8XTQYoDA==}
     dependencies:
       undici-types: 5.26.5
     dev: true
@@ -1149,13 +1149,13 @@ packages:
       merge-anything: 5.1.7
       solid-js: 1.8.5
       solid-refresh: 0.5.3(solid-js@1.8.5)
-      vite: 5.0.2(@types/node@20.9.3)
+      vite: 5.0.2(@types/node@20.9.4)
       vitefu: 0.2.4(vite@5.0.2)
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /vite@5.0.2(@types/node@20.9.3):
+  /vite@5.0.2(@types/node@20.9.4):
     resolution: {integrity: sha512-6CCq1CAJCNM1ya2ZZA7+jS2KgnhbzvxakmlIjN24cF/PXhRMzpM/z8QgsVJA/Dm5fWUWnVEsmtBoMhmerPxT0g==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
@@ -1183,7 +1183,7 @@ packages:
       terser:
         optional: true
     dependencies:
-      '@types/node': 20.9.3
+      '@types/node': 20.9.4
       esbuild: 0.19.5
       postcss: 8.4.31
       rollup: 4.4.1
@@ -1199,7 +1199,7 @@ packages:
       vite:
         optional: true
     dependencies:
-      vite: 5.0.2(@types/node@20.9.3)
+      vite: 5.0.2(@types/node@20.9.4)
     dev: true
 
   /yallist@3.1.1:
