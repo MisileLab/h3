@@ -1,0 +1,26 @@
+From a70cc5f3fe4b5251e9de3f0b092dd48f36f2488e Mon Sep 17 00:00:00 2001
+From: MisileLab <misileminecord@gmail.com>
+Date: Sat, 25 Nov 2023 11:24:06 +0900
+Subject: [PATCH] sus
+
+Signed-off-by: MisileLab <misileminecord@gmail.com>
+---
+ CMakeLists.txt | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 44d1689..e59a288 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -36,6 +36,8 @@ find_package(Threads REQUIRED)
+ find_package(PkgConfig REQUIRED)
+ pkg_check_modules(deps REQUIRED IMPORTED_TARGET wayland-client wayland-protocols libpipewire-0.3 libspa-0.2 libdrm gbm)
+ 
++add_compile_options(-Wno-address-of-temporary)
++
+ file(GLOB_RECURSE SRCFILES CONFIGURE_DEPENDS "src/*.cpp")
+ add_executable(xdg-desktop-portal-hyprland ${SRCFILES})
+ target_link_libraries(xdg-desktop-portal-hyprland PRIVATE rt sdbus-c++ Threads::Threads PkgConfig::deps)
+-- 
+2.43.0
+
