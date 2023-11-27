@@ -1,5 +1,5 @@
 {
-  "active_profile": 0,
+  "active_profile": 1,
   "active_modpack": 0,
   "profiles": [
     {
@@ -626,6 +626,13 @@
           }
         }
       ]
+    },
+    {
+      "name": "Mekanically: Dynamic",
+      "output_dir": "/home/misile/profiles/dmekanically/mods",
+      "game_version": "1.20.1",
+      "mod_loader": "Fabric",
+      "mods": []
     }
   ],
   "modpacks": []

@@ -216,3 +216,4 @@ go.work
 
 # Custom
 !*.module.css
+.xwin*
