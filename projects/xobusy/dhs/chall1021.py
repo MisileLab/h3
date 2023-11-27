@@ -1,1 +1,10 @@
-open(next(char for char in string.printable if ord(char) is 102)+next(char for char in string.printable if ord(char) is 108)+next(char for char in string.printable if ord(char) is 97)+next(char for char in string.printable if ord(char) is 103)+next(char for char in string.printable if ord(char) is 46)+next(char for char in string.printable if ord(char) is 116)+next(char for char in string.printable if ord(char) is 120)+next(char for char in string.printable if ord(char) is 116)).readline()
+open(
+    next(char for char in string.printable if ord(char) == 102)
+    + next(char for char in string.printable if ord(char) == 108)
+    + next(char for char in string.printable if ord(char) == 97)
+    + next(char for char in string.printable if ord(char) == 103)
+    + next(char for char in string.printable if ord(char) == 46)
+    + next(char for char in string.printable if ord(char) == 116)
+    + next(char for char in string.printable if ord(char) == 120)
+    + next(char for char in string.printable if ord(char) is 116)
+).readline()
