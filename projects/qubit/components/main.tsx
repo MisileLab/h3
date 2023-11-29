@@ -1,17 +1,17 @@
 import Link from "next/link"
 import { CardTitle, CardHeader, CardContent, Card } from "@/components/ui/card"
-import { existsSync, readFileSync, writeFileSync } from "fs"
+import { exists, BaseDirectory, writeTextFile } from '@tauri-apps/api/fs';
 
-export function Main() {
-  if (!existsSync("data.json")) {
-    writeFileSync("data.json", `
+export async function Main() {
+  if (await exists("data.json", { dir: BaseDirectory.AppData })) {
+    await writeTextFile("data.json", `
     {
       "resnum": {"recscan": 0, "vulfound": 0},
       "scans": []
     }
-    `, {encoding: "utf-8"});
+    `, { dir: BaseDirectory.AppData });
   }
-  const data = JSON.parse(readFileSync("data.json", "utf-8"));
+  const data = JSON.parse(readTextFile('data.json', { dir: BaseDirectory.AppData }));
   return (
     <div className="flex flex-col h-screen">
       <header className="flex items-center justify-between h-16 px-6 shadow-sm bg-white dark:bg-gray-800">
