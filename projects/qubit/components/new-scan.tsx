@@ -1,7 +1,13 @@
+'use client'
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { exec } from "child_process";
+import { useState } from "react";
+import { existsSync, readFileSync, rmSync } from "fs";
 
 export function NewScan() {
+  const [path, setPath] = useState("");
   return (
     <div className="flex flex-col h-screen">
       <header className="flex items-center justify-between h-16 px-6 shadow-sm bg-white dark:bg-gray-800">
@@ -75,12 +81,36 @@ export function NewScan() {
                 className="mt-1 block w-full px-4 py-2 rounded-md border-gray-300 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50 dark:bg-gray-700 dark:text-white"
                 id="scanPath"
                 type="text"
+                onChange={(self)=>{setPath(self.target.value)}}
               />
             </div>
             <Button
               className="w-full py-2 px-4 rounded-md bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-400 dark:hover:bg-blue-500"
               type="submit"
-            >
+              onClick={()=>{
+                if (path == "") {
+                  return;
+                }
+                const data = JSON.parse(readFileSync("data.json", "utf-8").toString());
+                data.resnum.recscan++;
+                if (existsSync("report.json") {rmSync("report.json");}
+                exec(`gitleaks detect ${path} --no-git --report-format json --report-path report.json`);
+                const vuls = [];
+                const _data = JSON.parse(readFileSync("report.json", "utf-8").toString());
+                for (const i of _data) {
+                  data.resnum.vulfound++;
+                  vuls.push({
+                    name: "Secret found",
+                    Line: i["StartLine"],
+                    Column: i["StartColumn"],
+                    description: i["Description"]
+                  })
+                }
+                rmSync("report.json");
+                exec(`snyk code test --json-file-output=report.json`);
+                const _data2 = JSON.parse(readFileSync("report.json", "utf-8").toString());
+                // only uses location in runs if location exist, if location not exist, dont use it
+              }}>
               Start Scan
             </Button>
           </form>

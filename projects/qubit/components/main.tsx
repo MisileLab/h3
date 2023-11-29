@@ -1,8 +1,16 @@
 import Link from "next/link"
 import { CardTitle, CardHeader, CardContent, Card } from "@/components/ui/card"
-import { readFileSync } from "fs"
+import { existsSync, readFileSync, writeFileSync } from "fs"
 
 export function Main() {
+  if (!existsSync("data.json")) {
+    writeFileSync("data.json", `
+    {
+      "resnum": {"recscan": 0, "vulfound": 0},
+      "scans": []
+    }
+    `, {encoding: "utf-8"});
+  }
   const data = JSON.parse(readFileSync("data.json", "utf-8"));
   return (
     <div className="flex flex-col h-screen">
