@@ -8,7 +8,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "3.12.0"
-keras = "2.15.0"
+keras = "3.0.0"
 scipy = "1.11.4"
 Pillow = "10.1.0"
 
