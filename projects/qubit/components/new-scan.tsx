@@ -98,7 +98,7 @@ export function NewScan() {
                       data.resnum.recscan++;
                       const reportFile = await join(await appCacheDir(), "report.json")
                       if (!await exists("report.json", {dir: BaseDirectory.AppCache})) {await removeFile("report.json", { dir: BaseDirectory.AppCache });}
-                      await new Command('run-gitleaks', ['gitleaks', 'detect', reportFile, '--no-git', '--report-format', 'json', '--report-path', 'report.json']).spawn();
+                      await new Command('run-gitleaks', ['gitleaks', 'detect', path, '--no-git', '--report-format', 'json', '--report-path', reportFile]).spawn();
                       const vuls = [];
                       const _data = JSON.parse(readTextFile("report.json", { dir: BaseDirectory.AppCache }).toString());
                       for (const i of _data) {
@@ -111,7 +111,7 @@ export function NewScan() {
                           })
                       }
                       await removeFile("report.json", { dir: BaseDirectory.AppCache });
-                      await new Command('run-snyk', ['snyk', 'code', 'test', reportFile, '--json-file-output=report.json']).spawn();
+                      await new Command('run-snyk', ['snyk', 'code', 'test', path, `-json-file-output=${reportFile}`]).spawn();
                       const _data2 = JSON.parse(readTextFile("report.json", { dir: BaseDirectory.AppCache }).toString());
                       for (const i of _data2.runs.tool.driver.results) {
                           data.resnum.vulfound++;

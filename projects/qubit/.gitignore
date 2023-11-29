@@ -39,3 +39,4 @@ next-env.d.ts
 report.json
 !lib
 yarn.lock
+.direnv
