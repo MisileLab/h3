@@ -16,18 +16,20 @@
         "readFile": true,
         "writeFile": true,
         "exists": true,
-        "scope": ["$APPDATA/data.json"]
+        "removeFile": true,
+        "createDir": true,
+        "scope": ["$APPDATA", "$APPDATA/data.json", "$APPCACHE", "$APPCACHE/report.json"]
       },
       "shell": {
         "execute": true,
         "scope": [{
           "name": "run-gitleaks",
           "cmd": "gitleaks",
-          "args": ["detect", {"validator": "*"}, "--no-git", "--report-format", "json", "--report-path", "report.json"]
+          "args": ["detect", {"validator": ".*"}, "--no-git", "--report-format", "json", "--report-path", "report.json"]
         }, {
           "name": "run-snyk",
           "cmd": "snyk",
-          "args": ["code", "test", {"validator": "*"}, "--json-file-output=report.json"]
+          "args": ["code", "test", {"validator": ".*"}, "--json-file-output=report.json"]
         }]
       },
       "path": {

@@ -1,17 +1,25 @@
+'use client'
+
 import Link from "next/link"
 import { CardTitle, CardHeader, CardContent, Card } from "@/components/ui/card"
-import { exists, BaseDirectory, writeTextFile } from '@tauri-apps/api/fs';
+import {exists, BaseDirectory, writeTextFile, readTextFile, createDir} from '@tauri-apps/api/fs';
+import {useEffect, useState} from "react";
+import {appCacheDir, appDataDir} from "@tauri-apps/api/path";
 
-export async function Main() {
-  if (await exists("data.json", { dir: BaseDirectory.AppData })) {
-    await writeTextFile("data.json", `
-    {
-      "resnum": {"recscan": 0, "vulfound": 0},
-      "scans": []
+export function Main() {
+  const _default = {"resnum": {"recscan": 0, "vulfound": 0}, "scans": []};
+  const [data, setData] = useState(_default);
+  useEffect(()=>{
+    async function a() {
+      if (!await exists(await appDataDir())) { await createDir(await appDataDir())}
+      if (!await exists(await appCacheDir())) { await createDir(await appCacheDir())}
+      if (!await exists("data.json", {dir: BaseDirectory.AppData})) {
+        await writeTextFile("data.json", JSON.stringify(_default), {dir: BaseDirectory.AppData});
+      }
+      setData(JSON.parse(await readTextFile('data.json', {dir: BaseDirectory.AppData})));
     }
-    `, { dir: BaseDirectory.AppData });
-  }
-  const data = JSON.parse(readTextFile('data.json', { dir: BaseDirectory.AppData }));
+    a();
+  })
   return (
     <div className="flex flex-col h-screen">
       <header className="flex items-center justify-between h-16 px-6 shadow-sm bg-white dark:bg-gray-800">
@@ -31,7 +39,7 @@ export async function Main() {
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
             <path d="m9 12 2 2 4-4" />
           </svg>
-          <span className="text-lg font-semibold">SecureScan</span>
+          <Link href="/"><span className="text-lg font-semibold">SecureScan</span></Link>
           <nav className="hidden lg:flex space-x-2">
             <Link
               className="px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white"

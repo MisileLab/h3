@@ -1,5 +1,6 @@
-import React from 'react';
-import { NewScan } from "../../components/new-scan";
+'use client'
+
+import { NewScan } from "@/components/new-scan";
 
 export default function Page() {return <NewScan />}
 
