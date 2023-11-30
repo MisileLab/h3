@@ -168,7 +168,7 @@ export function Scan() {
 }
 
 
-function IconShieldCheck(props) {
+function IconShieldCheck(props: any) {
   return (
     <svg
       {...props}

@@ -87,46 +87,65 @@ export function NewScan() {
             </div>
             <Button
               className="w-full py-2 px-4 rounded-md bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-400 dark:hover:bg-blue-500"
-              type="submit"
+              type="button"
               onClick={()=>{
                   async function b() {
                       if (path == "") {
                           return;
                       }
                       console.log(path);
-                      const data = JSON.parse(readTextFile("data.json", { dir: BaseDirectory.Data }).toString());
+                      const data = JSON.parse(await readTextFile("data.json", { dir: BaseDirectory.AppData }));
                       data.resnum.recscan++;
-                      const reportFile = await join(await appCacheDir(), "report.json")
-                      if (!await exists("report.json", {dir: BaseDirectory.AppCache})) {await removeFile("report.json", { dir: BaseDirectory.AppCache });}
-                      await new Command('run-gitleaks', ['gitleaks', 'detect', path, '--no-git', '--report-format', 'json', '--report-path', reportFile]).spawn();
-                      const vuls = [];
-                      const _data = JSON.parse(readTextFile("report.json", { dir: BaseDirectory.AppCache }).toString());
-                      for (const i of _data) {
+                      data.scans.push({
+                        "path": path,
+                        "leaks": []
+                      });
+                      const length = data.scans.length-1;
+                      const snykReportFile = await join(await appCacheDir(), "report_snyk.json")
+                      const gitleaksReportFile = await join(await appCacheDir(), "report_gitleaks.json")
+                      const cmd = new Command('run-gitleaks', ['detect', '--no-git', '--report-format', 'json', '--report-path', gitleaksReportFile, path, '-v'])
+                      cmd.on("close", async (_)=>{
+                        console.log(await exists("report_gitleaks.json", {dir: BaseDirectory.AppCache}))
+                        if (!await exists("report_gitleaks.json", {dir: BaseDirectory.AppCache})) {return;}
+                        const _data = JSON.parse(await readTextFile("report_gitleaks.json", { dir: BaseDirectory.AppCache }));
+                        for (const i of _data) {
+                            data.resnum.vulfound++;
+                            data.scans[length].leaks.push({
+                                name: `secret found on ${i["File"]}`,
+                                Line: i["StartLine"],
+                                Column: i["StartColumn"],
+                                description: i["Description"]
+                            })
+                        }
+                        console.log(data, _data);
+                        await writeTextFile("data.json", JSON.stringify(data), { dir: BaseDirectory.AppData })
+                        await removeFile("report_gitleaks.json", { dir: BaseDirectory.AppCache });
+                      })
+                      cmd.stdout.on("data", a=>console.log(a))
+                      cmd.stderr.on("data",a=>console.warn(a))
+                      await cmd.spawn();
+                      const cmd2 = new Command('run-snyk', ['code', 'test', '-d', path, `--json-file-output=${snykReportFile}`])
+                      cmd2.on("close", async (_) => {
+                        console.log(await exists("report_snyk.json", {dir: BaseDirectory.AppCache}))
+                        if (!await exists("report_snyk.json", {dir: BaseDirectory.AppCache})) {return;}
+                        const _data2 = JSON.parse(await readTextFile("report_snyk.json", { dir: BaseDirectory.AppCache }))
+                        for (const i of _data2.runs[0].results) {
                           data.resnum.vulfound++;
-                          vuls.push({
-                              name: `secret found on ${i["File"]}`,
-                              Line: i["StartLine"],
-                              Column: i["StartColumn"],
-                              description: i["Description"]
-                          })
-                      }
-                      await removeFile("report.json", { dir: BaseDirectory.AppCache });
-                      await new Command('run-snyk', ['snyk', 'code', 'test', path, `-json-file-output=${reportFile}`]).spawn();
-                      const _data2 = JSON.parse(readTextFile("report.json", { dir: BaseDirectory.AppCache }).toString());
-                      for (const i of _data2.runs.tool.driver.results) {
-                          data.resnum.vulfound++;
-                          vuls.push({
+                          data.scans[length].leaks.push({
                               name: `found ${i.ruleId} in ${i.locations[0].physicalLocation.artifactLocation.uri}`,
                               description: i.message.text,
                               Line: i.locations[0].physicalLocation.region.startLine,
-                              Column: i.locations[0].physicalLocation.artifactLocation.endLine
+                              Column: i.locations[0].physicalLocation.region.startColumn
                           })
                       }
-                      data.scans.push({
-                          "path": path,
-                          "leaks": vuls
-                      });
-                      writeTextFile("data.json", JSON.stringify(data), { dir: BaseDirectory.AppCache })
+                      console.log(data, _data2);
+                      await removeFile("report_snyk.json", { dir: BaseDirectory.AppCache });
+                      await writeTextFile("data.json", JSON.stringify(data), { dir: BaseDirectory.AppData })
+                      })
+                      cmd2.stdout.on("data", a=>console.log(a))
+                      cmd2.stderr.on("data",e=>console.warn(e))
+                      await cmd2.spawn()
+                      console.log(data);
                   }
                   b();
               }}>
@@ -140,7 +159,7 @@ export function NewScan() {
 }
 
 
-function IconShieldCheck(props) {
+function IconShieldCheck(props: any) {
   return (
     <svg
       {...props}

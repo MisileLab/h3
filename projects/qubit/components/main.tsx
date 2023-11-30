@@ -1,5 +1,6 @@
 'use client'
 
+export const dynamic = "force-dynamic";
 import Link from "next/link"
 import { CardTitle, CardHeader, CardContent, Card } from "@/components/ui/card"
 import {exists, BaseDirectory, writeTextFile, readTextFile, createDir} from '@tauri-apps/api/fs';

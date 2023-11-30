@@ -4,8 +4,7 @@
     "beforeBuildCommand": "yarn run build",
     "beforeDevCommand": "yarn run dev",
     "devPath": "http://localhost:3000",
-    "distDir": "../out",
-    "withGlobalTauri": true
+    "distDir": "../out"
   },
   "package": {
     "productName": "qubit",
@@ -19,18 +18,18 @@
         "exists": true,
         "removeFile": true,
         "createDir": true,
-        "scope": ["$APPDATA", "$APPDATA/data.json", "$APPCACHE", "$APPCACHE/report.json"]
+        "scope": ["$APPDATA", "$APPDATA/data.json", "$APPCACHE", "$APPCACHE/report_snyk.json", "$APPCACHE/report_gitleaks.json"]
       },
       "shell": {
         "execute": true,
         "scope": [{
           "name": "run-gitleaks",
           "cmd": "gitleaks",
-          "args": ["detect", {"validator": ".*"}, "--no-git", "--report-format", "json", "--report-path", "report.json"]
+          "args": ["detect", "--no-git", "--report-format", "json", "--report-path", {"validator": ".*"}, {"validator": ".*"}, "-v"]
         }, {
           "name": "run-snyk",
           "cmd": "snyk",
-          "args": ["code", "test", {"validator": ".*"}, "--json-file-output=report.json"]
+          "args": ["code", "test", "-d", {"validator": ".*"}, {"validator": ".*"}]
         }]
       },
       "path": {
