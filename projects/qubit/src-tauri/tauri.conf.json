@@ -30,9 +30,16 @@
           "name": "run-snyk",
           "cmd": "snyk",
           "args": ["code", "test", "-d", {"validator": ".*"}, {"validator": ".*"}]
+        }, {
+          "name": "run-shell",
+          "cmd": "powershell",
+          "args": ["/C", "snyk", "code", "test", "-d", {"validator": ".*"}, {"validator": ".*"}]
         }]
       },
       "path": {
+        "all": true
+      },
+      "os": {
         "all": true
       }
     },
@@ -81,7 +88,8 @@
         "height": 600,
         "resizable": true,
         "title": "qubit",
-        "width": 800
+        "width": 800,
+        "theme": "Light"
       }
     ]
   }

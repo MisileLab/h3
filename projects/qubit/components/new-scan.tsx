@@ -6,6 +6,7 @@ import { Command } from '@tauri-apps/api/shell'
 import {exists, BaseDirectory, writeTextFile, readTextFile, removeFile} from '@tauri-apps/api/fs';
 import {appCacheDir, join} from "@tauri-apps/api/path";
 import {useState} from "react";
+import {type} from "@tauri-apps/api/os";
 
 export function NewScan() {
     const [path, setPath] = useState("");
@@ -14,7 +15,7 @@ export function NewScan() {
       <header className="flex items-center justify-between h-16 px-6 shadow-sm bg-white dark:bg-gray-800">
         <div className="flex items-center space-x-4">
           <IconShieldCheck className="h-6 w-6 text-blue-500 dark:text-blue-300" />
-            <Link href="/"><span className="text-lg font-semibold">SecureScan</span></Link>
+            <Link href="/"><span className="text-lg font-semibold">Qubit</span></Link>
           <nav className="hidden lg:flex space-x-2">
             <Link
               className="px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white"
@@ -124,7 +125,10 @@ export function NewScan() {
                       cmd.stdout.on("data", a=>console.log(a))
                       cmd.stderr.on("data",a=>console.warn(a))
                       await cmd.spawn();
-                      const cmd2 = new Command('run-snyk', ['code', 'test', '-d', path, `--json-file-output=${snykReportFile}`])
+                      let cmd2 = new Command('run-snyk', ['code', 'test', '-d', path, `--json-file-output=${snykReportFile}`]);
+                      if (await type() == "Windows_NT") {
+                          cmd2 = new Command("run-shell", ['/C', 'snyk', 'code', 'test', '-d', path, `--json-file-output=${snykReportFile}`])
+                      }
                       cmd2.on("close", async (_) => {
                         console.log(await exists("report_snyk.json", {dir: BaseDirectory.AppCache}))
                         if (!await exists("report_snyk.json", {dir: BaseDirectory.AppCache})) {return;}
@@ -139,7 +143,6 @@ export function NewScan() {
                           })
                       }
                       console.log(data, _data2);
-                      await removeFile("report_snyk.json", { dir: BaseDirectory.AppCache });
                       await writeTextFile("data.json", JSON.stringify(data), { dir: BaseDirectory.AppData })
                       })
                       cmd2.stdout.on("data", a=>console.log(a))

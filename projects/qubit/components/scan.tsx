@@ -2,19 +2,33 @@
 
 import React from 'react';
 import Link from "next/link"
-import { SelectValue, SelectTrigger, SelectLabel, SelectItem, SelectGroup, SelectContent, Select } from "@/components/ui/select"
-import { Button } from "@/components/ui/button"
-import { ScanRes } from './scanres';
+import {BaseDirectory, readTextFile} from "@tauri-apps/api/fs";
+import {ResScan} from "@/components/csres";
 
 export function Scan() {
-  const [openState, setOpenState] = React.useState(false);
+  const [clist, setclist] = React.useState([]);
+
+  React.useEffect(()=>{
+    async function a() {
+      const data = JSON.parse(await readTextFile("data.json", { dir: BaseDirectory.AppData }));
+      // @ts-ignore
+      const clist2 = [];
+      data["scans"].forEach((a: any, i: number) => {
+        // @ts-ignore
+        clist2.push(<ResScan path={a["path"]} leaks={a["leaks"]} num={i+1}></ResScan>)
+      });
+      // @ts-ignore
+      setclist(clist2);
+    }
+    a();
+  })
   
   return (
     <div className="flex flex-col h-screen">
       <header className="flex items-center justify-between h-16 px-6 shadow-sm bg-white dark:bg-gray-800">
         <div className="flex items-center space-x-4">
           <IconShieldCheck className="h-6 w-6 text-blue-500 dark:text-blue-300" />
-          <Link href="/"><span className="text-lg font-semibold">SecureScan</span></Link>
+          <Link href="/"><span className="text-lg font-semibold">Qubit</span></Link>
           <nav className="hidden lg:flex space-x-2">
             <Link
               className="px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white"
@@ -72,59 +86,7 @@ export function Scan() {
             </Link>*/}
           </nav>
         </aside>
-        <main className="flex-1 p-4 overflow-y-auto">
-          <h1 className="text-2xl font-semibold mb-4">Saved Scans</h1>
-          <div className="bg-white dark:bg-gray-800 rounded-md shadow-sm p-6 mb-4">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-lg font-medium">Scan #1</span>
-              <span className="text-sm text-gray-500 dark:text-gray-400">10/11/2023</span>
-            </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">
-              <p>Path: /user/documents</p>
-              <p>Status: Completed</p>
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a leak" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Leaks</SelectLabel>
-                    <SelectItem value="leak1">Leak 1</SelectItem>
-                    <SelectItem value="leak2">Leak 2</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <Button className="mt-2" variant="outline" onClick={()=>{setOpenState(true);}}>
-                Show Result
-              </Button>
-            </div>
-          </div>
-          <div className="bg-white dark:bg-gray-800 rounded-md shadow-sm p-6">
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-lg font-medium">Scan #2</span>
-              <span className="text-sm text-gray-500 dark:text-gray-400">09/11/2023</span>
-            </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">
-              <p>Path: /user/downloads</p>
-              <p>Status: Completed</p>
-              <Select>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a leak" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Leaks</SelectLabel>
-                    <SelectItem value="leak1">Leak 1</SelectItem>
-                    <SelectItem value="leak2">Leak 2</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <Button className="mt-2" variant="outline" onClick={()=>setOpenState(false)}>
-                Show Result
-              </Button>
-            </div>
-          </div>
-        </main>
+        <main>{clist}</main>
       </div>
       {/*<div className="fixed z-10 inset-0 overflow-y-auto">
         <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -162,7 +124,6 @@ export function Scan() {
           </div>
         </div>
       </div>*/}
-      {openState ? <ScanRes callback={()=>{setOpenState(false)}}/> : null}
     </div>
   )
 }

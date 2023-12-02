@@ -40,7 +40,7 @@ export function Main() {
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
             <path d="m9 12 2 2 4-4" />
           </svg>
-          <Link href="/"><span className="text-lg font-semibold">SecureScan</span></Link>
+          <Link href="/"><span className="text-lg font-semibold">Qubit</span></Link>
           <nav className="hidden lg:flex space-x-2">
             <Link
               className="px-3 py-2 rounded-md text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-white"
