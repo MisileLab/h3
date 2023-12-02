@@ -104,9 +104,9 @@ export function NewScan() {
                       const length = data.scans.length-1;
                       const snykReportFile = await join(await appCacheDir(), "report_snyk.json")
                       const gitleaksReportFile = await join(await appCacheDir(), "report_gitleaks.json")
-                      const cmd = new Command('run-gitleaks', ['detect', '--no-git', '--report-format', 'json', '--report-path', gitleaksReportFile, path, '-v'])
+                      const cmd = new Command('run-gitleaks', ['detect', '--no-git', '--report-format', 'json', '--report-path', gitleaksReportFile, ".", '-v'], {cwd: path})
                       cmd.on("close", async (_)=>{
-                        console.log(await exists("report_gitleaks.json", {dir: BaseDirectory.AppCache}))
+                        console.log(await exists("report_gitleaks.json", {dir: BaseDirectory.AppCache}));
                         if (!await exists("report_gitleaks.json", {dir: BaseDirectory.AppCache})) {return;}
                         const _data = JSON.parse(await readTextFile("report_gitleaks.json", { dir: BaseDirectory.AppCache }));
                         for (const i of _data) {
@@ -119,7 +119,7 @@ export function NewScan() {
                             })
                         }
                         console.log(data, _data);
-                        await writeTextFile("data.json", JSON.stringify(data), { dir: BaseDirectory.AppData })
+                        await writeTextFile("data.json", JSON.stringify(data), { dir: BaseDirectory.AppData });
                         await removeFile("report_gitleaks.json", { dir: BaseDirectory.AppCache });
                       })
                       cmd.stdout.on("data", a=>console.log(a))
@@ -141,9 +141,10 @@ export function NewScan() {
                               Line: i.locations[0].physicalLocation.region.startLine,
                               Column: i.locations[0].physicalLocation.region.startColumn
                           })
-                      }
-                      console.log(data, _data2);
-                      await writeTextFile("data.json", JSON.stringify(data), { dir: BaseDirectory.AppData })
+                        }
+                        console.log(data, _data2);
+                        await writeTextFile("data.json", JSON.stringify(data), { dir: BaseDirectory.AppData });
+                        await removeFile("report_snyk.json", {dir: BaseDirectory.AppCache});
                       })
                       cmd2.stdout.on("data", a=>console.log(a))
                       cmd2.stderr.on("data",e=>console.warn(e))
