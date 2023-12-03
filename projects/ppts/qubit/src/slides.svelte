@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Code, Notes, Presentation, Slide, Vertical } from '@components'
+	import { Code, Media, Notes, Presentation, Slide, Vertical } from '@components'
 </script>
 
 <Presentation>
@@ -14,7 +14,7 @@
 			<p class="fragment highlight-green mb-3">1. 만든 이유</p>
 			<p class="mb-3">2. 시연</p>
 			<p class="mb-3">3. 코드 설명</p>
-			<p>4. 느낀 점</p>
+			<p>4. 개선할 점</p>
 		</Slide>
 		<Slide>
 			<p class="font-bold mb-10">보안 취약점이 일어나는 이유</p>
@@ -44,24 +44,30 @@
 			<p class="mb-3">1. 만든 이유</p>
 			<p class="mb-3 fragment highlight-green">2. 시연</p>
 			<p class="mb-3">3. 코드 설명</p>
-			<p>4. 느낀 점</p>
+			<p>4. 개선할 점</p>
 		</Slide>
-		{`동영상`}
+		<Slide>
+			<center><Media src="./video.mp4" autoplay={true} type="video"></Media></center>
+		</Slide>
 		<Slide>
 			<p class="font-bold mb-20">메인 화면</p>
 			<center><img src="./images/app/main.png" alt="just main page"></center>
+			<p class="mt-10">스캔 횟수, 보안 취약점 찾은 횟수</p>
 		</Slide>
 		<Slide>
 			<p class="font-bold mb-20">스캔 화면</p>
 			<center><img src="./images/app/newScan.png" alt="just newScan page"></center>
+			<p class="mt-10">스캔 경로 지정과 스캔 시작 버튼</p>
 		</Slide>
 		<Slide>
 			<p class="font-bold mb-20">결과 화면</p>
 			<center><img src="./images/app/scanres.png" alt="just scan without modal"></center>
+			<p class="mt-10">스캔 정보와 찾은 보안 취약점 목록</p>
 		</Slide>
 		<Slide animate>
 			<p class="font-bold mb-20">결과 화면</p>
 			<center><img src="./images/app/scanresmodal.png" alt="just modal"></center>
+			<p class="mt-10">어디서 API 키가 유출되었는지 알려줌</p>
 		</Slide>
 	</Vertical>
 	<Vertical>
@@ -70,7 +76,7 @@
 			<p class="mb-3">1. 만든 이유</p>
 			<p class="mb-3">2. 시연</p>
 			<p class="mb-3 fragment highlight-green">3. 코드 설명</p>
-			<p>4. 느낀 점</p>
+			<p>4. 개선할 점</p>
 		</Slide>
 		<Slide>
 			<p class="font-bold mb-10">사용한 기술</p>
@@ -155,13 +161,17 @@
 			<p class="mb-3">1. 만든 이유</p>
 			<p class="mb-3">2. 시연</p>
 			<p class="mb-3">3. 코드 설명</p>
-			<p class="fragment highlight-green">4. 느낀 점</p>
+			<p class="fragment highlight-green">4. 개선할 점</p>
+		</Slide>
+		<Slide>
+			<p class="font-bold">개선할 점</p>
+			<p class="mt-5">1. 코드 리팩토링 (현재 코드는 재사용이 어려움)</p>
+			<p class="mt-5">2. 자동 셋업 (현재 앱은 툴을 직접 설치해야함)</p>
 		</Slide>
 		<Slide>
 			<p class="font-bold text-4xl">사이버 공격은 모든 회사에 나올 수 있는 가장 큰 위협이다.</p>
 			<p class="font-light mt-5 text-3xl">- 버지니아 로메티(전 IBM CEO)</p>
 		</Slide>
-		{`개선할 점`}
 	</Vertical>
 </Presentation>
 
