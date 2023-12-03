@@ -44,9 +44,6 @@
 			<p class="mb-3">3. 코드 설명</p>
 			<p>4. 개선할 점</p>
 		</Slide>
-		<Slide>
-			강민아 시연 어떻게 할 건지 알아서 해라
-		</Slide>
 	</Vertical>
 	<Vertical>
 		<Slide>
@@ -242,7 +239,8 @@
 			<p class="fragment highlight-green">4. 느낀 점</p>
 		</Slide>
 		<Slide>
-			<p>강민아 화이팅</p>
+			<p class="mb-5">JS로 앱을 만드는 게 재밌었다 - 이강민</p>
+			<p class="mb-5">JavaScript는 웹에서만 써야 한다 - 설지원</p>
 		</Slide>
 	</Vertical>
 </Presentation>
