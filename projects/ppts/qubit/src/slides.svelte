@@ -46,6 +46,7 @@
 			<p class="mb-3">3. 코드 설명</p>
 			<p>4. 느낀 점</p>
 		</Slide>
+		{`동영상`}
 		<Slide>
 			<p class="font-bold mb-20">메인 화면</p>
 			<center><img src="./images/app/main.png" alt="just main page"></center>
@@ -157,9 +158,10 @@
 			<p class="fragment highlight-green">4. 느낀 점</p>
 		</Slide>
 		<Slide>
-			<p class="font-bold">사이버 공격은 모든 회사에 나올 수 있는 가장 큰 위협이다.</p>
-			<p class="font-light mt-5">- 버지니아 로메티(전 IBM CEO)</p>
+			<p class="font-bold text-4xl">사이버 공격은 모든 회사에 나올 수 있는 가장 큰 위협이다.</p>
+			<p class="font-light mt-5 text-3xl">- 버지니아 로메티(전 IBM CEO)</p>
 		</Slide>
+		{`개선할 점`}
 	</Vertical>
 </Presentation>
 
