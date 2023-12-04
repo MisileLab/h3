@@ -2,13 +2,13 @@
 
 [[package]]
 name = "berserk"
-version = "0.13.1"
+version = "0.13.2"
 description = "Python client for the lichess API"
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "berserk-0.13.1-py3-none-any.whl", hash = "sha256:900a88b751008afdeb7d4950c5772dd7640cc8394591125b13eb883c53eacce9"},
-    {file = "berserk-0.13.1.tar.gz", hash = "sha256:442429d659e3919dbde628c5eb878688dee7e0edaeb636d2af7b4179fe7c7094"},
+    {file = "berserk-0.13.2-py3-none-any.whl", hash = "sha256:0f7fc40f152370924cb05a77c3f1c357a91e8ff0db60d23c14f0f16216b632a8"},
+    {file = "berserk-0.13.2.tar.gz", hash = "sha256:96c3ff3a10407842019e5e6bf3233080030419e4eba333bbd4234a86b4eff86f"},
 ]
 
 [package.dependencies]
@@ -324,4 +324,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "3.12.0"
-content-hash = "8ed1796b67cf2dea2908a30b5627d976aeb1fdd459de7cf5994816781f74267f"
+content-hash = "ab2e96fa0aead420ad9ead3356df21e7353deca1c2b4d4eb50dcbb267666dd5d"
