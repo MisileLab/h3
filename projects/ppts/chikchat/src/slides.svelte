@@ -13,7 +13,7 @@
 			<p class="fragment highlight-green mb-3">1. 소개/만든 이유</p>
 			<p class="mb-3">2. 시연</p>
 			<p class="mb-3">3. 코드 설명</p>
-			<p>4. 개선할 점</p>
+			<p>4. 느낀 점</p>
 		</Slide>
 		<Slide>
 			<p class="font-bold mb-5 mt-0">소개</p>
@@ -42,7 +42,7 @@
 			<p class="mb-3">1. 소개/만든 이유</p>
 			<p class="fragment highlight-green mb-3">2. 시연</p>
 			<p class="mb-3">3. 코드 설명</p>
-			<p>4. 개선할 점</p>
+			<p>4. 느낀 점</p>
 		</Slide>
 	</Vertical>
 	<Vertical>
@@ -51,7 +51,7 @@
 			<p class="mb-3">1. 소개/만든 이유</p>
 			<p class="mb-3">2. 시연</p>
 			<p class="fragment highlight-green mb-3">3. 코드 설명</p>
-			<p>4. 개선할 점</p>
+			<p>4. 느낀 점</p>
 		</Slide>
 		<Slide>
 			<p class="font-bold mb-10">프론트엔드 기술</p>
