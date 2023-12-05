@@ -1,17 +1,3 @@
-[submodule "libraries/misilelib/misilelib-c"]
-	path = libraries/misilelib/misilelib-c
-	url = https://gith.misilelaboratory.xyz/misilelib.git:/misilelib-c.git
-[submodule "libraries/misilelib/misilelib-python"]
-	path = libraries/misilelib/misilelib-python
-	url = https://gith.misilelaboratory.xyz/misilelib.git:/misilelib-python.git
-[submodule "libraries/misilelib/libraries/misilelib/misilelib-javascript"]
-	path = libraries/misilelib/libraries/misilelib/misilelib-javascript
-	url = https://gith.misilelaboratory.xyz/misilelib.git:/misilelib-javascript.git
-	branch = main
-[submodule "libraries/misilelib/misilelib-javascript"]
-	path = libraries/misilelib/misilelib-javascript
-	url = https://gith.misilelaboratory.xyz/misilelib.git:/misilelib-javascript.git
-	branch = main
 [submodule "modpacks/base"]
 	path = modpacks/base
 	url = https://gith.misilelaboratory.xyz/additiveplus.git:/versions/fabric/1.20.1.git

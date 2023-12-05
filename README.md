@@ -9,7 +9,6 @@ monorepo for my projects
 - libraries (library for projects)
 - projects (active projects)
 - modpacks (minecraft modpacks)
-- web (for experimental)
 
 ## Partial checkout (or clone)
 

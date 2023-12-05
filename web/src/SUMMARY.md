@@ -1,3 +1,0 @@
-# Xobusy
-
-- [xobusy](xobusy.md)
