@@ -1,3 +1,0 @@
-User-Agent: *
-
-Disallow: /500error
