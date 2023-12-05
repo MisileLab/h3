@@ -1,0 +1,13 @@
+name = "Fullblock Energistics"
+filename = "fulleng-fabric-1.6-1.20.1.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/24BlI6Ao/versions/vOawa2yG/fulleng-fabric-1.6-1.20.1.jar"
+hash-format = "sha1"
+hash = "78a11323acc41c8a26d57c31105b54f4f0fd62cf"
+
+[update]
+[update.modrinth]
+mod-id = "24BlI6Ao"
+version = "vOawa2yG"

@@ -1,0 +1,13 @@
+name = "Oxidized"
+filename = "oxidized-1.8.2.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/wOZRkmgG/versions/dH4eImYJ/oxidized-1.8.2.jar"
+hash-format = "sha1"
+hash = "4a558272d318212a92bf81ceaa7bb78d865582aa"
+
+[update]
+[update.modrinth]
+mod-id = "wOZRkmgG"
+version = "dH4eImYJ"

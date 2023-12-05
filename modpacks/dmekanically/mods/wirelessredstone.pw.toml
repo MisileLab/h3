@@ -1,0 +1,13 @@
+name = "Wireless Redstone"
+filename = "wirelessredstone-fabric-1.20.1-1.1.0.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/2mBYHHZ5/versions/4EtJCVNf/wirelessredstone-fabric-1.20.1-1.1.0.jar"
+hash-format = "sha1"
+hash = "05c2d393f5d548aaad91f242495552f8bbff7995"
+
+[update]
+[update.modrinth]
+mod-id = "2mBYHHZ5"
+version = "4EtJCVNf"

@@ -1,0 +1,13 @@
+name = "Create: SandPaper Overhaul"
+filename = "create_so-1.6+1.20.1.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/23nOkgI0/versions/mLRz23eV/create_so-1.6%2B1.20.1.jar"
+hash-format = "sha1"
+hash = "fbce0f562bf2b48a9781c052257ab00ab6e7488f"
+
+[update]
+[update.modrinth]
+mod-id = "23nOkgI0"
+version = "mLRz23eV"
