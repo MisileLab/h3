@@ -519,13 +519,13 @@ cli = ["click (>=5.0)"]
 
 [[package]]
 name = "selenium"
-version = "4.15.2"
+version = "4.16.0"
 description = ""
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "selenium-4.15.2-py3-none-any.whl", hash = "sha256:9e82cd1ac647fb73cf0d4a6e280284102aaa3c9d94f0fa6e6cc4b5db6a30afbf"},
-    {file = "selenium-4.15.2.tar.gz", hash = "sha256:22eab5a1724c73d51b240a69ca702997b717eee4ba1f6065bf5d6b44dba01d48"},
+    {file = "selenium-4.16.0-py3-none-any.whl", hash = "sha256:aec71f4e6ed6cb3ec25c9c1b5ed56ae31b6da0a7f17474c7566d303f84e6219f"},
+    {file = "selenium-4.16.0.tar.gz", hash = "sha256:b2e987a445306151f7be0e6dfe2aa72a479c2ac6a91b9d5ef2d6dd4e49ad0435"},
 ]
 
 [package.dependencies]
@@ -672,4 +672,4 @@ h11 = ">=0.9.0,<1"
 [metadata]
 lock-version = "2.0"
 python-versions = "3.12.0"
-content-hash = "6aa13a4f116be0921e863a9bf2d291046b4aa38545c9899c554c12561ab346ca"
+content-hash = "809803c9b7ff0f8aba2ce2d8cf2b1a88b82bd218b7a4a5811c82a183072e1b58"
