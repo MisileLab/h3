@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - '.github/workflows/docs.yml'
-      - 'web/**'
+      - 'dist/**'
 
 jobs:
   deploy:
@@ -14,15 +14,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup mdBook
-        uses: peaceiris/actions-mdbook@v1
-        with:
-          mdbook-version: 'latest'
-
-      - run: cd web && mdbook build
+      - name: exist
+        shell: bash
+        run: |
+          if [[ -f dist/index.html ]]; then
+            touch not-exist-really
+          fi
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4.5.0
+        if: "! -f not-exist-really"
         with:
           branch: gh-pages
-          folder: web/book
+          folder: dist

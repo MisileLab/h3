@@ -1,3 +1,16 @@
 test.json
 input.txt
 output.txt
+
+# Julia.gitignore by ignofierplus
+*.jl.cov
+*.jl.*.cov
+*.jl.mem
+deps/deps.jl
+deps/build.log
+deps/downloads/
+deps/usr/
+deps/src/
+docs/build/
+docs/site/
+Manifest.toml
