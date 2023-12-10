@@ -287,13 +287,13 @@ test = ["black (>=22.3.0,<23.0.0)", "coverage (>=6.2,<7.0)", "isort (>=5.0.6,<6.
 
 [[package]]
 name = "typing-extensions"
-version = "4.8.0"
+version = "4.9.0"
 description = "Backported and Experimental Type Hints for Python 3.8+"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "typing_extensions-4.8.0-py3-none-any.whl", hash = "sha256:8f92fc8806f9a6b641eaa5318da32b44d401efaac0f6678c9bc448ba3605faa0"},
-    {file = "typing_extensions-4.8.0.tar.gz", hash = "sha256:df8e4339e9cb77357558cbdbceca33c303714cf861d1eef15e1070055ae8b7ef"},
+    {file = "typing_extensions-4.9.0-py3-none-any.whl", hash = "sha256:af72aea155e91adfc61c3ae9e0e342dbc0cba726d6cba4b6c72c1f34e47291cd"},
+    {file = "typing_extensions-4.9.0.tar.gz", hash = "sha256:23478f88c37f27d76ac8aee6c905017a143b0b1b886c3c9f66bc2fd94f9f5783"},
 ]
 
 [[package]]
@@ -316,4 +316,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "3.12.1"
-content-hash = "0871348fc990515a644d24bf138b64377e13d261ce5b7282c96ac86fe9f916de"
+content-hash = "19a65d48274fedf20be4798accc4e2d3318dee295d1b1fcb803c77ada158eceb"
