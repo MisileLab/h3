@@ -89,7 +89,7 @@
 				(너무 길기 때문에 줄인 것)
 			</Notes>
 			<p class="font-bold mb-10">스캔 핵심 코드</p>
-			<Code lang="tsx" class="w-screen ml-0" lines="1|2-13|4|5-12|15-16|20">
+			<Code lang="tsx" class="w-screen ml-0" lines="1|4-13|20">
 				{`
 				let cmd2 = new Command('run-snyk');
 				cmd2.on("close", async (_) => {
@@ -167,10 +167,6 @@
 			<p class="font-bold">개선할 점</p>
 			<p class="mt-5">1. 코드 리팩토링 (현재 코드는 재사용이 어려움)</p>
 			<p class="mt-5">2. 자동 셋업 (현재 앱은 툴을 직접 설치해야함)</p>
-		</Slide>
-		<Slide>
-			<p class="font-bold text-4xl">사이버 공격은 모든 회사에 나올 수 있는 가장 큰 위협이다.</p>
-			<p class="font-light mt-5 text-3xl">- 버지니아 로메티(전 IBM CEO)</p>
 		</Slide>
 	</Vertical>
 </Presentation>
