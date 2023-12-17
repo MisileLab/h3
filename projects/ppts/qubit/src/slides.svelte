@@ -6,7 +6,7 @@
 	<Slide animate>
 		<p class="font-bold">Qubit</p>
 		<p class="mt-5">보안 취약점 스캔 GUI</p>
-		<Notes>This is just sample note</Notes>
+		<Notes>This is start!</Notes>
 	</Slide>
 	<Vertical>
 		<Slide>
@@ -17,12 +17,14 @@
 			<p>4. 개선할 점</p>
 		</Slide>
 		<Slide>
+			<Notes>보안 취약점이 일어나는 이유 -> 사람의 문제가 큼</Notes>
 			<p class="font-bold mb-10">보안 취약점이 일어나는 이유</p>
 			<center><img src="./images/ibm-and-verizon.png" alt="https://www.varonis.com/blog/cybersecurity-statistics"></center>
 			<p class="mt-5">74%의 보안 취약점은 사람의 문제로 발생됨</p>
 			<p class="mt-5">보안 취약점을 알아차리는데 걸리는 시간은 207일</p>
 		</Slide>
 		<Slide>
+			<Notes>위험한 걸 물어보고 -> 자신의 생각으로 자연스럽게 전환</Notes>
 			<p class="font-bold mb-10">사람이 실수하는 것 중에서 가장 위험한 건 뭘까?</p>
 			<center><img src="./images/twitter-security.png" alt="https://www.boannews.com/media/view.asp?idx=108847" class="fragment"></center>
 			<p class="fragment mt-10">API 키 유출</p>
@@ -47,6 +49,7 @@
 			<p>4. 개선할 점</p>
 		</Slide>
 		<Slide>
+			<Notes>영상은 그냥 보여주고 다음 화면들에서 상세 설명</Notes>
 			<center><Media src="./video.mp4" autoplay={true} type="video"></Media></center>
 		</Slide>
 		<Slide>
@@ -80,16 +83,28 @@
 		</Slide>
 		<Slide>
 			<p class="font-bold mb-10">사용한 기술</p>
-			<p class="mb-5">Next.JS - 프론트엔드</p>
-			<p>Tauri - 앱 번들링</p>
+			<div class="flex justify-between">
+				<div class="w-1/2 flex flex-col items-center">
+					<Media type="img" src="/images/nextjs.png" class="w-1/4 mb-5" />
+					<p>Next.JS</p>
+				</div>
+				<div class="w-1/2 flex flex-col items-center">
+					<Media type="img" src="/images/tauri.svg" class="w-3/4 mb-6" />
+					<p>Tauri</p>
+				</div>
+			</div>
 		</Slide>
 		<Slide>
 			<Notes>
-				이 코드는 줄인 코드라고 말해야함
-				(너무 길기 때문에 줄인 것)
+				이 코드는 줄인 코드라고 말해야함<br>
+				(너무 길기 때문에 줄인 것)<br>
+				간략한 코드 설명<br>
+				1. tauri command 초기화<br>
+				2. CLI 출력 파싱<br>
+				3. 콘피그 파일 저장
 			</Notes>
 			<p class="font-bold mb-10">스캔 핵심 코드</p>
-			<Code lang="tsx" class="w-screen ml-0" lines="1|2-13|4|5-12|15-16|20">
+			<Code lang="tsx" class="w-screen ml-0" lines="1|4-13|15-16">
 				{`
 				let cmd2 = new Command('run-snyk');
 				cmd2.on("close", async (_) => {
@@ -115,6 +130,12 @@
 			</Code>
 		</Slide>
 		<Slide>
+			<Notes>
+				간략한 코드 설명<br>
+				1. 보안 취약점 선택<br>
+				2. 보안 취약점 보여주는 버튼 핸들링<br>
+				3. 보안 취약점 결과 보여주는 코드
+			</Notes>
 			<p class="font-bold mb-10">결과 확인 코드</p>
 			<Code lang="tsx" class="w-screen ml-0" lines="8-10|21-24|28-32">
 				{`
@@ -167,10 +188,6 @@
 			<p class="font-bold">개선할 점</p>
 			<p class="mt-5">1. 코드 리팩토링 (현재 코드는 재사용이 어려움)</p>
 			<p class="mt-5">2. 자동 셋업 (현재 앱은 툴을 직접 설치해야함)</p>
-		</Slide>
-		<Slide>
-			<p class="font-bold text-4xl">사이버 공격은 모든 회사에 나올 수 있는 가장 큰 위협이다.</p>
-			<p class="font-light mt-5 text-3xl">- 버지니아 로메티(전 IBM CEO)</p>
 		</Slide>
 	</Vertical>
 </Presentation>
