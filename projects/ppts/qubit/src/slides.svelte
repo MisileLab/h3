@@ -11,7 +11,7 @@
 	<Vertical>
 		<Slide>
 			<p class="font-bold mb-5">목차</p>
-			<p class="fragment highlight-green mb-3">1. 만든 이유</p>
+			<p class="fragment custom highlight-cyan mb-3">1. 만든 이유</p>
 			<p class="mb-3">2. 시연</p>
 			<p class="mb-3">3. 코드 설명</p>
 			<p>4. 개선할 점</p>
@@ -26,8 +26,10 @@
 		<Slide>
 			<Notes>위험한 걸 물어보고 -> 자신의 생각으로 자연스럽게 전환</Notes>
 			<p class="font-bold mb-10">사람이 실수하는 것 중에서 가장 위험한 건 뭘까?</p>
-			<center><img src="./images/twitter-security.png" alt="https://www.boannews.com/media/view.asp?idx=108847" class="fragment"></center>
-			<p class="fragment mt-10">API 키 유출</p>
+			<div class="fragment">
+				<center><img src="./images/twitter-security.png" alt="https://www.boannews.com/media/view.asp?idx=108847"></center>
+				<p class="mt-10">API 키 유출</p>
+			</div>
 		</Slide>
 		<Slide>
 			<p class="font-bold mb-10">API 키 스캔 툴이 있음, 그러나</p>
@@ -37,14 +39,14 @@
 			</center>
 		</Slide>
 		<Slide>
-			<p class="font-bold">GUI로 쉽게 코드 스캔할 수는 없을까?</p>
+			<p class="font-bold">GUI로 쉽게 볼 수는 없을까?</p>
 		</Slide>
 	</Vertical>
 	<Vertical>
 		<Slide>
 			<p class="font-bold mb-5">목차</p>
 			<p class="mb-3">1. 만든 이유</p>
-			<p class="mb-3 fragment highlight-green">2. 시연</p>
+			<p class="mb-3 fragment custom highlight-cyan">2. 시연</p>
 			<p class="mb-3">3. 코드 설명</p>
 			<p>4. 개선할 점</p>
 		</Slide>
@@ -78,7 +80,7 @@
 			<p class="font-bold mb-5">목차</p>
 			<p class="mb-3">1. 만든 이유</p>
 			<p class="mb-3">2. 시연</p>
-			<p class="mb-3 fragment highlight-green">3. 코드 설명</p>
+			<p class="mb-3 fragment custom highlight-cyan">3. 코드 설명</p>
 			<p>4. 개선할 점</p>
 		</Slide>
 		<Slide>
@@ -182,12 +184,12 @@
 			<p class="mb-3">1. 만든 이유</p>
 			<p class="mb-3">2. 시연</p>
 			<p class="mb-3">3. 코드 설명</p>
-			<p class="fragment highlight-green">4. 개선할 점</p>
+			<p class="fragment custom highlight-cyan">4. 개선할 점</p>
 		</Slide>
 		<Slide>
 			<p class="font-bold">개선할 점</p>
-			<p class="mt-5">1. 코드 리팩토링 (현재 코드는 재사용이 어려움)</p>
-			<p class="mt-5">2. 자동 셋업 (현재 앱은 툴을 직접 설치해야함)</p>
+			<p class="mt-5">1. 코드가 너무 복잡함</p>
+			<p class="mt-5">2. 자동 셋업 기능 추가</p>
 		</Slide>
 	</Vertical>
 </Presentation>
@@ -202,5 +204,4 @@
 	* {
 		font-family: 'NanumSquareNeo-Variable';
 	}
-
 </style>
