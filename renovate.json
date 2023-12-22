@@ -14,5 +14,11 @@
         "ignoreTests": true
       }
     ],
-    "platformAutomerge": true
+    "platformAutomerge": true,
+    "nix": {
+      "enabled": true
+    },
+    "lockFileMaintenance": {
+      "enabled": true
+    }
 }
