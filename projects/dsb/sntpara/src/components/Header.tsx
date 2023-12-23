@@ -7,7 +7,7 @@ interface ContainerProps {
 
 const Container = styled.header<ContainerProps>`
   position: fixed;
-  top: ${isScrolled => isScrolled ? "0" : "-200px"};
+  top: ${props => props.isScrolled ? "0" : "-200px"};
   transition: top 0.5s ease-in-out;
   width: 100%;
   z-index: 1000;

@@ -286,7 +286,7 @@
   gap: 7px;
 `,Yt=()=>s(Vt,{get children(){return s(Wt,{get children(){return s(qt,{get children(){return[s(Kt,{children:"P  A  R  A"}),s(Xt,{children:"Project Achievement & Research AI"})]}})}})}}),Jt=C.header`
   position: fixed;
-  top: ${e=>e?"0":"-200px"};
+  top: ${e=>e.isScrolled?"0":"-200px"};
   transition: top 0.5s ease-in-out;
   width: 100%;
   z-index: 1000;
