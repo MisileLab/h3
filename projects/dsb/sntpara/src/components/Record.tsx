@@ -38,19 +38,6 @@ const BigWanjangContainer = styled.div`
   }
 `;
 
-const PeriodText = styled.div`
-  color: #000;
-  text-align: center;
-  font-size: 28px;
-  font-style: normal;
-  font-weight: 500;
-  line-height: 170%;
-  margin-top: 40px;
-  @media (max-width: 800px) {
-    font-size: 18px;
-  }
-`;
-
 // 부장 쀼장 이름 텍스트
 const WanjanNameText = styled.div`
   text-align: center;
@@ -71,18 +58,6 @@ const WanjangContainer = styled.div`
   width: 400px;
   @media (max-width: 800px) {
     width: 300px;
-  }
-`;
-
-const Text = styled.div`
-  color: #000;
-  text-align: center;
-  font-size: 20px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 140%; /* 39.2px */
-  @media (max-width: 800px) {
-    font-size: 14px;
   }
 `;
 

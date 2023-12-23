@@ -1,6 +1,6 @@
 import { Line } from "./Elements";
 import { styled } from "solid-styled-components";
-import para_image from "../assets/media/PARA.svg";
+import para_image from "../assets/media/PARA.jpg";
 
 const Container = styled.div`
   width: 100%;
