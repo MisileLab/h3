@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import solidPlugin from "vite-plugin-solid";
 import devtools from 'solid-devtools/vite';
+import compression from 'vite-plugin-compression2';
 
 export default defineConfig({
   plugins: [
@@ -10,6 +11,7 @@ export default defineConfig({
     */
     devtools(),
     solidPlugin(),
+    compression()
   ],
   server: {
     port: 3000,
