@@ -146,6 +146,7 @@ if len(flist) != 1:
 
 ans = ""
 while ans not in ["y", "n"]:
-    ans = input("all test passed so do u want some copy? [y/n]")
+    ans = input("all test passed so do u want some code? [y/n]")
 if ans == "y":
-    run(f"cat {flist[0]}.py | wl-copy", shell=True)
+    print("=======")
+    run(f"cat {flist[0]}.py", shell=True)
