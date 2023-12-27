@@ -1,0 +1,29 @@
+{
+  "name": "action",
+  "version": "0.0.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview",
+    "tauri": "tauri"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@fortawesome/free-solid-svg-icons": "6.5.1",
+    "@tauri-apps/api": "1.5.3",
+    "solid-fa": "0.2.0",
+    "solid-js": "1.8.7"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "1.5.9",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32",
+    "tailwindcss": "3.4.0",
+    "typescript": "5.3.3",
+    "vite": "5.0.10",
+    "vite-plugin-solid": "2.8.0"
+  }
+}
