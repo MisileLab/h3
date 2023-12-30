@@ -10,7 +10,7 @@ function dayDisplay(cont: string) {
     color = "text-black"
   }
   return (
-  <div class="font-normal h-full flex" style="width: 14%">
+  <div class="font-normal h-full flex" style="width: calc(100vw / 7);"> 
     <div class={`mt-auto mb-auto text-center w-full font-semibold ${color}`}>{cont}</div>
   </div>
   );
@@ -25,10 +25,18 @@ function getDateList(date: Date) {
   return dateList;
 }
 
-function daySingle(num: number) {
+function daySingle(num: number | undefined = undefined, today: boolean = false) {
+  let borders: string = "";
+  let style: string = "";
+  if (today) {
+    borders = "border-red-700 border-solid";
+    style = "border-left-width: 0.5px; border-right-width: 0.5px;";
+  }
+  let cont: string | number;
+  if (num === undefined) {cont = "";} else {cont = num;}
   return (
-    <div class="font-normal h-full flex" style="width: 14%">
-      <div class='mt-auto mb-auto text-center w-full font-semibold'>{num}</div>
+    <div class={borders} style={`width: calc(100vw / 7); ${style}`}>
+      <div class='mb-auto text-right mr-4 mt-2 font-semibold'>{cont}</div>
     </div>
   );
 }
@@ -41,15 +49,21 @@ function day(date: Date) {
   let i = 0;
   while (i <= _dateList.length) {
     const d = [];
-    d.push(daySingle(_dateList[i]));
+    d.push(daySingle(_dateList[i], _dateList[i] === date.getDate()));
     let i2 = 1;
     while ((new Date(fy, fm, _dateList[i+i2])).getDay() != 0 && i+i2 < _dateList.length) {
-      d.push(daySingle(_dateList[i+i2]));
+      d.push(daySingle(_dateList[i+i2], _dateList[i+i2] === date.getDate()));
       i2++;
-      console.log(i+i2);
+    }
+    if (d.length < 7 && i == 0) {
+      let tmp = 0;
+      const length = d.length;
+      while (tmp <= 6-length) {
+        d.unshift(daySingle());
+        tmp++;
+      }
     }
     i += i2;
-    console.log(d);
     dateList.push(d);
   }
   dateList[dateList.length-1].shift();
@@ -58,7 +72,7 @@ function day(date: Date) {
     <For each={dateList}>
       {(item) => {
         return (
-          <div class="flex flex-row">
+          <div class="flex flex-row h-1/5 border-gray-700 border-solid" style="border-top-width: 0.5px;">
             <For each={item}>{(item) => item}</For>
           </div>
         );
@@ -68,21 +82,24 @@ function day(date: Date) {
 }
 
 function App() {
-  const dates = ["일", "월", "화", "수", "목", "금", "토"]
-  const [date, setDate] = createSignal(new Date());
+  const dates = ["일", "월", "화", "수", "목", "금", "토"];
+  const today = new Date();
+  const [date, setDate] = createSignal(today);
 
   return (
     <div>
       <div class="bg-white w-screen h-screen flex flex-col">
         <div class="bg-gray-300 w-screen flex flex-col h-32">
           <div class="m-auto flex flex-row gap-2">
-            <div class="text-4xl font-bold">2023/12</div>
+            <div class="text-4xl font-bold">{`${date().getFullYear()}/${date().getMonth()+1}`}</div>
           </div>
           <div class="flex flex-row w-full h-1/3">
-            <For each={dates}>{(item) => dayDisplay(item)}</For>
+            <For each={dates}>{(item) => {
+              return dayDisplay(item);
+            }}</For>
           </div>
         </div>
-        <div>
+        <div class="h-full flex flex-col">
           {day(date())}
         </div>
       </div>
