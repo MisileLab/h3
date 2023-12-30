@@ -1,6 +1,21 @@
 import { For, createSignal } from "solid-js";
 import { VsArrowLeft, VsArrowRight } from 'solid-icons/vs'
 
+interface Event {
+  year: number;
+  month: number;
+  day: number;
+  hour: number;
+  minute: number;
+  second: number;
+  title: string;
+  content: string;
+}
+
+const events: Event[] = [
+  {"year": 2023, "month": 12, "day": 30, "hour": 12, "minute": 0, "second": 0, "title": "test", "content": "test"}
+];
+
 function getColor(cont: string) {
   if (cont == "일") {
     return "text-red-500";
@@ -28,12 +43,20 @@ function getDateList(date: Date) {
   return dateList;
 }
 
-function daySingle(num: number | undefined = undefined, today: boolean = false) {
+function daySingle(num: number | undefined = undefined, today: boolean = false, events: Event[] | undefined = []) {
+  if (events === undefined) {events = [];}
   let cont: string | number;
   if (num === undefined) {cont = "";} else {cont = num;}
   return (
     <div class={today ? "bg-gray-400" : ""} style='width: calc(100vw / 7)'>
       <div class='mb-auto text-right mr-4 mt-2 font-semibold'>{cont}</div>
+      <For each={events}>
+        {(item) => {
+          return (
+            <div class='text-xl ml-1 w-full bg-blue-300'>{`${item.title} - ${item.hour}:${item.minute}:${item.second}`}</div>
+          );
+        }}
+      </For>
     </div>
   );
 }
@@ -45,6 +68,13 @@ function handlingButton(d: Date, setDateState: Function, amount: number) {
 }
 
 function day(date: Date) {
+  const _events: Record<number, Event[]> = {};
+  events.forEach((item) => {
+    if (item.year == date.getFullYear() && item.month == date.getMonth()+1) {
+      if (_events[item.day] === undefined) {_events[item.day] = [];}
+      _events[item.day].push(item);
+    }
+  });
   const fy = date.getFullYear();
   const fm = date.getMonth();
   const fd = date.getDate();
@@ -54,10 +84,10 @@ function day(date: Date) {
   let i = 0;
   while (i <= _dateList.length) {
     const d = [];
-    d.push(daySingle(_dateList[i], _dateList[i] === fd && tmcmp));
+    d.push(daySingle(_dateList[i], _dateList[i] === fd && tmcmp, _events[_dateList[i]]));
     let i2 = 1;
     while ((new Date(fy, fm, _dateList[i+i2])).getDay() != 0 && i+i2 < _dateList.length) {
-      d.push(daySingle(_dateList[i+i2], _dateList[i+i2] === fd && tmcmp));
+      d.push(daySingle(_dateList[i+i2], _dateList[i+i2] === fd && tmcmp, _events[_dateList[i+i2]]));
       i2++;
     }
     if (d.length < 7 && i == 0) {
@@ -72,7 +102,7 @@ function day(date: Date) {
     dateList.push(d);
   }
   dateList[dateList.length-1].shift();
-  dateList[dateList.length-1].push(daySingle(_dateList[_dateList.length-1]+1));
+  dateList[dateList.length-1].push(daySingle(_dateList[_dateList.length-1]+1, _dateList[_dateList.length-1]+1 === fd && tmcmp, _events[_dateList[_dateList.length-1]+1]));
   return (
     <For each={dateList}>
       {(item) => {
