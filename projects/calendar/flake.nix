@@ -21,22 +21,25 @@
           gtk3
           cairo
           gdk-pixbuf
-          glib.out
-          dbus.lib
-          openssl.out
+          glib
+          dbus
+          openssl_3
+          librsvg
         ];
       in
       {
         devShell = pkgs.mkShell {
           buildInputs = with pkgs; [
+            curl
+            wget
             pkg-config
             dbus
-            openssl
+            openssl_3
             glib
             gtk3
             libsoup
             webkitgtk
-            appimagekit
+            librsvg
             rustToolchain
           ];
 
