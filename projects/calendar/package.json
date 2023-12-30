@@ -13,7 +13,7 @@
   "license": "MIT",
   "dependencies": {
     "@tauri-apps/api": "1.5.3",
-    "solid-icons": "^1.1.0",
+    "solid-icons": "1.1.0",
     "solid-js": "1.8.7"
   },
   "devDependencies": {
