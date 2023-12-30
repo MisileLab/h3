@@ -11,7 +11,10 @@ export default defineConfig({
     */
     devtools(),
     solidPlugin(),
-    compression()
+    compression({
+      include: [/\.(js)$/, /\.(css)$/],
+      threshold: 1400
+    })
   ],
   server: {
     port: 3000,

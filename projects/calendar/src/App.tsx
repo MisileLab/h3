@@ -1,17 +1,19 @@
 import { For, createSignal } from "solid-js";
 
-function dayDisplay(cont: string) {
-  let color: string;
+function getColor(cont: string) {
   if (cont == "일") {
-    color = "text-red-500"
+    return "text-red-500";
   } else if (cont == "토") {
-    color = "text-blue-500"
+    return "text-blue-500";
   } else {
-    color = "text-black"
+    return "text-black";
   }
+}
+
+function dayDisplay(cont: string) {
   return (
   <div class="font-normal h-full flex" style="width: calc(100vw / 7);"> 
-    <div class={`mt-auto mb-auto text-center w-full font-semibold ${color}`}>{cont}</div>
+    <div class={`mt-auto mb-auto text-center w-full font-semibold ${getColor(cont)}`}>{cont}</div>
   </div>
   );
 }
@@ -26,16 +28,10 @@ function getDateList(date: Date) {
 }
 
 function daySingle(num: number | undefined = undefined, today: boolean = false) {
-  let borders: string = "";
-  let style: string = "";
-  if (today) {
-    borders = "border-red-700 border-solid";
-    style = "border-left-width: 0.5px; border-right-width: 0.5px;";
-  }
   let cont: string | number;
   if (num === undefined) {cont = "";} else {cont = num;}
   return (
-    <div class={borders} style={`width: calc(100vw / 7); ${style}`}>
+    <div class={today ? "bg-gray-400" : ""} style='width: calc(100vw / 7)'>
       <div class='mb-auto text-right mr-4 mt-2 font-semibold'>{cont}</div>
     </div>
   );
@@ -44,15 +40,16 @@ function daySingle(num: number | undefined = undefined, today: boolean = false) 
 function day(date: Date) {
   const fy = date.getFullYear();
   const fm = date.getMonth();
+  const fd = date.getDate();
   const _dateList: number[] = getDateList(date);
   const dateList = [];
   let i = 0;
   while (i <= _dateList.length) {
     const d = [];
-    d.push(daySingle(_dateList[i], _dateList[i] === date.getDate()));
+    d.push(daySingle(_dateList[i], _dateList[i] === fd));
     let i2 = 1;
     while ((new Date(fy, fm, _dateList[i+i2])).getDay() != 0 && i+i2 < _dateList.length) {
-      d.push(daySingle(_dateList[i+i2], _dateList[i+i2] === date.getDate()));
+      d.push(daySingle(_dateList[i+i2], _dateList[i+i2] === fd));
       i2++;
     }
     if (d.length < 7 && i == 0) {
