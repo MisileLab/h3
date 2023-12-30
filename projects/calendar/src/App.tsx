@@ -1,4 +1,5 @@
 import { For, createSignal } from "solid-js";
+import { VsArrowLeft, VsArrowRight } from 'solid-icons/vs'
 
 function getColor(cont: string) {
   if (cont == "일") {
@@ -37,19 +38,26 @@ function daySingle(num: number | undefined = undefined, today: boolean = false) 
   );
 }
 
+function handlingButton(d: Date, setDateState: Function, amount: number) {
+  const _d = d;
+  _d.setMonth(d.getMonth() + amount);
+  setDateState([_d]);
+}
+
 function day(date: Date) {
   const fy = date.getFullYear();
   const fm = date.getMonth();
   const fd = date.getDate();
+  const tmcmp = fm == new Date().getMonth() && fy == new Date().getFullYear();
   const _dateList: number[] = getDateList(date);
   const dateList = [];
   let i = 0;
   while (i <= _dateList.length) {
     const d = [];
-    d.push(daySingle(_dateList[i], _dateList[i] === fd));
+    d.push(daySingle(_dateList[i], _dateList[i] === fd && tmcmp));
     let i2 = 1;
     while ((new Date(fy, fm, _dateList[i+i2])).getDay() != 0 && i+i2 < _dateList.length) {
-      d.push(daySingle(_dateList[i+i2], _dateList[i+i2] === fd));
+      d.push(daySingle(_dateList[i+i2], _dateList[i+i2] === fd && tmcmp));
       i2++;
     }
     if (d.length < 7 && i == 0) {
@@ -81,14 +89,16 @@ function day(date: Date) {
 function App() {
   const dates = ["일", "월", "화", "수", "목", "금", "토"];
   const today = new Date();
-  const [date, setDate] = createSignal(today);
+  const [date, setDate] = createSignal([today]);
 
   return (
     <div>
       <div class="bg-white w-screen h-screen flex flex-col">
         <div class="bg-gray-300 w-screen flex flex-col h-32">
           <div class="m-auto flex flex-row gap-2">
-            <div class="text-4xl font-bold">{`${date().getFullYear()}/${date().getMonth()+1}`}</div>
+            <button class='h-full w-6' onClick={()=>handlingButton(date()[0],setDate,-1)}><VsArrowLeft class="h-full w-full"/></button>
+            <div class="text-4xl font-bold">{`${date()[0].getFullYear()}/${date()[0].getMonth()+1}`}</div>
+            <button class='h-full w-6' onClick={()=>handlingButton(date()[0],setDate,1)}><VsArrowRight class="h-full w-full"/></button>
           </div>
           <div class="flex flex-row w-full h-1/3">
             <For each={dates}>{(item) => {
@@ -97,7 +107,7 @@ function App() {
           </div>
         </div>
         <div class="h-full flex flex-col">
-          {day(date())}
+          {day(date()[0])}
         </div>
       </div>
     </div>
