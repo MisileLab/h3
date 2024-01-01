@@ -15,6 +15,7 @@ interface Event {
   end: EventDate;
   title: string;
   content: string;
+  color: string;
 }
 
 interface SimpleEvent {
@@ -23,6 +24,7 @@ interface SimpleEvent {
   day: number;
   title: string;
   content: string;
+  color: string;
 }
 
 const events: Event[] = [
@@ -45,6 +47,7 @@ const events: Event[] = [
       minute: 0,
       second: 0,
     },
+    color: "c0ffee"
   },
 ];
 
@@ -94,7 +97,10 @@ function daySingle(
       <div class="mb-auto text-right mr-4 mt-2 font-semibold">{num}</div>
       <For each={events}>
         {(item) => {
-          return <div class="bg-blue-500 text-white text-xl text-center">{item.title}</div>;
+          return <div class="text-black text-xl text-center" style={`background-color: #${item.color}`} oncontextmenu={(e)=>{
+            e.preventDefault();
+            console.log(item.title);
+          }}>{item.title}</div>;
         }}
       </For>
     </div>
@@ -119,6 +125,7 @@ function convertEventToHighlight() {
         day: day,
         title: e.title,
         content: e.content,
+        color: e.color
       });
       let newDate = start.setDate(start.getDate() + 1);
       start = new Date(newDate);
@@ -141,13 +148,13 @@ function day(date: Date) {
   const tmcmp = fm-1 == new Date().getMonth() && fy == new Date().getFullYear();
   const _dateList: number[] = getDateList(date);
   const dateList: JSX.Element[][] = [[]];
-  const prestart = new Date(fy, fm, _dateList[0]).getDay();
+  const prestart = new Date(fy, fm-1, 1).getDay();
   for (let i = 0; i < prestart; i++) {
     dateList[0].push(daySingle(""));
   }
   for (let i = 0; i < _dateList.length; i++) {
     let d = _dateList[i];
-    if (new Date(fy, fm, d).getDay() == 0) {
+    if (new Date(fy, fm-1, d).getDay() == 0) {
       if (dateList[dateList.length-1].length !== 0) {dateList.push([]);}
       dateList[dateList.length-1].push(daySingle(d, tmcmp && fd == d, highlights[`${fy}:${fm}:${d}`]))
     } else {
@@ -189,7 +196,7 @@ function App() {
             >
               <VsArrowLeft class="h-full w-full" />
             </button>
-            <div class="text-4xl font-bold">{`${date()[0].getFullYear()}/${
+            <div class="text-4xl font-bold">{`${date()[0].getFullYear()}.${
               date()[0].getMonth() + 1
             }`}</div>
             <button
