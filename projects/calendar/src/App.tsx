@@ -1,8 +1,24 @@
 import { For, JSX, createSignal } from "solid-js";
-import { VsArrowLeft, VsArrowRight } from "solid-icons/vs";
+import { VsArrowLeft, VsArrowRight, VsEdit, VsTrash } from "solid-icons/vs";
 import { SimpleEvent } from "./interfaces";
 import { getColor, convertEventToHighlight, handlingButton } from "./utils";
-import { ContextMenu, Button } from "@kobalte/core";
+import { ContextMenu, AlertDialog } from "@kobalte/core";
+
+function AlertDialogForEvent(item: SimpleEvent, comp: JSX.Element) {
+  return (
+    <AlertDialog.Root>
+      <AlertDialog.Trigger>{comp}</AlertDialog.Trigger>
+      <AlertDialog.Portal>
+        <AlertDialog.Overlay />
+        <div class="flex fixed inset-0 z-50 items-center justify-center">
+          <AlertDialog.Content class="bg-gray-600">
+            asdf
+          </AlertDialog.Content>
+        </div>
+      </AlertDialog.Portal>
+    </AlertDialog.Root>
+  )
+}
 
 function ContextMenuForEvent(item: SimpleEvent, comp: JSX.Element) {
   const ios = item.org.start;
@@ -14,18 +30,17 @@ function ContextMenuForEvent(item: SimpleEvent, comp: JSX.Element) {
         {comp}
       </ContextMenu.Trigger>
       <ContextMenu.Portal>
-        <ContextMenu.Content class="bg-white rounded-lg border-gray-400 border-solid border-2">
-          <div class="flex-col flex">
+        <ContextMenu.Content class="bg-white glass outline-none">
+          <div class="flex-col flex mr-1">
             <div class="text-xl font-bold">{`이름: ${item.title}`}</div>
             <div class="text-lg text-gray-500">{`시작: ${ios.year}.${ios.month}.${ios.day} ${ios.hour}:${ios.minute}:${ios.second}`}</div>
             <div class="text-lg text-gray-500">{`끝: ${ioe.year}.${ioe.month}.${ioe.day} ${ioe.hour}:${ioe.minute}:${ioe.second}`}</div>
-            <div class="text-lg">{`설명: ${item.content}`}</div>
-            <div class="flex flex-row-reverse w-full">
-              <Button.Root class="border-solid border-red-500 border-2 rounded-lg" onClick={()=>{
+            <div class="flex flex-row-reverse w-full mb-1">
+              <button class="outline-none" onClick={()=>{
                 const a = confirm("정말로 삭제하시겠습니까?");
                 if (!a) { return; }
-              }}>삭제</Button.Root>
-              <Button.Root class="border-solid border-gray-500 border-2 rounded-lg mr-2">변경</Button.Root>
+              }}><VsTrash size={24} /></button>
+              {AlertDialogForEvent(item, <div class="outline-none"><VsEdit size={24} /></div>)}
             </div>
           </div>
         </ContextMenu.Content>
@@ -66,8 +81,10 @@ function daySingle(
     events = [];
   }
   return (
-    <div class={today ? "bg-gray-400" : ""} style="width: calc(100vw / 7)">
-      <div class="mb-auto text-right mr-4 mt-2 font-semibold">{num}</div>
+    <div style="width: calc(100vw / 7)">
+      <div class='mb-auto text-right mt-2 font-semibold flex flex-row-reverse'>
+        <div class={`${today ? "bg-red-400" : ""} w-6 h-6 rounded-full text-center`}>{num}</div>
+      </div>
       <For each={events}>
         {(item) => {
           const a = (
