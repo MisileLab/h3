@@ -18,6 +18,7 @@
     "solid-js": "1.8.7"
   },
   "devDependencies": {
+    "@catppuccin/tailwindcss": "^0.1.6",
     "@tauri-apps/cli": "1.5.9",
     "autoprefixer": "10.4.16",
     "postcss": "8.4.32",

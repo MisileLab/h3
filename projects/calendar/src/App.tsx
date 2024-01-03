@@ -30,22 +30,22 @@ function AlertDialogForEvent(item: SimpleEvent, comp: JSX.Element) {
       <AlertDialog.Portal>
         <AlertDialog.Overlay />
         <div class="flex fixed inset-0 z-50 items-center justify-center overlay w-full h-full bg-black bg-opacity-30">
-          <AlertDialog.Content class="content alertDialog">
+          <AlertDialog.Content class="content alertDialog bg-white dark:bg-ctp-overlay0">
             <TextField.Root>
-              <div class="w-full h-full flex flex-col">
-                <TextField.Input class="text-2xl font-bold outline-none bg-transparent" style="border-radius: 10px;" value={item.title} />
+              <div class="w-full h-full flex flex-col ml-1 mr-1 mb-1 mt-1">
+                <TextField.Input class="text-2xl font-bold outline-none bg-transparent dark:text-ctp-text" style="border-radius: 10px;" spellcheck={false} value={item.title} />
                 <TextField.Label>시작 날짜</TextField.Label>
-                <div class="text-xl text-gray-500 flex flex-row">
+                <div class="text-xl text-gray-500 flex flex-row dark:text-ctp-subtext0">
                   <TextField.Input class="outline-none bg-transparent" type="date" value={o["start"]["date"]} />
                   <TextField.Input class="outline-none bg-transparent" type="time" value={o["start"]["time"]} />
                 </div>
                 <TextField.Label>끝나는 날짜</TextField.Label>
-                <div class="text-xl text-gray-500 flex flex-row">
+                <div class="text-xl text-gray-500 flex flex-row dark:text-ctp-subtext0">
                   <TextField.Input class="outline-none bg-transparent" type="date" value={o["end"]["date"]} />
                   <TextField.Input class="outline-none bg-transparent" type="time" value={o["end"]["time"]} />
                 </div>
                 <TextField.Label>설명</TextField.Label>
-                <TextField.TextArea class="bg-transparent" autoResize value={item.content} />
+                <TextField.TextArea class="bg-transparent outline-none resize-none max-h-24 dark:text-ctp-text scroll-smooth" spellcheck={false} autoResize value={item.content} />
               </div>
             </TextField.Root>
           </AlertDialog.Content>
@@ -65,9 +65,9 @@ function ContextMenuForEvent(item: SimpleEvent, comp: JSX.Element) {
       <ContextMenu.Portal>
         <ContextMenu.Content class="bg-white glass content outline-none">
           <div class="flex-col flex mr-1">
-            <div class="text-xl font-bold">{`이름: ${item.title}`}</div>
-            <div class="text-lg text-gray-500">{`시작: ${o["start"]["full"]}`}</div>
-            <div class="text-lg text-gray-500">{`끝: ${o["end"]["full"]}` }</div>
+            <div class="text-xl font-bold dark:text-ctp-text">{`이름: ${item.title}`}</div>
+            <div class="text-lg text-gray-500 dark:text-ctp-subtext1">{`시작: ${o["start"]["full"]}`}</div>
+            <div class="text-lg text-gray-500 dark:text-ctp-subtext1">{`끝: ${o["end"]["full"]}` }</div>
             <div class="flex flex-row-reverse w-full mb-1">
               <button onClick={()=>{
                 const a = confirm("정말로 삭제하시겠습니까?");
@@ -116,7 +116,7 @@ function daySingle(
   return (
     <div style="width: calc(100vw / 7)">
       <div class='mb-auto text-right mt-2 font-semibold flex flex-row-reverse'>
-        <div class={`${today ? "bg-red-400" : ""} w-6 h-6 rounded-full text-center`}>{num}</div>
+        <div class={`${today ? "bg-red-400 dark:text-black" : ""} w-6 h-6 rounded-full text-center dark:text-ctp-subtext0`}>{num}</div>
       </div>
       <For each={events}>
         {(item) => {
@@ -171,7 +171,7 @@ function day(date: Date) {
       {(item) => {
         return (
           <div
-            class="flex flex-row h-1/5 border-gray-700 border-solid"
+            class="flex flex-row h-1/5 border-gray-700 dark:border-white border-solid"
             style="border-top-width: 0.5px;"
           >
             <For each={item}>{(item) => item}</For>
@@ -189,9 +189,9 @@ function App() {
 
   return (
     <div>
-      <div class="bg-white w-screen h-screen flex flex-col">
-        <div class="bg-gray-300 w-screen flex flex-col h-32">
-          <div class="m-auto flex flex-row gap-2">
+      <div class="bg-white dark:bg-ctp-surface0 w-screen h-screen flex flex-col">
+        <div class="bg-gray-300 dark:bg-ctp-surface1 w-screen flex flex-col h-32">
+          <div class="m-auto flex flex-row gap-2 dark:text-ctp-text">
             <button
               class="h-full w-6"
               onClick={() => handlingButton(date()[0], setDate, -1)}

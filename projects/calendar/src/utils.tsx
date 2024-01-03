@@ -10,7 +10,6 @@ const events: Event[] = [
       day: 30,
       hour: 10,
       minute: 0,
-      second: 0,
     },
     end: {
       year: 2024,
@@ -18,7 +17,6 @@ const events: Event[] = [
       day: 1,
       hour: 10,
       minute: 0,
-      second: 0,
     },
     color: "c0ffee",
   },
@@ -64,6 +62,6 @@ export function getColor(cont: string) {
   } else if (cont == "토") {
     return "text-blue-500";
   } else {
-    return "text-black";
+    return "text-black dark:text-ctp-subtext1";
   }
 }
