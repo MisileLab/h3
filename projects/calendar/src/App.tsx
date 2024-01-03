@@ -1,18 +1,53 @@
 import { For, JSX, createSignal } from "solid-js";
 import { VsArrowLeft, VsArrowRight, VsEdit, VsTrash } from "solid-icons/vs";
-import { SimpleEvent } from "./interfaces";
+import { EventDate, SimpleEvent } from "./interfaces";
 import { getColor, convertEventToHighlight, handlingButton } from "./utils";
-import { ContextMenu, AlertDialog } from "@kobalte/core";
+import { ContextMenu, AlertDialog, TextField } from "@kobalte/core";
+
+function convertDateToString(ios: EventDate, ioe: EventDate) {
+  const a = (a: number) => {
+    return a < 10 ? `0${a}` : a;
+  };
+  return {
+    'start': {
+      'full': `${ios.year}.${a(ios.month)}.${a(ios.day)} ${a(ios.hour)}:${a(ios.minute)}`,
+      'date': `${ios.year}-${a(ios.month)}-${a(ios.day)}`,
+      'time': `${a(ios.hour)}:${a(ios.minute)}`
+    },
+    'end': {
+      'full': `${ioe.year}.${a(ioe.month)}.${a(ioe.day)} ${a(ioe.hour)}:${a(ioe.minute)}`,
+      'date': `${ioe.year}-${a(ioe.month)}-${a(ioe.day)}`,
+      'time': `${a(ioe.hour)}:${a(ioe.minute)}`
+    }
+  }
+}
 
 function AlertDialogForEvent(item: SimpleEvent, comp: JSX.Element) {
+  const o = convertDateToString(item.org.start, item.org.end);
   return (
     <AlertDialog.Root>
       <AlertDialog.Trigger>{comp}</AlertDialog.Trigger>
       <AlertDialog.Portal>
         <AlertDialog.Overlay />
-        <div class="flex fixed inset-0 z-50 items-center justify-center">
-          <AlertDialog.Content class="bg-gray-600">
-            asdf
+        <div class="flex fixed inset-0 z-50 items-center justify-center overlay w-full h-full bg-black bg-opacity-30">
+          <AlertDialog.Content class="content alertDialog">
+            <TextField.Root>
+              <div class="w-full h-full flex flex-col">
+                <TextField.Input class="text-2xl font-bold outline-none bg-transparent" style="border-radius: 10px;" value={item.title} />
+                <TextField.Label>시작 날짜</TextField.Label>
+                <div class="text-xl text-gray-500 flex flex-row">
+                  <TextField.Input class="outline-none bg-transparent" type="date" value={o["start"]["date"]} />
+                  <TextField.Input class="outline-none bg-transparent" type="time" value={o["start"]["time"]} />
+                </div>
+                <TextField.Label>끝나는 날짜</TextField.Label>
+                <div class="text-xl text-gray-500 flex flex-row">
+                  <TextField.Input class="outline-none bg-transparent" type="date" value={o["end"]["date"]} />
+                  <TextField.Input class="outline-none bg-transparent" type="time" value={o["end"]["time"]} />
+                </div>
+                <TextField.Label>설명</TextField.Label>
+                <TextField.TextArea class="bg-transparent" autoResize value={item.content} />
+              </div>
+            </TextField.Root>
           </AlertDialog.Content>
         </div>
       </AlertDialog.Portal>
@@ -21,26 +56,24 @@ function AlertDialogForEvent(item: SimpleEvent, comp: JSX.Element) {
 }
 
 function ContextMenuForEvent(item: SimpleEvent, comp: JSX.Element) {
-  const ios = item.org.start;
-  const ioe = item.org.end;
-  // 이벤트 변경, 삭제, 확인
+  const o = convertDateToString(item.org.start, item.org.end);
   return (
     <ContextMenu.Root>
       <ContextMenu.Trigger>
         {comp}
       </ContextMenu.Trigger>
       <ContextMenu.Portal>
-        <ContextMenu.Content class="bg-white glass outline-none">
+        <ContextMenu.Content class="bg-white glass content outline-none">
           <div class="flex-col flex mr-1">
             <div class="text-xl font-bold">{`이름: ${item.title}`}</div>
-            <div class="text-lg text-gray-500">{`시작: ${ios.year}.${ios.month}.${ios.day} ${ios.hour}:${ios.minute}:${ios.second}`}</div>
-            <div class="text-lg text-gray-500">{`끝: ${ioe.year}.${ioe.month}.${ioe.day} ${ioe.hour}:${ioe.minute}:${ioe.second}`}</div>
+            <div class="text-lg text-gray-500">{`시작: ${o["start"]["full"]}`}</div>
+            <div class="text-lg text-gray-500">{`끝: ${o["end"]["full"]}` }</div>
             <div class="flex flex-row-reverse w-full mb-1">
-              <button class="outline-none" onClick={()=>{
+              <button onClick={()=>{
                 const a = confirm("정말로 삭제하시겠습니까?");
                 if (!a) { return; }
               }}><VsTrash size={24} /></button>
-              {AlertDialogForEvent(item, <div class="outline-none"><VsEdit size={24} /></div>)}
+              {AlertDialogForEvent(item, <div><VsEdit size={24} /></div>)}
             </div>
           </div>
         </ContextMenu.Content>
