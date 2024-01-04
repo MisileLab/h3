@@ -29,19 +29,19 @@
     transform: scale(0.96);
   }
 }
-
+@keyframes Hide {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
 * {
   font-family: "Pretendard-Regular";
 }
 
 .glass {
-  background: rgba(255, 255, 255, 0.25);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-  backdrop-filter: blur(4px);
-  border-radius: 10px;
-}
-
-.alertDialog {
   backdrop-filter: blur(4px);
   border-radius: 10px;
 }
@@ -56,4 +56,12 @@
 
 .content[data-expanded] {
   animation: contentShow 300ms ease-out;
+}
+
+.trans-exit-active {
+  animation: Hide 300ms ease-in forwards;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
 }
