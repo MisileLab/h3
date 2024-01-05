@@ -3,6 +3,7 @@ import { Event, EventDate, SimpleEvent } from './interfaces';
 export function convertEventToHighlight(events: Event[]) {
   const highlights: Record<string, SimpleEvent[]> = {};
   events.forEach((e) => {
+    if (e === undefined) {return;}
     let start = new Date(e.start.year, e.start.month - 1, e.start.day);
     const end = new Date(e.end.year, e.end.month - 1, e.end.day);
     while (start <= end) {
@@ -69,21 +70,24 @@ export function convertDateToString(ios: EventDate, ioe: EventDate) {
   };
 }
 
-export function shallowEqual<K extends keyof any, V>(object1: Record<K, V>, object2: Record<K, V>) {
+export function shallowEqual(object1: any, object2: any) {
   console.log(object1, object2);
-  const keys1 = Object.keys(object1);
-  const keys2 = Object.keys(object2);
+  if (typeof object1 === object1 && typeof object2 === object2) {
+    const keys1 = Object.keys(object1);
+    const keys2 = Object.keys(object2);
 
-  if (keys1.length !== keys2.length) {
-    return false;
-  }
-
-  for (let key of keys1) {
-    // @ts-ignore
-    if (object1[key] !== object2[key]) {
+    if (keys1.length !== keys2.length) {
       return false;
     }
-  }
 
-  return true;
+    for (let key of keys1) {
+      // @ts-ignore
+      if (JSON.stringify(object1[key]) !== JSON.stringify(object2[key])) {
+        return false;
+      }
+    }
+    return true;
+  } else {
+    return JSON.stringify(object1) === JSON.stringify(object2);
+  }
 }

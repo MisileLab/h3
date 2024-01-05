@@ -22,6 +22,9 @@
       },
       "path": {
         "all": true
+      },
+      "dialog": {
+        "confirm": true
       }
     },
     "bundle": {

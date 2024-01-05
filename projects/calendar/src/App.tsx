@@ -6,6 +6,7 @@ import { getColor, convertEventToHighlight, handlingButton, convertDateToString,
 import { ContextMenu } from "@kobalte/core";
 import { AlertDialogForEvent, CreateEventDialog } from "./dialogs";
 import { BaseDirectory, createDir, exists, readTextFile, writeTextFile } from "@tauri-apps/api/fs";
+import { confirm } from "@tauri-apps/api/dialog";
 import styles from "./app.module.css";
 
 function ContextMenuForEvent(item: SimpleEvent, comp: JSX.Element, events: Accessor<Event[]>, setEvents: Setter<Event[]>) {
@@ -26,10 +27,14 @@ function ContextMenuForEvent(item: SimpleEvent, comp: JSX.Element, events: Acces
             <div class={styles.subtext}>{`끝: ${o["end"]["full"]}`}</div>
             <div class="flex flex-row-reverse w-full mb-1">
               <button
-                onClick={() => {
-                  const a = confirm("정말로 삭제하시겠습니까?");
-                  if (!a) {
-                    return;
+                onClick={async () => {
+                  const a = await confirm("정말로 삭제하시겠습니까?");
+                  console.log(`a: ${JSON.stringify(a)}`);
+                  if (a) {
+                    const tmp = events().slice();
+                    if (tmp.indexOf(item.org) == -1) {return;}
+                    tmp.splice(tmp.indexOf(item.org), 1);
+                    setEvents(tmp);
                   }
                 }}
               >
@@ -207,6 +212,7 @@ function App() {
   const [events, setEvents] = createSignal<Event[]>([]);
   const [date, setDate] = createSignal([today]);
   const [comp, setComp] = createSignal(<div class="h-full flex flex-col">{day(date()[0], events, setEvents)}</div>);
+  let loaded = false;
   createEffect(()=>{
     setComp(<div class="h-full flex flex-col">{day(date()[0], events, setEvents)}</div>);
   })
@@ -217,16 +223,16 @@ function App() {
     } else {
       await writeTextFile("data.json", "[]", { dir: BaseDirectory.AppData });
     }
+    loaded = true;
+  })
+  createEffect(async (ev: any) => {
+    if (shallowEqual(ev, events())) {return;}
+    if (!loaded) {return;}
+    await writeTextFile("data.json", JSON.stringify(events()), { dir: BaseDirectory.AppData });
   })
 
   return (
-    <div
-      oncontextmenu={(e) => {
-        if (e.button == 2) {
-          e.preventDefault();
-        }
-      }}
-    >
+    <div>
       <div class="bg-white dark:bg-ctp-surface0 w-screen h-screen flex flex-col">
         <div class="bg-gray-300 dark:bg-ctp-surface1 w-screen flex flex-col h-32">
           <div class="m-auto flex flex-row gap-2 dark:text-ctp-text">

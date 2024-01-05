@@ -91,12 +91,17 @@ export function AlertDialogForEvent(item: SimpleEvent, comp: JSX.Element, events
   const [start, setStart] = createSignal({"date": o.start.date, "time": o.start.time});
   const [end, setEnd] = createSignal({"date": o.end.date, "time": o.end.time});
   const [content, setContent] = createSignal(item.content);
-  createEffect(async () => {
-    if (!open() && !first) {
+  createEffect(() => {
+    if (!open() && first) {
       const s = new Date(`${start()["date"]}T${start()["time"]}`);
       const e = new Date(`${end()["date"]}T${end()["time"]}`);
-      const tmp = events();
-      tmp.push({
+      const tmp = events().slice();
+      const iorg = JSON.stringify(item.org);
+      const a = tmp.findIndex((e) => JSON.stringify(e) === iorg);
+      console.log(item.org, tmp, a);
+      if (a == -1) {return;}
+      tmp.splice(a, 1);
+      tmp[a] = {
         "start": {
           "year": s.getFullYear(),
           "month": s.getMonth()+1,
@@ -114,7 +119,7 @@ export function AlertDialogForEvent(item: SimpleEvent, comp: JSX.Element, events
           "minute": e.getMinutes()
         },
         "color": "c0ffee"
-      })
+      };
       setEvents(tmp);
     }
   })
