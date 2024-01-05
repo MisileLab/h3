@@ -4,6 +4,7 @@
     "useDefineForClassFields": true,
     "module": "ESNext",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "plugins": [{ "name": "typescript-plugin-css-modules" }],
     "skipLibCheck": true,
 
     /* Bundler mode */

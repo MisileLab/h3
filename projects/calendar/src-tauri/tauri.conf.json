@@ -1,44 +1,76 @@
 {
+  "$schema": "../node_modules/@tauri-apps/cli/schema.json",
   "build": {
-    "beforeDevCommand": "pnpm dev",
-    "beforeBuildCommand": "pnpm build",
+    "beforeBuildCommand": "pnpm run build",
+    "beforeDevCommand": "pnpm run dev",
     "devPath": "http://localhost:1420",
-    "distDir": "../dist"
+    "distDir": "../out"
   },
   "package": {
     "productName": "calendar",
-    "version": "0.0.0"
+    "version": "0.1.0"
   },
   "tauri": {
     "allowlist": {
-      "all": false,
-      "shell": {
-        "all": false,
-        "open": true
+      "fs": {
+        "readFile": true,
+        "writeFile": true,
+        "exists": true,
+        "removeFile": true,
+        "createDir": true,
+        "scope": ["$APPDATA", "$APPDATA/data.json"]
+      },
+      "path": {
+        "all": true
       }
     },
     "bundle": {
       "active": true,
-      "targets": "all",
-      "identifier": "xyz.misile.calendar",
+      "category": "DeveloperTool",
+      "copyright": "",
+      "deb": {
+        "depends": []
+      },
+      "externalBin": [],
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
         "icons/128x128@2x.png",
         "icons/icon.icns",
         "icons/icon.ico"
-      ]
+      ],
+      "identifier": "xyz.misile.calendar",
+      "longDescription": "",
+      "macOS": {
+        "entitlements": null,
+        "exceptionDomain": "",
+        "frameworks": [],
+        "providerShortName": null,
+        "signingIdentity": null
+      },
+      "resources": [],
+      "shortDescription": "",
+      "targets": "all",
+      "windows": {
+        "certificateThumbprint": null,
+        "digestAlgorithm": "sha256",
+        "timestampUrl": ""
+      }
     },
     "security": {
       "csp": null
     },
+    "updater": {
+      "active": false
+    },
     "windows": [
       {
         "fullscreen": false,
+        "height": 600,
         "resizable": true,
-        "title": "calendar",
+        "title": "Calendar",
         "width": 800,
-        "height": 600
+        "theme": "Dark"
       }
     ]
   }

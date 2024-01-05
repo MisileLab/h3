@@ -1,153 +1,13 @@
-import { Accessor, For, JSX, Setter, Show, createSignal } from "solid-js";
+import { For, JSX, Show, createEffect, createSignal } from "solid-js";
 import { VsArrowLeft, VsArrowRight, VsEdit, VsTrash } from "solid-icons/vs";
 import { Transition } from "solid-transition-group";
-import { EventDate, SimpleEvent } from "./interfaces";
-import { getColor, convertEventToHighlight, handlingButton } from "./utils";
-import { ContextMenu, AlertDialog, TextField } from "@kobalte/core";
-
-function convertDateToString(ios: EventDate, ioe: EventDate) {
-  const a = (a: number) => {
-    return a < 10 ? `0${a}` : a;
-  };
-  return {
-    start: {
-      full: `${ios.year}.${a(ios.month)}.${a(ios.day)} ${a(ios.hour)}:${a(
-        ios.minute
-      )}`,
-      date: `${ios.year}-${a(ios.month)}-${a(ios.day)}`,
-      time: `${a(ios.hour)}:${a(ios.minute)}`,
-    },
-    end: {
-      full: `${ioe.year}.${a(ioe.month)}.${a(ioe.day)} ${a(ioe.hour)}:${a(
-        ioe.minute
-      )}`,
-      date: `${ioe.year}-${a(ioe.month)}-${a(ioe.day)}`,
-      time: `${a(ioe.hour)}:${a(ioe.minute)}`,
-    },
-  };
-}
-
-function AlertDialogForEvent(item: SimpleEvent, comp: JSX.Element) {
-  const o = convertDateToString(item.org.start, item.org.end);
-  return (
-    <AlertDialog.Root>
-      <AlertDialog.Trigger>{comp}</AlertDialog.Trigger>
-      <AlertDialog.Portal>
-        <AlertDialog.Overlay />
-        <div class="flex fixed inset-0 z-50 items-center justify-center overlay w-full h-full bg-black bg-opacity-30">
-          <AlertDialog.Content class="content glass bg-white dark:bg-ctp-overlay0">
-            <TextField.Root>
-              <div class="w-full h-full flex flex-col ml-1 mr-1 mb-1 mt-1">
-                <TextField.Input
-                  class="text-2xl font-bold outline-none bg-transparent dark:text-ctp-text"
-                  style="border-radius: 10px;"
-                  type="text"
-                  size={10}
-                  spellcheck={false}
-                  value={item.title}
-                />
-                <TextField.Label class="w-fit">시작 날짜</TextField.Label>
-                <div class="text-xl text-gray-500 flex flex-row dark:text-ctp-subtext0 w-fit">
-                  <TextField.Input
-                    class="outline-none bg-transparent"
-                    type="date"
-                    value={o["start"]["date"]}
-                  />
-                  <TextField.Input
-                    class="outline-none bg-transparent"
-                    type="time"
-                    value={o["start"]["time"]}
-                  />
-                </div>
-                <TextField.Label class="w-fit">끝나는 날짜</TextField.Label>
-                <div class="text-xl text-gray-500 flex flex-row dark:text-ctp-subtext0 w-fit">
-                  <TextField.Input
-                    class="outline-none bg-transparent"
-                    type="date"
-                    value={o["end"]["date"]}
-                  />
-                  <TextField.Input
-                    class="outline-none bg-transparent"
-                    type="time"
-                    value={o["end"]["time"]}
-                  />
-                </div>
-                <TextField.Label class="w-fit">설명</TextField.Label>
-                <TextField.TextArea
-                  class="bg-transparent outline-none resize-none max-h-24 dark:text-ctp-text scroll-smooth w-fit"
-                  spellcheck={false}
-                  autoResize
-                  value={item.content}
-                />
-              </div>
-            </TextField.Root>
-          </AlertDialog.Content>
-        </div>
-      </AlertDialog.Portal>
-    </AlertDialog.Root>
-  );
-}
-
-// i'll combine with AlertDialogForEvent and this function
-function CreateEventDialog(
-  modal: Accessor<boolean>,
-  setModalVisible: Setter<boolean>
-) {
-  return (
-    <div
-      class="flex fixed inset-0 z-50 items-center justify-center overlay w-full h-full bg-black bg-opacity-30 tmp"
-      onclick={(e) => {
-        e.stopImmediatePropagation();
-        setModalVisible(false);
-      }}
-    >
-      <div
-        class={`content glass bg-white dark:bg-ctp-overlay0`}
-        data-expanded={modal()}
-      >
-        <TextField.Root>
-          <div class="w-full h-full flex flex-col ml-1 mr-1 mb-1 mt-1">
-            <TextField.Input
-              class="text-2xl font-bold outline-none bg-transparent dark:text-ctp-text"
-              style="border-radius: 10px;"
-              type="text"
-              size={10}
-              spellcheck={false}
-            />
-            <TextField.Label class="w-fit">시작 날짜</TextField.Label>
-            <div class="text-xl text-gray-500 flex flex-row dark:text-ctp-subtext0 w-fit">
-              <TextField.Input
-                class="outline-none bg-transparent"
-                type="date"
-              />
-              <TextField.Input
-                class="outline-none bg-transparent"
-                type="time"
-              />
-            </div>
-            <TextField.Label class="w-fit">끝나는 날짜</TextField.Label>
-            <div class="text-xl text-gray-500 flex flex-row dark:text-ctp-subtext0 w-fit">
-              <TextField.Input
-                class="outline-none bg-transparent"
-                type="date"
-              />
-              <TextField.Input
-                class="outline-none bg-transparent"
-                type="time"
-              />
-            </div>
-            <TextField.Label class="w-fit">설명</TextField.Label>
-            <TextField.TextArea
-              class="bg-transparent outline-none resize-none max-h-24 dark:text-ctp-text scroll-smooth w-fit"
-              spellcheck={false}
-              autoResize
-            />
-          </div>
-        </TextField.Root>
-      </div>
-    </div>
-  );
-}
+import { SimpleEvent, Event } from "./interfaces";
+import { getColor, convertEventToHighlight, handlingButton, convertDateToString } from "./utils";
+import { ContextMenu } from "@kobalte/core";
+import { AlertDialogForEvent, CreateEventDialog } from "./dialogs";
+// @ts-ignore
+import styles from "./app.module.css";
+import { BaseDirectory, createDir, exists, readTextFile, writeTextFile } from "@tauri-apps/api/fs";
 
 function ContextMenuForEvent(item: SimpleEvent, comp: JSX.Element) {
   const o = convertDateToString(item.org.start, item.org.end);
@@ -163,8 +23,8 @@ function ContextMenuForEvent(item: SimpleEvent, comp: JSX.Element) {
         >
           <div class="flex-col flex mr-1">
             <div class="text-xl font-bold dark:text-ctp-text">{`이름: ${item.title}`}</div>
-            <div class="text-lg text-gray-500 dark:text-ctp-subtext1">{`시작: ${o["start"]["full"]}`}</div>
-            <div class="text-lg text-gray-500 dark:text-ctp-subtext1">{`끝: ${o["end"]["full"]}`}</div>
+            <div class={styles.subtext}>{`시작: ${o["start"]["full"]}`}</div>
+            <div class={styles.subtext}>{`끝: ${o["end"]["full"]}`}</div>
             <div class="flex flex-row-reverse w-full mb-1">
               <button
                 onClick={() => {
@@ -258,8 +118,8 @@ function daySingle(
   );
 }
 
-function day(date: Date) {
-  const highlights: Record<string, SimpleEvent[]> = convertEventToHighlight();
+function day(date: Date, events: Event[]) {
+  const highlights: Record<string, SimpleEvent[]> = convertEventToHighlight(events);
   const fy = date.getFullYear();
   const fm = date.getMonth() + 1;
   const fd = date.getDate();
@@ -308,6 +168,15 @@ function day(date: Date) {
 function App() {
   const dates = ["일", "월", "화", "수", "목", "금", "토"];
   const today = new Date();
+  let events: Event[] = [];
+  createEffect(async () => {
+    if (!await exists("", { dir: BaseDirectory.AppData })) { await createDir("", { dir: BaseDirectory.AppData }) }
+    if (await exists("data.json", { dir: BaseDirectory.AppData })) {
+      events = JSON.parse(await readTextFile("[]", { dir: BaseDirectory.AppData }));
+    } else {
+      await writeTextFile("data.json", "[]", { dir: BaseDirectory.AppData });
+    }
+  })
   const [date, setDate] = createSignal([today]);
 
   return (
@@ -325,7 +194,7 @@ function App() {
               class="h-full w-6"
               onClick={() => handlingButton(date()[0], setDate, -1)}
             >
-              <VsArrowLeft class="h-full w-full" />
+              <VsArrowLeft class={styles["w-h-full"]} />
             </button>
             <div class="text-4xl font-bold">{`${date()[0].getFullYear()}.${
               date()[0].getMonth() + 1
@@ -334,7 +203,7 @@ function App() {
               class="h-full w-6"
               onClick={() => handlingButton(date()[0], setDate, 1)}
             >
-              <VsArrowRight class="h-full w-full" />
+              <VsArrowRight class={styles["w-h-full"]} />
             </button>
           </div>
           <div class="flex flex-row w-full h-1/3">
@@ -345,7 +214,7 @@ function App() {
             </For>
           </div>
         </div>
-        <div class="h-full flex flex-col">{day(date()[0])}</div>
+        <div class="h-full flex flex-col">{day(date()[0], events)}</div>
       </div>
     </div>
   );

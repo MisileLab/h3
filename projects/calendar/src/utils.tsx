@@ -1,28 +1,6 @@
-import { Event, SimpleEvent } from './interfaces';
+import { Event, EventDate, SimpleEvent } from './interfaces';
 
-const events: Event[] = [
-  {
-    title: "asd",
-    content: "asdf",
-    start: {
-      year: 2023,
-      month: 12,
-      day: 30,
-      hour: 10,
-      minute: 0,
-    },
-    end: {
-      year: 2024,
-      month: 1,
-      day: 1,
-      hour: 10,
-      minute: 0,
-    },
-    color: "c0ffee",
-  },
-];
-
-export function convertEventToHighlight() {
+export function convertEventToHighlight(events: Event[]) {
   const highlights: Record<string, SimpleEvent[]> = {};
   events.forEach((e) => {
     let start = new Date(e.start.year, e.start.month - 1, e.start.day);
@@ -64,4 +42,29 @@ export function getColor(cont: string) {
   } else {
     return "text-black dark:text-ctp-subtext1";
   }
+}
+
+// null check function
+export function nc(a: string | undefined) {return a === undefined ? "" : a }
+
+export function convertDateToString(ios: EventDate, ioe: EventDate) {
+  const a = (a: number) => {
+    return a < 10 ? `0${a}` : a;
+  };
+  return {
+    start: {
+      full: `${ios.year}.${a(ios.month)}.${a(ios.day)} ${a(ios.hour)}:${a(
+        ios.minute
+      )}`,
+      date: `${ios.year}-${a(ios.month)}-${a(ios.day)}`,
+      time: `${a(ios.hour)}:${a(ios.minute)}`,
+    },
+    end: {
+      full: `${ioe.year}.${a(ioe.month)}.${a(ioe.day)} ${a(ioe.hour)}:${a(
+        ioe.minute
+      )}`,
+      date: `${ioe.year}-${a(ioe.month)}-${a(ioe.day)}`,
+      time: `${a(ioe.hour)}:${a(ioe.minute)}`,
+    },
+  };
 }
