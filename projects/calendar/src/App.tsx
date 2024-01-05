@@ -5,9 +5,8 @@ import { SimpleEvent, Event } from "./interfaces";
 import { getColor, convertEventToHighlight, handlingButton, convertDateToString } from "./utils";
 import { ContextMenu } from "@kobalte/core";
 import { AlertDialogForEvent, CreateEventDialog } from "./dialogs";
-// @ts-ignore
-import styles from "./app.module.css";
 import { BaseDirectory, createDir, exists, readTextFile, writeTextFile } from "@tauri-apps/api/fs";
+import styles from "./app.module.css";
 
 function ContextMenuForEvent(item: SimpleEvent, comp: JSX.Element) {
   const o = convertDateToString(item.org.start, item.org.end);
