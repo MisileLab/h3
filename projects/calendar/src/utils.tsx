@@ -68,3 +68,22 @@ export function convertDateToString(ios: EventDate, ioe: EventDate) {
     },
   };
 }
+
+export function shallowEqual<K extends keyof any, V>(object1: Record<K, V>, object2: Record<K, V>) {
+  console.log(object1, object2);
+  const keys1 = Object.keys(object1);
+  const keys2 = Object.keys(object2);
+
+  if (keys1.length !== keys2.length) {
+    return false;
+  }
+
+  for (let key of keys1) {
+    // @ts-ignore
+    if (object1[key] !== object2[key]) {
+      return false;
+    }
+  }
+
+  return true;
+}

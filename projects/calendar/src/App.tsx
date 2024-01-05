@@ -1,14 +1,14 @@
-import { For, JSX, Show, createEffect, createSignal } from "solid-js";
+import { Accessor, For, JSX, Setter, Show, createEffect, createMemo, createSignal } from "solid-js";
 import { VsArrowLeft, VsArrowRight, VsEdit, VsTrash } from "solid-icons/vs";
 import { Transition } from "solid-transition-group";
 import { SimpleEvent, Event } from "./interfaces";
-import { getColor, convertEventToHighlight, handlingButton, convertDateToString } from "./utils";
+import { getColor, convertEventToHighlight, handlingButton, convertDateToString, shallowEqual } from "./utils";
 import { ContextMenu } from "@kobalte/core";
 import { AlertDialogForEvent, CreateEventDialog } from "./dialogs";
 import { BaseDirectory, createDir, exists, readTextFile, writeTextFile } from "@tauri-apps/api/fs";
 import styles from "./app.module.css";
 
-function ContextMenuForEvent(item: SimpleEvent, comp: JSX.Element) {
+function ContextMenuForEvent(item: SimpleEvent, comp: JSX.Element, events: Accessor<Event[]>, setEvents: Setter<Event[]>) {
   const o = convertDateToString(item.org.start, item.org.end);
   return (
     <ContextMenu.Root>
@@ -39,7 +39,9 @@ function ContextMenuForEvent(item: SimpleEvent, comp: JSX.Element) {
                 item,
                 <div>
                   <VsEdit size={24} />
-                </div>
+                </div>,
+                events,
+                setEvents
               )}
             </div>
           </div>
@@ -73,14 +75,18 @@ function getDateList(date: Date) {
 }
 
 function daySingle(
+  orge: Accessor<Event[]>,
+  setorge: Setter<Event[]>,
   num: number | string = "",
   today: boolean = false,
-  events: SimpleEvent[] | undefined = []
+  events: Record<string, SimpleEvent[]>,
+  index: string
 ) {
+  const [title, setTitle] = createSignal("");
+  const [start, setStart] = createSignal({"date": "", "time": ""});
+  const [end, setEnd] = createSignal({"date": "", "time": ""});
+  const [content, setContent] = createSignal("");
   const [modal, setModalVisible] = createSignal(false);
-  if (events === undefined) {
-    events = [];
-  }
   return (
     <div
       style="width: calc(100vw / 7)"
@@ -97,7 +103,7 @@ function daySingle(
           {num}
         </div>
       </div>
-      <For each={events}>
+      <For each={events[index]}>
         {(item) => {
           const a = (
             <div
@@ -107,18 +113,49 @@ function daySingle(
               {item.title}
             </div>
           );
-          return ContextMenuForEvent(item, a);
+          return ContextMenuForEvent(item, a, orge, setorge);
         }}
       </For>
-      <Transition name="trans">
-        <Show when={modal()}>{CreateEventDialog(modal, setModalVisible)}</Show>
+      <Transition name="trans" onAfterExit={()=>{
+        if (title() === '') {return;}
+        const s = new Date(`${start()["date"]}T${start()["time"]}`);
+        const e = new Date(`${end()["date"]}T${end()["time"]}`);
+        const tmp = [...orge()];
+        tmp.push({
+          "start": {
+            "year": s.getFullYear(),
+            "month": s.getMonth()+1,
+            "day": s.getDate(),
+            "hour": s.getHours(),
+            "minute": s.getMinutes()
+          },
+          "title": title(),
+          "content": content(),
+          "end": {
+            "year": e.getFullYear(),
+            "month": e.getMonth()+1,
+            "day": e.getDate(),
+            "hour": e.getHours(),
+            "minute": e.getMinutes()
+          },
+          "color": "c0ffee"
+        })
+        setorge(tmp);
+        console.log(orge());
+      }}>
+        <Show when={modal()}>{CreateEventDialog(modal, setModalVisible, title, setTitle, start, setStart, end, setEnd, content, setContent)}</Show>
       </Transition>
     </div>
   );
 }
 
-function day(date: Date, events: Event[]) {
-  const highlights: Record<string, SimpleEvent[]> = convertEventToHighlight(events);
+function day(date: Date, events: Accessor<Event[]>, setEvents: Setter<Event[]>) {
+  const highlights = createMemo(() => {
+    console.log(events());
+    return convertEventToHighlight(events());
+  }, [], {
+    equals: (prev, next) => shallowEqual(prev, next)
+  });
   const fy = date.getFullYear();
   const fm = date.getMonth() + 1;
   const fd = date.getDate();
@@ -128,7 +165,7 @@ function day(date: Date, events: Event[]) {
   const dateList: JSX.Element[][] = [[]];
   const prestart = new Date(fy, fm - 1, 1).getDay();
   for (let i = 0; i < prestart; i++) {
-    dateList[0].push(daySingle(""));
+    dateList[0].push(daySingle(events, setEvents, "", false, highlights(), ""));
   }
   for (let i = 0; i < _dateList.length; i++) {
     let d = _dateList[i];
@@ -137,14 +174,14 @@ function day(date: Date, events: Event[]) {
         dateList.push([]);
       }
       dateList[dateList.length - 1].push(
-        daySingle(d, tmcmp && fd == d, highlights[`${fy}:${fm}:${d}`])
+        daySingle(events, setEvents, d, tmcmp && fd == d, highlights(), `${fy}:${fm}:${d}`)
       );
     } else {
       if (dateList.length == 0) {
         dateList.push([]);
       }
       dateList[dateList.length - 1].push(
-        daySingle(d, tmcmp && fd == d, highlights[`${fy}:${fm}:${d}`])
+        daySingle(events, setEvents, d, tmcmp && fd == d, highlights(), `${fy}:${fm}:${d}`)
       );
     }
   }
@@ -167,16 +204,20 @@ function day(date: Date, events: Event[]) {
 function App() {
   const dates = ["일", "월", "화", "수", "목", "금", "토"];
   const today = new Date();
-  let events: Event[] = [];
+  const [events, setEvents] = createSignal<Event[]>([]);
+  const [date, setDate] = createSignal([today]);
+  const [comp, setComp] = createSignal(<div class="h-full flex flex-col">{day(date()[0], events, setEvents)}</div>);
+  createEffect(()=>{
+    setComp(<div class="h-full flex flex-col">{day(date()[0], events, setEvents)}</div>);
+  })
   createEffect(async () => {
     if (!await exists("", { dir: BaseDirectory.AppData })) { await createDir("", { dir: BaseDirectory.AppData }) }
     if (await exists("data.json", { dir: BaseDirectory.AppData })) {
-      events = JSON.parse(await readTextFile("[]", { dir: BaseDirectory.AppData }));
+      setEvents(JSON.parse(await readTextFile("data.json", { dir: BaseDirectory.AppData })));
     } else {
       await writeTextFile("data.json", "[]", { dir: BaseDirectory.AppData });
     }
   })
-  const [date, setDate] = createSignal([today]);
 
   return (
     <div
@@ -213,7 +254,7 @@ function App() {
             </For>
           </div>
         </div>
-        <div class="h-full flex flex-col">{day(date()[0], events)}</div>
+        {comp()}
       </div>
     </div>
   );

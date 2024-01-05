@@ -43,6 +43,7 @@ function dialogContent(
         <TextField.Input
           class="outline-none bg-transparent"
           type="time"
+          value={start()["time"]}
           onchange={(e)=>setStart({
             "date": start()["date"],
             "time": e.target.value
@@ -55,7 +56,7 @@ function dialogContent(
           class="outline-none bg-transparent"
           type="date"
           value={end()["date"]}
-          onchange={(e)=>setStart({
+          onchange={(e)=>setEnd({
             "date": e.target.value,
             "time": end()["time"]
           })}
@@ -64,7 +65,7 @@ function dialogContent(
           class="outline-none bg-transparent"
           type="time"
           value={end()["time"]}
-          onchange={(e)=>setStart({
+          onchange={(e)=>setEnd({
             "date": end()["date"],
             "time": e.target.value
           })}
@@ -82,7 +83,7 @@ function dialogContent(
   </TextField.Root>);
 }
 
-export function AlertDialogForEvent(item: SimpleEvent, comp: JSX.Element, events: Event[]) {
+export function AlertDialogForEvent(item: SimpleEvent, comp: JSX.Element, events: Accessor<Event[]>, setEvents: Setter<Event[]>) {
   const o = convertDateToString(item.org.start, item.org.end);
   let first = false;
   const [open, setOpen] = createSignal(false);
@@ -92,13 +93,29 @@ export function AlertDialogForEvent(item: SimpleEvent, comp: JSX.Element, events
   const [content, setContent] = createSignal(item.content);
   createEffect(async () => {
     if (!open() && !first) {
-      events.push({
-        "start": start(),
+      const s = new Date(`${start()["date"]}T${start()["time"]}`);
+      const e = new Date(`${end()["date"]}T${end()["time"]}`);
+      const tmp = events();
+      tmp.push({
+        "start": {
+          "year": s.getFullYear(),
+          "month": s.getMonth()+1,
+          "day": s.getDate(),
+          "hour": s.getHours(),
+          "minute": s.getMinutes()
+        },
         "title": title(),
         "content": content(),
-        "end": end(),
-        "color": "#0xc0ffee"
+        "end": {
+          "year": e.getFullYear(),
+          "month": e.getMonth()+1,
+          "day": e.getDate(),
+          "hour": e.getHours(),
+          "minute": e.getMinutes()
+        },
+        "color": "c0ffee"
       })
+      setEvents(tmp);
     }
   })
   return (
@@ -118,12 +135,16 @@ export function AlertDialogForEvent(item: SimpleEvent, comp: JSX.Element, events
 
 export function CreateEventDialog(
   modal: Accessor<boolean>,
-  setModalVisible: Setter<boolean>
+  setModalVisible: Setter<boolean>,
+  title: Accessor<string>,
+  setTitle: Setter<string>,
+  start: Accessor<tmpfordialog>,
+  setStart: Setter<tmpfordialog>,
+  end: Accessor<tmpfordialog>,
+  setEnd: Setter<tmpfordialog>,
+  content: Accessor<string>,
+  setContent: Setter<string>
 ) {
-  const [title, setTitle] = createSignal("");
-  const [start, setStart] = createSignal({"date": "", "time": ""});
-  const [end, setEnd] = createSignal({"date": "", "time": ""});
-  const [content, setContent] = createSignal("");
   return (
     <div
       class="flex fixed inset-0 z-50 items-center justify-center overlay w-full h-full bg-black bg-opacity-30 tmp"
