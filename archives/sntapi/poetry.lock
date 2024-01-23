@@ -520,19 +520,20 @@ cli = ["click (>=5.0)"]
 
 [[package]]
 name = "selenium"
-version = "4.17.0"
+version = "4.17.2"
 description = ""
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "selenium-4.17.0-py3-none-any.whl", hash = "sha256:577a4796e1b6a3d8e5da7fc5c34a8701a4a8c159fe9b80cb609edb5e0ab0ba32"},
-    {file = "selenium-4.17.0.tar.gz", hash = "sha256:59d976b697df37e11d757df1e6798f1467ec1981456ca7ff9a98494f508f6eba"},
+    {file = "selenium-4.17.2-py3-none-any.whl", hash = "sha256:5aee79026c07985dc1b0c909f34084aa996dfe5b307602de9016d7a621a473f2"},
+    {file = "selenium-4.17.2.tar.gz", hash = "sha256:d43d6972e516855fb242ef9ce4ce759057b115070e702e7b1c1032fe7b38d87b"},
 ]
 
 [package.dependencies]
 certifi = ">=2021.10.8"
 trio = ">=0.17,<1.0"
 trio-websocket = ">=0.9,<1.0"
+typing_extensions = ">=4.9.0"
 urllib3 = {version = ">=1.26,<3", extras = ["socks"]}
 
 [[package]]
@@ -673,4 +674,4 @@ h11 = ">=0.9.0,<1"
 [metadata]
 lock-version = "2.0"
 python-versions = "3.12.1"
-content-hash = "125be0ee94576260952cfdaddb6bc1a2fc94e8b61fcca48024a254658812fb6b"
+content-hash = "e3a43794288d6dc97c6c9f1f01c4e15a37d6f0e46a4ea47d00c6a2f24d2c47e6"
