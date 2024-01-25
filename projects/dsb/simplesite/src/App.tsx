@@ -38,7 +38,7 @@ function App() {
         <p>Your ID: {auth0.user?.name}</p>
         <p>Your Secret ID: {auth0.user?.email}</p>
         <p>Your Token: {token}</p>
-        <button onClick={()=>auth0.logout()}>logout</button>
+        <button onClick={()=>auth0.logout({logoutParams: {returnTo: window.location.origin}})}>logout</button>
       </div>}
     </div>
   );
