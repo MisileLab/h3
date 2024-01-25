@@ -7,6 +7,7 @@ function App() {
   const auth0 = useAuth0();
   const [token, setToken] = useState("");
   useEffect(()=>{
+    if (!auth0.isAuthenticated) {return;}
     const a = async () => {
       try {
         setToken(await auth0.getAccessTokenSilently({
