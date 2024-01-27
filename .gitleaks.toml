@@ -2,4 +2,4 @@
 useDefault = true
 
 [allowlist]
-paths = ["projects/qubit/pygoat/pygoat/manage.py"]
+paths = ["dist/"]

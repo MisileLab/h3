@@ -13,7 +13,7 @@ function App() {
         setToken(await auth0.getAccessTokenSilently({
           authorizationParams: {
             audience: `https://${domain}/api/v2/`,
-            scope: "read:current_user"
+            scope: "read:users"
           },
         }));
       } catch (e) {
@@ -22,7 +22,7 @@ function App() {
           const confirm = await auth0.getAccessTokenWithPopup({
             authorizationParams: {
               audience: `https://${domain}/api/v2/`,
-              scope: "read:current_user"
+              scope: "read:users"
             }
           });
           if (confirm !== undefined) {setToken(confirm)}
