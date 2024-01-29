@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "lock"
+version = "0.1.0"
+description = "Simple auth server"
+authors = ["MisileLaboratory"]
+license = "MisileLab License"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.12.1"
+PyJWT = "2.8.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
