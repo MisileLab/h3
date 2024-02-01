@@ -3,8 +3,40 @@ import NavBar from "./components/navbar";
 import { Col, Grid } from "./components/ui/grid";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./components/ui/card";
 import { LineChart } from "~/components/ui/charts"
+import { createEffect, createSignal, onCleanup } from "solid-js";
+import moment, { Moment } from "moment";
+import { subtractDate } from "./definition";
 
 export default function About() {
+  const [date, setDate] = createSignal(moment().unix());
+  const [result, setResult] = createSignal("");
+  const startDate = moment.unix(1710082800);
+  const endDate = moment.unix(1710428400);
+  const timer = setInterval(() => {setDate(date()+1)}, 1000);
+  createEffect(()=>{
+    const ctime = moment.unix(date());
+    let s: Moment;
+    let dateString: string;
+    if (ctime.isAfter(startDate)) {
+      if (ctime.isAfter(endDate)) {
+        dateString = "지원 종료";
+        setResult(dateString);
+        return;
+      } else {
+        dateString = "지원 종료까지";
+        s = subtractDate(ctime, endDate);
+      }
+    } else {
+      dateString = "지원 모집까지";
+      s = subtractDate(ctime, startDate);
+    }
+    dateString += ` ${s.date()}일 ${s.hour()}시간 ${s.minute()}분 ${s.second()}초 남음`;
+
+    if (dateString !== result()) {
+      setResult(dateString);
+    }
+  })
+  onCleanup(() => clearInterval(timer))
   const chartData = {
     labels: ["2021", "2022", "2023"],
     datasets: [
@@ -25,12 +57,12 @@ export default function About() {
   };
   return (
     <div>
-      <ColorModeScript/>
+      <ColorModeScript />
       <ColorModeProvider>
         <div class="h-screen flex flex-col">
           <NavBar />
-          <div class="flex flex-col ml-32 mt-14 flex-grow">
-            <h1 class="font-bold text-5xl">풀스택, 프로젝트, 대회</h1>
+          <div class="flex flex-col mt-4 sm:mt-10 ml-2 sm:ml-4 lg:ml-32 md:mt-14 md:ml-8 mr-2 flex-grow">
+            <h1 class="font-bold text-3xl md:text-5xl">풀스택, 프로젝트, 대회</h1>
             <Grid cols={1} colsMd={3} class="w-full gap-2 mt-8 flex-grow">
               <Col span={1} spanMd={1} class="mb-20">
                 <Card class="h-full">
@@ -64,16 +96,20 @@ export default function About() {
                     <h1 class="text-2xl font-normal mt-2">후배만 배우는 곳이 아닌 동아리</h1>
                     <p class="mt-2">AnA에서 모르는 것이 있다면 물어봐도 됩니다.</p>
                     <p>AnA는 디스코드와 카카오톡이 존재하며, 꼭 필요한 채팅뿐만 아니라 하고 싶은 말을 하셔도 괜찮습니다.</p>
-                    <h1 class="text-2xl font-normal mt-2"></h1>
+                    <h1 class="text-2xl font-normal mt-2">대회와 연계하는 프로젝트</h1>
+                    <p class="mt-2">만약에 좋은 아이디어가 있으면, 대회 팀원을 구하여 대회를 나갈 수 있게 도와드릴 생각입니다.</p>
+                    <p class="text-xl font-semibold">AnA는 프로그램이 아이디어로 완성된다고 생각합니다.</p>
                   </CardContent>
                 </Card>
               </Col>
               <Col span={1} spanMd={1} class="mb-20">
                 <Card class="h-full">
                   <CardHeader>
-                    <CardTitle class="text-3xl">대회 준비까지</CardTitle>
+                    <CardTitle class="text-3xl">AnA 신청 기간</CardTitle>
                   </CardHeader>
-                  <CardContent>KPI 1</CardContent>
+                  <CardContent>
+                    <p class="text-xl font-se">{result()}</p>
+                  </CardContent>
                 </Card>
               </Col>
             </Grid>

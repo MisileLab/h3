@@ -13,7 +13,7 @@ const App: Component = () => {
             <div class="flex flex-col justify-center mb-20 items-center">
               <img src="/logo.svg" alt="AnA" width={200} />
               <h1 class="mt-4 font-bold text-5xl">AnA</h1>
-              <h1 class="mt-4 font-medium text-3xl">Application and Architecture</h1>
+              <h1 class="mt-4 font-medium text-xl sm:text-2xl md:text-3xl">Application and Architecture</h1>
             </div>
           </div>
         </div>
