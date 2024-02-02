@@ -30,7 +30,7 @@ export default function About() {
       dateString = "지원 모집까지";
       s = subtractDate(ctime, startDate);
     }
-    dateString += ` ${s.date()}일 ${s.hour()}시간 ${s.minute()}분 ${s.second()}초 남음`;
+    dateString += ` ${s.date()+(s.month()*29)}일 ${s.hour()}시간 ${s.minute()}분 ${s.second()}초 남음`;
 
     if (dateString !== result()) {
       setResult(dateString);
