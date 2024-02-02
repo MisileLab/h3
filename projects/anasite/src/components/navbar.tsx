@@ -17,7 +17,6 @@ export default function NavBar() {
       <div class="my-2 ml-auto flex flex-row">
         <div onClick={()=>{setColorMode(revt(colorMode()))}} class="justify-center items-center flex"><img src={`/${colorMode()}/mode.svg`} class="text-primary mr-2" alt={colorMode()} width={30}/></div>
         <Button variant="secondary"><A href="/about">About</A></Button>
-        <Button variant="secondary" class="md:ml-2">Projects</Button>
         <Button class="text-xs md:text-base md:ml-2">신청</Button>
       </div>
     </div>
