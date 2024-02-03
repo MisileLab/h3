@@ -3,7 +3,6 @@ import './index.css';
 import { render } from 'solid-js/web';
 
 import App from './App';
-import About from './About';
 import { Route, Router } from '@solidjs/router';
 
 const root = document.getElementById('root');
@@ -17,6 +16,5 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 render(() => 
   <Router>
     <Route path="/" component={App} />
-    <Route path="/about" component={About} />
   </Router>
 , root!);

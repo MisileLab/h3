@@ -1,6 +1,7 @@
 import { type Component } from 'solid-js';
 import { ColorModeProvider, ColorModeScript} from '@kobalte/core';
 import NavBar from './components/navbar';
+import About from './About';
 
 const App: Component = () => {
   return (
@@ -17,6 +18,7 @@ const App: Component = () => {
             </div>
           </div>
         </div>
+        <About />
       </ColorModeProvider>
     </div>
   );
