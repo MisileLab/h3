@@ -59,7 +59,7 @@ export default function About() {
     <div>
       <ColorModeScript />
       <ColorModeProvider>
-        <div class="h-screen flex flex-col" id="about">
+        <div class="h-screen flex flex-col md:ml-10" id="about">
           <div class="flex flex-col mt-4 ml-2 lg:ml-0 sm:mt-10 sm:ml-4 md:mt-14 mr-2 flex-grow">
             <h1 class="font-bold text-3xl md:text-5xl">풀스택, 프로젝트, 대회</h1>
             <Grid cols={1} colsMd={2} class="w-full gap-2 mt-8 flex-grow">
