@@ -1,5 +1,4 @@
 import { ColorModeProvider, ColorModeScript } from "@kobalte/core";
-import NavBar from "./components/navbar";
 import { Col, Grid } from "./components/ui/grid";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./components/ui/card";
 import { LineChart } from "~/components/ui/charts"
