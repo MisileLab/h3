@@ -1,0 +1,24 @@
+{
+    "extends": [
+      "config:base"
+    ],
+    "packageRules": [
+      {
+        "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
+        "automerge": true,
+        "ignoreTests": true
+      },
+      {
+        "matchDepTypes": ["devDependencies"],
+        "automerge": true,
+        "ignoreTests": true
+      }
+    ],
+    "platformAutomerge": true,
+    "nix": {
+      "enabled": true
+    },
+    "lockFileMaintenance": {
+      "enabled": true
+    }
+}
