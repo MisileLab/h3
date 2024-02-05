@@ -4,7 +4,7 @@ import { render } from 'solid-js/web';
 import { Route, Router } from '@solidjs/router';
 
 import App from './App';
-import AnA from './AnA';
+import AnA from './ana';
 
 const root = document.getElementById('root');
 
