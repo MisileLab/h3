@@ -19,5 +19,5 @@ tests = ["coverage[toml] (==5.0.4)", "pytest (>=6.0.0,<7.0.0)"]
 
 [metadata]
 lock-version = "2.0"
-python-versions = "3.12.1"
-content-hash = "e3c1b6f9609cfd38f9c3f40c4846287bf937b413a994f43743f1bf215566417a"
+python-versions = "3.12.2"
+content-hash = "e514d09abf69ac26f1d43d13e0ff4e2a83b26d8e396c73282fdb001a427ac87d"

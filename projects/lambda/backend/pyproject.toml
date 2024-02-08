@@ -7,7 +7,7 @@ license = "MisileLab License"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "3.12.1"
+python = "3.12.2"
 
 [build-system]
 requires = ["poetry-core"]
