@@ -7,8 +7,13 @@ license = "MisileLab License"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "3.12.2"
+python = "3.12.1"
 numpy = "1.26.4"
+pwntools = "4.11.1"
+loguru = "0.7.2"
+beautifulsoup4 = "4.12.3"
+lxml = "5.1.0"
+httpx = "^0.26.0"
 
 [build-system]
 requires = ["poetry-core"]
