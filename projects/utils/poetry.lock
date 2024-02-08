@@ -182,5 +182,5 @@ zstd = ["zstandard (>=0.18.0)"]
 
 [metadata]
 lock-version = "2.0"
-python-versions = "3.12.1"
-content-hash = "abb2fc83921009f59f560901577658570c08d6598f74b5843c1f43ba60309539"
+python-versions = "3.12.2"
+content-hash = "93fb97acf3639c3691c1eed537f1fc8042eb97f12bc9e2090bd7661d6d51091c"

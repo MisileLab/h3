@@ -35,5 +35,5 @@ importlib-resources = "*"
 
 [metadata]
 lock-version = "2.0"
-python-versions = "3.12.1"
-content-hash = "9e2075060fb44c9404d2cbd7a84af887cb6385bd5f2768fab31bb27a010a62d7"
+python-versions = "3.12.2"
+content-hash = "6d473286b1ee79e78a00afd3d4557ac4a82bbbe5a24be10ed4950e2b4fbf25b9"
