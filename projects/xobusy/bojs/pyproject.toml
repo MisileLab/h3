@@ -14,7 +14,7 @@ requests = "2.31.0"
 baekjoonapi = {git = "https://github.com/MisileLab/baekjoonapi.git"}
 
 [tool.poetry.group.extra.dependencies]
-tqdm = "4.66.1"
+tqdm = "4.66.2"
 
 [build-system]
 requires = ["poetry-core"]
