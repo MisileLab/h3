@@ -7,6 +7,7 @@ monorepo for my projects
 - archives (archived projects - no support)
   - [first archives](https://github.com/misilelab/h3/commits/9b5fdfdbf22367ecf13ff3332eb74b9f49ff8e75)
 - libraries (library for projects)
+- templates (template for projects)
 - projects (active projects)
 - modpacks (minecraft modpacks)
 
