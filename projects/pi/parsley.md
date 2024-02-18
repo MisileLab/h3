@@ -1,6 +1,11 @@
 # Parsley
 
-The chat app that has vote for operation
+The voting app
+
+## Intergration Planned
+
+- Matrix
+- Discord
 
 ## Changes
 
