@@ -97,11 +97,28 @@
         "type": "github"
       }
     },
+    "python312-bump": {
+      "locked": {
+        "lastModified": 1708322475,
+        "narHash": "sha256-pPYscrwJXXnKQB/dkKBD9jxETCo98JLfJVEXdGE3YB8=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "b8e3b4bee5869059049a01174a21373ddd3a56e0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "staging-next",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "flake-compat": "flake-compat",
         "flake-utils": "flake-utils",
         "nixpkgs": "nixpkgs",
+        "python312-bump": "python312-bump",
         "zig": "zig"
       }
     },
