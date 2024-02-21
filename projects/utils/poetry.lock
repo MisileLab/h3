@@ -165,13 +165,13 @@ files = [
 
 [[package]]
 name = "inquirer"
-version = "3.2.3"
+version = "3.2.4"
 description = "Collection of common interactive command line user interfaces, based on Inquirer.js"
 optional = false
 python-versions = ">=3.8.1"
 files = [
-    {file = "inquirer-3.2.3-py3-none-any.whl", hash = "sha256:68fa2cfaa652212f035f73794aa1db2e6c0a9c8cef81ab6825b45120fa8ea345"},
-    {file = "inquirer-3.2.3.tar.gz", hash = "sha256:0cba57d901b206dd597d8809b58c378c47fbc804a1fc9b33e2780ca2f9b43ac7"},
+    {file = "inquirer-3.2.4-py3-none-any.whl", hash = "sha256:273a4e4a4345ac1afdb17408d40fc8dccf3485db68203357919468561035a763"},
+    {file = "inquirer-3.2.4.tar.gz", hash = "sha256:33b09efc1b742b9d687b540296a8b6a3f773399673321fcc2ab0eb4c109bf9b5"},
 ]
 
 [package.dependencies]
@@ -333,4 +333,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "3.12.2"
-content-hash = "3c634dec6a799013870e16407b1ab44e20dff5c64cdbd8ad6cbada37ca89804a"
+content-hash = "8edf4a65db7e5095fe4b490975661affed52aed9732bfbd4240d98f3128079ee"
