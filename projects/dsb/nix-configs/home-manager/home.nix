@@ -14,7 +14,12 @@
 
   home.file = {};
 
-  home.sessionVariables = {};
+  home.sessionVariables = {
+    QT_QPA_PLATFORM = "wayland";
+    EDITOR = "nvim";
+  };
+
+  catppuccin.flavor = "mocha";
 
   services = {
     dunst = {
@@ -88,6 +93,100 @@
         inline_height = 20;
         auto_sync = true;
         sync_frequency = "1h";
+      };
+    };
+    fish = {
+      enable = true;
+      catppuccin.enable = true;
+    };
+    hyprland = {
+      enable = true;
+      catppuccin.enable = true;
+      settings = {
+        env = [
+          "XDG_SESSION_TYPE,wayland"
+          "QT_QPA_PLATFORM,wayland"
+          "QT_QPA_PLATFORMTHEME,qt5ct"
+          "XCURSOR_SIZE,24"
+        ];
+        exec-once = [
+          "${pkgs.waybar}"
+          "${pkgs.swww} init"
+        ];
+        animations = {
+          enabled = "yes";
+          bezier = [
+            "myBezier,0.05,0.9,0.1,1.05"
+            "overshot,0.05,0.9,0.1,0.1"
+            "cubic,0.54,0.22,0.07,0.74"
+            "overshotCircle,0.175,0.885,0.32,1.275"
+            "bounce,1,1.6,0.1,0.85"
+          ];
+          animation = [
+            "windowsIn,1,3,bounce,popin 23%"
+            "windowsOut,1,7,bounce,slide"
+            "windows,1,7,overshotCircle"
+            "border,1,10,overshot"
+            "borderangle,1,8,default"
+            "fade,1,7,default"
+            "workspaces,1,7,bounce"
+          ];
+          bindl = [
+            ",XF86AudioMute,exec,bash ~/.scripts/volume mute"
+            ",XF86AudioMicMute,exec,wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
+          ];
+          bindle = [
+            ",XF86AudioRaiseVolume, exec, bash ~/.scripts/volume up"
+            ",XF86AudioLowerVolume, exec, bash ~/.scripts/volume down"
+            ",XF86MonBrightnessUp,exec,~/.scripts/brightness up"
+            ",XF86MonBrightnessDown,exec,~/.scripts/brightness down"
+          ];
+          bind = let mainMod = "SUPER"; in [
+            "${mainMod}, RETURN, exec, kitty"
+            "${mainMod}, C, killactive"
+            "SUPERSHIFT, M, exit"
+            "${mainMod}, V, togglefloating"
+            "${mainMod}, D, exec, rofi -show drun"
+            "${mainMod}, P, pseudo"
+            "${mainMod}, J, togglesplit"
+            "${mainMod}, left, movefocus, l"
+            "${mainMod}, right, movefocus, r"
+            "${mainMod}, up, movefocus, u"
+            "${mainMod}, down, movefocus, d"
+            "${mainMod}, 1, workspace, 1"
+            "${mainMod}, 2, workspace, 2"
+            "${mainMod}, 3, workspace, 3"
+            "${mainMod}, 4, workspace, 4"
+            "${mainMod}, 5, workspace, 5"
+            "${mainMod}, 6, workspace, 6"
+            "${mainMod}, 7, workspace, 7"
+            "${mainMod}, 8, workspace, 8"
+            "${mainMod}, 9, workspace, 9"
+            "${mainMod}, 0, workspace, 10"
+            "${mainMod} SHIFT, 1, movetoworkspace, 1"
+            "${mainMod} SHIFT, 2, movetoworkspace, 2"
+            "${mainMod} SHIFT, 3, movetoworkspace, 3"
+            "${mainMod} SHIFT, 4, movetoworkspace, 4"
+            "${mainMod} SHIFT, 5, movetoworkspace, 5"
+            "${mainMod} SHIFT, 6, movetoworkspace, 6"
+            "${mainMod} SHIFT, 7, movetoworkspace, 7"
+            "${mainMod} SHIFT, 8, movetoworkspace, 8"
+            "${mainMod} SHIFT, 9, movetoworkspace, 9"
+            "${mainMod} SHIFT, 0, movetoworkspace, 10"
+            "${mainMod}, mouse_down, workspace, e+1"
+            "${mainMod}, mouse_up, workspace, e-1"
+            "${mainMod}, mouse:272, movewindow"
+            "${mainMod}, mouse:273, resizewindow"
+            "SUPERSHIFT,S,exec,grim -g '$(slurp)' - | swappy -f -"
+            "SUPER,F,fullscreen,1"
+            "SUPERSHIFT,F,fullscreen,0"
+            "SUPER,O,exec, waybar"
+            "SUPER,R,exec, bash -c ~/.scripts/wall.sh"
+            "SUPER,B,exec, bash ~/.scripts/bars.sh"
+            "SUPER,X,exec, [float;resizeactive exact 450 800; centerwindow] kitty bash ~/.scripts/dmenu.sh"
+          ];
+          # I need to impl after https://github.com/Phant80m/Dotfiles/blob/main/.config/hypr/hyprland.conf effect section
+        };
       };
     };
   };
