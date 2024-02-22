@@ -1,10 +1,13 @@
-{ config, pkgs, ... }:
+{ config, pkgs, catppuccin, ... }:
 {
   home.username = "misile";
   home.homeDirectory = "/home/misile";
   home.stateVersion = "23.11"; # dont change it
 
   home.packages = with pkgs; [
+    # Development
+    git gh
+
     # Network
     dhcpcd
 
@@ -19,7 +22,8 @@
     EDITOR = "nvim";
   };
 
-  catppuccin.flavor = "mocha";
+  catppuccin.flavour = "mocha";
+  xdg.enable = true;
 
   services = {
     dunst = {
@@ -99,7 +103,9 @@
       enable = true;
       catppuccin.enable = true;
     };
-    hyprland = {
+  };
+  # i'll change to sway
+  /*wayland.windowManager.hyprland = {
       enable = true;
       catppuccin.enable = true;
       settings = {
@@ -188,8 +194,7 @@
           # I need to impl after https://github.com/Phant80m/Dotfiles/blob/main/.config/hypr/hyprland.conf effect section
         };
       };
-    };
-  };
+  };*/
 
   fonts.fontconfig.enable = true;
 
