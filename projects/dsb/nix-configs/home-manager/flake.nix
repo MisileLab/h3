@@ -15,7 +15,7 @@
     let
       system = "aarch64-linux"; # replace with your system
       pkgs = nixpkgs.legacyPackages.${system};
-      c = import ./desktop.nix;
+      c = import ./config.nix;
     in {
       homeConfigurations."misile" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;

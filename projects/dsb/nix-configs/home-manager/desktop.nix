@@ -10,6 +10,8 @@ in
       bars = [];
       startup = [
         {command = "waybar";}
+        {command = "${pkgs.swww}/bin/swww-daemon";}
+        {command = "bash -c 'sleep 2&&${pkgs.swww}/bin/swww img /home/nixos/bg.jpg'";}
       ];
     };
   };

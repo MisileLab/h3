@@ -19,7 +19,7 @@ in
 
     # Fonts
     fira-code-nerdfont nanum
-  ] ++ (if c.desktop then [swww] else []);
+  ];
 
   home.file = {};
 
