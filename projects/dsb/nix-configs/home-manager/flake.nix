@@ -1,3 +1,8 @@
+let
+  config = {
+    desktop = true;
+  };
+in
 {
   description = "Home Manager configuration of misile";
 
@@ -8,9 +13,6 @@
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-    config = {
-      desktop = true;
     };
   };
 
