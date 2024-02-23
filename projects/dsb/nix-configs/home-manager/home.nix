@@ -11,6 +11,9 @@ in
     # Temporary
     gh
 
+    # System maintain
+    topgrade
+
     # Development
     git
 
