@@ -1,8 +1,3 @@
-let
-  config = {
-    desktop = true;
-  };
-in
 {
   description = "Home Manager configuration of misile";
 
@@ -14,6 +9,16 @@ in
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+  };
+
+  options = {
+    desktop = lib.mkOption {
+      type = lib.types.bool;
+    }
+  };
+
+  config = {
+    desktop = true;
   };
 
   outputs = { nixpkgs, home-manager, catppuccin, config, ... }:
