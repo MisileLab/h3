@@ -14,7 +14,7 @@
   options = {
     desktop = lib.mkOption {
       type = lib.types.bool;
-    }
+    };
   };
 
   config = {
