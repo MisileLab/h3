@@ -1,7 +1,7 @@
 { config, pkgs, catppuccin, ... }:
-let custom-ctps = {
-  waybar = builtins.fetchGit{url="https://github.com/catppuccin/waybar.git";rev="f74ab1eecf2dcaf22569b396eed53b2b2fbe8aff";};
-};
+  let custom-ctps = {
+    waybar = builtins.fetchGit{url="https://github.com/catppuccin/waybar.git";rev="f74ab1eecf2dcaf22569b396eed53b2b2fbe8aff";};
+  };
 in
 {
   wayland.windowManager.sway = {

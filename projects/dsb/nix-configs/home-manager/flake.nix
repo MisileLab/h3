@@ -11,6 +11,10 @@
     };
   };
 
+  config = {
+    desktop = true;
+  };
+
   outputs = { nixpkgs, home-manager, catppuccin, ... }:
     let
       system = "aarch64-linux"; # replace with your system
@@ -18,7 +22,7 @@
     in {
       homeConfigurations."misile" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
-        modules = [ ./home.nix catppuccin.homeManagerModules.catppuccin ./desktop.nix ];
+        modules = [ ./home.nix catppuccin.homeManagerModules.catppuccin ] ++ if config.desktop then [./desktop.nix];
       };
     };
 }
