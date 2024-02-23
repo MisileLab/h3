@@ -16,7 +16,7 @@
 
     # Fonts
     fira-code-nerdfont nanum
-  ] ++ (if config.desktop then [swww]);
+  ] ++ (if config.desktop then [swww] else []);
 
   home.file = {};
 
