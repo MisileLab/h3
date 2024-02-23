@@ -15,7 +15,7 @@
     desktop = true;
   };
 
-  outputs = { nixpkgs, home-manager, catppuccin, ... }:
+  outputs = { nixpkgs, home-manager, catppuccin, config, ... }:
     let
       system = "aarch64-linux"; # replace with your system
       pkgs = nixpkgs.legacyPackages.${system};
