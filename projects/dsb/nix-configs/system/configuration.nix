@@ -6,14 +6,16 @@
 {
   imports =
     [
-      ./hardware-configuration.nix
-      <apple-silicon-support/apple-silicon-support>
-      ./hardware.nix
+
+    ] ++ if pkgs.system == "aarch64-linux" then [
+      ./apple-silicon/hardware-configuration.nix
+      ./apple-silicon/home.nix
+    ] else [
+      ./x86_64/home.nix
+      ./x86_64/hardware-configuration.nix
     ];
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = false;
-
   networking.networkmanager.enable = true;
 
   # Set your time zone.
@@ -24,10 +26,6 @@
   nix.settings.experimental-features = ["nix-command" "flakes"];
 
   networking.wireless.iwd = {enable = true;settings.General.EnableNetworkConfiguration=true;};
-  programs.light.enable = true;
-  hardware.asahi.useExperimentalGPUDriver = true;
-  services.actkbd={enable=true;bindings=[{keys=[225];events=["key"];command="/run/current-system/sw/bin/light -A 10";} {keys=[224];events=["key"];command="/run/current-system/sw/bin/light -U 10";}];};
   system.stateVersion = "24.05"; # Just dont touch this
-
 }
 

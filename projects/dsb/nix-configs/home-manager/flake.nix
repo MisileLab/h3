@@ -13,18 +13,12 @@
 
   outputs = { nixpkgs, home-manager, catppuccin, ... }:
     let
-      system = "aarch64-linux";
+      system = "aarch64-linux"; # replace with your system
       pkgs = nixpkgs.legacyPackages.${system};
     in {
       homeConfigurations."misile" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
-
-        # Specify your home configuration modules here, for example,
-        # the path to your home.nix.
         modules = [ ./home.nix catppuccin.homeManagerModules.catppuccin ];
-
-        # Optionally use extraSpecialArgs
-        # to pass through arguments to home.nix
       };
     };
 }
