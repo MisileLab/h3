@@ -9,7 +9,7 @@ in
     config = {
       bars = [];
       startup = [
-        {command = "waybar"};
+        {command = "waybar";}
       ];
     };
   };
