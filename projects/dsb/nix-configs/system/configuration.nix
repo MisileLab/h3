@@ -4,16 +4,13 @@
 
 { config, lib, pkgs, ... }:
 {
-  imports =
-    [
-
-    ] ++ if pkgs.system == "aarch64-linux" then [
+  imports = [] ++ (if pkgs.system == "aarch64-linux" then [
       ./apple-silicon/hardware-configuration.nix
       ./apple-silicon/home.nix
     ] else [
       ./x86_64/home.nix
       ./x86_64/hardware-configuration.nix
-    ];
+    ]);
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   networking.networkmanager.enable = true;
