@@ -1,4 +1,4 @@
-{ config, pkgs, catppuccin, ... }:
+{ config, pkgs, catppuccin, c, ... }:
 {
   home.username = "misile";
   home.homeDirectory = "/home/misile";
@@ -16,7 +16,7 @@
 
     # Fonts
     fira-code-nerdfont nanum
-  ] ++ (if config.desktop then [swww] else []);
+  ] ++ (if c.desktop then [swww] else []);
 
   home.file = {};
 
