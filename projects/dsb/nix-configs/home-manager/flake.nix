@@ -15,13 +15,11 @@
     let
       system = "aarch64-linux"; # replace with your system
       pkgs = nixpkgs.legacyPackages.${system};
-      c = {
-        desktop = true;
-      };
+      c = import ./desktop.nix;
     in {
       homeConfigurations."misile" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
-        modules = [ ./home.nix {inherit c;} catppuccin.homeManagerModules.catppuccin ] ++ (if c.desktop then [./desktop.nix] else []);
+        modules = [ ./home.nix catppuccin.homeManagerModules.catppuccin ] ++ (if c.desktop then [./desktop.nix] else []);
       };
     };
 }

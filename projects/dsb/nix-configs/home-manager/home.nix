@@ -1,4 +1,7 @@
-{ config, pkgs, catppuccin, c, ... }:
+{ config, pkgs, catppuccin, ... }:
+let
+  c = import ./config.nix;
+in
 {
   home.username = "misile";
   home.homeDirectory = "/home/misile";

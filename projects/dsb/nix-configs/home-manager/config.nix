@@ -1,0 +1,3 @@
+{
+  desktop = true;
+}
