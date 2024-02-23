@@ -2,7 +2,9 @@
 {
   imports =
     [
+      ../../common.nix
       <apple-silicon-support/apple-silicon-support>
+      ./hardware-configuration.nix
     ];
   boot.loader.efi.canTouchEfiVariables = false;
   hardware.asahi.useExperimentalGPUDriver = true;
