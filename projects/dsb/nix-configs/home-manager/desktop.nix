@@ -25,8 +25,7 @@ in
       style = ''
         @import "${custom-ctps.waybar}/themes/mocha.css";
         window#waybar {
-          background: rgba(108, 112, 134, 0.21);
-          border-radius: 16px;
+          background: rgba(108, 112, 134, 0.4);
           box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
           border: 1px solid rgba(108, 112, 134, 0.3);
         }
