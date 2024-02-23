@@ -14,7 +14,7 @@
 		"@tsconfig/svelte": "^5.0.2",
 		"@types/d3-interpolate": "^3.0.4",
 		"@types/node": "^20.9.0",
-		"@types/reveal.js": "^4.4.6",
+		"@types/reveal.js": "^5.0.0",
 		"autoprefixer": "^10.4.16",
 		"postcss": "^8.4.31",
 		"postcss-load-config": "^5.0.0",
