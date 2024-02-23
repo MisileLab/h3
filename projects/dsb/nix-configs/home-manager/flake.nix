@@ -12,8 +12,8 @@
   };
 
   options = {
-    desktop = lib.mkOption {
-      type = lib.types.bool;
+    desktop = mkOption {
+      type = types.bool;
     };
   };
 
