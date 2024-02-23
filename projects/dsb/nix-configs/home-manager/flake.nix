@@ -11,20 +11,13 @@
     };
   };
 
-  options = {
-    desktop = mkOption {
-      type = types.bool;
-    };
-  };
-
-  config = {
-    desktop = true;
-  };
-
-  outputs = { nixpkgs, home-manager, catppuccin, config, ... }:
+  outputs = { nixpkgs, home-manager, catppuccin, ... }:
     let
       system = "aarch64-linux"; # replace with your system
       pkgs = nixpkgs.legacyPackages.${system};
+      config = {
+        desktop = true;
+      };
     in {
       homeConfigurations."misile" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
