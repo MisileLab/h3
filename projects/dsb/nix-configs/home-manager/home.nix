@@ -26,7 +26,6 @@
   };
 
   catppuccin.flavour = "mocha";
-  xdg.enable = true;
   fonts.fontconfig.enable = true;
 
   # Let Home Manager install and manage itself.
