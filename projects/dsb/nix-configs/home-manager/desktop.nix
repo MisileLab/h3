@@ -28,7 +28,6 @@ in
           background: rgba(108, 112, 134, 0.21);
           border-radius: 16px;
           box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-          filter: blur(5px);
           border: 1px solid rgba(108, 112, 134, 0.3);
         }
       '';
