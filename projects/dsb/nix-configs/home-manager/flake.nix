@@ -9,10 +9,9 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-  };
-
-  config = {
-    desktop = true;
+    config = {
+      desktop = true;
+    };
   };
 
   outputs = { nixpkgs, home-manager, catppuccin, config, ... }:
