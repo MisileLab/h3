@@ -23,7 +23,7 @@ in
         modules-right = [ "backlight" "pulseaudio" "cpu" "temperature" "memory" "network" "battery" "clock"];
       }];
       style = ''
-        @import ${custom-ctps.waybar}/themes/mocha.css
+        @import ${custom-ctps.waybar}/themes/mocha.css;
       '';
     };
   };
