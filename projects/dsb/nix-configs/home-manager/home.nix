@@ -15,7 +15,7 @@
     dhcpcd
 
     # Fonts
-    fira-code-nerdfont nanum otf-font
+    fira-code-nerdfont nanum
   ];
 
   home.file = {};
