@@ -64,16 +64,16 @@ in
           '';})}
         }
         .modules-left * {
-          text-color: @subtext1;
+          color: @subtext1;
         }
         .modules-center * {
-          text-color: @text;
+          color: @text;
         }
         .modules-right * {
           ${returnColorCSS({r=147;g=153;b=178;a=0.6;addi=''
             padding-left: 6px;
             padding-right: 6px;
-            text-color: @subtext1;
+            color: @subtext1;
           '';})};
         }
         #battery.warning {
