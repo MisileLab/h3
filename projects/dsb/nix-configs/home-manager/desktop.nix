@@ -46,10 +46,10 @@ in
         }
         window#waybar {${returnColorCSS({r=108;g=112;b=134;a=0.4;})}}
         #workspaces button {
-          ${returnColorCSS(108 112 134 0.4 ''
+          ${returnColorCSS({r=108;g=112;b=134;a=0.4;addi=''
             padding-left: 6px;
             padding-right: 6px;
-          '')}
+          '';})}
         }
         #workspaces button.active {
           ${returnColorCSS({r=147;g=153;b=178;a=0.6;})}
