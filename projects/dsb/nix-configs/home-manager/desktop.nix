@@ -44,7 +44,7 @@ in
         * {
           font-family: 'Fira Code', monospace;
         }
-        window#waybar {${returnColorCss(108 112 134 0.4)}}
+        window#waybar {${returnColorCSS(108 112 134 0.4)}}
         #workspaces button {
           ${returnColorCss(108 112 134 0.4 ''
             padding-left: 6px;
@@ -58,7 +58,7 @@ in
           background: rgba(249, 226, 175, 0.6);
         }
         #workspace button.hover {
-          ${returnColorCss(127 132 156 0.6 ''
+          ${returnColorCSS(127 132 156 0.6 ''
             padding-left: 6px;
             padding-right: 6px;
           '')}
@@ -70,7 +70,7 @@ in
           text-color: @text;
         }
         .modules-right * {
-          ${returnColorCss(147 153 178 0.6 ''
+          ${returnColorCSS(147 153 178 0.6 ''
             padding-left: 6px;
             padding-right: 6px;
             text-color: @subtext1;
