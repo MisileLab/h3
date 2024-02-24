@@ -46,7 +46,7 @@ in
         }
         window#waybar {${returnColorCSS(108 112 134 0.4)}}
         #workspaces button {
-          ${returnColorCss(108 112 134 0.4 ''
+          ${returnColorCSS(108 112 134 0.4 ''
             padding-left: 6px;
             padding-right: 6px;
           '')}
