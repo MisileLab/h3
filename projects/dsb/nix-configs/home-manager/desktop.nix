@@ -28,7 +28,6 @@ in
         {command = "bash -c 'sleep 1&&${pkgs.swww}/bin/swww img ~/.config/home-manager/bg.png'";}
       ];
     };
-    package = pkgs.swayfx;
   };
 
   programs = {
