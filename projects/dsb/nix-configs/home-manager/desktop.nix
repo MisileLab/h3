@@ -44,6 +44,16 @@ in
           padding-left: 6px;
           padding-right: 6px;
         }
+        #workspaces button.active {
+          background: rgba(147, 153, 178, 0.6);
+          border-radius: 0px;
+          box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+          /*backdrop-filter: blur(5px);*/
+          border: 1px solid rgba(147, 153, 178, 0.3);
+        }
+        #workspace button.urgent {
+          background: rgba(249, 226, 175, 0.6);
+        }
         .modules-right * {
           background: rgba(147, 153, 178, 0.6);
           border-radius: 0;
