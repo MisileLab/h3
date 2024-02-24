@@ -27,6 +27,7 @@ in
       style = ''
         @import "${custom-ctps.waybar}/themes/mocha.css";
         window#waybar {
+          /*backdrop-filter: blur(5px);*/
           background: rgba(108, 112, 134, 0.4);
           box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
           border: 1px solid rgba(108, 112, 134, 0.3);
@@ -35,10 +36,20 @@ in
           font-family: 'Fira Code', monospace;
         }
         #workspaces button {
+          /*backdrop-filter: blur(5px);*/
           background: rgba(127, 132, 156, 0.6);
           border-radius: 0;
           box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
           border: 1px solid rgba(127, 132, 156, 0.3);
+          padding-left: 6px;
+          padding-right: 6px;
+        }
+        .modules-right * {
+          background: rgba(147, 153, 178, 0.6);
+          border-radius: 0;
+          box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+          /* backdrop-filter: blur(5px); */
+          border: 1px solid rgba(147, 153, 178, 0.3);
           padding-left: 6px;
           padding-right: 6px;
         }
