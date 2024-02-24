@@ -36,6 +36,7 @@ in
         }
         #workspaces button {
           background: rgba(127, 132, 156, 0.6);
+          border-radius: 0;
           box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
           border: 1px solid rgba(127, 132, 156, 0.3);
           padding-left: 6px;
