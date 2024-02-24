@@ -10,6 +10,7 @@ let
     border-radius: 0;
     ${addi}
   '';
+  package = pkgs.swayfx;
 in
 {
   home.pointerCursor = {
@@ -24,8 +25,7 @@ in
       bars = [];
       startup = [
         {command = "waybar";}
-        {command = "${pkgs.swww}/bin/swww-daemon";}
-        {command = "bash -c 'sleep 1&&${pkgs.swww}/bin/swww img ~/.config/home-manager/bg.png'";}
+        {command = "swaybg --image ~/.config/home-manager/bg.png";}
       ];
     };
   };
