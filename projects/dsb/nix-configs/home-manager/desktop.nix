@@ -1,7 +1,15 @@
 { config, pkgs, catppuccin, ... }:
-  let custom-ctps = {
+let 
+  custom-ctps = {
     waybar = builtins.fetchGit{url="https://github.com/catppuccin/waybar.git";rev="f74ab1eecf2dcaf22569b396eed53b2b2fbe8aff";};
   };
+  returnColorCSS = {r, g, b, a, additional ? ""}: ''
+    /*backdrop-filter: blur(5px);*/
+    background: rgba(${r}, ${g}, ${b}, ${a});
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    border-radius: 0;
+    ${additional}
+  '';
 in
 {
   home.pointerCursor = {
@@ -34,38 +42,27 @@ in
       # now we need to make it component
       style = ''
         @import "${custom-ctps.waybar}/themes/mocha.css";
-        window#waybar {
-          /*backdrop-filter: blur(5px);*/
-          background: rgba(108, 112, 134, 0.4);
-          box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-        }
         * {
           font-family: 'Fira Code', monospace;
         }
+        window#waybar {${returnColorCss(108, 112, 134, 0.4)}}
         #workspaces button {
-          /*backdrop-filter: blur(5px);*/
-          background: rgba(127, 132, 156, 0.6);
-          border-radius: 0;
-          box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-          padding-left: 6px;
-          padding-right: 6px;
+          ${returnColorCss(108, 112, 134, 0.4, ''
+            padding-left: 6px;
+            padding-right: 6px;
+          '')}
         }
         #workspaces button.active {
-          background: rgba(147, 153, 178, 0.6);
-          border-radius: 0px;
-          box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-          /*backdrop-filter: blur(5px);*/
+          ${returnColorCSS(147, 153, 178, 0.6)}
         }
         #workspace button.urgent {
           background: rgba(249, 226, 175, 0.6);
         }
         #workspace button.hover {
-          /*backdrop-filter: blur(5px);*/
-          background: rgba(127, 132, 156, 0.6);
-          border-radius: 0;
-          box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-          padding-left: 6px;
-          padding-right: 6px;
+          ${returnColorCss(127, 132, 156, 0.6, ''
+            padding-left: 6px;
+            padding-right: 6px;
+          '')}
         }
         .modules-left * {
           text-color: @subtext1;
@@ -74,13 +71,11 @@ in
           text-color: @text;
         }
         .modules-right * {
-          background: rgba(147, 153, 178, 0.6);
-          border-radius: 0;
-          box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-          /* backdrop-filter: blur(5px); */
-          padding-left: 6px;
-          padding-right: 6px;
-          text-color: @subtext1;
+          ${returnColorCss(147, 153, 178, 0.6), ''
+            padding-left: 6px;
+            padding-right: 6px;
+            text-color: @subtext1;
+          ''};
         }
         #battery.warning {
           background: rgba(249, 226, 175, 0.6);
