@@ -24,6 +24,8 @@ in
         modules-center = [ "sway/window" ];
         modules-right = [ "backlight" "pulseaudio" "cpu" "temperature" "memory" "network" "battery" "clock"];
       }];
+      # cursor size multiply 4
+      # change text color
       style = ''
         @import "${custom-ctps.waybar}/themes/mocha.css";
         window#waybar {
