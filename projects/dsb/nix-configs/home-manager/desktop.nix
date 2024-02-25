@@ -27,7 +27,6 @@ in
         indicator.icon_color = "White";
       };
     };
-    package = pkgs.swayfx; # only for x86_64
   };
 
   wayland.windowManager.sway = {
