@@ -2,6 +2,7 @@
 let 
   custom-ctps = {
     waybar = builtins.fetchGit{url="https://github.com/catppuccin/waybar.git";rev="f74ab1eecf2dcaf22569b396eed53b2b2fbe8aff";};
+    dunst = builtins.fetchGit{url="https://github.com/catppuccin/dunst.git";rev="a72991e56338289a9fce941b5df9f0509d2cba09";};
   };
   returnColorCSS = {r, g, b, a, addi ? ""}: ''
     /*backdrop-filter: blur(5px);*/
@@ -10,35 +11,120 @@ let
     border-radius: 0;
     ${addi}
   '';
-  package = pkgs.swayfx;
 in
 {
+  xdg.enable = true;
   home.pointerCursor = {
     name = "Adwaita";
     package = pkgs.gnome.adwaita-icon-theme;
     size = 32;
   };
 
-  wayland.windowManager.sway = {
-    enable = true;
-    config = {
-      bars = [];
-      startup = [
-        {command = "waybar";}
-        {command = "swaybg --image ~/.config/home-manager/bg.png";}
-      ];
+  i18n = {
+    inputMethod = {
+      enabled = "kime";
+      kime.config = {
+        indicator.icon_color = "White";
+      };
     };
   };
 
+  wayland.windowManager.sway = {
+    enable = true;
+    extraConfigEarly = ''
+      blur enable
+      blur_xray enable
+      blur_radius 10
+      corner_radius 8
+      blur_passes 4
+      shadows enable
+      for_window [class=\".*\"] opacity 0.9
+      for_window [app_id=\".*\"] opacity 0.9
+      bindsym Shift+Print	exec ${pkgs.sway-contrib.grimshot} --notify save area
+    '';
+    config = {
+      bars = [];
+      startup = [
+        {command = "${pkgs.waybar}/bin/waybar";}
+        {command = "${pkgs.swaybg}/bin/swaybg --image ~/.config/home-manager/bg.png";}
+        {command = "${pkgs.wl-clipboard}/bin/wl-paste -t text --watch ${pkgs.clipman} store --no-persist";}
+      ];
+      terminal = "${pkgs.alacritty}/bin/alacritty";
+      fonts = {
+        names = ["Fira Code NF" "Fira Code" "NanumSquare"];
+        style = "Regular";
+        size = 12.0;
+      };
+      window.titlebar = false;
+    };
+    package = (if pkgs.system == "x86_64-linux" then pkgs.swayfx else pkgs.sway);
+    xwayland = true;
+  };
+
   programs = {
+    fish = {catppuccin.enable = true;plugins = [{name="tide";src=pkgs.fishPlugins.tide.src;}];};
+    alacritty = {
+      enable = true;
+      catppuccin.enable = true;
+      settings = {shell = "${pkgs.fish}/bin/fish";};
+    };
     waybar = {
       enable = true;
       settings = [{
-        modules-left = [ "sway/workspaces" "tray"];
+        modules-left = [ "sway/workspaces"];
         modules-center = [ "sway/window" ];
-        modules-right = [ "backlight" "pulseaudio" "cpu" "temperature" "memory" "network" "battery" "clock"];
+        modules-right = [ "pulseaudio" "network" "battery" "cpu" "memory" "clock"];
+        backlight = {
+          device = "intel_backlight";
+          format = "{icon} {percent}%";
+          format-icons = ["" ""];
+        };
+        cpu = {
+          interval = 5;
+          format = " {}%";
+          max-length = 10;
+        };
+        memory = {
+          interval = 5;
+          format = " {}%";
+          tooltip-format = "{used}G/{total}G";
+          max-length = 10;
+        };
+        network = {
+          interface = "wlan0";
+          format = "{ifname}";
+          format-wifi = "  {signalStrength}%";
+          format-ethernet = "󰊗  {ipaddr}";
+          format-disconnected = "";
+          tooltip-format = "{ifname} via {gwaddr} 󰊗";
+          tooltip-format-wifi = "{essid} ({signalStrength}%) ";
+          tooltip-format-ethernet = "{ifname} ";
+          tooltip-format-disconnected = "Disconnected";
+          max-length = 50;
+      };
+      clock = {
+        interval = 1;
+        format = "{:%H:%M:%S}";
+        tooltip-format = "{:%Y-%m-%dT%H:%M:%S}";
+        max-length = 25;
+      };
+      battery = {
+        bat = "BAT1";
+        interval = 60;
+        states = {
+          warning = 30;
+          critical = 15;
+        };
+        format = "{icon} {capacity}%";
+        format-icons = [" " " " " " " " " "];
+        max-length = 25;
+     };
+     virt-manager.enable = true;
+     sway = {window = {
+       format = "{app_id} - {title}";
+       max-length = 20;
+    };};
       }];
-      # now we need to make it component
       style = ''
         @import "${custom-ctps.waybar}/themes/mocha.css";
         * {
@@ -77,12 +163,34 @@ in
           '';})};
         }
         #battery.warning {
-          background: rgba(249, 226, 175, 0.6);
+          color: @yellow;
         }
         #battery.critical {
-          background: rgba(243, 139, 168, 0.6);
+          color: @red;
         }
       '';
     };
-  };
+    firefox.enable = true;
+    rofi = {enable = true;extraConfig = {
+#configuration = {
+    modi = "run,drun,window";
+    icon-theme = "Oranchelo";
+    show-icons = true;
+    terminal = "alacritty";
+    drun-display-format = "{icon} {name}";
+    location = 0;
+    hide-scrollbar = true;
+    display-drun = "   Apps ";
+    display-run = "   Run ";
+    display-window = " 﩯  Window";
+    disable-history = false;
+    display-Network = " 󰤨  Network";
+    sidebar-mode = true;
+#};
+};
+theme = "catppuccin-mocha";
+};
+};
+
+  services = { dunst = {enable = true; configFile = "${custom-ctps.dunst}/src/mocha.conf";};};
 }

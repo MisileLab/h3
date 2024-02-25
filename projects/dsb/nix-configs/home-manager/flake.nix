@@ -9,17 +9,18 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    #sops-nix.url = "github:Mic92/sops-nix";
   };
 
   outputs = { nixpkgs, home-manager, catppuccin, ... }:
     let
-      system = "aarch64-linux"; # replace with your system
+      system = "x86_64-linux"; # replace with your system
       pkgs = nixpkgs.legacyPackages.${system};
       c = import ./config.nix;
     in {
       homeConfigurations."misile" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
-        modules = [ ./home.nix catppuccin.homeManagerModules.catppuccin ] ++ (if c.desktop then [./desktop.nix] else []);
+        modules = [ ./home.nix catppuccin.homeManagerModules.catppuccin /*sops-nix.homeManagerModules.sops*/ ] ++ (if c.desktop then [./desktop.nix] else []);
       };
     };
 }
