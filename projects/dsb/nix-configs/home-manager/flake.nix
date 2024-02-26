@@ -18,7 +18,7 @@
     in {
       homeConfigurations."misile" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
-        modules = [ ./home.nix catppuccin.homeManagerModules.catppuccin ./desktop.nix];
+        modules = [ ./home.nix catppuccin.homeManagerModules.catppuccin ./desktop.nix ];
       };
     };
 }
