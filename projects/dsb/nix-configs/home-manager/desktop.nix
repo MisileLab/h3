@@ -58,7 +58,7 @@ in
         {command = "${pkgs.swaybg}/bin/swaybg --image ~/.config/home-manager/bg.png";}
         {command = "${pkgs.wl-clipboard}/bin/wl-paste -t text --watch ${pkgs.clipman} store --no-persist";}
       ];
-      menu = "${pkgs.rofi} -show drun";
+      menu = "${pkgs.rofi}/bin/rofi -show drun";
       terminal = "${pkgs.alacritty}/bin/alacritty";
       fonts = {
         names = ["Fira Code NF" "Fira Code" "NanumSquare"];
