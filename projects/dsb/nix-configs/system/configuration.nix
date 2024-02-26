@@ -14,6 +14,8 @@
   hardware = {
     opengl = {enable = true; driSupport = true;};
     pulseaudio.enable = true;
+    enableAllFirmware = true;
+    enableRedistributableFirmware = true;
   };
 
   time.hardwareClockInLocalTime = true;
