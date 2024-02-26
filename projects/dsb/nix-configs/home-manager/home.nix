@@ -115,12 +115,6 @@ in
     };
   };
 
-  #sops = {age.sshKeyPaths=["/home/misile/.ssh/id_rsa"];defaultSopsFile=/home/misile/h3/projects/dsb/nix-configs/secrets.yaml;};
-  #home.activation.setupEtc = config.lib.dag.entryAfter [ "writeBoundary" ] ''
-  #  /run/current-system/sw/bin/systemctl start --user sops-nix
-  #'';
-  #systemd.user.services.mbsync.Unit.After = [ "sops-nix.service" ];
-
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 }

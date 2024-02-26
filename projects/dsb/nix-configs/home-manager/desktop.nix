@@ -208,12 +208,12 @@ in
         };
       theme = "catppuccin-mocha";
     };
-    avizo.enable = true;
   };
   services = {
     dunst = {
       enable = true;
       configFile = "${custom-ctps.dunst}/src/mocha.conf";
     };
+    avizo.enable = true;
   };
 }
