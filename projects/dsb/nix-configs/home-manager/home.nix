@@ -70,32 +70,32 @@ in
     fish = {
       enable = true;
       shellInit = ''
-      alias nix-clean="nix store optimise && sudo nix store optimise && nix-collect-garbage -d && sudo nix-collect-garbage -d"
-      alias cat="bat"
-      alias ocat="${pkgs.coreutil}/bin/cat"
-      alias ls="eza --icons"
-      alias onefetch="onefetch --number-of-languages 10000"
-      function fzfp
-        if set -q argv[1]
-          $argv (${pkgs.fzf} --preview 'bat --color=always --style=numbers --line-range :500 {}')
-        else
-          ${pkgs.fzf} --preview 'bat --color=always --style=numbers --line-range :500 {}'
-        end
-      end
-      function git-bulk-pulls
-        if not set -q argv[1]
-          set args .
-        else
-          set args $argv
-        end
-        for j in $args
-          for i in $j/*
-            cd $i
-            git pull
-            cd -
+        alias nix-clean="nix store optimise && sudo nix store optimise && nix-collect-garbage -d && sudo nix-collect-garbage -d"
+        alias cat="bat"
+        alias ocat="${pkgs.coreutil}/bin/cat"
+        alias ls="eza --icons"
+        alias onefetch="onefetch --number-of-languages 10000"
+        function fzfp
+          if set -q argv[1]
+            $argv (${pkgs.fzf} --preview 'bat --color=always --style=numbers --line-range :500 {}')
+          else
+            ${pkgs.fzf} --preview 'bat --color=always --style=numbers --line-range :500 {}'
           end
         end
-      end
+        function git-bulk-pulls
+          if not set -q argv[1]
+            set args .
+          else
+            set args $argv
+          end
+          for j in $args
+            for i in $j/*
+              cd $i
+              git pull
+              cd -
+            end
+          end
+        end
       '';
     };
     atuin = {
