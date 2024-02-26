@@ -20,6 +20,7 @@ in
     # Utils
     file wget imagemagick usbutils axel onefetch fastfetch ouch wgetpaste
     hyperfine hdparm duperemove hydra-check glow obs-studio virt-manager
+    killall
 
     # Network
     dhcpcd cloudflare-warp trayscale tor
