@@ -14,12 +14,12 @@ in
     # Development
     git niv ghc cabal-install rustup pwndbg go temurin-bin-21
     python312Full pkg-config edgedb fh nixpkgs-fmt
-    virtualenv hub poetry d2 micromamba pdm
-    mypy dvc snyk
+    hub poetry d2 micromamba pdm
+    mypy dvc snyk ghidra
 
     # Utils
-    file wget imagemagick usbutils axel onefetch fastfetch ouch wget-paste
-    hyperfine hdparm duperemove hydra-check glow pip obs-studio
+    file wget imagemagick usbutils axel onefetch fastfetch ouch wgetpaste
+    hyperfine hdparm duperemove hydra-check glow obs-studio virt-manager
 
     # Network
     dhcpcd cloudflare-warp trayscale tor
@@ -31,7 +31,7 @@ in
     pulsemixer galaxy-buds-client mpv
 
     # Some chat and game
-    irssi portablemc ferium
+    irssi ferium
     (tetrio-desktop.override {
       withTetrioPlus = true;
     })
@@ -40,13 +40,18 @@ in
     figma-linux vesktop wineWowPackages.stable appimage-run
   ]
   ++ (with llvmPackages_latest; [clangUseLLVM openmp libunwind]) # llvm
-  ++ (with nodePackages_latest; [nodejs pnpm]); # nodejs
+  ++ (with nodePackages_latest; [nodejs pnpm]) # nodejs
+  ++ (with python311Packages; [pip virtualenv pipx]); # python thing
 
   home.file = {
     ".local/share/rofi/themes/catppuccin-mocha.rasi".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit{
       url="https://github.com/catppuccin/rofi";
       rev="5350da41a11814f950c3354f090b90d4674a95ce";
     }}/basic/.local/share/rofi/themes/catppuccin-mocha.rasi";
+    "non-nixos-things/catppuccin-ghidra".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit{
+      url="https://github.com/StanlsSlav/ghidra";
+      rev="f783b5e15836964e720371c0da81819577dd2614";
+    }}";
   };
 
   home.sessionVariables = {
@@ -57,6 +62,7 @@ in
   catppuccin.flavour = "mocha";
   fonts.fontconfig.enable = true;
   nixpkgs.config.allowUnfree = true;
+  xdg.enable = true;
   programs = {
     eza.enable = true;
     bat = {
@@ -72,7 +78,7 @@ in
       shellInit = ''
         alias nix-clean="nix store optimise && sudo nix store optimise && nix-collect-garbage -d && sudo nix-collect-garbage -d"
         alias cat="bat"
-        alias ocat="${pkgs.coreutil}/bin/cat"
+        alias ocat="${pkgs.coreutils}/bin/cat"
         alias ls="eza --icons"
         alias onefetch="onefetch --number-of-languages 10000"
         function fzfp

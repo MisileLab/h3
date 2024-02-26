@@ -1,12 +1,12 @@
 { config, pkgs, catppuccin, ... }:
 let 
-  c = ./config.nix;
+  c = import ./config.nix;
   custom-ctps = {
     waybar = builtins.fetchGit{url="https://github.com/catppuccin/waybar.git";rev="f74ab1eecf2dcaf22569b396eed53b2b2fbe8aff";};
     dunst = builtins.fetchGit{url="https://github.com/catppuccin/dunst.git";rev="a72991e56338289a9fce941b5df9f0509d2cba09";};
   };
   returnColorCSS = {r, g, b, a, addi ? ""}: ''
-    ${(if c.gtk4 then "backdrop-filter: blur(5px);" else "")}
+    ${(if c.gtk4 then "backdrop-filter: blur(5px)" else "")}
     background: rgba(${toString r}, ${toString g}, ${toString b}, ${toString a});
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     border-radius: 0;
@@ -14,7 +14,6 @@ let
   '';
 in
 {
-  xdg.enable = true;
   home.pointerCursor = {
     name = "Adwaita";
     package = pkgs.gnome.adwaita-icon-theme;
@@ -59,6 +58,7 @@ in
         {command = "${pkgs.swaybg}/bin/swaybg --image ~/.config/home-manager/bg.png";}
         {command = "${pkgs.wl-clipboard}/bin/wl-paste -t text --watch ${pkgs.clipman} store --no-persist";}
       ];
+      menu = "${pkgs.rofi} -show drun";
       terminal = "${pkgs.alacritty}/bin/alacritty";
       fonts = {
         names = ["Fira Code NF" "Fira Code" "NanumSquare"];
@@ -136,7 +136,6 @@ in
         format-icons = [" " " " " " " " " "];
         max-length = 25;
       };
-      virt-manager.enable = true;
       sway = {
         window = {
           format = "{app_id} - {title}";
@@ -179,7 +178,7 @@ in
           padding-left: 6px;
           padding-right: 6px;
           color: @subtext1;
-        '';})};
+        '';})}
       }
       #battery.warning {
         color: @yellow;
