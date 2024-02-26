@@ -8,8 +8,8 @@ in
   home.stateVersion = "23.11"; # dont change it
 
   home.packages = with pkgs; [
-    # System maintain
-    topgrade sbctl tealdeer
+    # System
+    topgrade sbctl tealdeer synology-drive-client bluez
 
     # Development
     git niv ghc cabal-install rustup pwndbg go temurin-bin-21 wineWowPackages.stable
@@ -24,14 +24,16 @@ in
     pulsemixer
 
     # Chat
-    irssi
-  ] ++ (if c.desktop then [bluez vesktop synology-drive-client] else []) ++ (with llvmPackages_latest; [clangUseLLVM openmp libunwind]) ++ (with nodePackages_latest; [nodejs pnpm]); # nodejs and llvm + desktop
+    irssi vesktop
+  ] 
+  ++ (with llvmPackages_latest; [clangUseLLVM openmp libunwind]) # llvm
+  ++ (with nodePackages_latest; [nodejs pnpm]); # nodejs
 
   home.file = {
-    # I want to make it desktop specific
-    ".local/share/rofi/themes/catppuccin-mocha.rasi".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit{url="https://github.com/catppuccin/rofi";rev="5350da41a11814f950c3354f090b90d4674a95ce";}}/basic/.local/share/rofi/themes/catppuccin-mocha.rasi";
-    #(if c.desktop then
-    #   ".local/share/rofi/themes": builtins.fetchGit{src="https://github.com/catppuccin/rofi";rev="5350da41a11814f950c3354f090b90d4674a95ce";})
+    ".local/share/rofi/themes/catppuccin-mocha.rasi".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit{
+      url="https://github.com/catppuccin/rofi";
+      rev="5350da41a11814f950c3354f090b90d4674a95ce";
+    }}/basic/.local/share/rofi/themes/catppuccin-mocha.rasi";
   };
 
   home.sessionVariables = {
