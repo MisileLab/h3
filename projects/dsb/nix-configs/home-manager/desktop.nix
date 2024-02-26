@@ -42,6 +42,15 @@ in
       for_window [class=\".*\"] opacity 0.9
       for_window [app_id=\".*\"] opacity 0.9
       bindsym Shift+Print	exec ${pkgs.sway-contrib.grimshot} --notify save area
+      bindsym XF86AudioRaiseVolume exec ${pkgs.avizo}/bin/volumectl -u up
+      bindsym XF86AudioLowerVolume exec ${pkgs.avizo}/bin/volumectl -u down
+      bindsym XF86AudioMute exec ${pkgs.avizo}/bin/volumectl toggle-mute
+      bindsym XF86AudioMicMute exec ${pkgs.avizo}/bin/volumectl -m toggle-mute
+
+      bindsym XF86MonBrightnessUp exec ${pkgs.avizo}/bin/lightctl up
+      bindsym XF86MonBrightnessDown exec ${pkgs.avizo}/bin/lightctl down
+
+      exec "${pkgs.avizo}/bin/avizo-service"
     '';
     config = {
       bars = [];
@@ -63,6 +72,10 @@ in
   };
 
   programs = {
+    helix = {
+      enable = true;
+      catppuccin.enable = true;
+    };
     fish = {
       catppuccin.enable = true;
       plugins = [{name="tide"; src=pkgs.fishPlugins.tide.src;}];
@@ -77,7 +90,7 @@ in
       settings = [{
         modules-left = [ "sway/workspaces"];
         modules-center = [ "sway/window" ];
-        modules-right = [ "pulseaudio" "network" "battery" "cpu" "memory" "clock"];
+        modules-right = [ "temperature" "pulseaudio" "network" "battery" "cpu" "memory" "clock"];
         backlight = {
           device = "intel_backlight";
           format = "{icon} {percent}%";
@@ -173,29 +186,29 @@ in
       }
       #battery.critical {
         color: @red;
-      }
-    '';
-  };
-  firefox.enable = true;
-  rofi = {
-    enable = true;
-    extraConfig = {
-      modi = "run,drun,window";
-      icon-theme = "Oranchelo";
-      show-icons = true;
-      terminal = "alacritty";
-      drun-display-format = "{icon} {name}";
-      location = 0;
-      hide-scrollbar = true;
-      display-drun = "   Apps ";
-      display-run = "   Run ";
-      display-window = " 﩯  Window";
-      disable-history = false;
-      display-Network = " 󰤨  Network";
-      sidebar-mode = true;
-      };
-    theme = "catppuccin-mocha";
+      }'';
     };
+    firefox.enable = true;
+    rofi = {
+      enable = true;
+      extraConfig = {
+        modi = "run,drun,window";
+        icon-theme = "Oranchelo";
+        show-icons = true;
+        terminal = "alacritty";
+        drun-display-format = "{icon} {name}";
+        location = 0;
+        hide-scrollbar = true;
+        display-drun = "   Apps ";
+        display-run = "   Run ";
+        display-window = " 﩯  Window";
+        disable-history = false;
+        display-Network = " 󰤨  Network";
+        sidebar-mode = true;
+        };
+      theme = "catppuccin-mocha";
+    };
+    avizo.enable = true;
   };
   services = {
     dunst = {
