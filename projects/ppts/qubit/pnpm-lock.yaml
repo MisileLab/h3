@@ -16,7 +16,7 @@ dependencies:
     version: 3.0.1
   reveal.js:
     specifier: ^5.0.2
-    version: 5.0.4
+    version: 5.0.5
 
 devDependencies:
   '@sveltejs/vite-plugin-svelte':
@@ -1422,8 +1422,8 @@ packages:
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
     dev: true
 
-  /reveal.js@5.0.4:
-    resolution: {integrity: sha512-480pVhre9SXWuE4QbDwG0nPrip3TkifflqaKQWF8Ynf4iYIUBfgu5leeMso0srubQsZQ+G2OzktAfAkrvBY0Ww==}
+  /reveal.js@5.0.5:
+    resolution: {integrity: sha512-MPWPV/cRlkZhh72dAGYv/bUCr9ulwM2/ucCqiL/KN4tvhb6VvN49iwOyWHE08wppj8lMQXi2xbS3kyKgfyTYqg==}
     engines: {node: '>=18.0.0'}
     dev: false
 
