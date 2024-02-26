@@ -1,11 +1,12 @@
 { config, pkgs, catppuccin, ... }:
 let 
+  c = ./config.nix;
   custom-ctps = {
     waybar = builtins.fetchGit{url="https://github.com/catppuccin/waybar.git";rev="f74ab1eecf2dcaf22569b396eed53b2b2fbe8aff";};
     dunst = builtins.fetchGit{url="https://github.com/catppuccin/dunst.git";rev="a72991e56338289a9fce941b5df9f0509d2cba09";};
   };
   returnColorCSS = {r, g, b, a, addi ? ""}: ''
-    /*backdrop-filter: blur(5px);*/
+    ${(if c.gtk4 then "backdrop-filter: blur(5px);" else "")}
     background: rgba(${toString r}, ${toString g}, ${toString b}, ${toString a});
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     border-radius: 0;
@@ -57,12 +58,15 @@ in
       };
       window.titlebar = false;
     };
-    package = (if pkgs.system == "x86_64-linux" then pkgs.swayfx else pkgs.sway);
+    package = pkgs.swayfx;
     xwayland = true;
   };
 
   programs = {
-    fish = {catppuccin.enable = true;plugins = [{name="tide";src=pkgs.fishPlugins.tide.src;}];};
+    fish = {
+      catppuccin.enable = true;
+      plugins = [{name="tide"; src=pkgs.fishPlugins.tide.src;}];
+    };
     alacritty = {
       enable = true;
       catppuccin.enable = true;
@@ -118,79 +122,85 @@ in
         format = "{icon} {capacity}%";
         format-icons = [" " " " " " " " " "];
         max-length = 25;
-     };
-     virt-manager.enable = true;
-     sway = {window = {
-       format = "{app_id} - {title}";
-       max-length = 20;
-    };};
-      }];
-      style = ''
-        @import "${custom-ctps.waybar}/themes/mocha.css";
-        * {
-          font-family: 'Fira Code', monospace;
-        }
-        window#waybar {${returnColorCSS({r=108;g=112;b=134;a=0.4;})}}
-        #workspaces button {
-          ${returnColorCSS({r=108;g=112;b=134;a=0.4;addi=''
-            padding-left: 6px;
-            padding-right: 6px;
-          '';})}
-        }
-        #workspaces button.active {
-          ${returnColorCSS({r=147;g=153;b=178;a=0.6;})}
-        }
-        #workspace button.urgent {
-          background: rgba(249, 226, 175, 0.6);
-        }
-        #workspace button.hover {
-          ${returnColorCSS({r=127;g=132;b=156;a=0.6;addi=''
-            padding-left: 6px;
-            padding-right: 6px;
-          '';})}
-        }
-        .modules-left * {
+      };
+      virt-manager.enable = true;
+      sway = {
+        window = {
+          format = "{app_id} - {title}";
+          max-length = 20;
+        };
+      };
+    }];
+    style = ''
+      @import "${custom-ctps.waybar}/themes/mocha.css";
+      * {
+        font-family: 'Fira Code', monospace;
+      }
+      window#waybar {${returnColorCSS({r=108;g=112;b=134;a=0.4;})}}
+      #workspaces button {
+        ${returnColorCSS({r=108;g=112;b=134;a=0.4;addi=''
+          padding-left: 6px;
+          padding-right: 6px;
+        '';})}
+      }
+      #workspaces button.active {
+        ${returnColorCSS({r=147;g=153;b=178;a=0.6;})}
+      }
+      #workspace button.urgent {
+        background: rgba(249, 226, 175, 0.6);
+      }
+      #workspace button.hover {
+        ${returnColorCSS({r=127;g=132;b=156;a=0.6;addi=''
+          padding-left: 6px;
+          padding-right: 6px;
+        '';})}
+      }
+      .modules-left * {
+        color: @subtext1;
+      }
+      .modules-center * {
+        color: @text;
+      }
+      .modules-right * {
+        ${returnColorCSS({r=147;g=153;b=178;a=0.6;addi=''
+          padding-left: 6px;
+          padding-right: 6px;
           color: @subtext1;
-        }
-        .modules-center * {
-          color: @text;
-        }
-        .modules-right * {
-          ${returnColorCSS({r=147;g=153;b=178;a=0.6;addi=''
-            padding-left: 6px;
-            padding-right: 6px;
-            color: @subtext1;
-          '';})};
-        }
-        #battery.warning {
-          color: @yellow;
-        }
-        #battery.critical {
-          color: @red;
-        }
-      '';
+        '';})};
+      }
+      #battery.warning {
+        color: @yellow;
+      }
+      #battery.critical {
+        color: @red;
+      }
+    '';
+  };
+  firefox.enable = true;
+  rofi = {
+    enable = true;
+    extraConfig = {
+      modi = "run,drun,window";
+      icon-theme = "Oranchelo";
+      show-icons = true;
+      terminal = "alacritty";
+      drun-display-format = "{icon} {name}";
+      location = 0;
+      hide-scrollbar = true;
+      display-drun = "   Apps ";
+      display-run = "   Run ";
+      display-window = " 﩯  Window";
+      disable-history = false;
+      display-Network = " 󰤨  Network";
+      sidebar-mode = true;
+      };
+    theme = "catppuccin-mocha";
     };
-    firefox.enable = true;
-    rofi = {enable = true;extraConfig = {
-#configuration = {
-    modi = "run,drun,window";
-    icon-theme = "Oranchelo";
-    show-icons = true;
-    terminal = "alacritty";
-    drun-display-format = "{icon} {name}";
-    location = 0;
-    hide-scrollbar = true;
-    display-drun = "   Apps ";
-    display-run = "   Run ";
-    display-window = " 﩯  Window";
-    disable-history = false;
-    display-Network = " 󰤨  Network";
-    sidebar-mode = true;
-#};
-};
-theme = "catppuccin-mocha";
-};
-};
-
-  services = { dunst = {enable = true; configFile = "${custom-ctps.dunst}/src/mocha.conf";};};
+  };
+  services = {
+    dunst = {
+      enable = true;
+      configFile = "${custom-ctps.dunst}/src/mocha.conf";
+    };
+  };
 }
