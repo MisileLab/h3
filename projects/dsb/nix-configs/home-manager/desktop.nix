@@ -59,7 +59,6 @@ in
         {command = "${pkgs.waybar}/bin/waybar";}
         {command = "${pkgs.swaybg}/bin/swaybg --image ~/.config/home-manager/bg.png";}
         {command = "${pkgs.wl-clipboard}/bin/wl-paste -t text --watch ${pkgs.clipman}/bin/clipman store --no-persist";}
-        {command = "${pkgs.kime}/bin/kime";}
       ];
       menu = "${pkgs.rofi}/bin/rofi -show drun";
       terminal = "${pkgs.alacritty}/bin/alacritty";
