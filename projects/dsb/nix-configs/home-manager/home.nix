@@ -12,11 +12,17 @@ in
     topgrade sbctl tealdeer synology-drive-client bluez brightnessctl gnupg
 
     # Development
-    git niv ghc cabal-install rustup pwndbg go temurin-bin-21
-    python312Full pkg-config edgedb fh nixpkgs-fmt
-    hub poetry d2 micromamba pdm
-    mypy dvc snyk ghidra nasm
+    git niv cabal-install pwndbg pkg-config edgedb fh nixpkgs-fmt
+    hub poetry d2 micromamba pdm mypy dvc snyk ghidra
     # cargo-update need to merge (https://github.com/NixOS/nixpkgs/pull/288149)
+
+    # Language compiler and lsp
+    ghc
+    rustup
+    go
+    temurin-bin-21
+    python312Full
+    nasm
 
     # Utils
     file wget imagemagick usbutils axel onefetch fastfetch ouch wgetpaste
@@ -76,6 +82,10 @@ in
     };
   };
   programs = {
+    direnv = {
+      enable = true;
+      nix-direnv.enable = true;
+    };
     eza.enable = true;
     bat = {
       enable = true;

@@ -13,10 +13,11 @@
 
   hardware = {
     opengl = {enable = true; driSupport = true;};
-    pulseaudio.enable = true;
     enableAllFirmware = true;
     enableRedistributableFirmware = true;
   };
+  
+  security.rtkit.enable = true;
 
   time.hardwareClockInLocalTime = true;
 
@@ -36,6 +37,11 @@
       updater.enable = true;
     };
     tlp.enable = true;
+    pipewire = {
+      enable = true;
+      alsa = {enable = true;support32Bit = true;};
+      pulse.enable = true;
+    };
   };
 
   virtualisation = {
@@ -60,5 +66,8 @@
 
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [kdiskmark];
-  programs.steam.enable = true;
+  programs = {
+    nix-ld.enable = true;
+    steam.enable = true;
+  };
 }
