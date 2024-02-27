@@ -28,13 +28,14 @@
     printing.enable = true;
     avahi = {
       enable = true;
-      nssmdns = true;
+      nssmdns4 = true;
       openFirewall = true;
     };
     clamav = {
       daemon.enable = true;
       updater.enable = true;
     };
+    tlp.enable = true;
   };
 
   virtualisation = {

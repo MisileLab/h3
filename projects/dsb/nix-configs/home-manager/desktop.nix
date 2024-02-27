@@ -40,7 +40,7 @@ in
       shadows enable
       for_window [class=\".*\"] opacity 0.9
       for_window [app_id=\".*\"] opacity 0.9
-      bindsym Shift+Print	exec ${pkgs.sway-contrib.grimshot} --notify save area
+      bindsym Shift+Print	exec ${pkgs.sway-contrib.grimshot}/bin/grimshot --notify save area
       bindsym XF86AudioRaiseVolume exec ${pkgs.avizo}/bin/volumectl -u up
       bindsym XF86AudioLowerVolume exec ${pkgs.avizo}/bin/volumectl -u down
       bindsym XF86AudioMute exec ${pkgs.avizo}/bin/volumectl toggle-mute
@@ -57,6 +57,7 @@ in
         {command = "${pkgs.waybar}/bin/waybar";}
         {command = "${pkgs.swaybg}/bin/swaybg --image ~/.config/home-manager/bg.png";}
         {command = "${pkgs.wl-clipboard}/bin/wl-paste -t text --watch ${pkgs.clipman} store --no-persist";}
+        {command = "${pkgs.kime}/bin/kime";}
       ];
       menu = "${pkgs.rofi}/bin/rofi -show drun";
       terminal = "${pkgs.alacritty}/bin/alacritty";

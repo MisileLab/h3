@@ -16,6 +16,7 @@ in
     python312Full pkg-config edgedb fh nixpkgs-fmt
     hub poetry d2 micromamba pdm
     mypy dvc snyk ghidra
+    # cargo-update need to merge (https://github.com/NixOS/nixpkgs/pull/288149)
 
     # Utils
     file wget imagemagick usbutils axel onefetch fastfetch ouch wgetpaste
@@ -32,13 +33,16 @@ in
     pulsemixer galaxy-buds-client mpv
 
     # Some chat and game
-    irssi ferium
+    irssi ferium vesktop
     (tetrio-desktop.override {
       withTetrioPlus = true;
     })
 
     # Compatibility
-    figma-linux vesktop wineWowPackages.stable appimage-run
+    figma-linux wineWowPackages.stable appimage-run
+    (pkgs.writeShellScriptBin "discord" ''
+      exec ${pkgs.vesktop}/bin/vesktop --enable-features=UseOzonePlatform --ozone-platform=wayland
+    '')
   ]
   ++ (with llvmPackages_latest; [clangUseLLVM openmp libunwind]) # llvm
   ++ (with nodePackages_latest; [nodejs pnpm]) # nodejs
@@ -63,7 +67,14 @@ in
   catppuccin.flavour = "mocha";
   fonts.fontconfig.enable = true;
   nixpkgs.config.allowUnfree = true;
-  xdg.enable = true;
+  xdg = {
+    enable = true;
+    portal = {
+      enable = true;
+      extraPortals = with pkgs; [xdg-desktop-portal-wlr xdg-desktop-portal-gtk];
+      config.common.default = ["gtk" "wlr"];
+    };
+  };
   programs = {
     eza.enable = true;
     bat = {
