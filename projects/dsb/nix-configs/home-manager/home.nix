@@ -15,7 +15,7 @@ in
     git niv ghc cabal-install rustup pwndbg go temurin-bin-21
     python312Full pkg-config edgedb fh nixpkgs-fmt
     hub poetry d2 micromamba pdm
-    mypy dvc snyk ghidra
+    mypy dvc snyk ghidra nasm
     # cargo-update need to merge (https://github.com/NixOS/nixpkgs/pull/288149)
 
     # Utils
@@ -27,7 +27,7 @@ in
     dhcpcd cloudflare-warp trayscale tor
 
     # Fonts
-    fira-code-nerdfont nanum openmoji-color pretendard
+    fira-code-nerdfont nanum pretendard noto-fonts-color-emoji
 
     # Sound
     pulsemixer galaxy-buds-client mpv
