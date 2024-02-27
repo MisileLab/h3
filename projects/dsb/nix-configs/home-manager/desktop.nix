@@ -49,6 +49,8 @@ in
       bindsym XF86MonBrightnessUp exec ${pkgs.avizo}/bin/lightctl up
       bindsym XF86MonBrightnessDown exec ${pkgs.avizo}/bin/lightctl down
 
+      bindsym Mod1+y exec ${pkgs.clipman}/bin/clipman pick --tool="rofi" --max-items=30
+
       exec "${pkgs.avizo}/bin/avizo-service"
     '';
     config = {
@@ -56,7 +58,7 @@ in
       startup = [
         {command = "${pkgs.waybar}/bin/waybar";}
         {command = "${pkgs.swaybg}/bin/swaybg --image ~/.config/home-manager/bg.png";}
-        {command = "${pkgs.wl-clipboard}/bin/wl-paste -t text --watch ${pkgs.clipman} store --no-persist";}
+        {command = "${pkgs.wl-clipboard}/bin/wl-paste -t text --watch ${pkgs.clipman}/bin/clipman store --no-persist";}
         {command = "${pkgs.kime}/bin/kime";}
       ];
       menu = "${pkgs.rofi}/bin/rofi -show drun";
@@ -118,7 +120,7 @@ in
           tooltip-format-wifi = "{essid} ({signalStrength}%) ";
           tooltip-format-ethernet = "{ifname} ";
           tooltip-format-disconnected = "Disconnected";
-          max-length = 50;
+          max-length = 40;
       };
       clock = {
         interval = 1;
@@ -137,11 +139,9 @@ in
         format-icons = [" " " " " " " " " "];
         max-length = 25;
       };
-      sway = {
-        window = {
-          format = "{app_id} - {title}";
-          max-length = 20;
-        };
+      "sway/window" = {
+        format = "{app_id} - {title}";
+        max-length = 50;
       };
     }];
     style = ''
