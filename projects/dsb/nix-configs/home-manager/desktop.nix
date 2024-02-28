@@ -77,6 +77,11 @@ in
     helix = {
       enable = true;
       catppuccin.enable = true;
+      languages = { language = [{
+        name = "python";
+        auto-format = false;
+        indent = {tab-width = 2; unit = " ";};
+      }];};
     };
     fish = {
       catppuccin.enable = true;

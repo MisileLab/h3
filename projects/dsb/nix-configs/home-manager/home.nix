@@ -30,7 +30,7 @@ in
     killall
 
     # Network
-    dhcpcd cloudflare-warp trayscale tor
+    dhcpcd cloudflare-warp trayscale tor-browser-bundle-bin
 
     # Fonts
     fira-code-nerdfont nanum pretendard noto-fonts-color-emoji
@@ -141,7 +141,7 @@ in
       init = {defaultBranch = "main";};
       };
     };
-  };
+  };  
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
