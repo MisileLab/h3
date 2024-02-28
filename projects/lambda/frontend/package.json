@@ -23,7 +23,7 @@
   "dependencies": {
     "@kobalte/core": "0.12.1",
     "@solidjs/router": "0.12.4",
-    "chart.js": "4.4.1",
+    "chart.js": "4.4.2",
     "clsx": "2.1.0",
     "mobile-device-detect": "0.4.3",
     "moment": "2.30.1",
