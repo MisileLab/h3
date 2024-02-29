@@ -2,4 +2,4 @@
     remote = remote
     autostage = true
 ['remote "remote"']
-    url = /home/misile/nas/repos/h3
+    url = ../../nas/repos/h3

