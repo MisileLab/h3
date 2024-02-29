@@ -21,7 +21,7 @@
     "vite-plugin-solid": "2.10.1"
   },
   "dependencies": {
-    "@kobalte/core": "0.12.1",
+    "@kobalte/core": "0.12.2",
     "@solidjs/router": "0.12.4",
     "chart.js": "4.4.2",
     "clsx": "2.1.0",
