@@ -12,8 +12,8 @@ in
     topgrade sbctl tealdeer synology-drive-client bluez brightnessctl gnupg
 
     # Development
-    git niv cabal-install pwndbg pkg-config edgedb fh nixpkgs-fmt
-    hub poetry d2 micromamba pdm mypy dvc snyk ghidra
+    git niv cabal-install pkg-config edgedb fh nixpkgs-fmt
+    hub poetry d2 micromamba pdm mypy dvc snyk ghidra pwndbg
     # cargo-update need to merge (https://github.com/NixOS/nixpkgs/pull/288149)
 
     # Language compiler and lsp
@@ -52,6 +52,12 @@ in
     (pkgs.writeShellScriptBin "vscode" ''
       exec ${pkgs.vscodium}/bin/codium --enable-features=UseOzonePlatform --ozone-platform=wayland
     '')
+    (pkgs.writeShellScriptBin "gdb" ''
+      exec ${pkgs.pwndbg}/bin/pwndbg
+    '')
+    (pkgs.writeShellScriptBin "pwntools-gdb" ''
+      exec ${pkgs.pwndbg}/bin/pwndbg
+    '')
   ]
   ++ (with llvmPackages_latest; [clangUseLLVM openmp libunwind]) # llvm
   ++ (with nodePackages_latest; [nodejs pnpm]) # nodejs
@@ -84,6 +90,7 @@ in
       config.common.default = ["gtk" "wlr"];
     };
   };
+  gtk = {enable = true;catppuccin.enable = true;};
   programs = {
     vscode = {
       enable = true;
