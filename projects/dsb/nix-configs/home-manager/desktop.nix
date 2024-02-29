@@ -4,6 +4,7 @@ let
   custom-ctps = {
     waybar = builtins.fetchGit{url="https://github.com/catppuccin/waybar.git";rev="f74ab1eecf2dcaf22569b396eed53b2b2fbe8aff";};
     dunst = builtins.fetchGit{url="https://github.com/catppuccin/dunst.git";rev="a72991e56338289a9fce941b5df9f0509d2cba09";};
+    delta = builtins.fetchGit{url="https://github.com/catppuccin/delta";rev="21b37ac3138268d92cee71dfc8539d134817580a";};
   };
   returnColorCSS = {r, g, b, a, addi ? ""}: ''
     ${(if c.gtk4 then "backdrop-filter: blur(5px)" else "")}
@@ -40,7 +41,12 @@ in
       shadows enable
       for_window [class=\".*\"] opacity 0.9
       for_window [app_id=\".*\"] opacity 0.9
-      bindsym Shift+Print	exec ${pkgs.sway-contrib.grimshot}/bin/grimshot --notify save area
+      bindsym Print exec ${pkgs.sway-contrib.grimshot}/bin/grimshot --notify copy area
+      bindsym Shift+Print	exec ${pkgs.sway-contrib.grimshot}/bin/grimshot --notify copy screen
+      bindsym Shift+Alt+Print exec ${pkgs.sway-contrib.grimshot}/bin/grimshot --notify savecopy anything
+
+      bindsym Alt+Print exec ${pkgs.sway-contrib.grimshot}/bin/grimshot --notify save area
+      
       bindsym XF86AudioRaiseVolume exec ${pkgs.avizo}/bin/volumectl -u up
       bindsym XF86AudioLowerVolume exec ${pkgs.avizo}/bin/volumectl -u down
       bindsym XF86AudioMute exec ${pkgs.avizo}/bin/volumectl toggle-mute
@@ -74,6 +80,12 @@ in
   };
 
   programs = {
+    git = {
+      delta.options = {
+        features = "catpuccin-mocha";
+      };
+      includes = [{path = "${custom-ctps.delta}/themes/mocha.gitconfig";}];
+    };
     helix = {
       enable = true;
       catppuccin.enable = true;

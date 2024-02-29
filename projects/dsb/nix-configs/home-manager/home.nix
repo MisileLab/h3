@@ -27,7 +27,7 @@ in
     # Utils
     file wget imagemagick usbutils axel onefetch fastfetch ouch wgetpaste
     hyperfine hdparm duperemove hydra-check glow obs-studio virt-manager
-    killall
+    killall delta
 
     # Network
     dhcpcd cloudflare-warp trayscale tor-browser-bundle-bin
@@ -48,6 +48,9 @@ in
     figma-linux wineWowPackages.stable appimage-run
     (pkgs.writeShellScriptBin "discord" ''
       exec ${pkgs.vesktop}/bin/vesktop --enable-features=UseOzonePlatform --ozone-platform=wayland
+    '')
+    (pkgs.writeShellScriptBin "vscode" ''
+      exec ${pkgs.vscodium}/bin/codium --enable-features=UseOzonePlatform --ozone-platform=wayland
     '')
   ]
   ++ (with llvmPackages_latest; [clangUseLLVM openmp libunwind]) # llvm
@@ -82,6 +85,10 @@ in
     };
   };
   programs = {
+    vscode = {
+      enable = true;
+      package = pkgs.vscodium;
+    };
     direnv = {
       enable = true;
       nix-direnv.enable = true;
@@ -139,6 +146,7 @@ in
       extraConfig = { pull = {rebase = false; };
       safe = { directory = "*"; };
       init = {defaultBranch = "main";};
+      delta.enable = true;
       };
     };
   };  
