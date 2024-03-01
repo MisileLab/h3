@@ -30,7 +30,7 @@ in
     # Utils
     file wget imagemagick usbutils axel onefetch fastfetch ouch wgetpaste
     hyperfine hdparm duperemove hydra-check glow obs-studio virt-manager
-    killall delta qemu
+    killall delta qemu screen
 
     # Network
     dhcpcd cloudflare-warp trayscale tor-browser-bundle-bin
@@ -117,6 +117,7 @@ in
       shellInit = ''
         fish_add_path -m ~/.cargo/bin
         fish_add_path -m ~/.avm/bin
+        fish_add_path -m ~/.local/share/solana/install/active_release/bin
         
         alias nix-clean="nix store optimise && sudo nix store optimise && nix-collect-garbage -d && sudo nix-collect-garbage -d"
         alias cat="bat"
