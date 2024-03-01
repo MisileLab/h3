@@ -14,7 +14,10 @@ in
     # Development
     git niv cabal-install pkg-config edgedb fh nixpkgs-fmt
     hub poetry d2 micromamba pdm mypy dvc snyk ghidra pwndbg
-    # cargo-update need to merge (https://github.com/NixOS/nixpkgs/pull/288149)
+    #cargo-update
+
+    # Some cryptos
+    solana-validator
 
     # Language compiler and lsp
     ghc
@@ -27,7 +30,7 @@ in
     # Utils
     file wget imagemagick usbutils axel onefetch fastfetch ouch wgetpaste
     hyperfine hdparm duperemove hydra-check glow obs-studio virt-manager
-    killall delta
+    killall delta qemu
 
     # Network
     dhcpcd cloudflare-warp trayscale tor-browser-bundle-bin
@@ -112,6 +115,9 @@ in
     fish = {
       enable = true;
       shellInit = ''
+        fish_add_path -m ~/.cargo/bin
+        fish_add_path -m ~/.avm/bin
+        
         alias nix-clean="nix store optimise && sudo nix store optimise && nix-collect-garbage -d && sudo nix-collect-garbage -d"
         alias cat="bat"
         alias ocat="${pkgs.coreutils}/bin/cat"
