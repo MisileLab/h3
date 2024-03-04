@@ -31,7 +31,7 @@ dependencies:
     version: 1.0.7(tailwindcss@3.4.1)
   vite-tsconfig-paths:
     specifier: 4.3.1
-    version: 4.3.1(typescript@5.3.3)(vite@5.1.4)
+    version: 4.3.1(typescript@5.3.3)(vite@5.1.5)
 
 devDependencies:
   autoprefixer:
@@ -45,7 +45,7 @@ devDependencies:
     version: 8.4.35
   solid-devtools:
     specifier: 0.29.3
-    version: 0.29.3(solid-js@1.8.15)(vite@5.1.4)
+    version: 0.29.3(solid-js@1.8.15)(vite@5.1.5)
   tailwind-merge:
     specifier: 2.2.1
     version: 2.2.1
@@ -56,11 +56,11 @@ devDependencies:
     specifier: 5.3.3
     version: 5.3.3
   vite:
-    specifier: 5.1.4
-    version: 5.1.4
+    specifier: 5.1.5
+    version: 5.1.5
   vite-plugin-solid:
     specifier: 2.10.1
-    version: 2.10.1(solid-js@1.8.15)(vite@5.1.4)
+    version: 2.10.1(solid-js@1.8.15)(vite@5.1.5)
 
 packages:
 
@@ -1663,7 +1663,7 @@ packages:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
 
-  /solid-devtools@0.29.3(solid-js@1.8.15)(vite@5.1.4):
+  /solid-devtools@0.29.3(solid-js@1.8.15)(vite@5.1.5):
     resolution: {integrity: sha512-9j3VxVbEoC54ML22gAMytR8ZS1nk9xKatsWziKSkI4c/Bcyh4sxQBGESHuXSLs9xaxpyGVTmFl3hknoxEpKzlA==}
     peerDependencies:
       solid-js: ^1.8.0
@@ -1681,7 +1681,7 @@ packages:
       '@solid-devtools/debugger': 0.23.3(solid-js@1.8.15)
       '@solid-devtools/shared': 0.13.1(solid-js@1.8.15)
       solid-js: 1.8.15
-      vite: 5.1.4
+      vite: 5.1.5
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -1886,7 +1886,7 @@ packages:
     resolution: {integrity: sha512-hGdgQozCsQJMyfK5urgFcWEqsSSrK63Awe0t/IMR0bZ0QMtnuaiHzThW81guu3qx9abLi99NEuiaN6P9gVYsNg==}
     dev: true
 
-  /vite-plugin-solid@2.10.1(solid-js@1.8.15)(vite@5.1.4):
+  /vite-plugin-solid@2.10.1(solid-js@1.8.15)(vite@5.1.5):
     resolution: {integrity: sha512-kfVdNLWaJqaJVL52U6iCCKNW/nXE7bS1VVGOWPGllOkJfcNILymVSY0LCBLSnyy0iYnRtrXpiHm14rMuzeC7CA==}
     peerDependencies:
       '@testing-library/jest-dom': ^5.16.6 || ^5.17.0 || ^6.*
@@ -1902,13 +1902,13 @@ packages:
       merge-anything: 5.1.7
       solid-js: 1.8.15
       solid-refresh: 0.6.3(solid-js@1.8.15)
-      vite: 5.1.4
-      vitefu: 0.2.5(vite@5.1.4)
+      vite: 5.1.5
+      vitefu: 0.2.5(vite@5.1.5)
     transitivePeerDependencies:
       - supports-color
     dev: true
 
-  /vite-tsconfig-paths@4.3.1(typescript@5.3.3)(vite@5.1.4):
+  /vite-tsconfig-paths@4.3.1(typescript@5.3.3)(vite@5.1.5):
     resolution: {integrity: sha512-cfgJwcGOsIxXOLU/nELPny2/LUD/lcf1IbfyeKTv2bsupVbTH/xpFtdQlBmIP1GEK2CjjLxYhFfB+QODFAx5aw==}
     peerDependencies:
       vite: '*'
@@ -1919,14 +1919,14 @@ packages:
       debug: 4.3.4
       globrex: 0.1.2
       tsconfck: 3.0.2(typescript@5.3.3)
-      vite: 5.1.4
+      vite: 5.1.5
     transitivePeerDependencies:
       - supports-color
       - typescript
     dev: false
 
-  /vite@5.1.4:
-    resolution: {integrity: sha512-n+MPqzq+d9nMVTKyewqw6kSt+R3CkvF9QAKY8obiQn8g1fwTscKxyfaYnC632HtBXAQGc1Yjomphwn1dtwGAHg==}
+  /vite@5.1.5:
+    resolution: {integrity: sha512-BdN1xh0Of/oQafhU+FvopafUp6WaYenLU/NFoL5WyJL++GxkNfieKzBhM24H3HVsPQrlAqB7iJYTHabzaRed5Q==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
@@ -1959,7 +1959,7 @@ packages:
     optionalDependencies:
       fsevents: 2.3.3
 
-  /vitefu@0.2.5(vite@5.1.4):
+  /vitefu@0.2.5(vite@5.1.5):
     resolution: {integrity: sha512-SgHtMLoqaeeGnd2evZ849ZbACbnwQCIwRH57t18FxcXoZop0uQu0uzlIhJBlF/eWVzuce0sHeqPcDo+evVcg8Q==}
     peerDependencies:
       vite: ^3.0.0 || ^4.0.0 || ^5.0.0
@@ -1967,7 +1967,7 @@ packages:
       vite:
         optional: true
     dependencies:
-      vite: 5.1.4
+      vite: 5.1.5
     dev: true
 
   /which@2.0.2:
