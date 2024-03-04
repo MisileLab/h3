@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@kobalte/core": "0.12.2",
-    "@solidjs/router": "0.12.4",
+    "@solidjs/router": "0.12.5",
     "clsx": "2.1.0",
     "dayjs": "1.11.10",
     "mobile-device-detect": "0.4.3",
