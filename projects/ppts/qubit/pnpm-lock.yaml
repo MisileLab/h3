@@ -7,10 +7,10 @@ settings:
 dependencies:
   '@fontsource-variable/jetbrains-mono':
     specifier: ^5.0.18
-    version: 5.0.19
+    version: 5.0.20
   '@fontsource-variable/manrope':
     specifier: ^5.0.17
-    version: 5.0.18
+    version: 5.0.19
   d3-interpolate:
     specifier: ^3.0.1
     version: 3.0.1
@@ -293,12 +293,12 @@ packages:
     dev: true
     optional: true
 
-  /@fontsource-variable/jetbrains-mono@5.0.19:
-    resolution: {integrity: sha512-7PTG1Kp3B/FgoNVPT8da4humj5JxQYxTtO08ZPS2IfanS37Yb/WShbgScnG/iupuFwiRnHVkIuC/2czxItxmyg==}
+  /@fontsource-variable/jetbrains-mono@5.0.20:
+    resolution: {integrity: sha512-IWJnmY9vT5Olcac1vzA7FMdnojCrZWMq+g7SqC2jsFpY0LQTjIgp9gBjjw9kUOkNbLw37/evZO4w6rdPeMA68A==}
     dev: false
 
-  /@fontsource-variable/manrope@5.0.18:
-    resolution: {integrity: sha512-BmTWanceVCX3/xAY0VhBLM9fwEwe+Z/jR3/EPDLxas6+b3gnBChI+MYh+vMxDPEavfpEhcQptCCNJ3kQxn07iw==}
+  /@fontsource-variable/manrope@5.0.19:
+    resolution: {integrity: sha512-1WQ1NFnS3tfZ+ZQ3nNJ6sQGpIr6RWhq/wTovlcTlmvVrd53lnmITSolq6vBSEgVef6DWNFUehEvodDcyL3O6EA==}
     dev: false
 
   /@isaacs/cliui@8.0.2:
