@@ -152,6 +152,7 @@ const Admin: Component = () => {
                     <TableRow>
                       <TableHead>제출한 시간</TableHead>
                       <TableHead>학번/이름</TableHead>
+                      <TableHead>전화번호</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -163,6 +164,7 @@ const Admin: Component = () => {
                               <As component={TableRow}>
                                 <TableCell>{i().time.local().format('MM월 DD일 hh/mm/ss')}</TableCell>
                                 <TableCell>{i().name}</TableCell>
+                                <TableCell>{i().pnumber}</TableCell>
                               </As>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
