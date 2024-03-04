@@ -5,6 +5,7 @@ import { Route, Router } from '@solidjs/router';
 
 import App from './App';
 import AnA from './ana';
+import Admin from './Admin';
 
 const root = document.getElementById('root');
 
@@ -18,5 +19,6 @@ render(() =>
   <Router>
     <Route path="/" component={App} />
     <Route path="/ana" component={AnA}/>
+    <Route path="/admin" component={Admin}/>
   </Router>
 , root!);
