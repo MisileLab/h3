@@ -1,8 +1,0 @@
-test-ledger
-
-# Rust.gitignore by ignofierplus
-debug/
-target/
-Cargo.lock
-**/*.rs.bk
-*.pdb
