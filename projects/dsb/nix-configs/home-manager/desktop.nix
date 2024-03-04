@@ -74,12 +74,21 @@ in
         size = 12.0;
       };
       window.titlebar = false;
+      modifier = "Mod4";
     };
     package = pkgs.swayfx;
     xwayland = true;
   };
 
   programs = {
+    zellij = {
+      enable = true;
+      enableFishIntegration = true;
+      settings = {
+        theme = "catppuccin-mocha";
+        default_shell = "fish";
+      };
+    };
     git = {
       delta.options = {
         features = "catpuccin-mocha";
@@ -89,11 +98,22 @@ in
     helix = {
       enable = true;
       catppuccin.enable = true;
-      languages = { language = [{
-        name = "python";
-        auto-format = false;
-        indent = {tab-width = 2; unit = " ";};
-      }];};
+      languages = {
+        language = [{
+          name = "python";
+          auto-format = false;
+          indent = {tab-width = 2; unit = " ";};
+        } {
+          name = "jsx";
+          language-servers = ["tailwindcss-ls" "typescript-language-server"];
+        } {
+          name = "tsx";
+          language-servers = ["tailwindcss-ls" "typescript-language-server"];
+        } {
+          name = "svelte";
+          language-servers = ["tailwindcss-ls" "svelteserver"];
+        }];
+      };
     };
     fish = {
       catppuccin.enable = true;

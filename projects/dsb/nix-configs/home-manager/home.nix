@@ -26,6 +26,7 @@ in
     temurin-bin-21
     python312Full
     nasm
+    tailwindcss-language-server
 
     # Utils
     file wget imagemagick usbutils axel onefetch fastfetch ouch wgetpaste
@@ -63,7 +64,7 @@ in
     '')
   ]
   ++ (with llvmPackages_latest; [clangUseLLVM openmp libunwind]) # llvm
-  ++ (with nodePackages_latest; [nodejs pnpm]) # nodejs
+  ++ (with nodePackages_latest; [nodejs pnpm typescript-language-server]) # nodejs
   ++ (with python311Packages; [pip virtualenv pipx]); # python thing
 
   home.file = {
@@ -89,7 +90,7 @@ in
     enable = true;
     portal = {
       enable = true;
-      extraPortals = with pkgs; [xdg-desktop-portal-wlr xdg-desktop-portal-gtk];
+      extraPortals = with pkgs; [xdg-desktop-portal-gtk xdg-desktop-portal-wlr];
       config.common.default = ["gtk" "wlr"];
     };
   };
