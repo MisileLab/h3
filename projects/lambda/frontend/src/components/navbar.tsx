@@ -1,7 +1,6 @@
 import { A } from "@solidjs/router";
 import { revt } from "~/definition";
 import { useColorMode } from "@kobalte/core";
-import { isMobileOnly } from 'mobile-device-detect';
 import { Button } from "./ui/button";
 
 export default function NavBar() {
@@ -12,7 +11,6 @@ export default function NavBar() {
         <A href="/" class="ml-2">
           <img src={`${colorMode()}/logo.svg`} alt="icon" class="mt-0.5" width={43} />
         </A>
-        {!isMobileOnly && <h1 class="my-auto font-bold text-3xl ml-4">Lambda</h1>}
       </div>
       <div class="my-2 ml-auto flex flex-row">
         <A href="/ana" class="mr-2">

@@ -15,13 +15,12 @@ export default function AnA(): JSX.Element {
         <div class="h-screen flex flex-col">
           <NavBar />
           <div class="flex flex-grow justify-center items-center">
-            <Card class="w-fit h-fit pb-4 px-4">
+            <Card class="w-fit h-fit pb-4 px-12">
               <div class="flex flex-col items-center gap-4">
                 <h1 class="font-bold text-4xl mt-4">AnA 지원 폼</h1>
                 <Grid cols={1}>
-                  <Col span={3} class="flex flex-row gap-2">
-                    {CardwithInput("학번")}
-                    {CardwithInput("이름")}
+                  <Col span={2} class="flex flex-row gap-2">
+                    {CardwithInput("학번/이름", "00000/이름")}
                     {CardwithInput("전화번호")}
                   </Col>
                 </Grid>
@@ -43,7 +42,7 @@ export default function AnA(): JSX.Element {
 
 function _CardShorcut(title: string, content: JSX.Element, classes: string | undefined = "") {
   return (
-    <Card class={classes}>
+    <Card class={`${classes} border-none`}>
       <CardHeader>
         <CardTitle>{title}</CardTitle>
       </CardHeader>
@@ -54,8 +53,8 @@ function _CardShorcut(title: string, content: JSX.Element, classes: string | und
   );
 }
 
-function CardwithInput(title: string) {
-  return _CardShorcut(title, <Input type="text" />)
+function CardwithInput(title: string, placeholder: string | undefined = "") {
+  return _CardShorcut(title, <Input type="text" placeholder={placeholder} class="placeholder:text-gray-700" />)
 }
 
 function CardwithTextArea(title: string) {
