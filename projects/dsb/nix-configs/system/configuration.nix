@@ -65,8 +65,11 @@
         };
       };
     };
+    virtualbox.host.enable = true;
     waydroid.enable = true;
   };
+  
+  users.extraGroups.vboxusers.members = [ "user-with-access-to-virtualbox" ];
   
   systemd = {
     user.services.polkit-gnome-authentication-agent-1 = {
