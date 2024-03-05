@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@kobalte/core':
-    specifier: 0.12.2
-    version: 0.12.2(solid-js@1.8.15)
+    specifier: 0.12.3
+    version: 0.12.3(solid-js@1.8.15)
   '@solidjs/router':
     specifier: 0.12.5
     version: 0.12.5(solid-js@1.8.15)
@@ -563,8 +563,8 @@ packages:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.4.15
 
-  /@kobalte/core@0.12.2(solid-js@1.8.15):
-    resolution: {integrity: sha512-j9p4MhK4MjtqFC3gKmH6oL1Lxi/L83uaU9gOdtzmDGORIRdV4L4UcA3MVN0leQJUkmPQh1yuXJgtYcnQGQSR3A==}
+  /@kobalte/core@0.12.3(solid-js@1.8.15):
+    resolution: {integrity: sha512-c2Y0U9vyIRpPZ3KVKd2zQWuv+vrPQpt8cp0YRJTyL8JZ3sp8hfL2rer3v4Yk73JXu+pEOVRttYqFeDsrdWGsNA==}
     peerDependencies:
       solid-js: ^1.8.15
     dependencies:
