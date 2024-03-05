@@ -92,5 +92,6 @@
   programs = {
     nix-ld.enable = true;
     steam.enable = true;
+    dconf.enable = true;
   };
 }
