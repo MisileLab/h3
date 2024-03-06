@@ -1,9 +1,9 @@
 module default {
   type User {
-    name: str;
-    pnumber: str;
-    aboutme: str;
-    why: str;
+    required name: str;
+    required pnumber: str;
+    required me: str;
+    required why: str;
     portfolio: str;
   }
 }
