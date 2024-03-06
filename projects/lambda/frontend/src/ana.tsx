@@ -25,9 +25,13 @@ export default function AnA(): JSX.Element {
                   </Col>
                 </Grid>
                 <Grid cols={1} class="w-full">
-                  <Col span={2} class="flex flex-col gap-4">
+                  <Col span={3} class="flex flex-col gap-4">
                     {CardwithTextArea("자기 소개(250자 제한)")}
                     {CardwithTextArea("동아리 지원 이유(250자 제한)")}
+                    <div class="flex flex-col sm:flex-row gap-2 items-center px-6">
+                      <h3 class="text-lg font-semibold leading-none tracking-tight">포트폴리오(필수 아님)</h3>
+                      <Button>업로드</Button>
+                    </div>
                   </Col>
                 </Grid>
                 <Button class="text-xl font-semibold">신청</Button>
@@ -54,7 +58,7 @@ function _CardShorcut(title: string, content: JSX.Element, classes: string | und
 }
 
 function CardwithInput(title: string, placeholder: string | undefined = "") {
-  return _CardShorcut(title, <Input type="text" placeholder={placeholder} class="placeholder:text-gray-700" />)
+  return _CardShorcut(title, <Input type="text" placeholder={placeholder} class="placeholder:text-transparent smp:placeholder:text-gray-700" />)
 }
 
 function CardwithTextArea(title: string) {

@@ -4,5 +4,11 @@ export default {
   content: [
 	"./src/**/*.{html,js,jsx,md,mdx,ts,tsx}"
   ],
-  presets: [require("./ui.preset.js")]
+  presets: [require("./ui.preset.js")],
+  theme: {
+    screens: {
+      flip: '300px',
+      smp: '400px'
+    }
+  }
 }

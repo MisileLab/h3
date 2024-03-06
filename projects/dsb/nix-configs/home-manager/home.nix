@@ -10,6 +10,7 @@ in
   home.packages = with pkgs; [
     # System
     topgrade sbctl tealdeer synology-drive-client bluez brightnessctl gnupg
+    ungoogled-chromium
 
     # Development
     git niv cabal-install pkg-config edgedb fh nixpkgs-fmt
@@ -54,7 +55,7 @@ in
       exec ${pkgs.vesktop}/bin/vesktop --enable-features=UseOzonePlatform --ozone-platform=wayland
     '')
     (pkgs.writeShellScriptBin "vscode" ''
-      exec ${pkgs.vscodium}/bin/codium --enable-features=UseOzonePlatform --ozone-platform=wayland
+      exec ${pkgs.vscodium}/bin/codium --enable-features=UseOzonePlatform --ozone-platform=wayland $1
     '')
     (pkgs.writeShellScriptBin "gdb" ''
       exec ${pkgs.pwndbg}/bin/pwndbg
@@ -96,6 +97,10 @@ in
   };
   gtk = {enable = true;catppuccin.enable = true;};
   programs = {
+    lazygit = {
+      enable = true;
+      catppuccin.enable = true;
+    };
     vscode = {
       enable = true;
       package = pkgs.vscodium;

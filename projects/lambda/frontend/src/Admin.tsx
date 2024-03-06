@@ -1,4 +1,5 @@
-import { Index, type Component } from "solid-js";
+import { Index, type Component, Show } from "solid-js";
+import { A } from "@solidjs/router";
 import { As, ColorModeProvider, ColorModeScript } from "@kobalte/core";
 import NavBar from "./components/navbar";
 import { Card, CardContent } from "./components/ui/card";
@@ -15,129 +16,21 @@ import {
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogTitle, AlertDialogTrigger } from "./components/ui/alert-dialog";
 dayjs.extend(utc)
 
-const testdata = [
-  {
-    name: "a",
-    pnumber: "01011112222",
-    me: "I use nixos btw",
-    why: ":sunglasses:",
-    time: dayjs(),
-  },
-  {
-    name: "a",
-    pnumber: "01011112222",
-    me: "I use nixos btw\n".repeat(10),
-    why: ":sunglasses:\n".repeat(10),
-    time: dayjs(),
-  },
-  {
-    name: "a",
-    pnumber: "01011112222",
-    me: "I use nixos btw\n".repeat(10),
-    why: ":sunglasses:\n".repeat(10),
-    time: dayjs(),
-  },
-  {
-    name: "a",
-    pnumber: "01011112222",
-    me: "I use nixos btw\n".repeat(10),
-    why: ":sunglasses:\n".repeat(10),
-    time: dayjs(),
-  },
-  {
-    name: "a",
-    pnumber: "01011112222",
-    me: "I use nixos btw\n".repeat(10),
-    why: ":sunglasses:\n".repeat(10),
-    time: dayjs(),
-  },
-  {
-    name: "a",
-    pnumber: "01011112222",
-    me: "I use nixos btw\n".repeat(10),
-    why: ":sunglasses:\n".repeat(10),
-    time: dayjs(),
-  },
-  {
-    name: "a",
-    pnumber: "01011112222",
-    me: "I use nixos btw\n".repeat(10),
-    why: ":sunglasses:\n".repeat(10),
-    time: dayjs(),
-  },
-  {
-    name: "a",
-    pnumber: "01011112222",
-    me: "I use nixos btw\n".repeat(10),
-    why: ":sunglasses:\n".repeat(10),
-    time: dayjs(),
-  },
-  {
-    name: "a",
-    pnumber: "01011112222",
-    me: "I use nixos btw\n".repeat(10),
-    why: ":sunglasses:\n".repeat(10),
-    time: dayjs(),
-  },
-  {
-    name: "a",
-    pnumber: "01011112222",
-    me: "I use nixos btw\n".repeat(10),
-    why: ":sunglasses:\n".repeat(10),
-    time: dayjs(),
-  },
-  {
-    name: "a",
-    pnumber: "01011112222",
-    me: "I use nixos btw\n".repeat(10),
-    why: ":sunglasses:\n".repeat(10),
-    time: dayjs(),
-  },
-  {
-    name: "a",
-    pnumber: "01011112222",
-    me: "I use nixos btw\n".repeat(10),
-    why: ":sunglasses:\n".repeat(10),
-    time: dayjs(),
-  },
-  {
-    name: "a",
-    pnumber: "01011112222",
-    me: "I use nixos btw\n".repeat(10),
-    why: ":sunglasses:\n".repeat(10),
-    time: dayjs(),
-  },
-  {
-    name: "a",
-    pnumber: "01011112222",
-    me: "I use nixos btw\n".repeat(10),
-    why: ":sunglasses:\n".repeat(10),
-    time: dayjs(),
-  },
-  {
-    name: "a",
-    pnumber: "01011112222",
-    me: "I use nixos btw\n".repeat(10),
-    why: ":sunglasses:\n".repeat(10),
-    time: dayjs(),
-  },
-  {
-    name: "a",
-    pnumber: "01011112222",
-    me: "I use nixos btw\n".repeat(10),
-    why: ":sunglasses:\n".repeat(10),
-    time: dayjs(),
-  },
-  {
-    name: "a",
-    pnumber: "01011112222",
-    me: "I use nixos btw\n".repeat(10),
-    why: ":sunglasses:\n".repeat(10),
-    time: dayjs(),
-  },
-];
+const testdata = [];
 
 const Admin: Component = () => {
+  for (let i = 0; i < 16; i++) {
+    testdata.push({
+      name: "a",
+      pnumber: "01011112222",
+      me: "I use nixos btw",
+      why: ":sunglasses:",
+      time: dayjs(),
+      portfolio: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/NixOS_logo.svg/1280px-NixOS_logo.svg.png"
+    });
+  }
+  testdata[testdata.length - 1].portfolio = null;
+  console.log(testdata);
   return (
     <div>
       <ColorModeScript />
@@ -176,6 +69,11 @@ const Admin: Component = () => {
                                 <p>{i().why}</p>
                                 <h2 class="text-xl font-bold">전화번호</h2>
                                 <p>{i().pnumber}</p>
+                                <Show when={i().portfolio != null && i().portfolio != undefined}>
+                                  <A href={i().portfolio}>
+                                    <h2>포트폴리오</h2>
+                                  </A>
+                                </Show>
                               </AlertDialogDescription>
                             </AlertDialogContent>
                           </AlertDialog>

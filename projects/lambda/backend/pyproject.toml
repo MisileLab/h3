@@ -1,13 +1,21 @@
 [tool.poetry]
-name = "lambda"
+name = "backend"
 version = "0.1.0"
-description = "Lambda Backend"
+description = "Backend"
 authors = ["MisileLaboratory"]
 license = "MisileLab License"
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "3.12.2"
+strawberry-graphql = {extras = ["fastapi"], version = "0.219.2"}
+edgedb = "1.9.0"
+fastapi = "0.110.0"
+python-lsp-server = "1.10.0"
+uvicorn = "0.27.1"
+
+[tool.poetry.group.lsp.dependencies]
+python-lsp-server = "1.10.0"
 
 [build-system]
 requires = ["poetry-core"]
