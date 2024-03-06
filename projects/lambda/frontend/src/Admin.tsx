@@ -14,6 +14,7 @@ import {
   TableRow,
 } from "./components/ui/table";
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogTitle, AlertDialogTrigger } from "./components/ui/alert-dialog";
+import { isMobileOnly } from "mobile-device-detect";
 dayjs.extend(utc)
 
 const testdata = [];
@@ -45,7 +46,7 @@ const Admin: Component = () => {
                     <TableRow>
                       <TableHead>제출한 시간</TableHead>
                       <TableHead>학번/이름</TableHead>
-                      <TableHead>전화번호</TableHead>
+                      {!isMobileOnly && <TableHead>전화번호</TableHead>}
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -55,9 +56,9 @@ const Admin: Component = () => {
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
                               <As component={TableRow}>
-                                <TableCell>{i().time.local().format('MM월 DD일 hh/mm/ss')}</TableCell>
+                                <TableCell>{i().time.local().format('MM월 DD일 hh시 mm분')}</TableCell>
                                 <TableCell>{i().name}</TableCell>
-                                <TableCell>{i().pnumber}</TableCell>
+                                {!isMobileOnly && <TableCell>{i().pnumber}</TableCell>}
                               </As>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
