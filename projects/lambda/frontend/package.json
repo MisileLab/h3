@@ -22,9 +22,12 @@
   },
   "dependencies": {
     "@kobalte/core": "0.12.3",
+    "@solid-primitives/upload": "0.0.117",
     "@solidjs/router": "0.12.5",
     "clsx": "2.1.0",
     "dayjs": "1.11.10",
+    "graphql": "16.8.1",
+    "graphql-request": "6.1.0",
     "mobile-device-detect": "0.4.3",
     "solid-icons": "1.1.0",
     "solid-js": "1.8.15",

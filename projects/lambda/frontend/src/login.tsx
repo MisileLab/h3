@@ -1,11 +1,13 @@
-import { type Component } from 'solid-js';
+import { createSignal, type Component } from 'solid-js';
 import { ColorModeProvider, ColorModeScript, useColorMode} from '@kobalte/core';
 import NavBar from './components/navbar';
 import { Card, CardContent, CardHeader } from './components/ui/card';
 import { Input } from './components/ui/input';
 import { Button } from './components/ui/button';
+import { setCookie } from './definition';
 
 const Login: Component = () => {
+  const [key, setKey] = createSignal("");
   return (
     <div>
       <ColorModeScript />
@@ -19,8 +21,10 @@ const Login: Component = () => {
               </CardHeader>
               <CardContent>
                 <div class="flex flex-col items-center gap-4">
-                  <Input type="text" placeholder="key" />
-                  <Button>확인</Button>
+                  <Input type="text" placeholder="key" value={key()} onChange={(self)=>setKey(self.target.value)} />
+                  <Button onclick={()=>{
+                    setCookie('key', key(), 1)
+                  }}>확인</Button>
                 </div>
               </CardContent>
             </Card>

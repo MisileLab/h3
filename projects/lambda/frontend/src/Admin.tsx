@@ -1,4 +1,4 @@
-import { Index, type Component, Show } from "solid-js";
+import { Index, type Component, Show, createSignal, createEffect } from "solid-js";
 import { A } from "@solidjs/router";
 import { As, ColorModeProvider, ColorModeScript } from "@kobalte/core";
 import NavBar from "./components/navbar";
@@ -15,23 +15,34 @@ import {
 } from "./components/ui/table";
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogTitle, AlertDialogTrigger } from "./components/ui/alert-dialog";
 import { isMobileOnly } from "mobile-device-detect";
+import { User, client, getCookie, url } from "./definition";
+import { gql } from "graphql-request";
 dayjs.extend(utc)
 
-const testdata = [];
-
 const Admin: Component = () => {
-  for (let i = 0; i < 16; i++) {
-    testdata.push({
-      name: "a",
-      pnumber: "01011112222",
-      me: "I use nixos btw",
-      why: ":sunglasses:",
-      time: dayjs(),
-      portfolio: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/NixOS_logo.svg/1280px-NixOS_logo.svg.png"
-    });
+  const [data, setData] = createSignal<Array<User> | undefined>(undefined);
+  createEffect(async () => {
+  let key = getCookie("key");
+  if (key === undefined) {
+    key = "";
   }
-  testdata[testdata.length - 1].portfolio = null;
-  console.log(testdata);
+  let tmp = await client.request(gql`
+      query Query($key: String!) {
+        infos(key:$key){
+          name
+          time
+          pnumber
+          portfolio
+          me
+          why
+        }
+      }
+    `, {key: key})
+  if (tmp["infos"] === null || tmp["infos"] === undefined) {
+    throw Error("validate error");
+  }
+  setData(tmp["infos"] as unknown as User[]);
+  });
   return (
     <div>
       <ColorModeScript />
@@ -50,13 +61,13 @@ const Admin: Component = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    <Index each={testdata}>
+                    <Index each={data()}>
                       {(i) => {
                         return (
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
                               <As component={TableRow}>
-                                <TableCell>{i().time.local().format('MM월 DD일 hh시 mm분')}</TableCell>
+                                <TableCell>{dayjs(i().time).local().format('MM월 DD일 hh시 mm분')}</TableCell>
                                 <TableCell>{i().name}</TableCell>
                                 {!isMobileOnly && <TableCell>{i().pnumber}</TableCell>}
                               </As>
@@ -71,9 +82,9 @@ const Admin: Component = () => {
                                 <h2 class="text-xl font-bold">전화번호</h2>
                                 <p>{i().pnumber}</p>
                                 <Show when={i().portfolio != null && i().portfolio != undefined}>
-                                  <A href={i().portfolio}>
+                                  <a href={`${url}/files/${getCookie('key')}/${i().portfolio.slice(1, i().portfolio.length-1)}`}>
                                     <h2>포트폴리오</h2>
-                                  </A>
+                                  </a>
                                 </Show>
                               </AlertDialogDescription>
                             </AlertDialogContent>
