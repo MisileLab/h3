@@ -2,20 +2,21 @@
 
 [[package]]
 name = "z3-solver"
-version = "4.12.6.0"
+version = "4.13.0.0"
 description = "an efficient SMT solver library"
 optional = false
 python-versions = "*"
 files = [
-    {file = "z3-solver-4.12.6.0.tar.gz", hash = "sha256:9a0f30e9648ee2649adc301dbf91470bc1600f34112ffeaf1063f8a8075e1a48"},
-    {file = "z3_solver-4.12.6.0-py2.py3-none-macosx_11_0_arm64.whl", hash = "sha256:9347c9c4f966c97c807f73b1b4365d11dbb25e390b3908b1c3a6e3bceff62e6d"},
-    {file = "z3_solver-4.12.6.0-py2.py3-none-macosx_11_0_x86_64.whl", hash = "sha256:359d2af6dbcc017dadb99f286b39df101edf6ac9a45332ba15c0a2012ff46d45"},
-    {file = "z3_solver-4.12.6.0-py2.py3-none-manylinux2014_x86_64.whl", hash = "sha256:dca097b9a3026a63019eba65fe7ad120dcccec847cc33a7c0e548cfe324680fc"},
-    {file = "z3_solver-4.12.6.0-py2.py3-none-win32.whl", hash = "sha256:d795fd1a25416f9164ba6be8750c66732d998c645234b6d7f1b801b7ba5f67d4"},
-    {file = "z3_solver-4.12.6.0-py2.py3-none-win_amd64.whl", hash = "sha256:95a3725f43ec8cf2d4e7733327cdf2b9ff9caa09e0511e2b1a059000f211f605"},
+    {file = "z3-solver-4.13.0.0.tar.gz", hash = "sha256:52588e92aec7cb338fd6288ce93758ae01770f62ca0c80e8f4f2b2333feaf51b"},
+    {file = "z3_solver-4.13.0.0-py2.py3-none-macosx_11_0_arm64.whl", hash = "sha256:bca7d59a699a440247537c2180c519d682c9df3520a16ce288fced61a70d253d"},
+    {file = "z3_solver-4.13.0.0-py2.py3-none-macosx_11_0_x86_64.whl", hash = "sha256:4a4731fded91b32e1861e1c7c96e500da743bb9431246cac51f7c3ffc0f21b5d"},
+    {file = "z3_solver-4.13.0.0-py2.py3-none-manylinux2014_aarch64.whl", hash = "sha256:9d622022a3511c059915c56b2c231c84b5c1be1b82f457d7560dda3d916474fe"},
+    {file = "z3_solver-4.13.0.0-py2.py3-none-manylinux2014_x86_64.whl", hash = "sha256:8c42de82b6e3ff7ee61287d03c7af8a99f9f6554cdd1204c6b9bca96ff1cb7fb"},
+    {file = "z3_solver-4.13.0.0-py2.py3-none-win32.whl", hash = "sha256:13468e1018c817b7f794898d3100f02541d15c13ab56c0785c5acdea32a066cf"},
+    {file = "z3_solver-4.13.0.0-py2.py3-none-win_amd64.whl", hash = "sha256:3555436cfe9a5fa2d1b432fb9a5e4460e487649c22e5e68a56f7d81594d043e9"},
 ]
 
 [metadata]
 lock-version = "2.0"
 python-versions = "3.12.2"
-content-hash = "85f66bb1c8bca883d6543457ab95669a5534bc7d610517179f92f3a59e3e74bf"
+content-hash = "71e644e8634e566ff30d61e9597436cd9106f224af612f76af195b777710bdd5"
