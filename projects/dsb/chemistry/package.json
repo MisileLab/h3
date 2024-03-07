@@ -11,7 +11,7 @@
   "license": "MisileLab License",
   "devDependencies": {
     "solid-devtools": "0.29.3",
-    "typescript": "5.3.3",
+    "typescript": "5.4.2",
     "vite": "5.1.5",
     "vite-plugin-solid": "2.10.1"
   },
