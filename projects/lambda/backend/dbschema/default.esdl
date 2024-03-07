@@ -1,6 +1,5 @@
 module default {
   type User {
-    constraint exclusive on (.name);
     required name: str;
     required pnumber: str;
     required me: str;

@@ -21,6 +21,7 @@ dayjs.extend(utc)
 
 const Admin: Component = () => {
   const [data, setData] = createSignal<Array<User> | undefined>(undefined);
+  const [error, setError] = createSignal(false);
   createEffect(async () => {
   let key = getCookie("key");
   if (key === undefined) {
@@ -39,7 +40,8 @@ const Admin: Component = () => {
       }
     `, {key: key})
   if (tmp["infos"] === null || tmp["infos"] === undefined) {
-    throw Error("validate error");
+    console.error("invalid key");
+    setError(true);
   }
   setData(tmp["infos"] as unknown as User[]);
   });
@@ -47,6 +49,15 @@ const Admin: Component = () => {
     <div>
       <ColorModeScript />
       <ColorModeProvider>
+        {error() && <AlertDialog defaultOpen>
+          <AlertDialogContent>
+            <AlertDialogTitle>Invalid key</AlertDialogTitle>
+            <AlertDialogDescription class="flex flex-col gap-2">
+              No flag in here :sunglasses:
+              <iframe src="https://www.youtube.com/embed/jdUXfsMTv7o?si=sgKI5w1E8tHFf35s" title="Tux" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen />
+            </AlertDialogDescription>
+          </AlertDialogContent>
+        </AlertDialog>}
         <div class="h-screen flex flex-col">
           <NavBar />
           <div class="flex justify-center items-center h-full overflow-y-hidden">

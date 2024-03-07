@@ -1,10 +1,14 @@
 import strawberry
-from fastapi import FastAPI, UploadFile, status, Header, HTTPException
+from datetime import timezone
+from fastapi import FastAPI, Request, UploadFile, status, HTTPException
 from fastapi.responses import RedirectResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from strawberry.fastapi import GraphQLRouter
 from tomli import load
 from edgedb import create_async_client
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.util import get_remote_address
 
 from os import mkdir
 from os.path import isdir
@@ -41,30 +45,30 @@ class UserInput:
 class Query:
     @strawberry.field
     async def infos(self, key: str) -> Optional[list[User]]:
-        print("a")
         if key in keys:
             return await db.query("select User {name, pnumber, me, why, time, portfolio}")
 
-    @strawberry.field
-    async def info(self, key: str, name: str) -> Optional[User]:
-        if key in keys:
-            return await db.query_single("""
-                                                      select User {
-                                                          portfolio,
-                                                          me,
-                                                          name,
-                                                          pnumber,
-                                                          why,
-                                                          time
-                                                       }
-                                                       filter .name = <str>$name
-                                                  """, name=name)
+    # @strawberry.field
+    # async def info(self, key: str, name: str) -> Optional[User]:
+    #     if key in keys:
+    #         return await db.query_single("""
+    #                                                   select User {
+    #                                                       portfolio,
+    #                                                       me,
+    #                                                       name,
+    #                                                       pnumber,
+    #                                                       why,
+    #                                                       time
+    #                                                    }
+    #                                                    filter .name = <str>$name
+    #                                               """, name=name)
 
 @strawberry.type
 class Mutation:
     @strawberry.field
     async def send(self, i: UserInput) -> None:
-        await db.query("""
+        await db.query(
+            """
                        insert User {
                            name := <str>$name,
                            pnumber := <str>$pnumber,
@@ -72,17 +76,16 @@ class Mutation:
                            why := <str>$why,
                            time := <float64>$time,
                            portfolio := <optional str>$portfolio
-                       } unless conflict on .name else (
-                           update User set {
-                               pnumber := <str>$pnumber,
-                               me := <str>$me,
-                               why := <str>$why,
-                               time := <float64>$time,
-                               portfolio := <optional str>$portfolio
-                           }
-                       )""", name=i.name, pnumber=i.pnumber, me=i.me, why=i.why, time=datetime.utcnow().timestamp(), portfolio=i.portfolio)
+                       }""",
+            name=i.name,
+            pnumber=i.pnumber,
+            me=i.me,
+            why=i.why,
+            time=datetime.now(timezone.utc).timestamp(),
+            portfolio=i.portfolio,
+        )
         return None
- 
+
 schema = strawberry.Schema(query=Query, mutation=Mutation)
 
 graphql_app = GraphQLRouter(schema)
@@ -103,10 +106,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+limiter = Limiter(key_func=get_remote_address, default_limits="500/hour")
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
 app.include_router(graphql_app, prefix="/graphql")
 
+@limiter.limit("60/minute")
 @app.get("/")
-async def sus():
+async def sus(request: Request):
     a = SystemRandom().choice([
                    "https://www.youtube.com/watch?v=FlUKCD2G0N0",
                    "https://www.youtube.com/watch?v=jjDL_zySJv4"
@@ -114,15 +122,17 @@ async def sus():
     print(a)
     return RedirectResponse(a)
 
+@limiter.limit("300/hour")
 @app.get("/files/{key}/{name}")
-async def get_file(name: str, key: str):
+async def get_file(request: Request, name: str, key: str):
     if key in keys:
         return FileResponse(f"files/{name}")
     else:
         raise HTTPException(status.HTTP_403_FORBIDDEN)
 
+@limiter.limit("30/minute")
 @app.post("/uploadfile")
-async def uploadfile(file: UploadFile) -> str:
+async def uploadfile(request: Request, file: UploadFile) -> str:
     i = 0
     s = f"files/{SystemRandom().randint(1, 18_446_744_073_709_551_615)}_{file.filename}"
     p = Path(s)

@@ -5,7 +5,7 @@ description = "Backend"
 authors = ["MisileLaboratory"]
 license = "MisileLab License"
 readme = "README.md"
-package-mode = false
+#package-mode = false
 
 [tool.poetry.dependencies]
 python = "3.12.2"
@@ -17,6 +17,7 @@ uvicorn = "0.27.1"
 python-multipart = "0.0.9"
 jwt = "1.3.1"
 tomli = "2.0.1"
+slowapi = "0.1.9"
 
 [tool.poetry.group.lsp.dependencies]
 python-lsp-server = "1.10.0"

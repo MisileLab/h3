@@ -21,10 +21,10 @@ dependencies:
     specifier: 1.11.10
     version: 1.11.10
   graphql:
-    specifier: ^16.8.1
+    specifier: 16.8.1
     version: 16.8.1
   graphql-request:
-    specifier: ^6.1.0
+    specifier: 6.1.0
     version: 6.1.0(graphql@16.8.1)
   mobile-device-detect:
     specifier: 0.4.3

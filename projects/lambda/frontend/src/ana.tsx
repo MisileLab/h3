@@ -9,7 +9,6 @@ import { Input } from "./components/ui/input";
 import { Button } from "./components/ui/button";
 import { client, signal, url } from "./definition";
 import { gql } from "graphql-request";
-import { ssrSpread } from "solid-js/web";
 
 export default function AnA(): JSX.Element {
   const { files, selectFiles } = createFileUploader();
@@ -55,7 +54,7 @@ export default function AnA(): JSX.Element {
                     </div>
                   </Col>
                 </Grid>
-                <Button class="text-xl font-semibold" onClick={async () => {
+                <Button class="text-xl font-semibold mt-4" onClick={async () => {
                   const fd = new FormData();
                   console.log(files);
                   if (files()[0] === undefined) {
