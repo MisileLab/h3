@@ -47,3 +47,5 @@ export function getCookie(cookie_name: string) {
     }
 }
 
+export const endTime = 1710428400;
+

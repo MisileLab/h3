@@ -46,6 +46,7 @@
       enable = true;
       client.enable = true;
     };
+    tailscale.enable = true;
   };
 
   virtualisation = {

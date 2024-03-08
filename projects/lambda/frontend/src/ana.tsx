@@ -1,4 +1,4 @@
-import { JSX, createEffect, createSignal } from "solid-js";
+import { JSX, createEffect, createSignal, onCleanup } from "solid-js";
 import NavBar from "./components/navbar";
 import { ColorModeProvider, ColorModeScript } from "@kobalte/core";
 import { createFileUploader } from "@solid-primitives/upload";
@@ -7,8 +7,16 @@ import { Col, Grid } from "./components/ui/grid";
 import { Textarea } from "./components/ui/textarea";
 import { Input } from "./components/ui/input";
 import { Button } from "./components/ui/button";
-import { client, signal, url } from "./definition";
+import { client, endTime, signal, url } from "./definition";
 import { gql } from "graphql-request";
+import { showToast, Toaster } from "./components/ui/toast";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault("Asia/Seoul");
 
 export default function AnA(): JSX.Element {
   const { files, selectFiles } = createFileUploader();
@@ -17,18 +25,28 @@ export default function AnA(): JSX.Element {
   const me = createSignal("");
   const why = createSignal("");
   const [enabled, setButtonEnabled] = createSignal(true);
+  const [time, setTime] = createSignal(dayjs().unix());
+  const timer = setInterval(() => {
+    setTime(time() + 1);
+  }, 1000);
+  onCleanup(() => clearInterval(timer));
   createEffect(() => {
     let enabled = true;
+    if (time() > endTime) {
+      setButtonEnabled(false);
+      return;
+    }
     [name, pnumber, me, why].forEach((i) => {
       if (i[0]() == "") { enabled = false; return false; }
     });
     setButtonEnabled(enabled);
-  },);
+  });
   return (
     <div>
       <ColorModeScript />
       <ColorModeProvider>
         <div class="h-screen flex flex-col">
+          <Toaster />
           <NavBar />
           <div class="flex flex-grow justify-center items-center">
             <Card class="w-fit h-fit pb-4 md:px-12 mx-0 smp:mx-4 md:mx-0">
@@ -57,7 +75,7 @@ export default function AnA(): JSX.Element {
                 <Button class="text-xl font-semibold mt-4" onClick={async () => {
                   const fd = new FormData();
                   console.log(files);
-                  if (files()[0] === undefined) {
+                  const f = async (v: String | undefined = null) => {
                     await client.request(gql`
                     mutation Query($name: String!, $pnumber: String!, $me: String!, $why: String!, $portfolio: String) {
                           send(
@@ -68,7 +86,11 @@ export default function AnA(): JSX.Element {
                               why:$why,
                               portfolio:$portfolio
                             })}
-                `, { name: name[0](), me: me[0](), why: why[0](), portfolio: null, pnumber: pnumber[0]() })
+                    `, { name: name[0](), me: me[0](), why: why[0](), portfolio: v, pnumber: pnumber[0]() });
+                    showToast({title: '접수 완료', description: `name: ${name[0]()} :sunglasses:`})
+                  }
+                  if (files()[0] === undefined) {
+                    await f();
                     return;
                   }
                   fd.append('file', files()[0].file);
@@ -78,17 +100,7 @@ export default function AnA(): JSX.Element {
                     body: fd
                   }).then(r => {
                     r.text().then(async (v) => {
-                      await client.request(gql`
-                            mutation Query($name: String!, $pnumber: String!, $me: String!, $why: String!, $portfolio: String) {
-                                  send(
-                                    i: {
-                                      name:$name,
-                                      pnumber:$pnumber,
-                                      me:$me,
-                                      why:$why,
-                                      portfolio:$portfolio
-                                    })}
-                        `, { name: name[0](), me: me[0](), why: why[0](), portfolio: v, pnumber: pnumber[0]() })
+                      await f(v);
                     })
                   }).catch(e => console.error(e));
                 }} disabled={!enabled()}>신청</Button>

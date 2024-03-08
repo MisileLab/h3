@@ -19,7 +19,7 @@ from datetime import datetime
 
 c = load(open("config.toml", "rb"))
 keys = c["keys"]
-db = create_async_client()
+db = create_async_client(password=c["dbpassword"])
 
 if not isdir("files"):
     mkdir("files")
@@ -47,21 +47,6 @@ class Query:
     async def infos(self, key: str) -> Optional[list[User]]:
         if key in keys:
             return await db.query("select User {name, pnumber, me, why, time, portfolio}")
-
-    # @strawberry.field
-    # async def info(self, key: str, name: str) -> Optional[User]:
-    #     if key in keys:
-    #         return await db.query_single("""
-    #                                                   select User {
-    #                                                       portfolio,
-    #                                                       me,
-    #                                                       name,
-    #                                                       pnumber,
-    #                                                       why,
-    #                                                       time
-    #                                                    }
-    #                                                    filter .name = <str>$name
-    #                                               """, name=name)
 
 @strawberry.type
 class Mutation:

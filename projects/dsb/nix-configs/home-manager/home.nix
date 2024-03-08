@@ -10,12 +10,12 @@ in
   home.packages = with pkgs; [
     # System
     topgrade sbctl tealdeer synology-drive-client bluez brightnessctl gnupg
-    ungoogled-chromium
+    ungoogled-chromium nix-tree
 
     # Development
     git niv cabal-install pkg-config edgedb fh nixpkgs-fmt
     hub poetry d2 micromamba pdm mypy dvc snyk ghidra pwndbg
-    cargo-update
+    cargo-update pre-commit
 
     # Some cryptos
     solana-validator

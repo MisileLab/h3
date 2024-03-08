@@ -52,9 +52,12 @@ const Admin: Component = () => {
         {error() && <AlertDialog defaultOpen>
           <AlertDialogContent>
             <AlertDialogTitle>Invalid key</AlertDialogTitle>
-            <AlertDialogDescription class="flex flex-col gap-2">
+            <AlertDialogDescription class="flex flex-col gap-2 outline-none">
               No flag in here :sunglasses:
               <iframe src="https://www.youtube.com/embed/jdUXfsMTv7o?si=sgKI5w1E8tHFf35s" title="Tux" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen />
+              <A href="/login" class="text-green-500">
+                r u admin? than click this
+              </A>
             </AlertDialogDescription>
           </AlertDialogContent>
         </AlertDialog>}
