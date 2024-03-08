@@ -12,8 +12,8 @@ dependencies:
     specifier: 0.0.117
     version: 0.0.117(solid-js@1.8.15)
   '@solidjs/router':
-    specifier: 0.12.5
-    version: 0.12.5(solid-js@1.8.15)
+    specifier: 0.13.0
+    version: 0.13.0(solid-js@1.8.15)
   clsx:
     specifier: 2.1.0
     version: 2.1.0
@@ -946,8 +946,8 @@ packages:
     dependencies:
       solid-js: 1.8.15
 
-  /@solidjs/router@0.12.5(solid-js@1.8.15):
-    resolution: {integrity: sha512-UK9GnWPS1RmBf7w35DpWwqNgpVbKhon5eXOl7Xk+edPMTzzHkwPW2RytQKQ0BMRQOHzyM/WRetWLbIAubKdlog==}
+  /@solidjs/router@0.13.0(solid-js@1.8.15):
+    resolution: {integrity: sha512-YHLbFv9J53+iG4yVrh0vVdYiyXPTk892UyZ1jiMPsUXn2dYkX4552N+8SjvlKWWsmNmYxaoefM6jZn1YtVIUUg==}
     peerDependencies:
       solid-js: ^1.8.6
     dependencies:
