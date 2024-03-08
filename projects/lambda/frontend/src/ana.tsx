@@ -14,7 +14,7 @@ import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import axios from "axios";
-import { Progress, ProgressLabel, ProgressValueLabel } from "./components/ui/progress";
+import { Progress } from "./components/ui/progress";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -101,10 +101,10 @@ export default function AnA(): JSX.Element {
                     onUploadProgress: (r) => {
                       console.log(r)
                       updateToast({uid: uid, title: '파일 업로드 중', description: 
-                      <div>
-                      <Progress maxValue={1} value={r.progress} />
-                      <p>{`파일 이름: ${files()[0].name}`}</p>
-                      <p>{`${formatBytes(r.loaded)}/${formatBytes(r.total)}`}</p>
+                      <div class="w-full items-stretch flex flex-col">
+                        <Progress maxValue={1} value={r.progress} />
+                        <p>{`파일 이름: ${files()[0].name}`}</p>
+                        <p>{`${formatBytes(r.loaded)}/${formatBytes(r.total)}`}</p>
                       </div>})
                     }
                   }).then(async (r) => {
