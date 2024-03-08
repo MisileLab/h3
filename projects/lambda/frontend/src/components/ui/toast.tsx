@@ -87,8 +87,8 @@ function showToast(props: {
   description?: JSX.Element
   variant?: ToastVariant
   duration?: number
-}) {
-  toaster.show((data) => (
+}): number {
+  return toaster.show((data) => (
     <Toast toastId={data.toastId} variant={props.variant} duration={props.duration}>
       <div class="grid gap-1">
         {props.title && <ToastTitle>{props.title}</ToastTitle>}
@@ -99,4 +99,22 @@ function showToast(props: {
   ))
 }
 
-export { Toaster, Toast, ToastClose, ToastTitle, ToastDescription, showToast }
+function updateToast(props: {
+  uid: number,
+  title?: JSX.Element
+  description?: JSX.Element
+  variant?: ToastVariant
+  duration?: number
+}) {
+  toaster.update(props.uid, (data) => (
+    <Toast toastId={data.toastId} variant={props.variant} duration={props.duration}>
+      <div class="grid gap-1">
+        {props.title && <ToastTitle>{props.title}</ToastTitle>}
+        {props.description && <ToastDescription>{props.description}</ToastDescription>}
+      </div>
+      <ToastClose />
+    </Toast>
+  ))
+}
+
+export { Toaster, Toast, ToastClose, ToastTitle, ToastDescription, showToast, updateToast }

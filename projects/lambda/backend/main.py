@@ -52,6 +52,9 @@ class Query:
 class Mutation:
     @strawberry.field
     async def send(self, i: UserInput) -> None:
+        if "" in [i.name, i.pnumber, i.me, i.why]:
+            return None
+        d = datetime.now(timezone.utc).timestamp()
         await db.query(
             """
                        insert User {
@@ -66,7 +69,7 @@ class Mutation:
             pnumber=i.pnumber,
             me=i.me,
             why=i.why,
-            time=datetime.now(timezone.utc).timestamp(),
+            time=d,
             portfolio=i.portfolio,
         )
         return None

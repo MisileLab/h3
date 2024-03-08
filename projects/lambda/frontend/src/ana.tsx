@@ -7,12 +7,14 @@ import { Col, Grid } from "./components/ui/grid";
 import { Textarea } from "./components/ui/textarea";
 import { Input } from "./components/ui/input";
 import { Button } from "./components/ui/button";
-import { client, endTime, signal, url } from "./definition";
+import { client, endTime, formatBytes, signal, url } from "./definition";
 import { gql } from "graphql-request";
-import { showToast, Toaster } from "./components/ui/toast";
+import { showToast, Toaster, updateToast } from "./components/ui/toast";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
+import axios from "axios";
+import { Progress, ProgressLabel, ProgressValueLabel } from "./components/ui/progress";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -93,16 +95,21 @@ export default function AnA(): JSX.Element {
                     await f();
                     return;
                   }
+                  let uid = showToast({title: `${files()[0].name} 업로드 준비 중`})
                   fd.append('file', files()[0].file);
-                  await fetch(`${url}/uploadfile`, {
-                    method: "POST",
-                    headers: {},
-                    body: fd
-                  }).then(r => {
-                    r.text().then(async (v) => {
-                      await f(v);
-                    })
-                  }).catch(e => console.error(e));
+                  await axios.post(`${url}/uploadfile`, fd, {
+                    onUploadProgress: (r) => {
+                      console.log(r)
+                      updateToast({uid: uid, title: '파일 업로드 중', description: 
+                      <div>
+                      <Progress maxValue={1} value={r.progress} />
+                      <p>{`파일 이름: ${files()[0].name}`}</p>
+                      <p>{`${formatBytes(r.loaded)}/${formatBytes(r.total)}`}</p>
+                      </div>})
+                    }
+                  }).then(async (r) => {
+                    await f(r.data);
+                  });
                 }} disabled={!enabled()}>신청</Button>
               </div>
             </Card>
