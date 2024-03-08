@@ -44,6 +44,7 @@ const Admin: Component = () => {
     setError(true);
   }
   setData(tmp["infos"] as unknown as User[]);
+  console.log(data());
   });
   return (
     <div>
@@ -81,7 +82,7 @@ const Admin: Component = () => {
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
                               <As component={TableRow}>
-                                <TableCell>{dayjs(i().time).local().format('MM월 DD일 hh시 mm분')}</TableCell>
+                                <TableCell>{dayjs.unix(i().time).local().format('MM월 DD일 hh시 mm분')}</TableCell>
                                 <TableCell>{i().name}</TableCell>
                                 {!isMobileOnly && <TableCell>{i().pnumber}</TableCell>}
                               </As>
