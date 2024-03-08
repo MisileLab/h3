@@ -28,16 +28,16 @@ export interface User {
 }
 
 export function setCookie(cookie_name: string, value: string, days: number) {
-    var exdate = new Date();
+    const exdate = new Date();
     exdate.setDate(exdate.getDate() + days);
-    var cookie_value = encodeURI(value) + ((days == null) ? '' : ';`expires=' + exdate.toUTCString());
+    const cookie_value = encodeURI(value) + ((days == null) ? '' : ';`expires=' + exdate.toUTCString());
     document.cookie = cookie_name + '=' + cookie_value;
 }
 
 export function getCookie(cookie_name: string) {
     var x: string, y: string;
-    var val = document.cookie.split(';');
-    for (var i = 0; i < val.length; i++) {
+    const val = document.cookie.split(';');
+    for (let i = 0; i < val.length; i++) {
         x = val[i].substring(0, val[i].indexOf('='));
         y = val[i].substring(val[i].indexOf('=') + 1);
         x = x.replace(/^\s+|\s+$/g, '');
@@ -47,5 +47,5 @@ export function getCookie(cookie_name: string) {
     }
 }
 
-export const endTime = 1710428400;
+export const endTime = 1710514800;
 
