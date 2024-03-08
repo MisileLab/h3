@@ -151,7 +151,7 @@ in
           format = "{ifname}";
           format-wifi = "  {signalStrength}%";
           format-ethernet = "󰊗  {ipaddr}";
-          format-disconnected = "";
+          format-disconnected = "Disconnected";
           tooltip-format = "{ifname} via {gwaddr} 󰊗";
           tooltip-format-wifi = "{essid} ({signalStrength}%) ";
           tooltip-format-ethernet = "{ifname} ";
