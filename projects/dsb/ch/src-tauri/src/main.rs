@@ -6,17 +6,17 @@ use simple_aes::{encrypt as enc, decrypt as dec};
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
 fn encrypt(summary: String, salt: String) -> String {
-    enc(summary, salt).unwrap()
+  enc(summary, salt).unwrap()
 }
 
 #[tauri::command]
 fn decrypt(summary: String, salt: String) -> String {
-    dec(summary, salt).unwrap()
+  dec(summary, salt).unwrap()
 }
 
 fn main() {
-    tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![encrypt, decrypt])
-        .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+  tauri::Builder::default()
+    .invoke_handler(tauri::generate_handler![encrypt, decrypt])
+    .run(tauri::generate_context!())
+    .expect("error while running tauri application");
 }

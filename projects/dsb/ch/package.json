@@ -9,7 +9,7 @@
     "serve": "vite preview",
     "tauri": "tauri"
   },
-  "license": "MIT",
+  "license": "MisileLab License",
   "dependencies": {
     "@tauri-apps/api": "1.5.3",
     "solid-js": "1.8.15"
