@@ -21,7 +21,7 @@
     "vite-plugin-solid": "2.10.1"
   },
   "dependencies": {
-    "@kobalte/core": "0.12.3",
+    "@kobalte/core": "0.12.4",
     "@solid-primitives/upload": "0.0.117",
     "@solidjs/router": "0.13.0",
     "axios": "1.6.7",
