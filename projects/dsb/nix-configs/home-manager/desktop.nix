@@ -188,8 +188,8 @@ in
       window#waybar {${returnColorCSS({r=108;g=112;b=134;a=0.4;})}}
       #workspaces button {
         ${returnColorCSS({r=108;g=112;b=134;a=0.4;addi=''
-          padding-left: 6px;
-          padding-right: 6px;
+        padding-left: 0px;
+        padding-right: 0px;
         '';})}
       }
       #workspaces button.active {
@@ -212,8 +212,8 @@ in
       }
       .modules-right * {
         ${returnColorCSS({r=147;g=153;b=178;a=0.6;addi=''
-          padding-left: 6px;
-          padding-right: 6px;
+          padding-left: 0px;
+          padding-right: 0px;
           color: @subtext1;
         '';})}
       }
