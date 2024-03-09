@@ -100,6 +100,7 @@ in
     lazygit = {
       enable = true;
       catppuccin.enable = true;
+      settings.git.commit.signOff = true;
     };
     vscode = {
       enable = true;
