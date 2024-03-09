@@ -81,7 +81,7 @@ in
 
   home.sessionVariables = {
     QT_QPA_PLATFORM = "wayland";
-    EDITOR = "nvim";
+    EDITOR = "hx";
   };
 
   catppuccin.flavour = "mocha";

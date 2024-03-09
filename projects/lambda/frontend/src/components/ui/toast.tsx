@@ -90,7 +90,7 @@ function showToast(props: {
 }): number {
   return toaster.show((data) => (
     <Toast toastId={data.toastId} variant={props.variant} duration={props.duration}>
-      <div class="grid gap-1 w-full">
+      <div class="grid gap-1">
         {props.title && <ToastTitle>{props.title}</ToastTitle>}
         {props.description && <ToastDescription>{props.description}</ToastDescription>}
       </div>
@@ -108,7 +108,7 @@ function updateToast(props: {
 }) {
   toaster.update(props.uid, (data) => (
     <Toast toastId={data.toastId} variant={props.variant} duration={props.duration}>
-      <div class="grid gap-1 w-full">
+      <div class="grid gap-1">
         {props.title && <ToastTitle>{props.title}</ToastTitle>}
         {props.description && <ToastDescription>{props.description}</ToastDescription>}
       </div>
