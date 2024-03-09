@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@kobalte/core':
-    specifier: 0.12.3
-    version: 0.12.3(solid-js@1.8.15)
+    specifier: 0.12.4
+    version: 0.12.4(solid-js@1.8.15)
   clsx:
     specifier: 2.1.0
     version: 2.1.0
@@ -554,8 +554,8 @@ packages:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.4.15
 
-  /@kobalte/core@0.12.3(solid-js@1.8.15):
-    resolution: {integrity: sha512-c2Y0U9vyIRpPZ3KVKd2zQWuv+vrPQpt8cp0YRJTyL8JZ3sp8hfL2rer3v4Yk73JXu+pEOVRttYqFeDsrdWGsNA==}
+  /@kobalte/core@0.12.4(solid-js@1.8.15):
+    resolution: {integrity: sha512-i3zk840txhSTtr+hgOrugM7qejLA/PQgTEmv0Mw6gezch46Z45/jujXWIZft4Y6rJdoWDx8J7P7KOXqcsGLkjQ==}
     peerDependencies:
       solid-js: ^1.8.15
     dependencies:
