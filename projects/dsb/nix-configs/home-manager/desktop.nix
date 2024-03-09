@@ -127,7 +127,7 @@ in
     waybar = {
       enable = true;
       settings = [{
-        modules-left = [ "sway/workspaces"];
+        modules-left = [ "sway/workspaces" ];
         modules-center = [ "sway/window" ];
         modules-right = [ "temperature" "pulseaudio" "network" "battery" "cpu" "memory" "clock"];
         backlight = {
