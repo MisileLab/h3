@@ -9,14 +9,14 @@ function string.split(inputString, delimiter)
   local pattern = string.format("([^%s]+)", delimiter)
   
   for substring in inputString:gmatch(pattern) do
-    table.insert(substrings, substring)
+  table.insert(substrings, substring)
   end
   return substrings
 end
 
 function Get(list, index, default)
   if (list[index] == nil) then
-    return default
+  return default
   end
   return list[index]
 end

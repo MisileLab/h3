@@ -1,4 +1,4 @@
 if int(input()) + int(input()) * 2 + int(input()) * 3 >= 10:
-    print("happy")
+  print("happy")
 else:
-    print("sad")
+  print("sad")

@@ -5,7 +5,7 @@ a = b1 - a1
 b = a
 
 if b2 - a2 < 0 or (b2 - a2 <= 0 and b3 - a3 < 0):
-    a -= 1
+  a -= 1
 
 print(a)
 print(b+1)

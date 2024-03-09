@@ -1,12 +1,12 @@
 a = input()
 
 if a in ["fdsajkl;", "jkl;fdsa"]:
-    print("in-out")
+  print("in-out")
 elif a in ["asdf;lkj", ";lkjasdf"]:
-    print("out-in")
+  print("out-in")
 elif a == "asdfjkl;":
-    print("stairs")
+  print("stairs")
 elif a == ";lkjfdsa":
-    print("reverse")
+  print("reverse")
 else:
-    print("molu")
+  print("molu")

@@ -1,10 +1,10 @@
 a = []
 
 while True:
-    b = input()
-    if b == "END":
-        break
-    a.append(b)
+  b = input()
+  if b == "END":
+    break
+  a.append(b)
 
 for i in a:
-    print(i[::-1])
+  print(i[::-1])

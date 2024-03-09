@@ -33,6 +33,6 @@ rocket = rf"""
 """  # noqa: E501
 
 for i in range(get_terminal_size().lines):
-    print(rocket + "\n" * i)
-    sleep(1)
-    print(f"{chr(27)}[2J")
+  print(rocket + "\n" * i)
+  sleep(1)
+  print(f"{chr(27)}[2J")

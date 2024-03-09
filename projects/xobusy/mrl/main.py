@@ -6,10 +6,10 @@ lst2 = bytes.fromhex("00 4D 51 50 EF FB C3 CF 92 45 4D CF F5 04 40 50 43 63 00 0
 x = [Int(str(i)) for i in range(18)]
 s = Solver()
 for i in x:
-    s.insert(i >= 0)
-    s.insert(i <= 127)
+  s.insert(i >= 0)
+  s.insert(i <= 127)
 for i in range(18):
-    s.insert(lst[x[i] + i] == lst2[i])
+  s.insert(lst[x[i] + i] == lst2[i])
 
 s.check()
 print(s.model())

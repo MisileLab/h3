@@ -1,5 +1,5 @@
 a, b = map(int, input().split(" "))
 if a*100 >= b:
-    print("Yes")
+  print("Yes")
 else:
-    print("No")
+  print("No")

@@ -3,6 +3,6 @@
 a, b, c = map(int, input().split(" "))
 d = (b-a)//c
 if (a-b) % c:
-    print(d+1)
+  print(d+1)
 else:
-    print(d)
+  print(d)

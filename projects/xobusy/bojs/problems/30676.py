@@ -1,17 +1,17 @@
 a = int(input())
 
 if a >= 620:
-    print('Red')
+  print('Red')
 elif a >= 590:
-    print('Orange')
+  print('Orange')
 elif a >= 570:
-    print('Yellow')
+  print('Yellow')
 elif a >= 495:
-    print('Green')
+  print('Green')
 elif a >= 450:
-    print('Blue')
+  print('Blue')
 elif a >= 425:
-    print('Indigo')
+  print('Indigo')
 else:
-    print('Violet')
+  print('Violet')
 

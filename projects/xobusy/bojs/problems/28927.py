@@ -4,8 +4,8 @@ _max = t*3+e*20+f*120
 mel = t2*3+e2*20+f2*120
 
 if mel == _max:
-    print("Draw")
+  print("Draw")
 elif mel > _max:
-    print("Mel")
+  print("Mel")
 else:
-    print("Max")
+  print("Max")

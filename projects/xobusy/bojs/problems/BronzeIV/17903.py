@@ -1,9 +1,9 @@
 n, _ = map(int, input().split(" "))
 
 for _ in range(n):
-    input()
+  input()
 
 if n >= 8:
-    print("satisfactory")
+  print("satisfactory")
 else:
-    print("unsatisfactory")
+  print("unsatisfactory")

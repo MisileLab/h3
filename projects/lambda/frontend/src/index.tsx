@@ -7,7 +7,6 @@ import App from './App';
 import AnA from './ana';
 import Admin from './Admin';
 import Login from './login';
-import { MetaProvider } from '@solidjs/meta';
 
 const root = document.getElementById('root');
 

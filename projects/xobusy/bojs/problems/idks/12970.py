@@ -5,19 +5,19 @@ b = n
 m = n / 2
 
 if k > m * (n - m):
-    print(-1)
-    exit()
+  print(-1)
+  exit()
 elif k == 0:
-    li[-1] = "A"
-    print("".join(li))
-    exit()
+  li[-1] = "A"
+  print("".join(li))
+  exit()
 
 while k > a*b:
-    a += 1
-    b -= 1
+  a += 1
+  b -= 1
 
 for i in range(a-1):
-    li[i] = "A"
+  li[i] = "A"
 
 li[(len(li))-1-(k-((a - 1)*b))] = "A"
 

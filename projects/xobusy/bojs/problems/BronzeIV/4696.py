@@ -3,7 +3,7 @@ a = []
 while True:
   b = float(input())
   if b == 0:
-    break
+  break
   a.append(b)
 
 for i in a:

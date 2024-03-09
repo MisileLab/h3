@@ -1,7 +1,7 @@
 a, b = map(int, input().split(" "))
 if b <= 2:
-    print("NEWBIE!")
+  print("NEWBIE!")
 elif b <= a:
-    print("OLDBIE!")
+  print("OLDBIE!")
 else:
-    print("TLE!")
+  print("TLE!")

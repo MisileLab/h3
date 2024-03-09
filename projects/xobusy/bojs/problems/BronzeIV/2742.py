@@ -1,2 +1,2 @@
 for i in range(int(input())).__reversed__():
-    print(i+1)
+  print(i+1)

@@ -6,7 +6,7 @@ x = [Int(str(i)) for i in range(21)]
 s = Solver()
 mrl.add_ascii(s, x)
 for i in range(18):
-    s.insert((x[i] + i) * -5 == lst[i])
+  s.insert((x[i] + i) * -5 == lst[i])
 
 s.check()
 print(s.model())
