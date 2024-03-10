@@ -11,7 +11,7 @@ from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 
 from os import mkdir
-from os.path import isdir
+from os.path import isdir, isfile
 from pathlib import Path
 from secrets import SystemRandom
 from typing import Optional
@@ -110,7 +110,10 @@ async def sus(request: Request):
 @app.get("/files/{key}/{name}")
 async def get_file(request: Request, name: str, key: str):
   if key in keys:
-    return FileResponse(f"files/{name}")
+    if isfile(f"files/{name}"):
+      return FileResponse(f"files/{name}")
+    else:
+      raise HTTPException(status.HTTP_404_NOT_FOUND)
   else:
     raise HTTPException(status.HTTP_403_FORBIDDEN)
 
