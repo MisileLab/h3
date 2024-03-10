@@ -10,7 +10,7 @@ in
   home.packages = with pkgs; [
     # System
     topgrade sbctl tealdeer synology-drive-client bluez brightnessctl gnupg
-    ungoogled-chromium nix-tree
+    ungoogled-chromium nix-tree fzf
 
     # Development
     niv cabal-install pkg-config edgedb fh nixpkgs-fmt
@@ -135,9 +135,9 @@ in
         alias onefetch="onefetch --number-of-languages 10000"
         function fzfp
           if set -q argv[1]
-            $argv (${pkgs.fzf} --preview 'bat --color=always --style=numbers --line-range :500 {}')
+            $argv (${pkgs.fzf}/bin/fzf --preview 'bat --color=always --style=numbers --line-range :500 {}')
           else
-            ${pkgs.fzf} --preview 'bat --color=always --style=numbers --line-range :500 {}'
+            ${pkgs.fzf}/bin/fzf --preview 'bat --color=always --style=numbers --line-range :500 {}'
           end
         end
         function git-bulk-pulls
