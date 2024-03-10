@@ -19,8 +19,13 @@
       options = [ "subvol=@" ];
     };
 
+  fileSystems."/efi" =
+    { device = "systemd-1";
+      fsType = "autofs";
+    };
+
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/1173-1FDC";
+    { device = "/dev/disk/by-uuid/BE7E-CD02";
       fsType = "vfat";
     };
 
@@ -34,6 +39,10 @@
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking.useDHCP = lib.mkDefault true;
   # networking.interfaces.docker0.useDHCP = lib.mkDefault true;
+  # networking.interfaces.tailscale0.useDHCP = lib.mkDefault true;
+  # networking.interfaces.vboxnet0.useDHCP = lib.mkDefault true;
+  # networking.interfaces.virbr1.useDHCP = lib.mkDefault true;
+  # networking.interfaces.virbr2.useDHCP = lib.mkDefault true;
   # networking.interfaces.wlan0.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";

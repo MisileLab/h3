@@ -96,8 +96,8 @@ const Admin: Component = () => {
                                 <p>{i().why}</p>
                                 <h2 class="text-xl font-bold">전화번호</h2>
                                 <p>{i().pnumber}</p>
-                                <Show when={i().portfolio != null && i().portfolio != undefined}>
-                                  <a href={`${url}/files/${getCookie('key')}/${i().portfolio.slice(1, i().portfolio.length-1)}`}>
+                                <Show when={i().portfolio !== null && i().portfolio !== undefined}>
+                                  <a href={`${url}/files/${getCookie('key')}/${i().portfolio}`}>
                                     <h2>포트폴리오</h2>
                                   </a>
                                 </Show>
