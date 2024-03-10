@@ -32,13 +32,14 @@ in
     # Utils
     file wget imagemagick usbutils axel onefetch fastfetch ouch wgetpaste
     hyperfine hdparm duperemove hydra-check glow obs-studio virt-manager
-    killall delta qemu screen
+    killall delta qemu screen termscp
 
     # Network
     dhcpcd cloudflare-warp trayscale tor-browser-bundle-bin
 
     # Fonts
     fira-code-nerdfont nanum pretendard noto-fonts-color-emoji
+    noto-fonts noto-fonts-cjk
 
     # Sound
     pulsemixer galaxy-buds-client mpv
