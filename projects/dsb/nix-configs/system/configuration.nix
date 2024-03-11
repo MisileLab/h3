@@ -17,7 +17,10 @@
     enableRedistributableFirmware = true;
   };
   
-  security.rtkit.enable = true;
+  security = {
+    rtkit.enable = true;
+    pam.services.swaylock = {};
+  };
 
   time.hardwareClockInLocalTime = true;
 

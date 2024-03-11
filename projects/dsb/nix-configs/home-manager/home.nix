@@ -10,7 +10,7 @@ in
   home.packages = with pkgs; [
     # System
     topgrade sbctl tealdeer synology-drive-client bluez brightnessctl gnupg
-    ungoogled-chromium nix-tree fzf
+    ungoogled-chromium nix-tree fzf cryptsetup
 
     # Development
     niv cabal-install pkg-config edgedb fh nixpkgs-fmt
@@ -32,10 +32,10 @@ in
     # Utils
     file wget imagemagick usbutils axel onefetch fastfetch ouch wgetpaste
     hyperfine hdparm duperemove hydra-check glow obs-studio virt-manager
-    killall delta qemu screen termscp rhash
+    killall delta qemu screen termscp rhash nvtop-amd
 
     # Network
-    dhcpcd cloudflare-warp trayscale tor-browser-bundle-bin
+    dhcpcd cloudflare-warp trayscale tor-browser-bundle-bin bruno
 
     # Fonts
     fira-code-nerdfont nanum pretendard noto-fonts-color-emoji
@@ -46,9 +46,6 @@ in
 
     # Some chat and game
     irssi ferium vesktop
-    (tetrio-desktop.override {
-      withTetrioPlus = true;
-    })
 
     # Compatibility
     figma-linux wineWowPackages.stable appimage-run
@@ -61,8 +58,10 @@ in
     (pkgs.writeShellScriptBin "gdb" ''
       exec ${pkgs.pwndbg}/bin/pwndbg
     '')
-    (pkgs.writeShellScriptBin "pwntools-gdb" ''
-      exec ${pkgs.pwndbg}/bin/pwndbg
+    (pkgs.writeShellScriptBin "tetrio" ''
+      exec ${(pkgs.tetrio-desktop.override {
+        withTetrioPlus = true;
+      })}/bin/tetrio-desktop --enable-features=UseOzonePlatform --ozone-platform=wayland
     '')
   ]
   ++ (with llvmPackages_latest; [clangUseLLVM openmp libunwind]) # llvm
