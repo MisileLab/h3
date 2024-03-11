@@ -32,7 +32,7 @@ in
     # Utils
     file wget imagemagick usbutils axel onefetch fastfetch ouch wgetpaste
     hyperfine hdparm duperemove hydra-check glow obs-studio virt-manager
-    killall delta qemu screen termscp rhash nvtop-amd
+    killall delta qemu screen termscp rhash nvtop-amd genact
 
     # Network
     dhcpcd cloudflare-warp trayscale tor-browser-bundle-bin bruno
