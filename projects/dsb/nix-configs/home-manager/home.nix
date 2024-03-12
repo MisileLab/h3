@@ -10,12 +10,12 @@ in
   home.packages = with pkgs; [
     # System
     topgrade sbctl tealdeer bluez brightnessctl gnupg
-    ungoogled-chromium nix-tree fzf cryptsetup
+    nix-tree fzf cryptsetup smartmontools
 
     # Development
     niv cabal-install pkg-config edgedb fh nixpkgs-fmt
     hub poetry d2 micromamba pdm mypy dvc snyk ghidra pwndbg
-    cargo-update pre-commit
+    cargo-update pre-commit pijul
 
     # Some cryptos
     solana-validator
@@ -97,11 +97,12 @@ in
   };
   gtk = {enable = true;catppuccin.enable = true;};
   programs = {
+    ripgrep.enable = true;
     lazygit = {
       enable = true;
       catppuccin.enable = true;
       settings = {
-        git.commit.signcOff = true;
+        git.commit.signOff = true;
       };
     };
     vscode = {

@@ -17,19 +17,20 @@
     enableRedistributableFirmware = true;
   };
 
-  xdg = {
+  xdg.portal = {
     enable = true;
-    portal = {
-      enable = true;
-      extraPortals = with pkgs; [xdg-desktop-portal-gtk xdg-desktop-portal-wlr];
-      config.common.default = ["gtk" "wlr"];
-    };
+    extraPortals = with pkgs; [xdg-desktop-portal-gtk xdg-desktop-portal-wlr];
+    config.common.default = ["gtk" "wlr"];
   };
   
   security = {
     rtkit.enable = true;
     pam.services = {
-      swaylock = {};
+      swaylock.text = ''
+        auth sufficient pam_unix.so try_first_pass likeauth nullok
+        auth sufficient pam_fprintd.so
+        auth include login
+      '';
     };
   };
 
@@ -41,9 +42,7 @@
   };
   services = {
     flatpak.enable = true;
-    fprintd = {
-      enable = true;
-    };
+    fprintd.enable = true;
     openvpn.servers = {
       VPN = { config = '' config /home/misile/non-nixos-things/openvpns/profile.ovpn ''; autoStart = false; };
     };
