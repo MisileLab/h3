@@ -13,7 +13,7 @@ uvicorn = "0.28.0"
 pymongo = "4.6.2"
 python-dotenv = "1.0.1"
 selenium = "4.18.1"
-pydantic = "2.6.3"
+pydantic = "2.6.4"
 pypdf = "^4.0.0"
 
 [build-system]
