@@ -9,7 +9,7 @@ in
 
   home.packages = with pkgs; [
     # System
-    topgrade sbctl tealdeer synology-drive-client bluez brightnessctl gnupg
+    topgrade sbctl tealdeer bluez brightnessctl gnupg
     ungoogled-chromium nix-tree fzf cryptsetup
 
     # Development
@@ -64,7 +64,7 @@ in
       })}/bin/tetrio-desktop --enable-features=UseOzonePlatform --ozone-platform=wayland
     '')
   ]
-  ++ (with llvmPackages_latest; [clangUseLLVM openmp libunwind]) # llvm
+  ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
   ++ (with nodePackages_latest; [nodejs pnpm typescript-language-server]) # nodejs
   ++ (with python311Packages; [pip virtualenv pipx]); # python thing
 

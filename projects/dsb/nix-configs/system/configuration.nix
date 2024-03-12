@@ -16,10 +16,21 @@
     enableAllFirmware = true;
     enableRedistributableFirmware = true;
   };
+
+  xdg = {
+    enable = true;
+    portal = {
+      enable = true;
+      extraPortals = with pkgs; [xdg-desktop-portal-gtk xdg-desktop-portal-wlr];
+      config.common.default = ["gtk" "wlr"];
+    };
+  };
   
   security = {
     rtkit.enable = true;
-    pam.services.swaylock = {};
+    pam.services = {
+      swaylock = {};
+    };
   };
 
   time.hardwareClockInLocalTime = true;
@@ -29,6 +40,14 @@
     options = "--delete-older-than 1d";
   };
   services = {
+    flatpak.enable = true;
+    fprintd = {
+      enable = true;
+    };
+    openvpn.servers = {
+      VPN = { config = '' config /home/misile/non-nixos-things/openvpns/profile.ovpn ''; autoStart = false; };
+    };
+    dbus.enable = true;
     printing.enable = true;
     avahi = {
       enable = true;
@@ -50,6 +69,7 @@
       client.enable = true;
     };
     tailscale.enable = true;
+    upower.enable = true;
   };
 
   virtualisation = {
@@ -92,7 +112,7 @@
   };
 
   nixpkgs.config.allowUnfree = true;
-  environment.systemPackages = with pkgs; [kdiskmark];
+  environment.systemPackages = with pkgs; [kdiskmark fprintd];
   programs = {
     nix-ld.enable = true;
     steam.enable = true;

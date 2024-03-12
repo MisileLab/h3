@@ -284,5 +284,6 @@ in
       configFile = "${custom-ctps.dunst}/src/mocha.conf";
     };
     avizo.enable = true;
+    poweralertd.enable = true;
   };
 }
