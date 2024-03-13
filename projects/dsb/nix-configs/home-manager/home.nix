@@ -129,21 +129,23 @@ in
     };
     fish = {
       enable = true;
-      shellInit = ''
+      shellInit = with pkgs; ''
         fish_add_path -m ~/.cargo/bin
         fish_add_path -m ~/.avm/bin
         fish_add_path -m ~/.local/share/solana/install/active_release/bin
         
         alias nix-clean="nix store optimise && sudo nix store optimise && nix-collect-garbage -d && sudo nix-collect-garbage -d"
-        alias cat="bat"
-        alias ocat="${pkgs.coreutils}/bin/cat"
-        alias ls="eza --icons"
-        alias onefetch="onefetch --number-of-languages 10000"
+        alias cat="${bat}/bin/bat"
+        alias ocat="${coreutils}/bin/cat"
+        alias ls="${eza}/bin/eza --icons"
+        alias onefetch="${onefetch}/bin/onefetch --number-of-languages 10000"
+        alias cd="${zoxide}/bin/z"
+        
         function fzfp
           if set -q argv[1]
-            $argv (${pkgs.fzf}/bin/fzf --preview 'bat --color=always --style=numbers --line-range :500 {}')
+            $argv (${fzf}/bin/fzf --preview 'bat --color=always --style=numbers --line-range :500 {}')
           else
-            ${pkgs.fzf}/bin/fzf --preview 'bat --color=always --style=numbers --line-range :500 {}'
+            ${fzf}/bin/fzf --preview 'bat --color=always --style=numbers --line-range :500 {}'
           end
         end
         function git-bulk-pulls
@@ -155,7 +157,7 @@ in
           for j in $args
             for i in $j/*
               cd $i
-              git pull
+              ${git}/bin/git pull
               cd -
             end
           end
