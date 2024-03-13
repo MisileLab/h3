@@ -4,8 +4,8 @@
     [
       ./common.nix
       ./hardware-configuration.nix
+      ./lanzaboote.nix
     ];
-  # i need to do lanzaboote but im lazy
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.initrd.kernelModules = ["amdgpu"];
