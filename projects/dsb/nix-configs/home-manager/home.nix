@@ -1,6 +1,10 @@
 { config, pkgs, catppuccin, ... }:
 let
   c = import ./config.nix;
+  # electron-waylandify
+  ewl = binaryPath: ''
+    exec ${binaryPath} --enable-features=UseOzonePlatform --ozone-platform=wayland
+  '';
 in
 {
   home.username = "misile";
@@ -9,8 +13,7 @@ in
 
   home.packages = with pkgs; [
     # System
-    topgrade sbctl tealdeer bluez brightnessctl gnupg
-    nix-tree fzf cryptsetup smartmontools
+    sbctl bluez brightnessctl gnupg nix-tree cryptsetup smartmontools
 
     # Development
     niv cabal-install pkg-config edgedb fh nixpkgs-fmt
@@ -23,16 +26,14 @@ in
     # Language compiler and lsp
     ghc
     rustup
-    go
-    temurin-bin-21
     python312Full
     nasm
     tailwindcss-language-server
 
     # Utils
     file wget imagemagick usbutils axel onefetch fastfetch ouch wgetpaste
-    hyperfine hdparm duperemove hydra-check glow obs-studio virt-manager
-    killall delta qemu screen termscp rhash nvtop-amd genact
+    hyperfine hdparm duperemove hydra-check glow virt-manager
+    killall delta qemu screen termscp rhash nvtop-amd genact convmv
 
     # Network
     dhcpcd cloudflare-warp trayscale tor-browser-bundle-bin bruno
@@ -42,27 +43,18 @@ in
     noto-fonts noto-fonts-cjk
 
     # Sound
-    pulsemixer galaxy-buds-client mpv
+    pulsemixer galaxy-buds-client
 
     # Some chat and game
-    irssi ferium vesktop
+    ferium vesktop
 
     # Compatibility
     figma-linux wineWowPackages.stable appimage-run
-    (pkgs.writeShellScriptBin "discord" ''
-      exec ${pkgs.vesktop}/bin/vesktop --enable-features=UseOzonePlatform --ozone-platform=wayland
-    '')
-    (pkgs.writeShellScriptBin "vscode" ''
-      exec ${pkgs.vscodium}/bin/codium --enable-features=UseOzonePlatform --ozone-platform=wayland $1
-    '')
-    (pkgs.writeShellScriptBin "gdb" ''
-      exec ${pkgs.pwndbg}/bin/pwndbg
-    '')
-    (pkgs.writeShellScriptBin "tetrio" ''
-      exec ${(pkgs.tetrio-desktop.override {
-        withTetrioPlus = true;
-      })}/bin/tetrio-desktop --enable-features=UseOzonePlatform --ozone-platform=wayland
-    '')
+    (pkgs.writeShellScriptBin "discord" (ewl "${pkgs.vesktop}/bin/vesktop"))
+    (pkgs.writeShellScriptBin "vscode" (ewl "${pkgs.vscodium}/bin/codium"))
+    (pkgs.writeShellScriptBin "gdb" (ewl "${pkgs.pwndbg}/bin/pwndbg"))
+    (pkgs.writeShellScriptBin "tetrio" (ewl "${pkgs.tetrio-desktop.override{withTetrioPlus=true;}}/bin/tetrio-desktop"))
+    (pkgs.writeShellScriptBin "insomnia" (ewl "${pkgs.bruno}/bin/bruno"))
   ]
   ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
   ++ (with nodePackages_latest; [nodejs pnpm typescript-language-server]) # nodejs
@@ -76,6 +68,10 @@ in
     "non-nixos-things/catppuccin-ghidra".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit{
       url="https://github.com/StanlsSlav/ghidra";
       rev="f783b5e15836964e720371c0da81819577dd2614";
+    }}";
+    ".config/obs-studio/themes/Catppuccin Mocha.qss".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
+      url="https://github.com/catppuccin/obs";
+      rev="9a78d89d186afbdcc719a1cb7bbf7fb1c2fdd248";
     }}";
   };
 
@@ -97,7 +93,16 @@ in
   };
   gtk = {enable = true;catppuccin.enable = true;};
   programs = {
+    mpv.enable = true;
+    obs-studio.enable = true;
+    java={enable=true;package=pkgs.temurin-bin-21;};
+    go.enable = true;
+    zoxide.enable = true;
+    fzf.enable = true;
+    tealdeer.enable = true;
+    topgrade.enable = true;
     ripgrep.enable = true;
+    irssi.enable = true;
     lazygit = {
       enable = true;
       catppuccin.enable = true;
