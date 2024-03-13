@@ -574,13 +574,13 @@ test = ["coverage", "pycodestyle", "pyflakes", "pylint", "pytest", "pytest-cov"]
 
 [[package]]
 name = "python-lsp-server"
-version = "1.10.0"
+version = "1.10.1"
 description = "Python Language Server for the Language Server Protocol"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "python-lsp-server-1.10.0.tar.gz", hash = "sha256:0c9a52dcc16cd0562404d529d50a03372db1ea6fb8dfcc3792b3265441c814f4"},
-    {file = "python_lsp_server-1.10.0-py3-none-any.whl", hash = "sha256:1a9f338bd7cf3cdde5ae85a2bd93fd5be9e55249f6482d88f99fb6227215424a"},
+    {file = "python-lsp-server-1.10.1.tar.gz", hash = "sha256:ec4c5706af67a265a19173fe4beb3b0a2c1626fa33a15ea952c2f288798b8c0d"},
+    {file = "python_lsp_server-1.10.1-py3-none-any.whl", hash = "sha256:564570dbf56158dd43948038b376a57324f50fb7f62c156075295aa37b390b1f"},
 ]
 
 [package.dependencies]
@@ -907,4 +907,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "3.12.2"
-content-hash = "540271a404cc094de0e5bbd46252ca170dfbc186714313b2ada5b5514c35ac65"
+content-hash = "0f6132e42c548996982731bfef23e01c6b0fb1407bc5e3824b07c3ca57ad14bb"
