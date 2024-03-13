@@ -139,7 +139,7 @@ in
         alias ocat="${coreutils}/bin/cat"
         alias ls="${eza}/bin/eza --icons"
         alias onefetch="${onefetch}/bin/onefetch --number-of-languages 10000"
-        alias cd="${zoxide}/bin/z"
+        alias cd="${zoxide}/bin/zoxide"
         
         function fzfp
           if set -q argv[1]
