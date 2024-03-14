@@ -43,7 +43,8 @@ const Admin: Component = () => {
     console.error("invalid key");
     setError(true);
   }
-  setData(tmp["infos"] as unknown as User[]);
+  let t = tmp["infos"] as unknown as User[];
+  t.sort((a, b)=>a.time - b.time);
   console.log(data());
   });
   return (
