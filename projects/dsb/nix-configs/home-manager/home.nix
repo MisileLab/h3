@@ -97,7 +97,10 @@ in
     obs-studio.enable = true;
     java={enable=true;package=pkgs.temurin-bin-21;};
     go.enable = true;
-    zoxide.enable = true;
+    zoxide = {
+      enable = true;
+      options = ["--cmd cd"];
+    };
     fzf.enable = true;
     tealdeer.enable = true;
     topgrade.enable = true;
@@ -139,7 +142,6 @@ in
         alias ocat="${coreutils}/bin/cat"
         alias ls="${eza}/bin/eza --icons"
         alias onefetch="${onefetch}/bin/onefetch --number-of-languages 10000"
-        alias cd="${zoxide}/bin/zoxide"
         
         function fzfp
           if set -q argv[1]
