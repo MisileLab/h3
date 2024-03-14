@@ -14,7 +14,7 @@ import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import axios from "axios";
-import { Progress, ProgressLabel, ProgressValueLabel } from "./components/ui/progress";
+import { Progress } from "./components/ui/progress";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);

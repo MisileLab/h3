@@ -5,6 +5,12 @@ let
   ewl = binaryPath: ''
     exec ${binaryPath} --enable-features=UseOzonePlatform --ozone-platform=wayland
   '';
+  bvtop = pkgs.makeDesktopItem {
+    name = "bvtop";
+    desktopName = "bvtop";
+    icon = "btop";
+    exec = "${pkgs.alacritty}/bin/alacritty -e zellij --layout /home/misile/non-nixos-things/bvtop.kdl";
+  };
 in
 {
   home.username = "misile";
@@ -34,6 +40,7 @@ in
     file wget imagemagick usbutils axel onefetch fastfetch ouch wgetpaste
     hyperfine hdparm duperemove hydra-check glow virt-manager
     killall delta qemu screen termscp rhash nvtop-amd genact convmv
+    bvtop
 
     # Network
     dhcpcd cloudflare-warp trayscale tor-browser-bundle-bin bruno
@@ -73,6 +80,16 @@ in
       url="https://github.com/catppuccin/obs";
       rev="9a78d89d186afbdcc719a1cb7bbf7fb1c2fdd248";
     }}";
+    "non-nixos-things/bvtop.kdl".text = "
+      layout {
+        tab {
+          pane command=\"btop\"
+        }
+        tab {
+          pane command=\"nvtop\"
+        }
+      }
+    ";
   };
 
   home.sessionVariables = {
