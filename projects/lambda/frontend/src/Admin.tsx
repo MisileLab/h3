@@ -45,6 +45,7 @@ const Admin: Component = () => {
   }
   let t = tmp["infos"] as unknown as User[];
   t.sort((a, b)=>a.time - b.time);
+  setData(t);
   console.log(data());
   });
   return (
