@@ -44,7 +44,7 @@ const Admin: Component = () => {
     setError(true);
   }
   let t = tmp["infos"] as unknown as User[];
-  t.sort((a, b)=>a.time - b.time);
+  t.sort((a, b)=>b.time - a.time);
   setData(t);
   console.log(data());
   });
