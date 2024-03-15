@@ -20,6 +20,7 @@ in
   home.packages = with pkgs; [
     # System
     sbctl bluez brightnessctl gnupg nix-tree cryptsetup smartmontools
+    borgbackup
 
     # Development
     niv cabal-install pkg-config edgedb fh nixpkgs-fmt
@@ -110,6 +111,14 @@ in
   };
   gtk = {enable = true;catppuccin.enable = true;};
   programs = {
+    bash = {
+      enable = true;
+      initExtra = ''
+        if [[ $(tty) == "/dev/tty1" ]] then
+          sway
+        fi
+      '';
+    };
     mpv.enable = true;
     obs-studio.enable = true;
     java={enable=true;package=pkgs.temurin-bin-21;};
