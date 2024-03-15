@@ -24,7 +24,7 @@
     "@kobalte/core": "0.12.5",
     "@solid-primitives/upload": "0.0.117",
     "@solidjs/router": "0.13.0",
-    "axios": "1.6.7",
+    "axios": "1.6.8",
     "clsx": "2.1.0",
     "dayjs": "1.11.10",
     "graphql": "16.8.1",
