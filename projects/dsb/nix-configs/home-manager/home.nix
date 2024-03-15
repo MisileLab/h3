@@ -65,7 +65,7 @@ in
     (pkgs.writeShellScriptBin "insomnia" (ewl "${pkgs.bruno}/bin/bruno"))
   ]
   ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
-  ++ (with nodePackages_latest; [nodejs pnpm typescript-language-server]) # nodejs
+  ++ (with nodePackages_latest; [nodejs pnpm typescript-language-server svelte-language-server]) # nodejs
   ++ (with python311Packages; [pip virtualenv pipx]); # python thing
 
   home.file = {
