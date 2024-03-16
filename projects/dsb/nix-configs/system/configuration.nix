@@ -57,7 +57,7 @@
       daemon.enable = true;
       updater.enable = true;
     };
-    tlp.enable = true;
+    auto-cpufreq.enable = true;
     pipewire = {
       enable = true;
       alsa = {enable = true;support32Bit = true;};
@@ -111,7 +111,7 @@
   };
 
   nixpkgs.config.allowUnfree = true;
-  environment.systemPackages = with pkgs; [kdiskmark fprintd];
+  environment.systemPackages = with pkgs; [kdiskmark fprintd auto-cpufreq];
   programs = {
     nix-ld.enable = true;
     steam.enable = true;

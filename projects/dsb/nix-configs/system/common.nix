@@ -23,8 +23,7 @@
     enable = true;
     settings.General.EnableNetworkConfiguration=true;
   };
-  
-  security.sudo.wheelNeedsPassword = false;
+
   system.stateVersion = "24.05"; # Just dont touch this
 }
 

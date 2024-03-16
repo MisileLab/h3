@@ -66,7 +66,7 @@ in
         {command = "${pkgs.swaybg}/bin/swaybg --image ~/.config/home-manager/bg.png";}
         {command = "${pkgs.wl-clipboard}/bin/wl-paste -t text --watch ${pkgs.clipman}/bin/clipman store --no-persist";}
       ];
-      menu = "${pkgs.rofi}/bin/rofi -show drun";
+      menu = "${pkgs.rofi-wayland}/bin/rofi -show drun";
       terminal = "${pkgs.alacritty}/bin/alacritty";
       fonts = {
         names = ["Fira Code NF" "Fira Code" "NanumSquare"];
@@ -274,8 +274,9 @@ in
         disable-history = false;
         display-Network = " 󰤨  Network";
         sidebar-mode = true;
-        };
+      };
       theme = "catppuccin-mocha";
+      package = pkgs.rofi-wayland;
     };
   };
   services = {
@@ -285,5 +286,10 @@ in
     };
     avizo.enable = true;
     poweralertd.enable = true;
+    gpg-agent = {
+      enable = true;
+      enableSshSupport = true;
+      extraConfig = "pinentry-program ${pkgs.pinentry.curses}/bin/pinentry-curses";
+    };
   };
 }

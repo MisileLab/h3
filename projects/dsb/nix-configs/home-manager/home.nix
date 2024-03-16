@@ -19,7 +19,7 @@ in
 
   home.packages = with pkgs; [
     # System
-    sbctl bluez brightnessctl gnupg nix-tree cryptsetup smartmontools
+    sbctl bluez brightnessctl nix-tree cryptsetup smartmontools
     borgbackup
 
     # Development
@@ -89,6 +89,11 @@ in
         tab {
           pane command=\"nvtop\"
         }
+        tab {
+          pane command=\"auto-cpufreq\" {
+            args \"--stats\"
+          }
+        }
       }
     ";
   };
@@ -111,6 +116,10 @@ in
   };
   gtk = {enable = true;catppuccin.enable = true;};
   programs = {
+    gpg = {
+      enable = true;
+      mutableTrust = true;
+    };
     bash = {
       enable = true;
       initExtra = ''
