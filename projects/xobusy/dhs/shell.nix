@@ -5,7 +5,7 @@ with import <nixpkgs> {};
   (pwntools.overrideAttrs(prev: {
     postFixup = "";
   }))
-  beautifulsoup4 lxml loguru]);
+  beautifulsoup4 lxml loguru flask]);
   NIX_LD_LIBRARY_PATH = lib.makeLibraryPath [
     stdenv.cc.cc
     libseccomp

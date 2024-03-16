@@ -55,7 +55,7 @@ in
       bindsym XF86MonBrightnessUp exec ${pkgs.avizo}/bin/lightctl up
       bindsym XF86MonBrightnessDown exec ${pkgs.avizo}/bin/lightctl down
 
-      bindsym Mod1+y exec ${pkgs.clipman}/bin/clipman pick --tool="rofi" --max-items=30
+      bindsym Mod4+y exec ${pkgs.clipman}/bin/clipman pick --tool="rofi" --max-items=30
 
       exec "${pkgs.avizo}/bin/avizo-service"
     '';
