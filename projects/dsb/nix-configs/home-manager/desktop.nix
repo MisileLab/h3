@@ -118,7 +118,6 @@ in
     };
     zellij = {
       enable = true;
-      enableFishIntegration = true;
       settings = {
         theme = "catppuccin-mocha";
         default_shell = "fish";

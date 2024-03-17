@@ -15,6 +15,7 @@
     opengl = {enable = true; driSupport = true;};
     enableAllFirmware = true;
     enableRedistributableFirmware = true;
+    firmware = with pkgs; [alsa-firmware];
   };
 
   xdg.portal = {
