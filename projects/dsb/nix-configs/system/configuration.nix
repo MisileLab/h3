@@ -1,21 +1,22 @@
 { config, lib, pkgs, ... }:
 {
-  imports =
-    [
-      ./common.nix
-      ./hardware-configuration.nix
-      ./lanzaboote.nix
-    ];
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.initrd.kernelModules = ["amdgpu"];
-  boot.supportedFilesystems = [ "ntfs" "btrfs" "ext4" ];
+  imports = [
+    ./common.nix
+    ./hardware-configuration.nix
+    ./lanzaboote.nix
+  ];
+  boot = {
+    loader.efi.canTouchEfiVariables = true;
+    kernelPackages = with pkgs; linuxPackagesFor linux_latest;
+    initrd.kernelModules = ["amdgpu"];
+    supportedFilesystems = [ "ntfs" "btrfs" "ext4" ];
+  };
 
   hardware = {
     opengl = {enable = true; driSupport = true;};
     enableAllFirmware = true;
     enableRedistributableFirmware = true;
-    firmware = with pkgs; [alsa-firmware];
+    firmware = with pkgs; [alsa-firmware sof-firmware];
   };
 
   xdg.portal = {

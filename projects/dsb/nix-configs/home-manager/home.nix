@@ -41,7 +41,7 @@ in
     file wget imagemagick usbutils axel onefetch fastfetch ouch wgetpaste
     hyperfine hdparm duperemove hydra-check glow virt-manager
     killall delta qemu screen termscp rhash nvtop-amd genact convmv
-    bvtop
+    bvtop pavucontrol
 
     # Network
     dhcpcd cloudflare-warp trayscale tor-browser-bundle-bin bruno
