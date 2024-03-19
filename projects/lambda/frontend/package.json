@@ -31,7 +31,7 @@
     "graphql-request": "6.1.0",
     "mobile-device-detect": "0.4.3",
     "solid-icons": "1.1.0",
-    "solid-js": "1.8.15",
+    "solid-js": "1.8.16",
     "tailwindcss-animate": "1.0.7",
     "vite-tsconfig-paths": "4.3.2"
   }
