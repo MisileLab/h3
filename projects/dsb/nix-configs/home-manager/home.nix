@@ -21,6 +21,7 @@ in
     # System
     sbctl bluez brightnessctl nix-tree cryptsetup smartmontools
     borgbackup synology-drive-client clipman wl-clipboard
+    pavucontrol
 
     # Development
     niv cabal-install pkg-config edgedb fh nixpkgs-fmt
@@ -41,7 +42,7 @@ in
     file wget imagemagick usbutils axel onefetch fastfetch ouch wgetpaste
     hyperfine hdparm duperemove hydra-check glow virt-manager
     killall delta qemu screen termscp rhash nvtop-amd genact convmv
-    bvtop pavucontrol
+    bvtop dasel
 
     # Network
     dhcpcd cloudflare-warp trayscale tor-browser-bundle-bin bruno
@@ -167,16 +168,17 @@ in
     };
     fish = {
       enable = true;
+      shellAliases = with pkgs; {
+        nix-clean = "nix store optimise && sudo nix store optimise && nix-collect-garbage -d && sudo nix-collect-garbage -d";
+        cat = "${bat}/bin/bat";
+        ocat = "${coreutils}/bin/cat";
+        ls = "${eza}/bin/eza --icons";
+        onefetch = "${onefetch}/bin/onefetch";
+      };
       shellInit = with pkgs; ''
         fish_add_path -m ~/.cargo/bin
         fish_add_path -m ~/.avm/bin
-        fish_add_path -m ~/.local/share/solana/install/active_release/bin
-        
-        alias nix-clean="nix store optimise && sudo nix store optimise && nix-collect-garbage -d && sudo nix-collect-garbage -d"
-        alias cat="${bat}/bin/bat"
-        alias ocat="${coreutils}/bin/cat"
-        alias ls="${eza}/bin/eza --icons"
-        alias onefetch="${onefetch}/bin/onefetch --number-of-languages 10000"
+        fish_add_path -m ~/.local/share/solana/install/active_release/bin        
         
         function fzfp
           if set -q argv[1]
