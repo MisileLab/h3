@@ -9,7 +9,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "3.12.2"
-strawberry-graphql = {extras = ["fastapi"], version = "0.221.0"}
+strawberry-graphql = {extras = ["fastapi"], version = "0.221.1"}
 edgedb = "1.9.0"
 fastapi = "0.110.0"
 python-lsp-server = "1.10.1"
