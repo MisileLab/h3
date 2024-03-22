@@ -10,6 +10,11 @@
     kernelPackages = with pkgs; linuxPackagesFor linux_latest;
     initrd.kernelModules = ["amdgpu"];
     supportedFilesystems = [ "ntfs" "btrfs" "ext4" ];
+    extraModprobeConfig = ''
+      blacklist snd-soc-dmic
+      blacklist snd-acp3x-rn
+      blacklist snd-acp3x-pdm-dma
+    '';
   };
 
   hardware = {
@@ -43,6 +48,7 @@
     options = "--delete-older-than 1d";
   };
   services = {
+    fwupd.enable = true;
     flatpak.enable = true;
     fprintd.enable = true;
     openvpn.servers = {
