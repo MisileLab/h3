@@ -24,9 +24,6 @@ in
   i18n = {
     inputMethod = {
       enabled = "kime";
-      kime.config = {
-        indicator.icon_color = "White";
-      };
     };
   };
 

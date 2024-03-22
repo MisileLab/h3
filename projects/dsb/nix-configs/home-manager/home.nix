@@ -174,6 +174,7 @@ in
         ocat = "${coreutils}/bin/cat";
         ls = "${eza}/bin/eza --icons";
         onefetch = "${onefetch}/bin/onefetch";
+        lzg = "${lazygit}/bin/lazygit";
       };
       shellInit = with pkgs; ''
         fish_add_path -m ~/.cargo/bin
