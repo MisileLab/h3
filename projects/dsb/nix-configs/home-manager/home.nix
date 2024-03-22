@@ -11,12 +11,12 @@ let
     icon = "btop";
     exec = "${pkgs.alacritty}/bin/alacritty -e zellij --layout /home/misile/non-nixos-things/bvtop.kdl";
   };
+  nurpkgs = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") { inherit pkgs; };
 in
 {
   home.username = "misile";
   home.homeDirectory = "/home/misile";
   home.stateVersion = "23.11"; # dont change it
-
   home.packages = with pkgs; [
     # System
     sbctl bluez brightnessctl nix-tree cryptsetup smartmontools
@@ -58,7 +58,7 @@ in
     ferium vesktop
 
     # Compatibility
-    figma-linux wineWowPackages.stable appimage-run
+    figma-linux wineWowPackages.stable appimage-run libreoffice
     (pkgs.writeShellScriptBin "discord" (ewl "${pkgs.vesktop}/bin/vesktop"))
     (pkgs.writeShellScriptBin "vscode" (ewl "${pkgs.vscodium}/bin/codium"))
     (pkgs.writeShellScriptBin "gdb" (ewl "${pkgs.pwndbg}/bin/pwndbg"))
