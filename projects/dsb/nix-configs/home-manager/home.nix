@@ -55,7 +55,7 @@ in
     pulsemixer galaxy-buds-client
 
     # Some chat and game
-    ferium vesktop
+    ferium vesktop prismlauncher
 
     # Compatibility
     figma-linux wineWowPackages.stable appimage-run libreoffice
@@ -101,9 +101,10 @@ in
       }
     ";
     "non-nixos-things/manual.md".text = "
-# Introduction
 > Ultimately, arguing that you don't care about the right to privacy because you have nothing to hide is 
 > no different than saying you don't care about free speech because you have nothing to say. - Edward Snowden
+
+# Introduction
 tldr for [privacyguides](http://www.xoe4vn5uwdztif6goazfbmogh6wh5jc4up35bqdflu6bkdc5cas5vjqd.onion)
 
 # Protect the information
