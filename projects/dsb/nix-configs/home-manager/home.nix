@@ -289,6 +289,11 @@ I cant do tldr for tools, just go [this](http://www.xoe4vn5uwdztif6goazfbmogh6wh
     atuin = {
       enable = true;
       enableFishIntegration = true;
+      settings = {
+        history_filter = [
+          "ls" "clear" "cd *"
+        ];
+      };
     };
     git = {
       enable = true;
