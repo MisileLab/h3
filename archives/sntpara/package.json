@@ -15,7 +15,7 @@
     "solid-devtools": "0.29.3",
     "solid-styled-components": "0.28.5",
     "typescript": "5.4.3",
-    "vite": "5.2.3",
+    "vite": "5.2.4",
     "vite-plugin-compression2": "^1.0.0",
     "vite-plugin-solid": "2.10.2"
   },
