@@ -26,7 +26,7 @@ in
     # Development
     niv cabal-install pkg-config edgedb fh nixpkgs-fmt
     hub poetry d2 micromamba pdm mypy dvc snyk ghidra pwndbg
-    cargo-update pre-commit pijul
+    cargo-update pre-commit pijul just
 
     # Some cryptos
     solana-validator
