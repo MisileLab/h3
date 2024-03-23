@@ -85,6 +85,10 @@ in
       url="https://github.com/catppuccin/obs";
       rev="9a78d89d186afbdcc719a1cb7bbf7fb1c2fdd248";
     }}";
+    ".local/share/PrismLauncher/themes/catppuccin-mocha.zip".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
+      url="https://github.com/catppuccin/prismlauncher";
+      rev="baa824d2738477ee54beb560ae992c834d43b757";
+    }}/themes/Mocha/Catppuccin-Mocha.zip";
     "non-nixos-things/bvtop.kdl".text = "
       layout {
         tab {
