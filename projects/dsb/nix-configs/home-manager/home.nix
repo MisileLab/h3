@@ -25,7 +25,9 @@ in
 
     # Development
     niv cabal-install pkg-config edgedb fh nixpkgs-fmt
-    hub poetry d2 micromamba pdm mypy dvc snyk ghidra /* pwndbg */ # https://github.com/NixOS/nixpkgs/issues/298526
+    hub poetry micromamba pdm mypy dvc snyk ghidra /* pwndbg d2 */
+    # https://github.com/NixOS/nixpkgs/issues/298526
+    # https://github.com/NixOS/nixpkgs/issues/298590
     cargo-update pre-commit pijul just
 
     # Some cryptos
@@ -70,7 +72,7 @@ in
   ]
   ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
   ++ (with nodePackages_latest; [nodejs pnpm typescript-language-server svelte-language-server]) # nodejs
-  ++ (with python311Packages; [pip virtualenv pipx]); # python thing
+  ++ (with python311Packages; [pip virtualenv]); # python thing
 
   home.file = {
     ".local/share/rofi/themes/catppuccin-mocha.rasi".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit{
