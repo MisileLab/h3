@@ -18,7 +18,8 @@
 
   system.copySystemConfiguration = true;
   nix.settings.experimental-features = ["nix-command" "flakes"];
-
+  sound.enable = false;
+  
   networking.wireless.iwd = {
     enable = true;
     settings.General.EnableNetworkConfiguration=true;

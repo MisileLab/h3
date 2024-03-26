@@ -55,7 +55,7 @@ in
     pulsemixer galaxy-buds-client
 
     # Some chat and game
-    ferium vesktop prismlauncher
+    ferium vesktop prismlauncher telegram-desktop
 
     # Compatibility
     figma-linux wineWowPackages.stable appimage-run libreoffice
@@ -173,7 +173,7 @@ Use monero (or at least cryptocurrency) for most time.
 
 ## Dont use real card
 - [use gift card with crypto](https://coincards.com)
-- [fake card generator](https://privacy.com)
+- [credit card generator](https://digitalpurse.io)
 
 # Tools
 I cant do tldr for tools, just go [this](http://www.xoe4vn5uwdztif6goazfbmogh6wh5jc4up35bqdflu6bkdc5cas5vjqd.onion/en/tools)
@@ -291,7 +291,7 @@ I cant do tldr for tools, just go [this](http://www.xoe4vn5uwdztif6goazfbmogh6wh
       enableFishIntegration = true;
       settings = {
         history_filter = [
-          "ls" "clear" "cd *" "manual"
+          "ls" "clear" "cd *" "manual" "poweroff" "zellij *" "exit" "topgrade"
         ];
       };
     };

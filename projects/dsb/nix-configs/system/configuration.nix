@@ -7,14 +7,9 @@
   ];
   boot = {
     loader.efi.canTouchEfiVariables = true;
-    kernelPackages = with pkgs; linuxPackagesFor linux_latest;
+    kernelPackages = with pkgs; linuxPackages_latest;
     initrd.kernelModules = ["amdgpu"];
     supportedFilesystems = [ "ntfs" "btrfs" "ext4" ];
-    extraModprobeConfig = ''
-      blacklist snd-soc-dmic
-      blacklist snd-acp3x-rn
-      blacklist snd-acp3x-pdm-dma
-    '';
   };
 
   hardware = {
@@ -22,6 +17,7 @@
     enableAllFirmware = true;
     enableRedistributableFirmware = true;
     firmware = with pkgs; [alsa-firmware sof-firmware];
+    bluetooth = {enable = true;powerOnBoot = true;};
   };
 
   xdg.portal = {
@@ -48,9 +44,14 @@
     options = "--delete-older-than 1d";
   };
   services = {
+    pipewire = {
+      enable = true;
+      alsa = {enable = true;support32Bit = true;};
+      pulse.enable = true;
+    };
     fwupd.enable = true;
     flatpak.enable = true;
-    fprintd.enable = true;
+    #fprintd.enable = true;
     openvpn.servers = {
       VPN = { config = '' config /home/misile/non-nixos-things/openvpns/profile.ovpn ''; autoStart = false; };
     };
@@ -66,11 +67,6 @@
       updater.enable = true;
     };
     auto-cpufreq.enable = true;
-    pipewire = {
-      enable = true;
-      alsa = {enable = true;support32Bit = true;};
-      pulse.enable = true;
-    };
     tor = {
       enable = true;
       client.enable = true;
@@ -119,7 +115,7 @@
   };
 
   nixpkgs.config.allowUnfree = true;
-  environment.systemPackages = with pkgs; [kdiskmark fprintd auto-cpufreq];
+  environment.systemPackages = with pkgs; [kdiskmark /*fprintd*/ auto-cpufreq];
   programs = {
     nix-ld.enable = true;
     steam.enable = true;
