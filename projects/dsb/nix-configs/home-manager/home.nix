@@ -25,7 +25,7 @@ in
 
     # Development
     niv cabal-install pkg-config edgedb fh nixpkgs-fmt
-    hub poetry d2 micromamba pdm mypy dvc snyk ghidra pwndbg
+    hub poetry d2 micromamba pdm mypy dvc snyk ghidra /* pwndbg */ # https://github.com/NixOS/nixpkgs/issues/298526
     cargo-update pre-commit pijul just
 
     # Some cryptos
@@ -173,7 +173,7 @@ Use monero (or at least cryptocurrency) for most time.
 
 ## Dont use real card
 - [use gift card with crypto](https://coincards.com)
-- [credit card generator](https://digitalpurse.io)
+- [credit card generator](https://buy.cakepay.com)
 
 # Tools
 I cant do tldr for tools, just go [this](http://www.xoe4vn5uwdztif6goazfbmogh6wh5jc4up35bqdflu6bkdc5cas5vjqd.onion/en/tools)
