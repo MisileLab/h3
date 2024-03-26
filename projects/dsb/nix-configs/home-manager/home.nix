@@ -61,7 +61,7 @@ in
     figma-linux wineWowPackages.stable appimage-run libreoffice
     (pkgs.writeShellScriptBin "discord" (ewl "${pkgs.vesktop}/bin/vesktop"))
     (pkgs.writeShellScriptBin "vscode" (ewl "${pkgs.vscodium}/bin/codium"))
-    (pkgs.writeShellScriptBin "gdb" (ewl "${pkgs.pwndbg}/bin/pwndbg"))
+    #(pkgs.writeShellScriptBin "gdb" (ewl "${pkgs.pwndbg}/bin/pwndbg"))
     (pkgs.writeShellScriptBin "tetrio" (ewl "${pkgs.tetrio-desktop.override{withTetrioPlus=true;}}/bin/tetrio-desktop"))
     (pkgs.writeShellScriptBin "insomnia" (ewl "${pkgs.bruno}/bin/bruno"))
     (pkgs.writeShellScriptBin "manual" ''
