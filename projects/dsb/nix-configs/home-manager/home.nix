@@ -31,7 +31,7 @@ in
     cargo-update pre-commit pijul just
 
     # Some cryptos
-    solana-validator
+    solana-validator exodus
 
     # Language compiler and lsp
     ghc
