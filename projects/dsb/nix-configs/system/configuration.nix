@@ -51,7 +51,7 @@
     };
     fwupd.enable = true;
     flatpak.enable = true;
-    #fprintd.enable = true;
+    fprintd.enable = true;
     openvpn.servers = {
       VPN = { config = '' config /home/misile/non-nixos-things/openvpns/profile.ovpn ''; autoStart = false; };
     };
@@ -115,7 +115,7 @@
   };
 
   nixpkgs.config.allowUnfree = true;
-  environment.systemPackages = with pkgs; [kdiskmark /*fprintd*/ auto-cpufreq];
+  environment.systemPackages = with pkgs; [kdiskmark fprintd auto-cpufreq];
   programs = {
     nix-ld.enable = true;
     steam.enable = true;
