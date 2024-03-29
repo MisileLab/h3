@@ -25,9 +25,7 @@ in
 
     # Development
     niv cabal-install pkg-config edgedb fh nixpkgs-fmt
-    hub poetry micromamba pdm mypy dvc snyk ghidra /* pwndbg d2 */
-    # https://github.com/NixOS/nixpkgs/issues/298526
-    # https://github.com/NixOS/nixpkgs/issues/298590
+    hub poetry micromamba pdm mypy dvc snyk ghidra pwndbg d2
     cargo-update pre-commit pijul just
 
     # Some cryptos
@@ -39,12 +37,13 @@ in
     python312Full
     nasm
     tailwindcss-language-server
+    hvm kind2
 
     # Utils
     file wget imagemagick usbutils axel onefetch fastfetch ouch wgetpaste
     hyperfine hdparm duperemove hydra-check glow virt-manager
-    killall delta qemu screen termscp rhash nvtop-amd genact convmv
-    bvtop dasel
+    killall delta qemu screen termscp rhash nvtopPackages.amd genact convmv
+    bvtop dasel gimp
 
     # Network
     dhcpcd cloudflare-warp trayscale tor-browser-bundle-bin bruno
@@ -61,9 +60,10 @@ in
 
     # Compatibility
     figma-linux wineWowPackages.stable appimage-run libreoffice
+    (pkgs.writeShellScriptBin "figma" (ewl "${pkgs.figma-linux}/bin/figma-linux"))
     (pkgs.writeShellScriptBin "discord" (ewl "${pkgs.vesktop}/bin/vesktop"))
     (pkgs.writeShellScriptBin "vscode" (ewl "${pkgs.vscodium}/bin/codium"))
-    #(pkgs.writeShellScriptBin "gdb" (ewl "${pkgs.pwndbg}/bin/pwndbg"))
+    (pkgs.writeShellScriptBin "gdb" "${pkgs.pwndbg}/bin/pwndbg")
     (pkgs.writeShellScriptBin "tetrio" (ewl "${pkgs.tetrio-desktop.override{withTetrioPlus=true;}}/bin/tetrio-desktop"))
     (pkgs.writeShellScriptBin "insomnia" (ewl "${pkgs.bruno}/bin/bruno"))
     (pkgs.writeShellScriptBin "manual" ''
