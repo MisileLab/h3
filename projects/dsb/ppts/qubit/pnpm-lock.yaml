@@ -33,7 +33,7 @@ devDependencies:
     version: 20.11.30
   '@types/reveal.js':
     specifier: ^5.0.0
-    version: 5.0.2
+    version: 5.0.3
   autoprefixer:
     specifier: ^10.4.16
     version: 10.4.19(postcss@8.4.38)
@@ -555,8 +555,8 @@ packages:
     resolution: {integrity: sha512-Sk/uYFOBAB7mb74XcpizmH0KOR2Pv3D2Hmrh1Dmy5BmK3MpdSa5kqZcg6EKBdklU0bFXX9gCfzvpnyUehrPIuA==}
     dev: true
 
-  /@types/reveal.js@5.0.2:
-    resolution: {integrity: sha512-mbjLnbqPWkzrC3JnBIwP15l5oX+aGqtrftytv1809rKJ3jIzKDD+NbdFj2nSpAtAlIzFbe+B+BO9QlTbhNV9WQ==}
+  /@types/reveal.js@5.0.3:
+    resolution: {integrity: sha512-gwnK8TR38IOBIORWFrV5/z9lRX4iLke2FBqNgRhXxehaWJFkrzVY2TVzfdX/SX94eugt+OI5l++zDBBSfdzruQ==}
     dev: true
 
   /acorn@8.11.3:
