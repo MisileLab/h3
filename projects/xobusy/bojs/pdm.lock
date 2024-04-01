@@ -10,7 +10,7 @@ content_hash = "sha256:613a91a80fc07a2c7f3daa569aafefe74db0253dbcf88db2823454f90
 [[package]]
 name = "baekjoonapi"
 version = "0.2.4"
-requires_python = ">=3.7,<4"
+requires_python = "<4,>=3.7"
 git = "https://github.com/MisileLab/baekjoonapi"
 revision = "3cb20ea478388c4514e1c6f3acf42c77c0e0bc3d"
 summary = "BaekjoonAPI for Python"
