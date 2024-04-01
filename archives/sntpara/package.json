@@ -12,7 +12,7 @@
   "license": "MisileLab License",
   "devDependencies": {
     "prettier": "3.2.5",
-    "solid-devtools": "0.29.3",
+    "solid-devtools": "0.30.0",
     "solid-styled-components": "0.28.5",
     "typescript": "5.4.3",
     "vite": "5.2.7",
