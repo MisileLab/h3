@@ -1,3 +1,4 @@
 .vscode
 .xwin*
 .direnv
+.pdm-python

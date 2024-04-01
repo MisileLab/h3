@@ -1,22 +1,24 @@
-[tool.poetry]
-name = "baektest"
+[project]
+name = "bojs"
 version = "0.1.0"
-description = "baekjoon test"
-authors = ["MisileLaboratory"]
-license = "MisileLab License"
+description = "Default template for PDM package"
+authors = [
+    {name = "MisileLaboratory", email = "misileminecord@gmail.com"},
+]
+dependencies = [
+    "tomli==2.0.1",
+    "requests==2.31.0",
+    "baekjoonapi @ git+https://github.com/MisileLab/baekjoonapi",
+]
+requires-python = "==3.12.2"
 readme = "README.md"
-package-mode = false
+license = {text = "MisileLab License"}
 
-[tool.poetry.dependencies]
-python = "3.12.2"
-tomli = "2.0.1"
-requests = "2.31.0"
-#misilelibpy = {path="libs/misilelib/misilelib-python"}
-baekjoonapi = {git = "https://github.com/MisileLab/baekjoonapi.git"}
 
-[tool.poetry.group.extra.dependencies]
-tqdm = "4.66.2"
+[tool.pdm]
+distribution = false
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.pdm.dev-dependencies]
+dev = [
+    "tqdm>=4.66.2",
+]

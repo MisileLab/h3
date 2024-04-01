@@ -72,7 +72,7 @@ in
   ]
   ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
   ++ (with nodePackages_latest; [nodejs pnpm typescript-language-server svelte-language-server]) # nodejs
-  ++ (with python311Packages; [pip virtualenv]); # python thing
+  ++ (with python312Packages; [pip virtualenv]); # python thing
 
   home.file = {
     ".local/share/rofi/themes/catppuccin-mocha.rasi".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit{
