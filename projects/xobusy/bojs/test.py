@@ -1,7 +1,7 @@
 from os import getcwd, listdir
 from subprocess import Popen, run
 from json import loads as jload
-from bojapi import BaekjoonProb
+from baekjoonapi import BaekjoonProb
 from tomli import loads
 from sys import argv
 from difflib import SequenceMatcher

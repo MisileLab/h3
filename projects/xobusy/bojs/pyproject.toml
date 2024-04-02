@@ -20,5 +20,6 @@ distribution = false
 
 [tool.pdm.dev-dependencies]
 dev = [
-    "tqdm>=4.66.2",
+    "tqdm==4.66.2",
+    "python-lsp-server==1.11.0",
 ]
