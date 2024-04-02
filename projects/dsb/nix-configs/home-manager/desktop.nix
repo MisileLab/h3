@@ -36,19 +36,20 @@ in
       corner_radius 8
       blur_passes 4
       shadows enable
+      
       for_window [class=\".*\"] opacity 0.9
       for_window [app_id=\".*\"] opacity 0.9
+      for_window [instance="GalaxyBudsClient"] floating enable
+      
       bindsym Print exec ${pkgs.sway-contrib.grimshot}/bin/grimshot --notify copy area
       bindsym Shift+Print	exec ${pkgs.sway-contrib.grimshot}/bin/grimshot --notify copy screen
       bindsym Shift+Alt+Print exec ${pkgs.sway-contrib.grimshot}/bin/grimshot --notify savecopy anything
-
       bindsym Alt+Print exec ${pkgs.sway-contrib.grimshot}/bin/grimshot --notify save area
       
       bindsym XF86AudioRaiseVolume exec ${pkgs.avizo}/bin/volumectl -u up
       bindsym XF86AudioLowerVolume exec ${pkgs.avizo}/bin/volumectl -u down
       bindsym XF86AudioMute exec ${pkgs.avizo}/bin/volumectl toggle-mute
       bindsym XF86AudioMicMute exec ${pkgs.avizo}/bin/volumectl -m toggle-mute
-
       bindsym XF86MonBrightnessUp exec ${pkgs.avizo}/bin/lightctl up
       bindsym XF86MonBrightnessDown exec ${pkgs.avizo}/bin/lightctl down
 
