@@ -1,0 +1,4 @@
+# Schale
+
+Auth daemon
+

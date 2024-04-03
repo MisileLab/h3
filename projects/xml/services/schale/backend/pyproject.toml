@@ -1,0 +1,21 @@
+[project]
+name = "schale"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [
+  {name = "MisileLaboratory", email = "misileminecord@gmail.com"},
+]
+dependencies = [
+  "quart==0.19.5",
+  "edgedb==1.9.0",
+]
+requires-python = "==3.12.2"
+readme = "README.md"
+license = {text = "MisileLab License"}
+
+
+[tool.pdm]
+distribution = false
+
+[tool.pdm.dev-dependencies]
+dev = ["python-lsp-server==1.11.0"]

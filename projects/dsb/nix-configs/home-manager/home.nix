@@ -20,8 +20,7 @@ in
   home.packages = with pkgs; [
     # System
     sbctl bluez brightnessctl nix-tree cryptsetup smartmontools
-    borgbackup synology-drive-client clipman wl-clipboard
-    pavucontrol
+    borgbackup clipman wl-clipboard pavucontrol rclone
 
     # Development
     niv cabal-install pkg-config edgedb fh nixpkgs-fmt

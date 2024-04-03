@@ -18,8 +18,7 @@ using my [josh](https://github.com/josh-project/josh) page: `https://gith.misile
 
 ## DVC (Data Version Control)
 
-currently, i'm using my onedrive and linux client, link remote to ../../nas/repos/h3  
-[share link](https://space.chizstudio.com/sharing/6eBmk3Vhw)
+currently, i'm using rclone, link remote to ../../external/repos/h3  
 
 ## License?
 

@@ -5,12 +5,12 @@
 groups = ["default", "dev"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:db0e348b93f53cc832f8ef2f5111132c110e682d54ddf663fbdd201983d9c91d"
+content_hash = "sha256:c033283ed5fe947f26ac13e0dd3ffcc29d4bb5c83637b9fe0cbfc4f492fc9579"
 
 [[package]]
 name = "baekjoonapi"
 version = "0.2.5"
-requires_python = "<4,>=3.8"
+requires_python = ">=3.8,<4"
 git = "https://github.com/MisileLab/baekjoonapi"
 revision = "d2bb3e4ad0ace0c1adcfbf98fb6bd56210fb2d05"
 summary = "baekjoonapi for python"
