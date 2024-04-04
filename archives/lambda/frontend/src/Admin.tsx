@@ -27,7 +27,7 @@ const Admin: Component = () => {
   if (key === undefined) {
     key = "";
   }
-  let tmp = await client.request(gql`
+  const tmp = await client.request(gql`
       query Query($key: String!) {
         infos(key:$key){
           name
@@ -43,7 +43,7 @@ const Admin: Component = () => {
     console.error("invalid key");
     setError(true);
   }
-  let t = tmp["infos"] as unknown as User[];
+  const t = tmp["infos"] as unknown as User[];
   t.sort((a, b)=>b.time - a.time);
   setData(t);
   console.log(data());

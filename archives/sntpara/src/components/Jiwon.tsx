@@ -171,7 +171,7 @@ const ButtonText = styled.div`
 `;
 
 const Jiwon = () => {
-  let isJiwonGigan = true; //현재 지원 기간인가?
+  const isJiwonGigan = true; //현재 지원 기간인가?
   let isJiwon = false; //지원이 가능한가?
   let timeDiff = 0;
 
@@ -201,9 +201,9 @@ const Jiwon = () => {
   };
 
   const TimeUpdate = () => {
-    let currentTime = new Date();
+    const currentTime = new Date();
 
-    let period = document.getElementById("Period");
+    const period = document.getElementById("Period");
     if (period == null) return;
 
     let result = "";
@@ -241,7 +241,7 @@ const Jiwon = () => {
 
     period.innerHTML = result;
   };
-  let timer = setInterval(TimeUpdate, 1000);
+  const timer = setInterval(TimeUpdate, 1000);
 
   return (
     <Container>

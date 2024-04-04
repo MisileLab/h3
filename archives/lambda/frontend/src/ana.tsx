@@ -77,7 +77,7 @@ export default function AnA(): JSX.Element {
                 <Button class="text-xl font-semibold mt-4" onClick={async () => {
                   const fd = new FormData();
                   console.log(files);
-                  const f = async (v: String | undefined = null) => {
+                  const f = async (v: string | undefined = null) => {
                     await client.request(gql`
                     mutation Query($name: String!, $pnumber: String!, $me: String!, $why: String!, $portfolio: String) {
                           send(
@@ -95,7 +95,7 @@ export default function AnA(): JSX.Element {
                     await f();
                     return;
                   }
-                  let uid = showToast({title: `${files()[0].name} 업로드 준비 중`})
+                  const uid = showToast({title: `${files()[0].name} 업로드 준비 중`})
                   fd.append('file', files()[0].file);
                   await axios.post(`${url}/uploadfile`, fd, {
                     onUploadProgress: (r) => {
