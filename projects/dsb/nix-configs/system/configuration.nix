@@ -44,6 +44,7 @@
     options = "--delete-older-than 1d";
   };
   services = {
+    chrony.enable = true;
     pipewire = {
       enable = true;
       alsa = {enable = true;support32Bit = true;};

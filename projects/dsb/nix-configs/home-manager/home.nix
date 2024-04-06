@@ -63,7 +63,7 @@ in
     (pkgs.writeShellScriptBin "discord" (ewl "${pkgs.vesktop}/bin/vesktop"))
     (pkgs.writeShellScriptBin "vscode" (ewl "${pkgs.vscodium}/bin/codium"))
     (pkgs.writeShellScriptBin "gdb" "${pkgs.pwndbg}/bin/pwndbg")
-    (pkgs.writeShellScriptBin "tetrio" (ewl "${pkgs.tetrio-desktop.override{withTetrioPlus=true;}}/bin/tetrio-desktop"))
+    (pkgs.writeShellScriptBin "tetrio" (ewl "${pkgs.tetrio-desktop.override{withTetrioPlus=true;}}/bin/tetrio"))
     (pkgs.writeShellScriptBin "insomnia" (ewl "${pkgs.bruno}/bin/bruno"))
     (pkgs.writeShellScriptBin "manual" ''
       ${pkgs.glow}/bin/glow -p ~/non-nixos-things/manual.md
@@ -292,7 +292,7 @@ I cant do tldr for tools, just go [this](http://www.xoe4vn5uwdztif6goazfbmogh6wh
       enableFishIntegration = true;
       settings = {
         history_filter = [
-          "ls" "clear" "cd *" "manual" "poweroff" "zellij *" "exit" "topgrade"
+          "ls" "clear" "cd *" "manual" "poweroff" "zellij *" "exit" "topgrade" "zellij *"
         ];
       };
     };
