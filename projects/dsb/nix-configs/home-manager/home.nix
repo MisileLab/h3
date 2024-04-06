@@ -20,7 +20,7 @@ in
   home.packages = with pkgs; [
     # System
     sbctl bluez brightnessctl nix-tree cryptsetup smartmontools
-    borgbackup clipman wl-clipboard pavucontrol rclone
+    borgbackup clipman wl-clipboard pavucontrol rclone pass-wayland
 
     # Development
     niv cabal-install pkg-config edgedb fh nixpkgs-fmt
@@ -71,7 +71,7 @@ in
   ]
   ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
   ++ (with nodePackages_latest; [nodejs pnpm typescript-language-server svelte-language-server]) # nodejs
-  ++ (with python312Packages; [pip virtualenv]); # python thing
+  ++ (with python312Packages; [pip virtualenv keyring keyrings-cryptfile]); # python thing
 
   home.file = {
     ".local/share/rofi/themes/catppuccin-mocha.rasi".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit{
