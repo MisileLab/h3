@@ -37,6 +37,7 @@ in
     nasm
     tailwindcss-language-server
     hvm kind2
+    clang-tools lldb
 
     # Utils
     file wget imagemagick usbutils axel onefetch fastfetch ouch wgetpaste

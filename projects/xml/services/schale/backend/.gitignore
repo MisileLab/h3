@@ -76,3 +76,6 @@ dmypy.json
 .pyre/
 .pytype/
 cython_debug/
+
+# custom
+KEY
