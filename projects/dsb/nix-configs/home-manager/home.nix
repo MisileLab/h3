@@ -256,7 +256,7 @@ I cant do tldr for tools, just go [this](http://www.xoe4vn5uwdztif6goazfbmogh6wh
         cat = "${bat}/bin/bat";
         ocat = "${coreutils}/bin/cat";
         ls = "${eza}/bin/eza --icons";
-        onefetch = "${onefetch}/bin/onefetch";
+        onefetch = "${onefetch}/bin/onefetch --number-of-languages 9999";
         lzg = "${lazygit}/bin/lazygit";
       };
       shellInit = with pkgs; ''
