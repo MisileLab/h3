@@ -161,7 +161,13 @@ in
       settings = [{
         modules-left = [ "sway/workspaces" ];
         modules-center = [ "sway/window" ];
-        modules-right = [ "temperature" "pulseaudio" "network" "battery" "cpu" "memory" "clock"];
+        modules-right = ["pulseaudio" "network" "battery" "cpu" "memory" "custom/gpu-usage" "temperature" "clock"];
+        "custom/gpu-usage" = {
+          exec = "cat /sys/class/hwmon/hwmon0/device/gpu_busy_percent";
+          format = " {}%";
+          return-type = "";
+          interval = 1;
+        };
         backlight = {
           device = "intel_backlight";
           format = "{icon} {percent}%";
