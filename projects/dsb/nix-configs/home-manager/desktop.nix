@@ -54,6 +54,7 @@ in
       bindsym XF86MonBrightnessDown exec ${pkgs.avizo}/bin/lightctl down
 
       bindsym Mod4+y exec ${pkgs.clipman}/bin/clipman pick --tool="rofi" --max-items=30
+      bindsym Mod4+shift+y exec ${pkgs.swayfx}/bin/swaynag --type warning -m 'You want to clear clipboard?' -b 'Yes' 'exec ${pkgs.clipman}/bin/clipman clear --all'
 
       exec "${pkgs.avizo}/bin/avizo-service"
     '';

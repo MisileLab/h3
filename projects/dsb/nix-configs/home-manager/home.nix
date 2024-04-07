@@ -23,21 +23,20 @@ in
     borgbackup clipman wl-clipboard pavucontrol rclone pass-wayland
 
     # Development
-    niv cabal-install pkg-config edgedb fh nixpkgs-fmt
-    hub poetry micromamba pdm mypy dvc snyk ghidra pwndbg d2
-    cargo-update pre-commit pijul just
+    edgedb hub dvc snyk ghidra pwndbg d2 pre-commit pijul just
 
     # Some cryptos
     solana-validator exodus
 
-    # Language compiler and lsp
-    ghc
-    rustup
-    python312Full
+    # Language tools
+    ghc cabal-install
+    rustup cargo-update
+    python312Full micromamba pdm mypy
     nasm
     tailwindcss-language-server
     hvm kind2
-    clang-tools lldb
+    clang-tools lldb pkg-config
+    niv fh nixpkgs-fmt
 
     # Utils
     file wget imagemagick usbutils axel onefetch fastfetch ouch wgetpaste
