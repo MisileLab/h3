@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Request, status, Header, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
@@ -13,9 +14,17 @@ from datetime import timedelta, timezone, datetime
 KEY = Path("./KEY").read_text()
 TIMEOUT = timedelta(weeks=4) # four weeks
 ALG = "HS256"
+ORIGINS = ["*"]
 
 limiter = Limiter(key_func=get_remote_address)
 app = FastAPI()
+app.add_middleware(
+ CORSMiddleware,
+ allow_origins=ORIGINS,
+ allow_credentials=True,
+ allow_methods=["*"],
+ allow_headers=["*"]
+)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 db = create_async_client()
@@ -39,9 +48,9 @@ async def login(
  pw: Annotated[str | None, Header()] = None
 ) -> str:
  if userid is None or pw is None:
-  raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="header is none")
+  raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
  if await db.query("select User {id} filter .userid = <str>$userid and .pw = <str>$pw", userid=userid,pw=pw) == []:
-  raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="password or user isn't good")
+  raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
  return encode({"exp": utcnow() + TIMEOUT, "id": userid}, KEY, algorithm=ALG)
 
 @app.post("/verify")
@@ -56,9 +65,9 @@ async def verify(
   j = decode(jwtv, KEY, algorithms=[ALG])
   return j["id"]
  except exceptions.ExpiredSignatureError:
-  raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Signature invalid")
+  raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
  except exceptions.DecodeError:
-  raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="jwt isnt good")
+  raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
 
 @app.post("/register")
 @limiter.limit("10/hour")
