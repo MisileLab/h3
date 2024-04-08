@@ -13,7 +13,7 @@
 
   users.users.misile = {
     isNormalUser = true;
-    extraGroups=["wheel"];
+    extraGroups=["wheel" "docker"];
   };
 
   system.copySystemConfiguration = true;

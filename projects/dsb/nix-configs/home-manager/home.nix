@@ -23,7 +23,7 @@ in
     borgbackup clipman wl-clipboard pavucontrol rclone pass-wayland
 
     # Development
-    edgedb hub dvc snyk ghidra pwndbg d2 pre-commit pijul just
+    edgedb hub dvc snyk ghidra pwndbg d2 pre-commit pijul just dive
 
     # Some cryptos
     solana-validator exodus
