@@ -44,7 +44,11 @@
     options = "--delete-older-than 1d";
   };
   services = {
-    chrony.enable = true;
+    chrony = {
+      enable = true;
+      enableNTS = true;
+      servers = ["time.cloudflare.com"];
+    };
     pipewire = {
       enable = true;
       alsa = {enable = true;support32Bit = true;};

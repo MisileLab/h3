@@ -4,7 +4,6 @@ let
   custom-ctps = {
     waybar = builtins.fetchGit{url="https://github.com/catppuccin/waybar.git";rev="f74ab1eecf2dcaf22569b396eed53b2b2fbe8aff";};
     dunst = builtins.fetchGit{url="https://github.com/catppuccin/dunst.git";rev="a72991e56338289a9fce941b5df9f0509d2cba09";};
-    delta = builtins.fetchGit{url="https://github.com/catppuccin/delta";rev="21b37ac3138268d92cee71dfc8539d134817580a";};
   };
   returnColorCSS = {r, g, b, a, addi ? ""}: ''
     ${(if c.gtk4 then "backdrop-filter: blur(5px)" else "")}
@@ -122,11 +121,9 @@ in
         default_shell = "fish";
       };
     };
-    git = {
-      delta.options = {
-        features = "catpuccin-mocha";
-      };
-      includes = [{path = "${custom-ctps.delta}/themes/mocha.gitconfig";}];
+    git.delta = {
+      enable = true;
+      catppuccin.enable = true;
     };
     helix = {
       enable = true;
