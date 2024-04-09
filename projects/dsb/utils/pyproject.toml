@@ -1,18 +1,20 @@
-[tool.poetry]
+[project]
 name = "utils"
 version = "0.1.0"
-description = ""
-authors = ["MisileLaboratory"]
-license = "MisileLab License"
+description = "Default template for PDM package"
+authors = [
+  {name = "misilelab", email = "misileminecord@gmail.com"},
+]
+dependencies = [
+  "tomli==2.0.1",
+  "requests==2.31.0",
+  "tomli-w==1.0.0",
+  "inquirer==3.2.4",
+]
+requires-python = "==3.12.2"
 readme = "README.md"
+license = {text = "MisileLab License"}
 
-[tool.poetry.dependencies]
-python = "3.12.2"
-tomli = "2.0.1"
-tomli-w = "1.0.0"
-requests = "2.31.0"
-inquirer = "3.2.4"
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.pdm]
+distribution = false
