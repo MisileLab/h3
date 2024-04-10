@@ -1,11 +1,13 @@
 import { JSX, createSignal } from "solid-js";
 import statusCheck, { backendurl } from "./config";
+import { Title } from "@solidjs/meta";
 
 export default function Register(): JSX.Element {
   const [id, setid] = createSignal("");
   const [pw, setpw] = createSignal("");
   return (
     <div class="bg-ctp-crust w-screen h-screen flex flex-col justify-center items-center">
+      <Title>schale/register</Title>
       <div class="bg-ctp-mantle w-fit h-fit flex flex-col py-12">
         <div class="w-full h-full gap-8 flex px-4 md:px-16 justify-center flex-col text-ctp-text">
           <h1 class="font-bold text-2xl md:text-3xl">Without tracker, <span class="text-transparent bg-clip-text bg-gradient-to-br from-ctp-sky to-ctp-mauve">with privacy</span></h1>
