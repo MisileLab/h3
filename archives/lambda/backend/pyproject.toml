@@ -8,7 +8,7 @@ readme = "README.md"
 #package-mode = false
 
 [tool.poetry.dependencies]
-python = "3.12.2"
+python = "3.12.3"
 strawberry-graphql = {extras = ["fastapi"], version = "0.224.1"}
 edgedb = "1.9.0"
 fastapi = "0.110.1"

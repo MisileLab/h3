@@ -7,7 +7,7 @@ license = "MisileLab License"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "3.12.2"
+python = "3.12.3"
 fastapi = "0.110.1"
 uvicorn = "0.29.0"
 pymongo = "4.6.3"
