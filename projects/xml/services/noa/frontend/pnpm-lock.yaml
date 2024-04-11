@@ -9,8 +9,11 @@ dependencies:
     specifier: 0.29.3
     version: 0.29.3(solid-js@1.8.11)
   '@solidjs/router':
-    specifier: 0.13.1
-    version: 0.13.1(solid-js@1.8.11)
+    specifier: 0.13.2
+    version: 0.13.2(solid-js@1.8.11)
+  solid-icons:
+    specifier: ^1.1.0
+    version: 1.1.0(solid-js@1.8.11)
   solid-js:
     specifier: 1.8.11
     version: 1.8.11
@@ -980,8 +983,8 @@ packages:
       solid-js: 1.8.11
     dev: false
 
-  /@solidjs/router@0.13.1(solid-js@1.8.11):
-    resolution: {integrity: sha512-Rz5Lf0ssWMuN+Wm2GFO0vwZoO/KSwYFSuCUzWrRAvje5M0ZYZrMk5FZxuzdJT+zg8KuqWJQlRALks5E0r+FjAA==}
+  /@solidjs/router@0.13.2(solid-js@1.8.11):
+    resolution: {integrity: sha512-zPlQUXaaUMFzz70SNN8scITooBaJyvIJci3ilyHUBXr9+mzEJGCUSohRJx/VXKo9+p+HEBHY48GnChiPYfLsjg==}
     peerDependencies:
       solid-js: ^1.8.6
     dependencies:
@@ -1713,6 +1716,14 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /solid-icons@1.1.0(solid-js@1.8.11):
+    resolution: {integrity: sha512-IesTfr/F1ElVwH2E1110s2RPXH4pujKfSs+koT8rwuTAdleO5s26lNSpqJV7D1+QHooJj18mcOiz2PIKs0ic+A==}
+    peerDependencies:
+      solid-js: '*'
+    dependencies:
+      solid-js: 1.8.11
+    dev: false
 
   /solid-js@1.8.11:
     resolution: {integrity: sha512-WdwmER+TwBJiN4rVQTVBxocg+9pKlOs41KzPYntrC86xO5sek8TzBYozPEZPL1IRWDouf2lMrvSbIs3CanlPvQ==}

@@ -1,11 +1,10 @@
 import { Title } from "@solidjs/meta";
 import { A } from "@solidjs/router";
-import { VsFolder, VsFile } from "solid-icons/vs";
 
-export default function App() {
+export default function Upload() {
   return (
     <div class="w-screen h-screen bg-ctp-crust flex justify-center items-center">
-      <Title>{window.location.pathname}</Title>
+      <Title>{window.location.pathname}asd</Title>
       <div class="w-fit h-fit p-6 bg-ctp-overlay0">
         <table>
           <thead>

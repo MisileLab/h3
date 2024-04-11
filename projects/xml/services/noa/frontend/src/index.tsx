@@ -3,8 +3,9 @@ import './index.css';
 import { render } from 'solid-js/web';
 
 import App from './App';
-import { Route, Router } from '@solidjs/router';
+import Upload from "./Upload";
 import { MetaProvider } from '@solidjs/meta';
+import { Route, Router } from '@solidjs/router';
 
 const root = document.getElementById('root');
 
@@ -17,7 +18,8 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 render(() =>
 <MetaProvider>
   <Router>
-    <Route path="/" component={App} />
+    <Route path="/upload" component={Upload} />
+    <Route path="*" component={App} />
   </Router>
 </MetaProvider>
 , root!);

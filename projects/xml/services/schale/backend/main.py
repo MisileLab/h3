@@ -54,7 +54,7 @@ async def login(
  return encode({"exp": utcnow() + TIMEOUT, "id": userid}, KEY, algorithm=ALG)
 
 @app.post("/verify")
-@limiter.limit("10/second")
+@limiter.limit("100/second")
 async def verify(
  request: Request,
  jwtv: Annotated[str | None, Header(name="jwt")] = None
