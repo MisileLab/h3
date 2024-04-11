@@ -23,7 +23,7 @@
   "dependencies": {
     "@kobalte/core": "0.12.6",
     "@solid-primitives/upload": "0.0.117",
-    "@solidjs/router": "0.13.1",
+    "@solidjs/router": "0.13.2",
     "axios": "1.6.8",
     "clsx": "2.1.0",
     "dayjs": "1.11.10",
