@@ -44,7 +44,7 @@ async def check(request: Request, userid: str) -> bool:
 @limiter.limit("10/minute")
 async def login(
   request: Request,
-  userid: Annotated[str | None, Header(name="id")] = None,
+  userid: Annotated[str | None, Header(alias="id")] = None,
   pw: Annotated[str | None, Header()] = None
 ) -> str:
   if userid is None or pw is None:
@@ -57,7 +57,7 @@ async def login(
 @limiter.limit("100/second")
 async def verify(
   request: Request,
-  jwtv: Annotated[str | None, Header(name="jwt")] = None
+  jwtv: Annotated[str | None, Header(alias="jwt")] = None
 ):
   if jwtv is None:
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
@@ -74,7 +74,7 @@ async def verify(
 @limiter.limit("10/hour")
 async def register(
   request: Request,
-  userid: Annotated[str | None, Header(name="id")] = None,
+  userid: Annotated[str | None, Header(alias="id")] = None,
   pw: Annotated[str | None, Header()] = None
 ):
   if userid is None or pw is None:
