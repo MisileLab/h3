@@ -2,7 +2,7 @@ import { createFileUploader } from "@solid-primitives/upload";
 import { Title } from "@solidjs/meta";
 import axios from "axios";
 import { createEffect, createSignal } from "solid-js";
-import { getCookie, host, schale_url, setCookie } from "./config";
+import { backendurl, getCookie, host, schale_url, setCookie } from "./config";
 
 export default function Upload() {
   const {files, selectFiles} = createFileUploader();
@@ -30,7 +30,7 @@ export default function Upload() {
                 console.log(i.name);
                 const fd = new FormData();
                 fd.append("file", i.file);
-                await axios.post(`${schale_url}/uploadfile`, fd, {
+                await axios.post(`${backendurl}/uploadfile`, fd, {
                   onUploadProgress: (r) => {console.log(r);},
                   headers: {
                     jwt: getCookie("jwt")
