@@ -2,7 +2,7 @@ export interface Data {
   status: number
 }
 
-export const backendurl = import.meta.env.PROD ? (location.hostname.includes(".onion") !== false ? "schale.misile.xyz" : "onionurl") : "http://127.0.0.1:10001"
+export const backendurl = import.meta.env.PROD ? (location.hostname.includes(".onion") === false ? "schale.misile.xyz" : "onionurl") : "http://127.0.0.1:10001"
 export const host = location.protocol + "//" + location.hostname;
 
 export default function statusCheck(r: Data) {
