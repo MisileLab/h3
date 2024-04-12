@@ -68,7 +68,8 @@ async def upload_file(request: Request, file: UploadFile, jwtv: Annotated[str, H
   print(path, is_safe_path(join(ROOT_PATH, str(path))))
   if path is None or not is_safe_path(join(ROOT_PATH, path)):
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
-  if (await db.query("select User {admin} filter .userid = <str>$userid", userid=verify_jwt(jwtv)))[0] == True:
+  admin_check = (await db.query("select User {admin} filter .userid = <str>$userid", userid=verify_jwt(jwtv)))
+  if len(admin_check) == 0 or not admin_check[0]:
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
   filepath = Path(join(ROOT_PATH, path, file.filename))
   if filepath.exists():
