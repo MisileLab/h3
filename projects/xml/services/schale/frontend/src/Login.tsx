@@ -30,7 +30,7 @@ export default function Login(): JSX.Element {
             let t = await r.clone().text()
             t = t.slice(1,t.length-1)
             console.log(t);
-            location.href = `https://${new URL(document.location.toString()).searchParams.get("redirect")}?jwt=${t}`;
+            location.href = `${new URL(document.location.toString()).searchParams.get("redirect")}?jwt=${t}`;
           }}>Login</button>
           <A href="/register" class="w-full text-ctp-blue">No account? Click & Register</A>
         </div>

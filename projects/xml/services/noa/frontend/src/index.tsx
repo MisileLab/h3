@@ -4,6 +4,7 @@ import { render } from 'solid-js/web';
 
 import App from './App';
 import Upload from "./Upload";
+import Gpg from "./Gpg";
 import { MetaProvider } from '@solidjs/meta';
 import { Route, Router } from '@solidjs/router';
 
@@ -19,7 +20,8 @@ render(() =>
 <MetaProvider>
   <Router>
     <Route path="/upload" component={Upload} />
-    <Route path="*" component={App} />
+    <Route path="/gpg" component={Gpg} />
+    <Route path="*path" component={App} />
   </Router>
 </MetaProvider>
 , root!);
