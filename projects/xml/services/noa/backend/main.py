@@ -12,6 +12,7 @@ from os import listdir, getcwd
 from os.path import getsize, isfile, join, realpath, abspath, isdir
 from typing import Annotated
 from pathlib import Path
+from shutil import copyfileobj
 
 if not isdir("files"):
   mkdir("files")
@@ -76,5 +77,5 @@ async def upload_file(request: Request, file: UploadFile, jwtv: Annotated[str, H
     raise HTTPException(status_code=status.HTTP_409_CONFLICT)
   filepath.parent.mkdir(parents=True, exist_ok=True)
   with filepath.open("wb") as f:
-    f.write(file.file)
+    copyfileobj(file.file, f)
 
