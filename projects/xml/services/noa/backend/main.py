@@ -11,6 +11,10 @@ from slowapi.errors import RateLimitExceeded
 from os import listdir, getcwd
 from os.path import getsize, isfile, join, realpath, abspath, isdir
 from typing import Annotated
+from pathlib import Path
+
+if not isdir("files"):
+  mkdir("files")
 
 SCHALE_URL = "https://schale.misile.xyz"
 ROOT_PATH = join(getcwd(), "files")
@@ -65,9 +69,10 @@ async def upload_file(request: Request, file: UploadFile, jwtv: Annotated[str, H
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
   if not await db.query_single("select User {admin} filter .userid = <str>$userid", userid=verify_jwt(jwtv)):
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
-  filepath = join(ROOT_PATH, path, file.filename)
-  if isfile(filepath):
+  filepath = Path(join(ROOT_PATH, path, file.filename))
+  if filepath.exists():
     raise HTTPException(status_code=status.HTTP_409_CONFLICT)
-  with open(filepath, "wb") as f:
+  filepath.mkdir(parents=True, exist_ok=True)
+  with filepath.open("wb") as f:
     f.write(file.file)
 
