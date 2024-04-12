@@ -33,7 +33,8 @@ export default function Upload() {
                 await axios.post(`${backendurl}/uploadfile`, fd, {
                   onUploadProgress: (r) => {console.log(r);},
                   headers: {
-                    jwt: getCookie("jwt")
+                    jwt: getCookie("jwt"),
+                    path: path()
                   }
                 })
               }
