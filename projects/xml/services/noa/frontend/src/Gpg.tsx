@@ -1,7 +1,7 @@
 import { Title } from "@solidjs/meta";
 import { For, createEffect, createSignal } from "solid-js";
 import { backendurl, host, schale_url } from "./config";
-import { getCookie, setCookie } from "./Upload";
+import { getCookie, setCookie } from "./config";
 
 export interface KeyStore {
   pubkey: string;

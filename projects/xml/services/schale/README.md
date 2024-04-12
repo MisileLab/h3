@@ -1,4 +1,3 @@
 # Schale
 
 Auth daemon
-

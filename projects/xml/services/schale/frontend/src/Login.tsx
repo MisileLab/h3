@@ -23,8 +23,8 @@ export default function Login(): JSX.Element {
               method: "POST"
             });
             if (r.status === 401) {
-             alert('password or username failed');
-             return;
+              alert('password or username failed');
+              return;
             }
             if (statusCheck(r)) return;
             let t = await r.clone().text()
