@@ -4,7 +4,7 @@ export interface Data {
 
 export const backendurl = import.meta.env.PROD ? (!location.hostname.includes(".onion") ? "https://noa.misile.xyz" : "onionurl") : "http://127.0.0.1:8000"
 export const host = location.protocol + "//" + location.host;
-export const schale_url = !location.hostname.includes(".onion") ? "https://schale.misile.xyz" : "onionurl"
+export const schale_url = !location.hostname.includes(".onion") ? "https://fschale.misile.xyz" : "onionurl"
 export function setCookie(name: string, value: string, days: number) {
   var expires = "";
   if (days) {
