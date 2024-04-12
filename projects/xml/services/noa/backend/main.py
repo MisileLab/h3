@@ -45,7 +45,7 @@ def verify_jwt(jwtv: str):
   r = post(f"{SCHALE_URL}/verify", headers={'jwt':jwtv})
   if not r.is_success:
     raise HTTPException(status_code=r.status_code)
-  return r.text
+  return r.text[1:-1]
 
 @app.get("/")
 @limiter.limit("1/second")
@@ -69,12 +69,12 @@ async def upload_file(request: Request, file: UploadFile, jwtv: Annotated[str, H
   if path is None or not is_safe_path(join(ROOT_PATH, path)):
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
   admin_check = (await db.query("select User {admin} filter .userid = <str>$userid", userid=verify_jwt(jwtv)))
-  if len(admin_check) == 0 or not admin_check[0]:
+  if len(admin_check) == 0 or not admin_check[0]["admin"]:
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
   filepath = Path(join(ROOT_PATH, path, file.filename))
   if filepath.exists():
     raise HTTPException(status_code=status.HTTP_409_CONFLICT)
-  filepath.mkdir(parents=True, exist_ok=True)
+  filepath.parent.mkdir(parents=True, exist_ok=True)
   with filepath.open("wb") as f:
     f.write(file.file)
 
