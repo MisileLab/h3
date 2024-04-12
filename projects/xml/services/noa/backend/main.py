@@ -65,6 +65,7 @@ async def get_files(request: Request, path: Annotated[str, Header()] = "."):
 @app.post("/uploadfile")
 @limiter.limit("10/minute")
 async def upload_file(request: Request, file: UploadFile, jwtv: Annotated[str, Header(alias="jwt")] = "", path: Annotated[str | None, Header()] = None):
+  print(path, is_safe_path(join(ROOT_PATH, str(path))))
   if path is None or not is_safe_path(join(ROOT_PATH, path)):
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
   if not await db.query_single("select User {admin} filter .userid = <str>$userid", userid=verify_jwt(jwtv)):
