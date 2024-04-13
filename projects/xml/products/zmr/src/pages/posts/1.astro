@@ -1,0 +1,20 @@
+---
+import Post from "../../components/post/post.astro";
+import Subtitle from "../../components/subtitle.astro";
+import { Image } from "astro:assets";
+import tooManyTracker from "../assets/too-many-ads.png";
+---
+
+<Post id={1} title="The new turning point of Blog">
+  <p>Every blog exists on the internet, do same theme, has many tracker or ads (or both), I doesn't want the blog like that.</p>
+  <p>This blog differently build at three points.</p>
+  <Subtitle title="tor-friendly blog" />
+  <p>Every blog shows captcha for tor, but i'm thinking block tor isn't good idea for privacy.</p>
+  <p>This blog has no captcha, and has onion domain.</p>
+  <Subtitle title="no tracker or ads" />
+  <Image src={tooManyTracker} alt="It has microsoft, google, cloudflare tracker" />
+  <p>It has three tracker on <a href="https://blog.ny64.kr" class="text-ctp-blue">different person's blog</a></p>
+  <p>My blog has no, really no ads or tracker, I'll promise</p>
+  <Subtitle title="different theme" />
+  <p>I like catppuccin-mocha :sunglasses:</p>
+</Post>

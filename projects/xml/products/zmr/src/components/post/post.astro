@@ -1,0 +1,26 @@
+---
+import Footer from "../footer.astro"
+import Head from "../head.astro";
+interface Props {
+	id: number;
+  title: string;
+}
+const {id, title} = Astro.props;
+---
+
+<html lang="en">
+	<Head title={`post ${id}`} />
+	<body class="bg-ctp-crust">
+		<div class="flex flex-col items-center">
+      <div class="w-1/2 my-4 gap-y-4 flex flex-col text-ctp-subtext1">
+		    <div class="flex flex-col bg-ctp-overlay0 p-2 py-4">
+          <h1 class="font-bold text-3xl mb-2 text-ctp-text">{title}</h1>
+          <slot class="text-ctp-subtext0 text-xl"/>
+          <a href="https://misile.xyz/donate" class="text-ctp-blue"><footer>Made by Misile, click this if you want to donate</footer></a>
+          <p class="text-ctp-yellow">Contact: i@misile.xyz</p>
+        </div>
+        <Footer currentID={id} path="posts" />
+      </div>
+    </div>
+	</body>
+</html>
