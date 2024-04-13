@@ -1,7 +1,7 @@
 import { Title } from "@solidjs/meta";
 import { useLocation, useParams } from "@solidjs/router";
 import { VsFolder, VsFile } from "solid-icons/vs";
-import { For, JSX, createEffect, createSignal } from "solid-js";
+import { For, JSX, createEffect, createMemo, createSignal } from "solid-js";
 import statusCheck, { backendurl, host } from "./config";
 
 export interface File {
@@ -26,6 +26,7 @@ export function FileName(name: string, path: string, isDir: boolean) {
 
 export default function App() {
   const params = useParams();
+  const location = createMemo(()=>useLocation());
   let [res, setRes] = createSignal<File[]>([]);
   createEffect(async ()=>{
     let r = await fetch(`${backendurl}/files`, {
@@ -38,18 +39,18 @@ export default function App() {
   });
   return (
     <div class="w-screen h-screen bg-ctp-crust flex justify-center items-center">
-      <Title>{useLocation().pathname}</Title>
+      <Title>{location().pathname}</Title>
       <div class="bg-ctp-overlay0 w-fit h-fit flex flex-row gap-2 p-4 text-ctp-text">
         <div class="flex flex-col grow gap-2">
           <p class="font-bold">Name</p>
-          {FileName("..", "..", true)}
+          {location().pathname != "/" && FileName("..", "..", true)}
           <For each={res()}>
             {(i,_) => FileName(i.name, params.path, i.dir)}
           </For>
         </div>
         <div class="flex flex-col gap-2">
           <p class="font-bold">Size (Bytes)</p>
-          <p>dir</p>
+          {location().pathname != "/" && <p>dir</p>}
           <For each={res()}>
             {(i,_) => <p>{!i.dir ? i.size : "dir"}</p>}
           </For>
