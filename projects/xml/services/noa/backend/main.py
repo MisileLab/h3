@@ -19,7 +19,7 @@ if not isdir("files"):
 
 SCHALE_URL = "https://schale.misile.xyz"
 ROOT_PATH = join(getcwd(), "files")
-ORIGINS = ["*"]
+ORIGINS = ["https://fschale.mislle.xyz", "http://localhost:*", "http://127.0.0.1:*", "http://otunnrkkxuof72uzjgim7fadtk5egoqnsrpa4yikbflpk7wvk4whypad.onion"]
 
 limiter = Limiter(key_func=get_remote_address)
 app = FastAPI()

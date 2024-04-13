@@ -14,7 +14,7 @@ from hashlib import sha3_256
 KEY = Path("./KEY").read_text()
 TIMEOUT = timedelta(weeks=4) # four weeks
 ALG = "HS256"
-ORIGINS = ["*"]
+ORIGINS = ["http://127.0.0.1:*", "http://localhost:*", "https://fschale.misile.xyz", "http://imr63gzso642tdw34kza2c25dlyziwsd7rz5rdrn7f2cjmhatujnj7ad.onion"]
 
 limiter = Limiter(key_func=get_remote_address)
 app = FastAPI()
