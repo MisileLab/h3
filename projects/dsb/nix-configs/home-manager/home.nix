@@ -21,6 +21,7 @@ in
     # System
     sbctl bluez brightnessctl nix-tree cryptsetup smartmontools
     borgbackup clipman wl-clipboard pavucontrol rclone pass-wayland
+    yubikey-manager-qt
 
     # Development
     edgedb hub dvc snyk ghidra pwndbg d2 pre-commit pijul just dive

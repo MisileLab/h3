@@ -28,12 +28,22 @@
   
   security = {
     rtkit.enable = true;
-    pam.services = {
-      swaylock.text = ''
-        auth sufficient pam_unix.so try_first_pass likeauth nullok
-        auth sufficient pam_fprintd.so
-        auth include login
-      '';
+    pam = {
+      yubico = {
+        enable = true;
+        mode = "challenge-response";
+        id = [ "26887030" "26906254" ];
+      };
+      services = {
+        swaylock.text = ''
+          auth sufficient pam_unix.so try_first_pass likeauth nullok
+          auth sufficient pam_u2f.so
+          auth sufficient pam_fprintd.so
+          auth include login
+        '';
+        login.u2fAuth = true;
+        sudo.u2fAuth = true;
+      };
     };
   };
 
@@ -44,6 +54,8 @@
     options = "--delete-older-than 1d";
   };
   services = {
+    pcscd.enable = true;
+    udev.packages = [ pkgs.yubikey-personalization ];
     chrony = {
       enable = true;
       enableNTS = true;
