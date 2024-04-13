@@ -1,5 +1,5 @@
 import { JSX, createSignal } from "solid-js";
-import statusCheck, { backendurl } from "./config";
+import statusCheck, { backendurl, host } from "./config";
 import { Title } from "@solidjs/meta";
 
 export default function Register(): JSX.Element {
@@ -29,6 +29,7 @@ export default function Register(): JSX.Element {
             });
             if (statusCheck(r)) return;
             alert(`${id()} registered`)
+            window.location.href=`${host}/login?redirect=${new URL(document.location.toString()).searchParams.get("redirect")}`
           }}>Register</button>
         </div>
       </div>

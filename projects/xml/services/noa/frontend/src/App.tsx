@@ -1,5 +1,5 @@
 import { Title } from "@solidjs/meta";
-import { useParams } from "@solidjs/router";
+import { useLocation, useParams } from "@solidjs/router";
 import { VsFolder, VsFile } from "solid-icons/vs";
 import { For, JSX, createEffect, createSignal } from "solid-js";
 import statusCheck, { backendurl, host } from "./config";
@@ -38,10 +38,11 @@ export default function App() {
   });
   return (
     <div class="w-screen h-screen bg-ctp-crust flex justify-center items-center">
-      <Title>{window.location.pathname}</Title>
+      <Title>{useLocation().pathname}</Title>
       <div class="bg-ctp-overlay0 w-fit h-fit flex flex-row gap-2 p-4 text-ctp-text">
         <div class="flex flex-col grow gap-2">
           <p class="font-bold">Name</p>
+          {FileName("..", "..", true)}
           <For each={res()}>
             {(i,_) => FileName(i.name, params.path, i.dir)}
           </For>
