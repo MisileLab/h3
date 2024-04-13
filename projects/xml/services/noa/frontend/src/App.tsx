@@ -49,6 +49,7 @@ export default function App() {
         </div>
         <div class="flex flex-col gap-2">
           <p class="font-bold">Size (Bytes)</p>
+          <p>dir</p>
           <For each={res()}>
             {(i,_) => <p>{!i.dir ? i.size : "dir"}</p>}
           </For>
