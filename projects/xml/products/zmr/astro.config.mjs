@@ -1,7 +1,8 @@
 import { defineConfig } from 'astro/config';
 import tailwind from "@astrojs/tailwind";
-
 import mdx from "@astrojs/mdx";
+
+import node from "@astrojs/node";
 
 // https://astro.build/config
 export default defineConfig({
@@ -21,5 +22,9 @@ export default defineConfig({
     "/": "/pages/1",
     "/pages": "/pages/1",
     "/posts": "/pages/1"
-  }
+  },
+  output: "server",
+  adapter: node({
+    mode: "standalone"
+  })
 });
