@@ -43,7 +43,7 @@ in
     file wget imagemagick usbutils axel onefetch fastfetch ouch wgetpaste
     hyperfine hdparm duperemove hydra-check glow virt-manager
     killall delta qemu screen termscp rhash nvtopPackages.amd genact convmv
-    bvtop dasel gimp onionshare-gui
+    bvtop dasel gimp onionshare-gui joplin-desktop
 
     # Network
     dhcpcd cloudflare-warp trayscale tor-browser-bundle-bin bruno
@@ -69,6 +69,7 @@ in
     (pkgs.writeShellScriptBin "manual" ''
       ${pkgs.glow}/bin/glow -p ~/non-nixos-things/manual.md
     '')
+    (pkgs.writeShellScriptBin "joplin" (ewl "${pkgs.joplin-desktop}/bin/joplin-desktop"))
   ]
   ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
   ++ (with nodePackages_latest; [nodejs pnpm typescript-language-server svelte-language-server]) # nodejs
@@ -91,6 +92,14 @@ in
       url="https://github.com/catppuccin/prismlauncher";
       rev="baa824d2738477ee54beb560ae992c834d43b757";
     }}/themes/Mocha/Catppuccin-Mocha.zip";
+    ".config/joplin-desktop/userchrome.css".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
+      url="https://github.com/catppuccin/joplin";
+      rev="45505fa68861b3a9dc3d0c051db040acdbbbfd09";
+    }}/src/mocha/userchrome.css";
+    ".config/joplin-desktop/userstyle.css".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
+      url="https://github.com/catppuccin/joplin";
+      rev="45505fa68861b3a9dc3d0c051db040acdbbbfd09";
+    }}/src/mocha/userstyle.css";
     "non-nixos-things/bvtop.kdl".text = "
       layout {
         tab {
