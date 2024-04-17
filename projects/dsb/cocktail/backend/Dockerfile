@@ -3,12 +3,17 @@ ADD ./repositories /etc/apk/repositories
 RUN apk add --no-cache python3 pdm tor openssl-dev bash
 RUN rm -rf /var/cache/apk/*
 
+VOLUME persist
 ADD . /backend
 WORKDIR /backend
 RUN ls ~/
 RUN pdm install --prod
 
 ADD ./torrc /etc/tor/torrc
+RUN mkdir -p /var/lib/tor
+RUN mkdir /persist/cocktail
+RUN mkdir /persist/chats
+RUN ln -s /var/lib/tor/cocktail /persist/cocktail
 RUN chmod +x ./run.sh
 CMD ./run.sh
 HEALTHCHECK --interval=300s --timeout=15s --start-period=20s \
