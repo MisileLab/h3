@@ -4,27 +4,55 @@
 
 { config, lib, pkgs, ... }:
 {
-  # Use the systemd-boot EFI boot loader.
-  boot.loader.systemd-boot.enable = true;
-  networking.networkmanager.enable = true;
+  boot = {
+    loader = {
+      efi.canTouchEfiVariables = true;
+      systemd-boot.enable = true;
+    };
+    kernelPackages = with pkgs; linuxPackages_latest;
+    initrd.kernelModules = ["amdgpu"];
+    supportedFilesystems = ["ntfs" "btrfs" "ext4"];
+  };
+
+  hardware = {
+    opengl = {enable = true; driSupport = true;};
+    enableAllFirmware = true;
+    enableRedistributableFirmware = true;
+    firmware = with pkgs; [alsa-firmware sof-firmware];
+    bluetooth = {enable = true;powerOnBoot = true;};
+  };
+
+  networking = {
+    networkmanager.enable = true;
+    wireless.iwd = {
+      enable = true;
+      settings.General.EnableNetworkConfiguration=true;
+    };
+  };
+
+  xdg.portal = {
+    enable = true;
+    extraPortals = with pkgs; [xdg-desktop-portal-gtk xdg-desktop-portal-wlr];
+    config.common.default = ["gtk" "wlr"];
+  };
 
   # Set your time zone.
-  time.timeZone = "Asia/Seoul";
+  time = {
+    timeZone = "Asia/Seoul";
+    hardwareClockInLocalTime = true;
+  };
 
   users.users.misile = {
     isNormalUser = true;
     extraGroups=["wheel" "docker"];
   };
 
-  system.copySystemConfiguration = true;
   nix.settings.experimental-features = ["nix-command" "flakes"];
   sound.enable = false;
-  
-  networking.wireless.iwd = {
-    enable = true;
-    settings.General.EnableNetworkConfiguration=true;
-  };
 
-  system.stateVersion = "24.05"; # Just dont touch this
+  system = {
+    copySystemConfiguration = true;
+    stateVersion = "24.05";
+  };
 }
 

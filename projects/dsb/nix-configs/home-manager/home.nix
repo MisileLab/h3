@@ -303,6 +303,7 @@ I cant do tldr for tools, just go [this](http://www.xoe4vn5uwdztif6goazfbmogh6wh
       settings = {
         history_filter = [
           "ls" "clear" "cd *" "manual" "poweroff" "zellij *" "exit" "topgrade" "zellij *" "lzg"
+          "navi*"
         ];
       };
     };
