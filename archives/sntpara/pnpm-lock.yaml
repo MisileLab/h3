@@ -29,7 +29,7 @@ importers:
         version: 5.2.9
       vite-plugin-compression2:
         specifier: ^1.0.0
-        version: 1.0.0(rollup@4.14.3)
+        version: 1.1.0(rollup@4.14.3)
       vite-plugin-solid:
         specifier: 2.10.2
         version: 2.10.2(solid-js@1.8.16)(vite@5.2.9)
@@ -793,8 +793,8 @@ packages:
   validate-html-nesting@1.2.2:
     resolution: {integrity: sha512-hGdgQozCsQJMyfK5urgFcWEqsSSrK63Awe0t/IMR0bZ0QMtnuaiHzThW81guu3qx9abLi99NEuiaN6P9gVYsNg==}
 
-  vite-plugin-compression2@1.0.0:
-    resolution: {integrity: sha512-42XNp6FjxE0JIecxj1fdi770pLhYm3MJhBUAod9EszTgDg9C4LDOgBzWcj/0K52KfJrpRXwUsWV6kqTDuoCfLA==}
+  vite-plugin-compression2@1.1.0:
+    resolution: {integrity: sha512-LShCFOH2zHs3OMzPesayvkxsVOh6tAmV1FzrUpSLJ3F9HErQqsOaKpKHGzicuNDf01InvuGfwY5x1R5t2EMNAg==}
 
   vite-plugin-solid@2.10.2:
     resolution: {integrity: sha512-AOEtwMe2baBSXMXdo+BUwECC8IFHcKS6WQV/1NEd+Q7vHPap5fmIhLcAzr+DUJ04/KHx/1UBU0l1/GWP+rMAPQ==}
@@ -1599,7 +1599,7 @@ snapshots:
 
   validate-html-nesting@1.2.2: {}
 
-  vite-plugin-compression2@1.0.0(rollup@4.14.3):
+  vite-plugin-compression2@1.1.0(rollup@4.14.3):
     dependencies:
       '@rollup/pluginutils': 5.1.0(rollup@4.14.3)
       gunzip-maybe: 1.4.2
