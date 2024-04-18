@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, status, WebSocket
 from orjson import dumps
 
-from os import SystemRandom
+from secrets import SystemRandom
 from pathlib import Path
 
 app = FastAPI()
@@ -15,7 +15,6 @@ class User:
  def __init__(self, gpg: str, name: str, ws: WebSocket):
   self.ws = ws
   self.name = name
-  self.gpg = gpg
 
 if CHECKPOINT == "it_needs_to_be_changed":
  print("plz return")
@@ -33,12 +32,9 @@ async def chat(ws: WebSocket, PW: str):
  try:
   while True:
    data = await ws.receive_json()
-   if data["type"] == "gpg":
-    websockets.append(User(data["gpg"], data["name"], ws))
-   elif data["type"] == "send":
-    for i in websockets:
-     i.ws.send_json({"msg": data["msg"], "name": data["name"]})
-     chats.append({"msg": data["msg"], "name": data["name"]})
+   for i in websockets:
+    i.ws.send_json({"msg": data["msg"], "name": data["name"]})
+    chats.append({"msg": data["msg"], "name": data["name"]})
  except WebsocketDisconnect:
   websockets.remove(ws)
 
