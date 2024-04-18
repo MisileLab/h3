@@ -43,7 +43,7 @@ in
     file wget imagemagick usbutils axel onefetch fastfetch ouch wgetpaste
     hyperfine hdparm duperemove hydra-check glow virt-manager
     killall delta qemu screen termscp rhash nvtopPackages.amd genact convmv
-    bvtop dasel gimp onionshare-gui joplin-desktop
+    bvtop dasel gimp onionshare-gui appflowy
 
     # Network
     dhcpcd cloudflare-warp trayscale tor-browser-bundle-bin bruno
@@ -209,6 +209,7 @@ I cant do tldr for tools, just go [this](http://www.xoe4vn5uwdztif6goazfbmogh6wh
   };
   gtk = {enable = true;catppuccin.enable = true;};
   programs = {
+    joplin-desktop.enable=true;
     glamour.catppuccin.enable=true;
     gpg = {
       enable = true;
