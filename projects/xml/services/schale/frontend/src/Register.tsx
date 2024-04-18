@@ -22,7 +22,7 @@ export default function Register(): JSX.Element {
             }
             r = await fetch(`${backendurl}/register`, {
               headers: {
-                userid: id(),
+                id: id(),
                 pw: pw()
               },
               method: "POST"

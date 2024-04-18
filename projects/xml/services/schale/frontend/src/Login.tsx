@@ -17,7 +17,7 @@ export default function Login(): JSX.Element {
           <button class="bg-ctp-overlay0 w-full" onclick={async ()=>{
             let r = await fetch(`${backendurl}/login`, {
               headers: {
-                userid: id(),
+                id: id(),
                 pw: pw()
               },
               method: "POST"
