@@ -10,10 +10,10 @@ importers:
     dependencies:
       '@fontsource-variable/jetbrains-mono':
         specifier: ^5.0.18
-        version: 5.0.20
+        version: 5.0.21
       '@fontsource-variable/manrope':
         specifier: ^5.0.17
-        version: 5.0.19
+        version: 5.0.20
       d3-interpolate:
         specifier: ^3.0.1
         version: 3.0.1
@@ -221,11 +221,11 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@fontsource-variable/jetbrains-mono@5.0.20':
-    resolution: {integrity: sha512-IWJnmY9vT5Olcac1vzA7FMdnojCrZWMq+g7SqC2jsFpY0LQTjIgp9gBjjw9kUOkNbLw37/evZO4w6rdPeMA68A==}
+  '@fontsource-variable/jetbrains-mono@5.0.21':
+    resolution: {integrity: sha512-LL/57KBbM3r0UMuN6tSeYExiBObt0QuGq49m1FyoDFIv1GAcuKU0EQ/GAKJ/yt3R8onOCD3f5X9Dln//G6uzRQ==}
 
-  '@fontsource-variable/manrope@5.0.19':
-    resolution: {integrity: sha512-1WQ1NFnS3tfZ+ZQ3nNJ6sQGpIr6RWhq/wTovlcTlmvVrd53lnmITSolq6vBSEgVef6DWNFUehEvodDcyL3O6EA==}
+  '@fontsource-variable/manrope@5.0.20':
+    resolution: {integrity: sha512-LKL0aM0DxYj8i/zUTb5Nru0mS3YoezPZaeWY7aIxEKVX1xVBLpPHlFq0NoK2iUXhL6HoD0XMYwc6KVa8I/ayKg==}
 
   '@isaacs/cliui@8.0.2':
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
@@ -1229,9 +1229,9 @@ snapshots:
   '@esbuild/win32-x64@0.20.2':
     optional: true
 
-  '@fontsource-variable/jetbrains-mono@5.0.20': {}
+  '@fontsource-variable/jetbrains-mono@5.0.21': {}
 
-  '@fontsource-variable/manrope@5.0.19': {}
+  '@fontsource-variable/manrope@5.0.20': {}
 
   '@isaacs/cliui@8.0.2':
     dependencies:
