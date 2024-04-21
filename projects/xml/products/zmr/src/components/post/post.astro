@@ -1,11 +1,16 @@
 ---
 import Footer from "../footer.astro"
 import Head from "../head.astro";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+dayjs.extend(utc);
 interface Props {
 	id: number;
   title: string;
+  createdDate: number;
 }
-const {id, title} = Astro.props;
+const {id, title, createdDate} = Astro.props;
+const convertedDate = dayjs.unix(createdDate).utc().format("HH:mm:ss DD MMMM YYYY UTC")
 ---
 
 <html lang="en">
@@ -15,6 +20,7 @@ const {id, title} = Astro.props;
       <div class="w-full lg:w-1/2 my-4 gap-y-4 flex flex-col text-ctp-subtext1">
 		    <div class="flex flex-col bg-ctp-overlay0 p-2 py-4">
           <h1 class="font-bold text-3xl mb-2 text-ctp-text">{title}</h1>
+          <h2 class="font-semibold text-xl text-ctp-subtext1">created date: {convertedDate}</h2>
           <slot class="text-ctp-subtext0 text-xl"/>
           <a href="https://misile.xyz/donate" class="text-ctp-blue"><footer>Made by Misile, click this if you want to donate</footer></a>
           <p class="text-ctp-yellow">Contact: i@misile.xyz</p>
