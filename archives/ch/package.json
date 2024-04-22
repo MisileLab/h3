@@ -11,7 +11,7 @@
   },
   "license": "MisileLab License",
   "dependencies": {
-    "@tauri-apps/api": "1.5.3",
+    "@tauri-apps/api": "1.5.4",
     "solid-js": "1.8.16"
   },
   "devDependencies": {
