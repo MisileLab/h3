@@ -3,23 +3,22 @@ name = "bojs"
 version = "0.1.0"
 description = "Default template for PDM package"
 authors = [
-    {name = "MisileLaboratory", email = "misileminecord@gmail.com"},
+  {name = "MisileLaboratory", email = "misileminecord@gmail.com"},
 ]
 dependencies = [
-    "tomli==2.0.1",
-    "requests==2.31.0",
-    "baekjoonapi @ git+https://github.com/MisileLab/baekjoonapi",
+  "tomli==2.0.1",
+  "requests==2.31.0",
+  "baekjoonapi @ git+https://github.com/MisileLab/baekjoonapi",
 ]
-requires-python = "==3.12.2"
+requires-python = "==3.12.3"
 readme = "README.md"
 license = {text = "MisileLab License"}
-
 
 [tool.pdm]
 distribution = false
 
 [tool.pdm.dev-dependencies]
 dev = [
-    "tqdm==4.66.2",
-    "python-lsp-server==1.11.0",
+  "tqdm==4.66.2",
+  "python-lsp-server==1.11.0",
 ]

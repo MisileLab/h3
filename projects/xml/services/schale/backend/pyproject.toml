@@ -6,16 +6,15 @@ authors = [
   {name = "MisileLaboratory", email = "misileminecord@gmail.com"},
 ]
 dependencies = [
-    "edgedb==1.9.0",
-    "fastapi==0.110.2",
-    "slowapi==0.1.9",
-    "uvicorn==0.29.0",
-    "pyjwt==2.8.0",
+  "edgedb==1.9.0",
+  "fastapi==0.110.2",
+  "slowapi==0.1.9",
+  "uvicorn==0.29.0",
+  "pyjwt==2.8.0",
 ]
-requires-python = "==3.12.2"
+requires-python = "==3.12.3"
 readme = "README.md"
 license = {text = "MisileLab License"}
-
 
 [tool.pdm]
 distribution = false

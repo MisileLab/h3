@@ -24,7 +24,8 @@ in
     yubikey-manager-qt
 
     # Development
-    edgedb hub dvc snyk ghidra pwndbg d2 pre-commit pijul just dive
+    edgedb hub snyk ghidra pwndbg d2 pre-commit pijul just dive
+    # dvc (look at the below issue)
 
     # Some cryptos
     solana-validator exodus
@@ -41,9 +42,10 @@ in
 
     # Utils
     file wget imagemagick usbutils axel onefetch fastfetch ouch wgetpaste
-    hyperfine hdparm duperemove hydra-check glow virt-manager
+    hyperfine hdparm duperemove glow virt-manager
     killall delta qemu screen termscp rhash nvtopPackages.amd genact convmv
-    bvtop dasel gimp onionshare-gui appflowy joplin-desktop navi
+    bvtop dasel gimp onionshare-gui appflowy navi
+    # hydra-check https://github.com/NixOS/nixpkgs/issues/305923
 
     # Network
     dhcpcd cloudflare-warp trayscale tor-browser-bundle-bin bruno
@@ -209,6 +211,7 @@ I cant do tldr for tools, just go [this](http://www.xoe4vn5uwdztif6goazfbmogh6wh
   };
   gtk = {enable = true;catppuccin.enable = true;};
   programs = {
+    joplin-desktop.enable=true;
     glamour.catppuccin.enable=true;
     gpg = {
       enable = true;
