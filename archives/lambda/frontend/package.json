@@ -25,7 +25,7 @@
     "@solid-primitives/upload": "0.0.117",
     "@solidjs/router": "0.13.2",
     "axios": "1.6.8",
-    "clsx": "2.1.0",
+    "clsx": "2.1.1",
     "dayjs": "1.11.10",
     "graphql": "16.8.1",
     "graphql-request": "6.1.0",
