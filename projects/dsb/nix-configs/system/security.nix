@@ -6,9 +6,6 @@
 
   services = {
     fprintd.enable = true;
-    openvpn.servers = {
-      VPN = { config = '' config /home/misile/non-nixos-things/openvpns/profile.ovpn ''; autoStart = false; };
-    };
     clamav = {
       daemon.enable = true;
       updater.enable = true;
@@ -18,6 +15,12 @@
       client.enable = true;
     };
     tailscale.enable = true;
+    mullvad-vpn.enable = true;
+  };
+
+  networking = {
+    firewall.checkReversePath = "loose";
+    wireguard.enable = true;
   };
 
   systemd = {

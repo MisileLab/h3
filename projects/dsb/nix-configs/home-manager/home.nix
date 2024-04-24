@@ -21,7 +21,7 @@ in
     # System
     sbctl bluez brightnessctl nix-tree cryptsetup smartmontools
     borgbackup clipman wl-clipboard pavucontrol rclone pass-wayland
-    yubikey-manager-qt
+    yubikey-manager-qt mullvad-vpn
 
     # Development
     edgedb hub snyk ghidra pwndbg d2 pre-commit pijul just dive
@@ -306,7 +306,7 @@ I cant do tldr for tools, just go [this](http://www.xoe4vn5uwdztif6goazfbmogh6wh
       settings = {
         history_filter = [
           "ls" "clear" "cd *" "manual" "poweroff" "zellij *" "exit" "topgrade" "zellij *" "lzg"
-          "navi*"
+          "navi*" "mullvad*"
         ];
       };
     };
