@@ -1,1 +1,0 @@
-../compile-and-run.sh
