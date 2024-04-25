@@ -271,6 +271,7 @@ I cant do tldr for tools, just go [this](http://www.xoe4vn5uwdztif6goazfbmogh6wh
         ls = "${eza}/bin/eza --icons";
         onefetch = "${onefetch}/bin/onefetch --number-of-languages 9999";
         lzg = "${lazygit}/bin/lazygit";
+        gdiff = "${git}/bin/git diff | ${delta}/bin/delta";
       };
       shellInit = with pkgs; ''
         fish_add_path -m ~/.cargo/bin
