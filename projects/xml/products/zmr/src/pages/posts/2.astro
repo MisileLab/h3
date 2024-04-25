@@ -1,0 +1,29 @@
+---
+import Post from "../../components/post/post.astro";
+import Subtitle from "../../components/subtitle.astro";
+---
+
+<script>
+import { atom } from "nanostores";
+export const isOpen = atom(false);
+isOpen.subscribe(v=>{
+  document.getElementById("realcontent")!!.style.display = v?"block":"none";
+})
+document.getElementById("toggleOpen")!!.addEventListener("click", ()=>{isOpen.set(!isOpen.get())});
+</script>
+
+<Post id={2} title="Introducing mail subscription, powered by listmonk" createdDate={1714022000}>
+  <Subtitle title="A small change on footer" />
+  <p>You can find small change on footer, the subscribe thing</p>
+  <p>It's powered by listmonk and my nixos+docker, amazon ses</p>
+  <Subtitle title="But why?" />
+  <p>Idk</p>
+  <button class="w-fit border-solid border-2 bg-ctp-overlay1" id="toggleOpen">Bruh is it end? (this is button btw)</button>
+  <div id="realcontent" class="gap-y-4 flex flex-col" style="display: none;">
+    <p>Actually not, I just want to use nanostores and astrojs to flex my astro blog</p>
+    <p>(other blog cant this, because it's not ssr and astrojs :sunglasses:)</p>
+    <Subtitle title="ok, but real why?" />
+    <p>I want to get reaction for my blog, but it isn't have tracker.</p>
+    <p>so I'll send mail when has new blog post and view subscribe list</p>
+  </div>
+</Post>

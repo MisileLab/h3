@@ -58,6 +58,7 @@
   };
   
   users.extraGroups.vboxusers.members = [ "user-with-access-to-virtualbox" ];
+  users.motd = "I use nixos btw";
 
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [kdiskmark auto-cpufreq];

@@ -3,7 +3,6 @@ let
   c = import ./config.nix;
   custom-ctps = {
     waybar = builtins.fetchGit{url="https://github.com/catppuccin/waybar.git";rev="f74ab1eecf2dcaf22569b396eed53b2b2fbe8aff";};
-    dunst = builtins.fetchGit{url="https://github.com/catppuccin/dunst.git";rev="a72991e56338289a9fce941b5df9f0509d2cba09";};
   };
   returnColorCSS = {r, g, b, a, addi ? ""}: ''
     ${(if c.gtk4 then "backdrop-filter: blur(5px)" else "")}
@@ -129,6 +128,11 @@ in
       enable = true;
       catppuccin.enable = true;
       languages = {
+        language-server.astro-ls = {
+          command = "astro-ls";
+          args = ["--stdio"];
+          config = { typescript = { tsdk = "${pkgs.typescript}/lib/node_modules/typescript/lib";}; environment = "node"; };
+        };
         language = [{
           name = "python";
           auto-format = false;
@@ -142,6 +146,12 @@ in
         } {
           name = "svelte";
           language-servers = ["tailwindcss-ls" "svelteserver"];
+        } {
+          name = "astro";
+          scope = "source.astro";
+          injection-regex = "astro";
+          file-types = ["astro"];
+          language-servers = [ "astro-ls" "tailwindcss-ls" ];
         }];
       };
     };
@@ -283,7 +293,7 @@ in
   services = {
     dunst = {
       enable = true;
-      configFile = "${custom-ctps.dunst}/src/mocha.conf";
+      catppuccin.enable = true;
     };
     avizo.enable = true;
     poweralertd.enable = true;

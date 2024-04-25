@@ -19,13 +19,12 @@ in
   home.stateVersion = "23.11"; # dont change it
   home.packages = with pkgs; [
     # System
-    sbctl bluez brightnessctl nix-tree cryptsetup smartmontools
+    sbctl bluez brightnessctl cryptsetup smartmontools
     borgbackup clipman wl-clipboard pavucontrol rclone pass-wayland
     yubikey-manager-qt mullvad-vpn
 
     # Development
-    edgedb hub snyk ghidra pwndbg d2 pre-commit pijul just dive
-    dvc
+    edgedb snyk ghidra pwndbg d2 pre-commit pijul just dive dvc
 
     # Some cryptos
     solana-validator exodus
@@ -35,10 +34,10 @@ in
     rustup cargo-update
     python312Full micromamba pdm mypy
     nasm
-    tailwindcss-language-server
+    tailwindcss-language-server volta
     hvm kind2
     clang-tools lldb pkg-config
-    niv fh nixpkgs-fmt
+    niv fh nixpkgs-fmt nix-tree hub
 
     # Utils
     file wget imagemagick usbutils axel onefetch fastfetch ouch wgetpaste
@@ -276,7 +275,8 @@ I cant do tldr for tools, just go [this](http://www.xoe4vn5uwdztif6goazfbmogh6wh
       shellInit = with pkgs; ''
         fish_add_path -m ~/.cargo/bin
         fish_add_path -m ~/.avm/bin
-        fish_add_path -m ~/.local/share/solana/install/active_release/bin        
+        fish_add_path -m ~/.local/share/solana/install/active_release/bin
+        fish_add_path -m ~/.volta/bin 
         
         function fzfp
           if set -q argv[1]
