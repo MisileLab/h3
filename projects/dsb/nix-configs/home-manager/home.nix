@@ -25,7 +25,7 @@ in
 
     # Development
     edgedb hub snyk ghidra pwndbg d2 pre-commit pijul just dive
-    # dvc (look at the below issue)
+    dvc
 
     # Some cryptos
     solana-validator exodus
@@ -45,7 +45,7 @@ in
     hyperfine hdparm duperemove glow virt-manager
     killall delta qemu screen termscp rhash nvtopPackages.amd genact convmv
     bvtop dasel gimp onionshare-gui appflowy navi
-    # hydra-check https://github.com/NixOS/nixpkgs/issues/305923
+    hydra-check
 
     # Network
     dhcpcd cloudflare-warp trayscale tor-browser-bundle-bin bruno
