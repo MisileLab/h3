@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:9e67b350189d7b61c1eae4719c02104b5d58e5467ce7e384f44a6a5d015433ca"
+content_hash = "sha256:d787fe69d08403ebb50ca60b0f3209af9508d1431743a1277a1d4ef9f5fa686c"
 
 [[package]]
 name = "ansicon"
