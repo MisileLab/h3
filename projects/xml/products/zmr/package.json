@@ -13,6 +13,7 @@
     "@astrojs/check": "0.5.10",
     "@astrojs/mdx": "2.3.1",
     "@astrojs/node": "8.2.5",
+    "@astrojs/sitemap": "3.1.4",
     "@astrojs/tailwind": "5.1.0",
     "astro": "4.7.0",
     "dayjs": "1.11.10",
