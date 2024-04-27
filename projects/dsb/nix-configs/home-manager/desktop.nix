@@ -128,6 +128,9 @@ in
       enable = true;
       catppuccin.enable = true;
       languages = {
+        language-server.ruff-lsp = {
+          command = "ruff-lsp";
+        };
         language-server.astro-ls = {
           command = "astro-ls";
           args = ["--stdio"];
@@ -137,6 +140,7 @@ in
           name = "python";
           auto-format = false;
           indent = {tab-width = 2; unit = " ";};
+          language-servers = ["ruff-lsp"];
         } {
           name = "jsx";
           language-servers = ["tailwindcss-ls" "typescript-language-server"];

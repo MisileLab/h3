@@ -32,7 +32,7 @@ in
     # Language tools
     ghc cabal-install
     rustup cargo-update
-    python312Full micromamba pdm mypy
+    python312Full micromamba pdm mypy ruff-lsp ruff
     nasm
     tailwindcss-language-server volta
     hvm kind2

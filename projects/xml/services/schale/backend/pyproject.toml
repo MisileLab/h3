@@ -20,4 +20,6 @@ license = {text = "MisileLab License"}
 distribution = false
 
 [tool.pdm.dev-dependencies]
-dev = ["python-lsp-server==1.11.0"]
+dev = [
+  "ruff==0.4.2",
+]
