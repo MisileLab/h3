@@ -140,7 +140,7 @@ in
           name = "python";
           auto-format = false;
           indent = {tab-width = 2; unit = " ";};
-          language-servers = ["ruff-lsp"];
+          language-servers = ["ruff-lsp" "pylsp"];
         } {
           name = "jsx";
           language-servers = ["tailwindcss-ls" "typescript-language-server"];
