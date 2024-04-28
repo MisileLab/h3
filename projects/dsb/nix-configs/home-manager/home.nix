@@ -21,7 +21,7 @@ in
     # System
     sbctl bluez brightnessctl cryptsetup smartmontools
     borgbackup clipman wl-clipboard pavucontrol rclone pass-wayland
-    yubikey-manager-qt mullvad-vpn
+    yubikey-manager-qt mullvad-vpn yubioath-flutter
 
     # Development
     edgedb snyk ghidra pwndbg d2 pre-commit pijul just dive dvc
