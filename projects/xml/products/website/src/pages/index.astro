@@ -1,0 +1,22 @@
+---
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Misile->Website</title>
+    <script>
+      let theme = window.localStorage.getItem("theme");
+      if (theme === null) {theme = "mocha";window.localStorage.setItem("theme", "mocha");}
+      console.log(theme)
+      document.querySelector("body")?.classList.add(`ctp-${theme}`);
+    </script>
+	</head>
+	<body>
+		<div class="w-screen h-screen bg-ctp-crust">
+    </div>
+	</body>
+</html>
