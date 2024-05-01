@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@kobalte/core':
-        specifier: 0.12.6
-        version: 0.12.6(solid-js@1.8.17)
+        specifier: 0.13.0
+        version: 0.13.0(solid-js@1.8.17)
       clsx:
         specifier: 2.1.1
         version: 2.1.1
@@ -356,8 +356,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
 
-  '@kobalte/core@0.12.6':
-    resolution: {integrity: sha512-+Ta2o2wEqZ2fCqLMkvjT40VHNmcFKdGe8TNDVQbbMPk66qoU6g/DDRFR/Ib7eAjb+C95VoIyk6zaafos2VOo0w==}
+  '@kobalte/core@0.13.0':
+    resolution: {integrity: sha512-wTdcmdqjF9FJeJYMBC3YpbC3s7SUZY3gDLlVGbA+vWQRYL/FtqBhmvWDEGNYVvpaB/HoLHbFe0wVxhgXiPil5g==}
     peerDependencies:
       solid-js: ^1.8.15
 
@@ -1524,7 +1524,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.4.15
 
-  '@kobalte/core@0.12.6(solid-js@1.8.17)':
+  '@kobalte/core@0.13.0(solid-js@1.8.17)':
     dependencies:
       '@floating-ui/dom': 1.6.4
       '@internationalized/date': 3.5.2
