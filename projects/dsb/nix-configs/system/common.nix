@@ -15,7 +15,11 @@
   };
 
   hardware = {
-    opengl = {enable = true; driSupport = true;};
+    opengl = {
+      enable = true;
+      driSupport = true;
+      extraPackages = with pkgs; [amdvlk];
+    };
     enableAllFirmware = true;
     enableRedistributableFirmware = true;
     firmware = with pkgs; [alsa-firmware sof-firmware];

@@ -34,7 +34,7 @@ in
     rustup cargo-update
     python312Full micromamba pdm mypy
     nasm
-    tailwindcss-language-server volta
+    tailwindcss-language-server volta deno
     hvm kind2
     clang-tools lldb pkg-config
     niv fh nixpkgs-fmt nix-tree hub
@@ -43,8 +43,7 @@ in
     file wget imagemagick usbutils axel onefetch fastfetch ouch wgetpaste
     hyperfine hdparm duperemove glow virt-manager
     killall delta qemu screen termscp rhash nvtopPackages.amd genact convmv
-    bvtop dasel gimp onionshare-gui appflowy navi
-    hydra-check
+    bvtop dasel gimp onionshare-gui appflowy navi hydra-check firefoxpwa
 
     # Network
     dhcpcd cloudflare-warp trayscale tor-browser-bundle-bin bruno
