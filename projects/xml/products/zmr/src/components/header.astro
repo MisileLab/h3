@@ -1,0 +1,11 @@
+---
+import { type WritableAtom } from "nanostores";
+interface Props {
+  atom: WritableAtom<string>;
+}
+const props = Astro.props;
+---
+
+<div class="w-full h-fix py-4 bg-ctp-overlay0 flex flex-row justify-center items-center">
+  <button class="text-xl" on:click={()=>props.atom.set(props.atom.get()==="mocha"?"frappe":"mocha")}>click to change theme</button>
+</div>
