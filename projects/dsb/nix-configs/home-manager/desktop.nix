@@ -73,6 +73,7 @@ in
       window.titlebar = false;
       modifier = "Mod4";
     };
+    checkConfig = false;
     package = with pkgs; swayfx;
     xwayland = true;
   };
