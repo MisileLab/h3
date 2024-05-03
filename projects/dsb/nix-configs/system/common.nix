@@ -18,7 +18,7 @@
     opengl = {
       enable = true;
       driSupport = true;
-      extraPackages = with pkgs; [amdvlk];
+      extraPackages = with pkgs; [amdvlk mesa.drivers];
     };
     enableAllFirmware = true;
     enableRedistributableFirmware = true;
