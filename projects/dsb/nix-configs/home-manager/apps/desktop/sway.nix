@@ -1,9 +1,5 @@
-{ config, pkgs, catppuccin, ... }:
-let 
-  c = import ./config.nix;
-  custom-ctps = {
-    waybar = builtins.fetchGit{url="https://github.com/catppuccin/waybar.git";rev="f74ab1eecf2dcaf22569b396eed53b2b2fbe8aff";};
-  };
+{c, pkgs}: 
+let
   returnColorCSS = {r, g, b, a, addi ? ""}: ''
     ${(if c.gtk4 then "backdrop-filter: blur(5px)" else "")}
     background: rgba(${toString r}, ${toString g}, ${toString b}, ${toString a});
@@ -13,18 +9,6 @@ let
   '';
 in
 {
-  home.pointerCursor = {
-    name = "Adwaita";
-    package = pkgs.gnome.adwaita-icon-theme;
-    size = 32;
-  };
-
-  i18n = {
-    inputMethod = {
-      enabled = "kime";
-    };
-  };
-
   wayland.windowManager.sway = {
     enable = true;
     extraConfigEarly = ''
@@ -77,8 +61,28 @@ in
     package = with pkgs; swayfx;
     xwayland = true;
   };
-
   programs = {
+    rofi = {
+      enable = true;
+      catppuccin.enable = true;
+      extraConfig = {
+        modi = "run,drun,window";
+        icon-theme = "Oranchelo";
+        show-icons = true;
+        terminal = "alacritty";
+        drun-display-format = "{icon} {name}";
+        location = 0;
+        hide-scrollbar = true;
+        display-drun = "   Apps ";
+        display-run = "   Run ";
+        display-window = " 﩯  Window";
+        disable-history = false;
+        display-Network = " 󰤨  Network";
+        sidebar-mode = true;
+      };
+      theme = "catppuccin-mocha";
+      package = pkgs.rofi-wayland;
+    };
     swaylock = {
       enable = true;
       settings = {
@@ -114,63 +118,9 @@ in
         text-wrong-color = "eba0ac";
       };
     };
-    zellij = {
-      enable = true;
-      settings = {
-        theme = "catppuccin-mocha";
-        default_shell = "fish";
-      };
-    };
-    git.delta = {
-      enable = true;
-      catppuccin.enable = true;
-    };
-    helix = {
-      enable = true;
-      catppuccin.enable = true;
-      languages = {
-        language-server.ruff-lsp = {
-          command = "ruff-lsp";
-        };
-        language-server.astro-ls = {
-          command = "astro-ls";
-          args = ["--stdio"];
-          config = { typescript = { tsdk = "${pkgs.typescript}/lib/node_modules/typescript/lib";}; environment = "node"; };
-        };
-        language = [{
-          name = "python";
-          auto-format = false;
-          indent = {tab-width = 2; unit = " ";};
-          language-servers = ["ruff-lsp" "pylsp"];
-        } {
-          name = "jsx";
-          language-servers = ["tailwindcss-ls" "typescript-language-server"];
-        } {
-          name = "tsx";
-          language-servers = ["tailwindcss-ls" "typescript-language-server"];
-        } {
-          name = "svelte";
-          language-servers = ["tailwindcss-ls" "svelteserver"];
-        } {
-          name = "astro";
-          scope = "source.astro";
-          injection-regex = "astro";
-          file-types = ["astro"];
-          language-servers = [ "astro-ls" "tailwindcss-ls" ];
-        }];
-      };
-    };
-    fish = {
-      catppuccin.enable = true;
-      plugins = [{name="tide"; src=pkgs.fishPlugins.tide.src;}];
-    };
-    alacritty = {
-      enable = true;
-      catppuccin.enable = true;
-      settings = {shell = "${pkgs.fish}/bin/fish";};
-    };
     waybar = {
       enable = true;
+      catppuccin.enable = true;
       settings = [{
         modules-left = [ "sway/workspaces" ];
         modules-center = [ "sway/window" ];
@@ -232,7 +182,6 @@ in
       };
     }];
     style = ''
-      @import "${custom-ctps.waybar}/themes/mocha.css";
       * {
         font-family: 'Fira Code', monospace;
       }
@@ -273,27 +222,6 @@ in
         color: @red;
       }'';
     };
-    firefox.enable = true;
-    rofi = {
-      enable = true;
-      extraConfig = {
-        modi = "run,drun,window";
-        icon-theme = "Oranchelo";
-        show-icons = true;
-        terminal = "alacritty";
-        drun-display-format = "{icon} {name}";
-        location = 0;
-        hide-scrollbar = true;
-        display-drun = "   Apps ";
-        display-run = "   Run ";
-        display-window = " 﩯  Window";
-        disable-history = false;
-        display-Network = " 󰤨  Network";
-        sidebar-mode = true;
-      };
-      theme = "catppuccin-mocha";
-      package = pkgs.rofi-wayland;
-    };
   };
   services = {
     dunst = {
@@ -302,10 +230,5 @@ in
     };
     avizo.enable = true;
     poweralertd.enable = true;
-    gpg-agent = {
-      enable = true;
-      enableSshSupport = true;
-      extraConfig = "pinentry-program ${pkgs.pinentry.curses}/bin/pinentry-curses";
-    };
   };
 }

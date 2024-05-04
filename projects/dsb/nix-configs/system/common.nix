@@ -46,9 +46,13 @@
     hardwareClockInLocalTime = true;
   };
 
-  users.users.misile = {
-    isNormalUser = true;
-    extraGroups=["wheel" "docker"];
+  users = {
+    users.misile = {
+      isNormalUser = true;
+      extraGroups=["wheel" "docker"];
+    };
+    extraGroups.vboxusers.members = [ "user-with-access-to-virtualbox" ];
+    motd = "I use nixos btw";
   };
 
   nix.settings.experimental-features = ["nix-command" "flakes"];
