@@ -1,5 +1,18 @@
 {
   "nodes": {
+    "c": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1,
+        "narHash": "sha256-6H+6ofT8YG0cNr4RINKMFXKUgUz/sBvktaSehvjgEQE=",
+        "path": "./config.nix",
+        "type": "path"
+      },
+      "original": {
+        "path": "./config.nix",
+        "type": "path"
+      }
+    },
     "catppuccin": {
       "locked": {
         "lastModified": 1714607657,
@@ -37,11 +50,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1714709153,
-        "narHash": "sha256-iSDpK6zvCvWWSU0SkcpNCif0iJ+yiyuLX9s/QXEYihA=",
+        "lastModified": 1714836339,
+        "narHash": "sha256-+HPuzNqsIgqsxDUXRaWkYQwoMT2N3e4030tdtOAv8LQ=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "559d572f72f26837aec5f6eda9ae3b1068e9e3fe",
+        "rev": "68496e4101f2e4c50bb451078bc03f6e18951d54",
         "type": "github"
       },
       "original": {
@@ -52,6 +65,7 @@
     },
     "root": {
       "inputs": {
+        "c": "c",
         "catppuccin": "catppuccin",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs"

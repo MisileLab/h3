@@ -1,4 +1,4 @@
-{c, config, pkgs}: {
+{c, config, pkgs, ...}: {
   imports = [
     ./security.nix
     ./electrons.nix

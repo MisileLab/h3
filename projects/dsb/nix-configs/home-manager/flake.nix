@@ -8,9 +8,13 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    c = {
+      url = "path:./config.nix";
+      flake = false;
+    };
   };
 
-  outputs = { nixpkgs, home-manager, catppuccin, ... }:
+  outputs = { nixpkgs, home-manager, catppuccin, c, ... }:
     let
       system = "x86_64-linux"; # replace with your system
       pkgs = nixpkgs.legacyPackages.${system};
@@ -18,7 +22,7 @@
     in {
       homeConfigurations."misile" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
-        modules = [ ./home.nix ./desktop.nix catppuccin.homeManagerModules.catppuccin ];
+        modules = [ ./home.nix catppuccin.homeManagerModules.catppuccin ];
       };
     };
 }

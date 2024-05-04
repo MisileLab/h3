@@ -3,7 +3,6 @@
   imports = [
     ./common.nix
     ./hardware-configuration.nix
-    ./lanzaboote.nix
     ./security.nix
   ];
 

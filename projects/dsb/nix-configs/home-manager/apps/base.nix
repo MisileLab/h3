@@ -18,11 +18,6 @@
       enable = true;
       mutableTrust = true;
     };
-    gpg-agent = {
-      enable = true;
-      enableSshSupport = true;
-      extraConfig = "pinentry-program ${pkgs.pinentry.curses}/bin/pinentry-curses";
-    };
     bash = {
       enable = true;
       initExtra = ''
@@ -109,5 +104,12 @@
         }];
       };
     };
+  };
+  services = {
+    gpg-agent = {
+      enable = true;
+      enableSshSupport = true;
+      extraConfig = "pinentry-program ${pkgs.pinentry.curses}/bin/pinentry-curses";
+    };   
   };
 }

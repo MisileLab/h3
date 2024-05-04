@@ -1,4 +1,4 @@
-{c, pkgs}: 
+{c, pkgs, ...}: 
 let
   returnColorCSS = {r, g, b, a, addi ? ""}: ''
     ${(if c.gtk4 then "backdrop-filter: blur(5px)" else "")}

@@ -1,12 +1,11 @@
-{ config, pkgs, catppuccin, ... }:
+{ config, pkgs, catppuccin, c, ... }:
 let
-  c = import ./config.nix;
   nurpkgs = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") { inherit pkgs; };
 in
 {
   imports = [
     ./apps/base.nix
-    ./apps/desktop/base.nix {inherit c;}
+    ./apps/desktop/base.nix
   ];
   home = {
     username = "misile";
