@@ -1,15 +1,16 @@
-{c, config, pkgs, ...}: {
+{c, config, pkgs, /*unstable-pkgs,*/ ...}: {
   imports = [
     ./security.nix
     ./electrons.nix
     ./fonts.nix
     ./compatibility.nix
+    ./sway.nix
   ];
   home = {
     packages = with pkgs; [
       brightnessctl clipman wl-clipboard pavucontrol
-      imagemagick virt-manager qemu gimp onionshare-gui appflowy firefoxpwa
-      exodus galaxy-buds-client ferium prismlauncher telegram-desktop
+      imagemagick virt-manager gimp onionshare-gui appflowy firefoxpwa
+      exodus galaxy-buds-client ferium prismlauncher /*qemu telegram-desktop*/
     ];
     file = {
       ".local/share/PrismLauncher/themes/catppuccin-mocha.zip".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
