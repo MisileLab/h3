@@ -1,13 +1,10 @@
 ---
 import Footer from "../footer.astro"
 import Head from "../head.astro";
-import Header from "../header.astro";
-import {persistentAtom} from "@nanostores/persistent";
 interface Props {
 	id: number;
 }
 const {id} = Astro.props;
-const theme = persistentAtom("theme", "mocha");
 ---
 
 <html lang="en">
@@ -15,7 +12,6 @@ const theme = persistentAtom("theme", "mocha");
 	<body class="bg-ctp-crust">
 		<div class="flex flex-col items-center text-ctp-text">
       <div class="w-full lg:w-1/2 my-4 gap-y-4 flex flex-col">
-        <Header atom={theme}/>
         <slot />
         <Footer currentID={id} path="pages" />
       </div>
