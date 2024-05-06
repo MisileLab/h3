@@ -4,8 +4,8 @@ from fastapi import FastAPI, Header, HTTPException, Request, status, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from os import listdir, getcwd
-from os.path import getsize, join, realpath, abspath, isdir, mkdir
+from os import listdir, getcwd, mkdir
+from os.path import getsize, join, realpath, abspath, isdir
 from typing import Annotated
 from pathlib import Path
 from shutil import copyfileobj
