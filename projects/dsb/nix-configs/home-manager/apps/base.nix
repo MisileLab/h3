@@ -44,7 +44,8 @@
         fish_add_path -m ~/.cargo/bin
         fish_add_path -m ~/.avm/bin
         fish_add_path -m ~/.local/share/solana/install/active_release/bin
-        fish_add_path -m ~/.volta/bin 
+        fish_add_path -m ~/.volta/bin
+        fish_add_path -m ~/.local/bin 
         
         function fzfp
           if set -q argv[1]
