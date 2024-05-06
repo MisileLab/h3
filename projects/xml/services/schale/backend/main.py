@@ -1,8 +1,5 @@
 from fastapi import FastAPI, Request, status, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.util import get_remote_address
-from slowapi.errors import RateLimitExceeded
 from edgedb import create_async_client
 from jwt import decode, encode, exceptions
 
@@ -16,7 +13,6 @@ TIMEOUT = timedelta(weeks=4) # four weeks
 ALG = "HS256"
 ORIGINS = ["null", "*"]
 
-limiter = Limiter(key_func=get_remote_address)
 app = FastAPI()
 app.add_middleware(
   CORSMiddleware,
@@ -25,8 +21,6 @@ app.add_middleware(
   allow_methods=["*"],
   allow_headers=["*"]
 )
-app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 db = create_async_client()
 
 def utcnow():
@@ -36,12 +30,10 @@ async def check_dupe(userid: str) -> bool:
   return await db.query("select User {id} filter .userid = <str>$userid", userid=userid) != []
 
 @app.get("/check/{userid}")
-@limiter.limit("100/minute")
 async def check(request: Request, userid: str) -> bool:
   return await check_dupe(userid)
 
 @app.post("/login")
-@limiter.limit("10/minute")
 async def login(
   request: Request,
   userid: Annotated[str | None, Header(alias="id")] = None,
@@ -54,7 +46,6 @@ async def login(
   return encode({"exp": utcnow() + TIMEOUT, "id": userid}, KEY, algorithm=ALG)
 
 @app.post("/verify")
-@limiter.limit("100/second")
 async def verify(
   request: Request,
   jwtv: Annotated[str | None, Header(alias="jwt")] = None
@@ -71,7 +62,6 @@ async def verify(
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
 
 @app.post("/register")
-@limiter.limit("10/hour")
 async def register(
   request: Request,
   userid: Annotated[str | None, Header(alias="id")] = None,

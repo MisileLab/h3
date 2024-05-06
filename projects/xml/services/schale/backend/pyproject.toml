@@ -8,7 +8,6 @@ authors = [
 dependencies = [
   "edgedb==1.9.0",
   "fastapi==0.111.0",
-  "slowapi==0.1.9",
   "uvicorn==0.29.0",
   "pyjwt==2.8.0",
 ]
@@ -21,5 +20,6 @@ distribution = false
 
 [tool.pdm.dev-dependencies]
 dev = [
-  "ruff==0.4.3",
+  "ruff-lsp==0.0.53",
+  "python-lsp-server==1.11.0",
 ]

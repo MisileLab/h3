@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:834868ecdf3b2f7a0be1c8728fd2624c021965f7c7778ae34d439bc3c6ba469a"
+content_hash = "sha256:68653f01e70bd2490f4ff20c98113555efdabf57987046034040bdff9a38b547"
 
 [[package]]
 name = "annotated-types"
@@ -31,6 +31,31 @@ dependencies = [
 files = [
     {file = "anyio-4.3.0-py3-none-any.whl", hash = "sha256:048e05d0f6caeed70d731f3db756d35dcc1f35747c8c403364a8332c630441b8"},
     {file = "anyio-4.3.0.tar.gz", hash = "sha256:f75253795a87df48568485fd18cdd2a3fa5c4f7c5be8e5e36637733fce06fed6"},
+]
+
+[[package]]
+name = "attrs"
+version = "23.2.0"
+requires_python = ">=3.7"
+summary = "Classes Without Boilerplate"
+groups = ["dev"]
+files = [
+    {file = "attrs-23.2.0-py3-none-any.whl", hash = "sha256:99b87a485a5820b23b879f04c2305b44b951b502fd64be915879d77a7e8fc6f1"},
+    {file = "attrs-23.2.0.tar.gz", hash = "sha256:935dc3b529c262f6cf76e50877d35a4bd3c1de194fd41f47a2b7ae8f19971f30"},
+]
+
+[[package]]
+name = "cattrs"
+version = "23.2.3"
+requires_python = ">=3.8"
+summary = "Composable complex class support for attrs and dataclasses."
+groups = ["dev"]
+dependencies = [
+    "attrs>=23.1.0",
+]
+files = [
+    {file = "cattrs-23.2.3-py3-none-any.whl", hash = "sha256:0341994d94971052e9ee70662542699a3162ea1e0c62f7ce1b4a57f563685108"},
+    {file = "cattrs-23.2.3.tar.gz", hash = "sha256:a934090d95abaa9e911dac357e3a8699e0b4b14f8529bcc7d2b1ad9d51672b9f"},
 ]
 
 [[package]]
@@ -71,20 +96,6 @@ files = [
 ]
 
 [[package]]
-name = "deprecated"
-version = "1.2.14"
-requires_python = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-summary = "Python @deprecated decorator to deprecate old python classes, functions or methods."
-groups = ["default"]
-dependencies = [
-    "wrapt<2,>=1.10",
-]
-files = [
-    {file = "Deprecated-1.2.14-py2.py3-none-any.whl", hash = "sha256:6fac8b097794a90302bdbb17b9b815e732d3c4720583ff1b198499d78470466c"},
-    {file = "Deprecated-1.2.14.tar.gz", hash = "sha256:e5323eb936458dccc2582dc6f9c322c852a775a27065ff2b0c4970b9d53d01b3"},
-]
-
-[[package]]
 name = "dnspython"
 version = "2.6.1"
 requires_python = ">=3.8"
@@ -93,6 +104,17 @@ groups = ["default"]
 files = [
     {file = "dnspython-2.6.1-py3-none-any.whl", hash = "sha256:5ef3b9680161f6fa89daf8ad451b5f1a33b18ae8a1c6778cdf4b43f08c0a6e50"},
     {file = "dnspython-2.6.1.tar.gz", hash = "sha256:e8f0f9c23a7b7cb99ded64e6c3a6f3e701d78f50c55e002b839dea7225cff7cc"},
+]
+
+[[package]]
+name = "docstring-to-markdown"
+version = "0.15"
+requires_python = ">=3.6"
+summary = "On the fly conversion of Python docstrings to markdown"
+groups = ["dev"]
+files = [
+    {file = "docstring-to-markdown-0.15.tar.gz", hash = "sha256:e146114d9c50c181b1d25505054a8d0f7a476837f0da2c19f07e06eaed52b73d"},
+    {file = "docstring_to_markdown-0.15-py3-none-any.whl", hash = "sha256:27afb3faedba81e34c33521c32bbd258d7fbb79eedf7d29bc4e81080e854aec0"},
 ]
 
 [[package]]
@@ -236,19 +258,22 @@ files = [
 ]
 
 [[package]]
-name = "importlib-resources"
-version = "6.4.0"
-requires_python = ">=3.8"
-summary = "Read resources from Python packages"
-groups = ["default"]
+name = "jedi"
+version = "0.19.1"
+requires_python = ">=3.6"
+summary = "An autocompletion tool for Python that can be used for text editors."
+groups = ["dev"]
+dependencies = [
+    "parso<0.9.0,>=0.8.3",
+]
 files = [
-    {file = "importlib_resources-6.4.0-py3-none-any.whl", hash = "sha256:50d10f043df931902d4194ea07ec57960f66a80449ff867bfe782b4c486ba78c"},
-    {file = "importlib_resources-6.4.0.tar.gz", hash = "sha256:cdb2b453b8046ca4e3798eb1d84f3cce1446a0e8e7b5ef4efb600f19fc398145"},
+    {file = "jedi-0.19.1-py2.py3-none-any.whl", hash = "sha256:e983c654fe5c02867aef4cdfce5a2fbb4a50adc0af145f70504238f18ef5e7e0"},
+    {file = "jedi-0.19.1.tar.gz", hash = "sha256:cf0496f3651bc65d7174ac1b7d043eff454892c708a87d1b683e57b569927ffd"},
 ]
 
 [[package]]
 name = "jinja2"
-version = "3.1.3"
+version = "3.1.4"
 requires_python = ">=3.7"
 summary = "A very fast and expressive template engine."
 groups = ["default"]
@@ -256,25 +281,23 @@ dependencies = [
     "MarkupSafe>=2.0",
 ]
 files = [
-    {file = "Jinja2-3.1.3-py3-none-any.whl", hash = "sha256:7d6d50dd97d52cbc355597bd845fabfbac3f551e1f99619e39a35ce8c370b5fa"},
-    {file = "Jinja2-3.1.3.tar.gz", hash = "sha256:ac8bd6544d4bb2c9792bf3a159e80bba8fda7f07e81bc3aed565432d5925ba90"},
+    {file = "jinja2-3.1.4-py3-none-any.whl", hash = "sha256:bc5dd2abb727a5319567b7a813e6a2e7318c39f4f487cfe6c89c6f9c7d25197d"},
+    {file = "jinja2-3.1.4.tar.gz", hash = "sha256:4a3aee7acbbe7303aede8e9648d13b8bf88a429282aa6122a993f0ac800cb369"},
 ]
 
 [[package]]
-name = "limits"
-version = "3.11.0"
-requires_python = ">=3.8"
-summary = "Rate limiting utilities"
-groups = ["default"]
+name = "lsprotocol"
+version = "2023.0.1"
+requires_python = ">=3.7"
+summary = "Python implementation of the Language Server Protocol."
+groups = ["dev"]
 dependencies = [
-    "deprecated>=1.2",
-    "importlib-resources>=1.3",
-    "packaging<25,>=21",
-    "typing-extensions",
+    "attrs>=21.3.0",
+    "cattrs!=23.2.1",
 ]
 files = [
-    {file = "limits-3.11.0-py3-none-any.whl", hash = "sha256:a19b31b28f692beb6c00de1ea61057dbb31929663e0c9f18d1dbb2f729a5ff6b"},
-    {file = "limits-3.11.0.tar.gz", hash = "sha256:2ce80fbf245ea737ade6fe1197c9bbdfc49a6e558f1950e5f722734cb275d781"},
+    {file = "lsprotocol-2023.0.1-py3-none-any.whl", hash = "sha256:c75223c9e4af2f24272b14c6375787438279369236cd568f596d4951052a60f2"},
+    {file = "lsprotocol-2023.0.1.tar.gz", hash = "sha256:cc5c15130d2403c18b734304339e51242d3018a05c4f7d0f198ad6e0cd21861d"},
 ]
 
 [[package]]
@@ -324,21 +347,21 @@ files = [
 
 [[package]]
 name = "orjson"
-version = "3.10.2"
+version = "3.10.3"
 requires_python = ">=3.8"
 summary = "Fast, correct Python JSON library supporting dataclasses, datetimes, and numpy"
 groups = ["default"]
 files = [
-    {file = "orjson-3.10.2-cp312-cp312-macosx_10_15_x86_64.macosx_11_0_arm64.macosx_10_15_universal2.whl", hash = "sha256:38d9e9eab01131fdccbe95bff4f1d8ea197d239b5c73396e2079d07730bfa205"},
-    {file = "orjson-3.10.2-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:bfd84ecf5ebe8ec334a95950427e7ade40135032b1f00e2b17f351b0ef6dc72b"},
-    {file = "orjson-3.10.2-cp312-cp312-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:a2ba009d85c3c98006759e62150d018d622aa79012fdeefbb70a42a542582b45"},
-    {file = "orjson-3.10.2-cp312-cp312-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:eac25b54fab6d9ccbf9dbc57555c2b52bf6d0802ea84bd2bd9670a161bd881dc"},
-    {file = "orjson-3.10.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b8e735d90a90caf746de59becf29642c8358cafcd9b1a906ae3566efcc495324"},
-    {file = "orjson-3.10.2-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:12feeee9089654904c2c988788eb9d521f5752c83ea410969d1f58d05ea95943"},
-    {file = "orjson-3.10.2-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:619a7a4df76497afd2e6f1c963cc7e13658b3d58425c3a2ccf0471ad61d71025"},
-    {file = "orjson-3.10.2-cp312-none-win32.whl", hash = "sha256:460d221090b451a0e78813196ec9dd28d2e33103048cfd7c1a3312a532fe3b1f"},
-    {file = "orjson-3.10.2-cp312-none-win_amd64.whl", hash = "sha256:7efa93a9540e6ac9fe01167389fd7b1f0250cbfe3a8f06fe23e045d2a2d5d6ac"},
-    {file = "orjson-3.10.2.tar.gz", hash = "sha256:47affe9f704c23e49a0fbb9d441af41f602474721e8639e8814640198f9ae32f"},
+    {file = "orjson-3.10.3-cp312-cp312-macosx_10_15_x86_64.macosx_11_0_arm64.macosx_10_15_universal2.whl", hash = "sha256:a39aa73e53bec8d410875683bfa3a8edf61e5a1c7bb4014f65f81d36467ea098"},
+    {file = "orjson-3.10.3-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:0943a96b3fa09bee1afdfccc2cb236c9c64715afa375b2af296c73d91c23eab2"},
+    {file = "orjson-3.10.3-cp312-cp312-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:e852baafceff8da3c9defae29414cc8513a1586ad93e45f27b89a639c68e8176"},
+    {file = "orjson-3.10.3-cp312-cp312-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:18566beb5acd76f3769c1d1a7ec06cdb81edc4d55d2765fb677e3eaa10fa99e0"},
+    {file = "orjson-3.10.3-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1bd2218d5a3aa43060efe649ec564ebedec8ce6ae0a43654b81376216d5ebd42"},
+    {file = "orjson-3.10.3-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:cf20465e74c6e17a104ecf01bf8cd3b7b252565b4ccee4548f18b012ff2f8069"},
+    {file = "orjson-3.10.3-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:ba7f67aa7f983c4345eeda16054a4677289011a478ca947cd69c0a86ea45e534"},
+    {file = "orjson-3.10.3-cp312-none-win32.whl", hash = "sha256:17e0713fc159abc261eea0f4feda611d32eabc35708b74bef6ad44f6c78d5ea0"},
+    {file = "orjson-3.10.3-cp312-none-win_amd64.whl", hash = "sha256:4c895383b1ec42b017dd2c75ae8a5b862fc489006afde06f14afbdd0309b2af0"},
+    {file = "orjson-3.10.3.tar.gz", hash = "sha256:2b166507acae7ba2f7c315dcf185a9111ad5e992ac81f2d507aac39193c2c818"},
 ]
 
 [[package]]
@@ -346,10 +369,32 @@ name = "packaging"
 version = "24.0"
 requires_python = ">=3.7"
 summary = "Core utilities for Python packages"
-groups = ["default"]
+groups = ["dev"]
 files = [
     {file = "packaging-24.0-py3-none-any.whl", hash = "sha256:2ddfb553fdf02fb784c234c7ba6ccc288296ceabec964ad2eae3777778130bc5"},
     {file = "packaging-24.0.tar.gz", hash = "sha256:eb82c5e3e56209074766e6885bb04b8c38a0c015d0a30036ebe7ece34c9989e9"},
+]
+
+[[package]]
+name = "parso"
+version = "0.8.4"
+requires_python = ">=3.6"
+summary = "A Python Parser"
+groups = ["dev"]
+files = [
+    {file = "parso-0.8.4-py2.py3-none-any.whl", hash = "sha256:a418670a20291dacd2dddc80c377c5c3791378ee1e8d12bffc35420643d43f18"},
+    {file = "parso-0.8.4.tar.gz", hash = "sha256:eb3a7b58240fb99099a345571deecc0f9540ea5f4dd2fe14c2a99d6b281ab92d"},
+]
+
+[[package]]
+name = "pluggy"
+version = "1.5.0"
+requires_python = ">=3.8"
+summary = "plugin and hook calling mechanisms for python"
+groups = ["dev"]
+files = [
+    {file = "pluggy-1.5.0-py3-none-any.whl", hash = "sha256:44e1ad92c8ca002de6377e165f3e0f1be63266ab4d554740532335b9d75ea669"},
+    {file = "pluggy-1.5.0.tar.gz", hash = "sha256:2cffa88e94fdc978c4c574f15f9e59b7f4201d439195c3715ca9e2486f1d0cf1"},
 ]
 
 [[package]]
@@ -411,14 +456,29 @@ files = [
 ]
 
 [[package]]
+name = "pygls"
+version = "1.3.1"
+requires_python = ">=3.8"
+summary = "A pythonic generic language server (pronounced like 'pie glass')"
+groups = ["dev"]
+dependencies = [
+    "cattrs>=23.1.2",
+    "lsprotocol==2023.0.1",
+]
+files = [
+    {file = "pygls-1.3.1-py3-none-any.whl", hash = "sha256:6e00f11efc56321bdeb6eac04f6d86131f654c7d49124344a9ebb968da3dd91e"},
+    {file = "pygls-1.3.1.tar.gz", hash = "sha256:140edceefa0da0e9b3c533547c892a42a7d2fd9217ae848c330c53d266a55018"},
+]
+
+[[package]]
 name = "pygments"
-version = "2.17.2"
-requires_python = ">=3.7"
+version = "2.18.0"
+requires_python = ">=3.8"
 summary = "Pygments is a syntax highlighting package written in Python."
 groups = ["default"]
 files = [
-    {file = "pygments-2.17.2-py3-none-any.whl", hash = "sha256:b27c2826c47d0f3219f29554824c30c5e8945175d888647acd804ddd04af846c"},
-    {file = "pygments-2.17.2.tar.gz", hash = "sha256:da46cec9fd2de5be3a8a784f434e4c4ab670b4ff54d605c4c2717e9d49c4c367"},
+    {file = "pygments-2.18.0-py3-none-any.whl", hash = "sha256:b8e6aca0523f3ab76fee51799c488e38782ac06eafcf95e7ba832985c8e7b13a"},
+    {file = "pygments-2.18.0.tar.gz", hash = "sha256:786ff802f32e91311bff3889f6e9a86e81505fe99f2735bb6d60ae0c5004f199"},
 ]
 
 [[package]]
@@ -430,6 +490,38 @@ groups = ["default"]
 files = [
     {file = "python-dotenv-1.0.1.tar.gz", hash = "sha256:e324ee90a023d808f1959c46bcbc04446a10ced277783dc6ee09987c37ec10ca"},
     {file = "python_dotenv-1.0.1-py3-none-any.whl", hash = "sha256:f7b63ef50f1b690dddf550d03497b66d609393b40b564ed0d674909a68ebf16a"},
+]
+
+[[package]]
+name = "python-lsp-jsonrpc"
+version = "1.1.2"
+requires_python = ">=3.8"
+summary = "JSON RPC 2.0 server library"
+groups = ["dev"]
+dependencies = [
+    "ujson>=3.0.0",
+]
+files = [
+    {file = "python-lsp-jsonrpc-1.1.2.tar.gz", hash = "sha256:4688e453eef55cd952bff762c705cedefa12055c0aec17a06f595bcc002cc912"},
+    {file = "python_lsp_jsonrpc-1.1.2-py3-none-any.whl", hash = "sha256:7339c2e9630ae98903fdaea1ace8c47fba0484983794d6aafd0bd8989be2b03c"},
+]
+
+[[package]]
+name = "python-lsp-server"
+version = "1.11.0"
+requires_python = ">=3.8"
+summary = "Python Language Server for the Language Server Protocol"
+groups = ["dev"]
+dependencies = [
+    "docstring-to-markdown",
+    "jedi<0.20.0,>=0.17.2",
+    "pluggy>=1.0.0",
+    "python-lsp-jsonrpc<2.0.0,>=1.1.0",
+    "ujson>=3.0.0",
+]
+files = [
+    {file = "python-lsp-server-1.11.0.tar.gz", hash = "sha256:89edd6fb3f7852e4bf5a3d1d95ea41484d1a28fa94b6e3cbff12b9db123b8e86"},
+    {file = "python_lsp_server-1.11.0-py3-none-any.whl", hash = "sha256:278cb41ea69ca9f84ec99d4edc96ff5f2f9e795d240771dc46dc1653f56ddfe3"},
 ]
 
 [[package]]
@@ -502,6 +594,24 @@ files = [
 ]
 
 [[package]]
+name = "ruff-lsp"
+version = "0.0.53"
+requires_python = ">=3.7"
+summary = "A Language Server Protocol implementation for Ruff."
+groups = ["dev"]
+dependencies = [
+    "lsprotocol>=2023.0.0",
+    "packaging>=23.1",
+    "pygls>=1.1.0",
+    "ruff>=0.0.274",
+    "typing-extensions",
+]
+files = [
+    {file = "ruff_lsp-0.0.53-py3-none-any.whl", hash = "sha256:5ea39968510d046b3c62dc5a7e3b52e867c2de14af34a406883fe05d55bab2b0"},
+    {file = "ruff_lsp-0.0.53.tar.gz", hash = "sha256:de38eccd06020350630ac3518fe04a9640c8f66908758d8a623b5ea021bf84b0"},
+]
+
+[[package]]
 name = "shellingham"
 version = "1.5.4"
 requires_python = ">=3.7"
@@ -510,20 +620,6 @@ groups = ["default"]
 files = [
     {file = "shellingham-1.5.4-py2.py3-none-any.whl", hash = "sha256:7ecfff8f2fd72616f7481040475a65b2bf8af90a56c89140852d1120324e8686"},
     {file = "shellingham-1.5.4.tar.gz", hash = "sha256:8dbca0739d487e5bd35ab3ca4b36e11c4078f3a234bfce294b0a0291363404de"},
-]
-
-[[package]]
-name = "slowapi"
-version = "0.1.9"
-requires_python = ">=3.7,<4.0"
-summary = "A rate limiting extension for Starlette and Fastapi"
-groups = ["default"]
-dependencies = [
-    "limits>=2.3",
-]
-files = [
-    {file = "slowapi-0.1.9-py3-none-any.whl", hash = "sha256:cfad116cfb84ad9d763ee155c1e5c5cbf00b0d47399a769b227865f5df576e36"},
-    {file = "slowapi-0.1.9.tar.gz", hash = "sha256:639192d0f1ca01b1c6d95bf6c71d794c3a9ee189855337b4821f7f457dddad77"},
 ]
 
 [[package]]
@@ -573,7 +669,7 @@ name = "typing-extensions"
 version = "4.11.0"
 requires_python = ">=3.8"
 summary = "Backported and Experimental Type Hints for Python 3.8+"
-groups = ["default"]
+groups = ["default", "dev"]
 files = [
     {file = "typing_extensions-4.11.0-py3-none-any.whl", hash = "sha256:c1f94d72897edaf4ce775bb7558d5b79d8126906a14ea5ed1635921406c0387a"},
     {file = "typing_extensions-4.11.0.tar.gz", hash = "sha256:83f085bd5ca59c80295fc2a82ab5dac679cbe02b9f33f7d83af68e241bea51b0"},
@@ -584,7 +680,7 @@ name = "ujson"
 version = "5.9.0"
 requires_python = ">=3.8"
 summary = "Ultra fast JSON encoder and decoder for Python"
-groups = ["default"]
+groups = ["default", "dev"]
 files = [
     {file = "ujson-5.9.0-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:20509a8c9f775b3a511e308bbe0b72897ba6b800767a7c90c5cca59d20d7c42c"},
     {file = "ujson-5.9.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:b28407cfe315bd1b34f1ebe65d3bd735d6b36d409b334100be8cdffae2177b2f"},
@@ -740,25 +836,4 @@ files = [
     {file = "websockets-12.0-pp39-pypy39_pp73-win_amd64.whl", hash = "sha256:2cb388a5bfb56df4d9a406783b7f9dbefb888c09b71629351cc6b036e9259370"},
     {file = "websockets-12.0-py3-none-any.whl", hash = "sha256:dc284bbc8d7c78a6c69e0c7325ab46ee5e40bb4d50e494d8131a07ef47500e9e"},
     {file = "websockets-12.0.tar.gz", hash = "sha256:81df9cbcbb6c260de1e007e58c011bfebe2dafc8435107b0537f393dd38c8b1b"},
-]
-
-[[package]]
-name = "wrapt"
-version = "1.16.0"
-requires_python = ">=3.6"
-summary = "Module for decorators, wrappers and monkey patching."
-groups = ["default"]
-files = [
-    {file = "wrapt-1.16.0-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:5eb404d89131ec9b4f748fa5cfb5346802e5ee8836f57d516576e61f304f3b7b"},
-    {file = "wrapt-1.16.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:9090c9e676d5236a6948330e83cb89969f433b1943a558968f659ead07cb3b36"},
-    {file = "wrapt-1.16.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:94265b00870aa407bd0cbcfd536f17ecde43b94fb8d228560a1e9d3041462d73"},
-    {file = "wrapt-1.16.0-cp312-cp312-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:f2058f813d4f2b5e3a9eb2eb3faf8f1d99b81c3e51aeda4b168406443e8ba809"},
-    {file = "wrapt-1.16.0-cp312-cp312-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:98b5e1f498a8ca1858a1cdbffb023bfd954da4e3fa2c0cb5853d40014557248b"},
-    {file = "wrapt-1.16.0-cp312-cp312-musllinux_1_1_aarch64.whl", hash = "sha256:14d7dc606219cdd7405133c713f2c218d4252f2a469003f8c46bb92d5d095d81"},
-    {file = "wrapt-1.16.0-cp312-cp312-musllinux_1_1_i686.whl", hash = "sha256:49aac49dc4782cb04f58986e81ea0b4768e4ff197b57324dcbd7699c5dfb40b9"},
-    {file = "wrapt-1.16.0-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:418abb18146475c310d7a6dc71143d6f7adec5b004ac9ce08dc7a34e2babdc5c"},
-    {file = "wrapt-1.16.0-cp312-cp312-win32.whl", hash = "sha256:685f568fa5e627e93f3b52fda002c7ed2fa1800b50ce51f6ed1d572d8ab3e7fc"},
-    {file = "wrapt-1.16.0-cp312-cp312-win_amd64.whl", hash = "sha256:dcdba5c86e368442528f7060039eda390cc4091bfd1dca41e8046af7c910dda8"},
-    {file = "wrapt-1.16.0-py3-none-any.whl", hash = "sha256:6906c4100a8fcbf2fa735f6059214bb13b97f75b1a61777fcf6432121ef12ef1"},
-    {file = "wrapt-1.16.0.tar.gz", hash = "sha256:5f370f952971e7d17c7d1ead40e49f32345a7f7a5373571ef44d800d06b1899d"},
 ]

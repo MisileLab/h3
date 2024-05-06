@@ -1,15 +1,11 @@
 from httpx import post
 from edgedb import create_async_client
 from fastapi import FastAPI, Header, HTTPException, Request, status, UploadFile
-from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.util import get_remote_address
-from slowapi.errors import RateLimitExceeded
 
 from os import listdir, getcwd
-from os.path import getsize, isfile, join, realpath, abspath, isdir
+from os.path import getsize, join, realpath, abspath, isdir, mkdir
 from typing import Annotated
 from pathlib import Path
 from shutil import copyfileobj
@@ -21,7 +17,6 @@ SCHALE_URL = "https://schale.misile.xyz"
 ROOT_PATH = join(getcwd(), "files")
 ORIGINS = ["null","*"]
 
-limiter = Limiter(key_func=get_remote_address)
 app = FastAPI()
 app.add_middleware(
   CORSMiddleware,
@@ -31,8 +26,6 @@ app.add_middleware(
   allow_headers=["*"]
 )
 app.mount("/file", StaticFiles(directory="files"), "files")
-app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 db = create_async_client()
 
@@ -49,12 +42,10 @@ def verify_jwt(jwtv: str):
   return r.text[1:-1]
 
 @app.get("/")
-@limiter.limit("1/second")
 async def get_gpg(request: Request, jwtv: Annotated[str, Header(alias="jwt")] = ""):
   return await db.query_json("select User {groups} filter .userid = <str>$userid", userid=verify_jwt(jwtv))
 
 @app.get("/files")
-@limiter.limit("10/second")
 async def get_files(request: Request, path: Annotated[str, Header()] = "."):
   rpath = join(ROOT_PATH, path)
   if not is_safe_path(rpath):
@@ -64,7 +55,6 @@ async def get_files(request: Request, path: Annotated[str, Header()] = "."):
   return [{"name": x, "size": getsize(join(ROOT_PATH, path, x)), "dir": isdir(join(ROOT_PATH, path, x))} for x in listdir(rpath)]
 
 @app.post("/uploadfile")
-@limiter.limit("10/minute")
 async def upload_file(request: Request, file: UploadFile, jwtv: Annotated[str, Header(alias="jwt")] = "", path: Annotated[str | None, Header()] = None):
   print(path, is_safe_path(join(ROOT_PATH, str(path))))
   if path is None or not is_safe_path(join(ROOT_PATH, path)):
