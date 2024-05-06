@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{pkgs, ...}: 
+let
+  portablemc = pkgs.callPackage ../tmps/portablemc/package.nix {};
+in
+{
   imports = [
     ./development.nix
     ./network.nix
@@ -11,7 +15,7 @@
     (pkgs.writeShellScriptBin "manual" ''
       ${pkgs.glow}/bin/glow -p ~/.config/home-manager/manual.md
     '')
-  ];
+  ] ++ [portablemc];
   programs = {
     glamour.catppuccin.enable=true;
     gpg = {
@@ -45,7 +49,6 @@
         fish_add_path -m ~/.avm/bin
         fish_add_path -m ~/.local/share/solana/install/active_release/bin
         fish_add_path -m ~/.volta/bin
-        fish_add_path -m ~/.local/bin 
         
         function fzfp
           if set -q argv[1]

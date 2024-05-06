@@ -3,7 +3,9 @@
     packages = with pkgs; [
       # Development
       edgedb d2 pre-commit pijul just dive dvc solana-validator
-      snyk ghidra pwndbg bruno
+      snyk ghidra pwndbg bruno radicle-cli
+      # https://github.com/NixOS/nixpkgs/pull/309050
+      # radicle-node
 
       # Language tools
       ghc cabal-install
@@ -17,7 +19,7 @@
     ]
     ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
     ++ (with nodePackages_latest; [nodejs pnpm typescript-language-server svelte-language-server]) # nodejs
-    ++ (with python312Packages; [pip virtualenv keyring keyrings-cryptfile pipx]); # python thing
+    ++ (with python312Packages; [pip virtualenv keyring keyrings-cryptfile ]); # python thing
     file = {
       "non-nixos-things/catppuccin-ghidra".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit{
         url="https://github.com/StanlsSlav/ghidra";
