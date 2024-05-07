@@ -1,24 +1,24 @@
 ---
-import Footer from "../footer.astro"
+import Footer from "../footer.astro";
 import Head from "../head.astro";
 interface Props {
-	id: number;
+  id: number;
 }
-const {id} = Astro.props;
+const { id } = Astro.props;
 ---
 
 <html lang="en">
-	<Head title={`Page ${id}`}>
+  <Head title={`Page ${id}`}>
     <meta content="Blog of misile" property="og:title" />
     <meta content="No ads, tor-friendly blog" property="og:description" />
     <meta content={`https://blog.misile.xyz/pages/${id}`} property="og:url" />
   </Head>
-	<body class="bg-ctp-crust">
-		<div class="flex flex-col items-center text-ctp-text">
+  <body class="bg-ctp-crust">
+    <div class="flex flex-col items-center text-ctp-text">
       <div class="w-full lg:w-1/2 my-4 gap-y-4 flex flex-col">
         <slot />
         <Footer currentID={id} path="pages" />
       </div>
     </div>
-	</body>
+  </body>
 </html>

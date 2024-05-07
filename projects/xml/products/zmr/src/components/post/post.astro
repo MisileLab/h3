@@ -1,36 +1,48 @@
 ---
-import Footer from "../footer.astro"
+import Footer from "../footer.astro";
 import Head from "../head.astro";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 dayjs.extend(utc);
 interface Props {
-	id: number;
+  id: number;
   title: string;
   createdDate: number;
 }
-const {id, title, createdDate} = Astro.props;
-const convertedDate = dayjs.unix(createdDate).utc().format("HH:mm:ss DD MMMM YYYY UTC")
+const { id, title, createdDate } = Astro.props;
+const convertedDate = dayjs
+  .unix(createdDate)
+  .utc()
+  .format("HH:mm:ss DD MMMM YYYY UTC");
 ---
 
 <html lang="en">
-	<Head title={title}>
+  <Head title={title}>
     <meta content={title} property="og:title" />
     <meta content="by misile" property="og:description" />
     <meta content={`https://blog.misile.xyz/posts/${id}`} property="og:url" />
   </Head>
-	<body class="bg-ctp-crust">
-		<div class="flex flex-col items-center">
+  <body class="bg-ctp-crust">
+    <div class="flex flex-col items-center">
       <div class="w-full lg:w-1/2 my-4 gap-y-4 flex flex-col text-ctp-subtext1">
-		    <div class="flex flex-col bg-ctp-overlay0 p-2 py-4">
+        <div class="flex flex-col bg-ctp-overlay0 p-2 py-4">
           <h1 class="font-bold text-3xl mb-2 text-ctp-text">{title}</h1>
-          <h2 class="font-semibold text-xl text-ctp-subtext1">created date: {convertedDate}</h2>
-          <slot class="text-ctp-subtext0 text-xl"/>
-          <a href="https://misile.xyz/donate" class="text-ctp-blue"><footer>Made by Misile, click this if you want to donate</footer></a>
-          <p class="text-ctp-yellow">Contact: i@misile.xyz, <a href="https://mail.misile.xyz">Subscribe mailing list</a></p>
+          <h2 class="font-semibold text-xl text-ctp-subtext1">
+            created date: {convertedDate}
+          </h2>
+          <slot class="text-ctp-subtext0 text-xl" />
+          <a href="https://misile.xyz/donate" class="text-ctp-blue"
+            ><footer>
+              Made by Misile, click this if you want to donate
+            </footer></a
+          >
+          <p class="text-ctp-yellow">
+            Contact: i@misile.xyz, <a href="https://mail.misile.xyz"
+              >Subscribe mailing list</a>
+          </p>
         </div>
         <Footer currentID={id} path="posts" />
       </div>
     </div>
-	</body>
+  </body>
 </html>
