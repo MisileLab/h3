@@ -14,7 +14,11 @@ const convertedDate = dayjs.unix(createdDate).utc().format("HH:mm:ss DD MMMM YYY
 ---
 
 <html lang="en">
-	<Head title={`post ${id}`} />
+	<Head title={title}>
+    <meta content={title} property="og:title" />
+    <meta content="by misile" property="og:description" />
+    <meta content={`https://blog.misile.xyz/posts/${id}`} property="og:url" />
+  </Head>
 	<body class="bg-ctp-crust">
 		<div class="flex flex-col items-center">
       <div class="w-full lg:w-1/2 my-4 gap-y-4 flex flex-col text-ctp-subtext1">

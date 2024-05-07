@@ -13,7 +13,9 @@ export default defineConfig({
       theme: "catppuccin-mocha",
       wrap: true
     }
-  }), sitemap()],
+  }), sitemap({
+    filter: (p)=>p !== "https://blog.misile.xyz/" && !p.startsWith("https://blog.misile.xyz/pages/")
+  })],
   markdown: {
     shikiConfig: {
       theme: "catppuccin-mocha",
