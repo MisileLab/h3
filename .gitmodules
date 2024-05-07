@@ -1,0 +1,3 @@
+[submodule "additiveplus"]
+	path = additiveplus
+	url = git@github.com:MisileLab/additiveplus.git
