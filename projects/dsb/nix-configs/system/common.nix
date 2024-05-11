@@ -55,7 +55,10 @@
     motd = "I use nixos btw";
   };
 
-  nix.settings.experimental-features = ["nix-command" "flakes"];
+  nix.settings = {
+    experimental-features = ["nix-command" "flakes"];
+    trusted-users = ["root" "misile"];
+  };
   sound.enable = false;
 
   system.stateVersion = "24.05";

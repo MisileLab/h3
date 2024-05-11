@@ -1,7 +1,4 @@
 {pkgs, ...}: 
-let
-  portablemc = pkgs.callPackage ../tmps/portablemc/package.nix {};
-in
 {
   imports = [
     ./development.nix
@@ -12,10 +9,11 @@ in
   ];
   home.packages = with pkgs; [
     sbctl bluez cryptsetup smartmontools borgbackup rclone pulsemixer
+    portablemc
     (pkgs.writeShellScriptBin "manual" ''
       ${pkgs.glow}/bin/glow -p ~/.config/home-manager/manual.md
     '')
-  ] ++ [portablemc];
+  ];
   programs = {
     glamour.catppuccin.enable=true;
     gpg = {

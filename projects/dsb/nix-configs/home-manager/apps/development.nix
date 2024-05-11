@@ -3,9 +3,7 @@
     packages = with pkgs; [
       # Development
       edgedb d2 pre-commit pijul just dive dvc solana-validator
-      snyk ghidra pwndbg bruno radicle-cli
-      # https://github.com/NixOS/nixpkgs/pull/309050
-      # radicle-node
+      snyk ghidra pwndbg bruno radicle-node
 
       # Language tools
       ghc cabal-install
