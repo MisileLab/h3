@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@solid-primitives/upload": "0.0.117",
-    "@solidjs/meta": "0.29.3",
+    "@solidjs/meta": "0.29.4",
     "@solidjs/router": "0.13.3",
     "axios": "1.6.8",
     "solid-icons": "1.1.0",
