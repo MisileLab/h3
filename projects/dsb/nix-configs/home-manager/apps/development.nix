@@ -8,7 +8,7 @@
       # Language tools
       ghc cabal-install
       rustup cargo-update
-      python312Full micromamba pdm mypy
+      python312Full micromamba pdm mypy ruff-lsp
       nasm
       tailwindcss-language-server volta deno
       hvm kind2
@@ -17,7 +17,7 @@
     ]
     ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
     ++ (with nodePackages_latest; [nodejs pnpm typescript-language-server svelte-language-server]) # nodejs
-    ++ (with python312Packages; [pip virtualenv keyring keyrings-cryptfile ]); # python thing
+    ++ (with python312Packages; [pip virtualenv keyring keyrings-cryptfile python-lsp-server]); # python thing
     file = {
       "non-nixos-things/catppuccin-ghidra".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit{
         url="https://github.com/StanlsSlav/ghidra";
