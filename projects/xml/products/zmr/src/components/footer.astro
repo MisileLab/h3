@@ -11,7 +11,7 @@ export function redirect(number: number) {
 ---
 
 <div class="flex flex-row gap-x-4 w-full justify-center items-center">
-  <a href={`/${path}/${currentID-1}`}><button class="bg-ctp-overlay1 px-2">{"<-"}</button></a>
+  <a href={`/${path}/${currentID-1}`}><button class="border-ctp-overlay1 border-solid border-2 px-2">{"<-"}</button></a>
   <p>{currentID}</p>
-  <a href={`/${path}/${currentID+1}`}><button class="bg-ctp-overlay1 px-2">{"->"}</button></a>
+  <a href={`/${path}/${currentID+1}`}><button class="border-ctp-overlay1 border-solid border-2 px-2">{"->"}</button></a>
 </div>

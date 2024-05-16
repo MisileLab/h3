@@ -8,7 +8,7 @@ const { title, tldr, id } = Astro.props;
 ---
 
 <a href={`/posts/${id}`}>
-  <div class="w-full h-fit bg-ctp-overlay0 flex flex-col p-2">
+  <div class="w-full h-fit border-solid border-2 border-ctp-overlay0 flex flex-col p-2">
     <h1 class="text-3xl font-bold">{title}</h1>
     <h2 class="text-xl">{tldr}</h2>
   </div>
