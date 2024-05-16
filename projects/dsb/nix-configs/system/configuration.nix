@@ -52,7 +52,8 @@
         };
       };
     };
-    virtualbox.host.enable = true;
+    # https://github.com/NixOS/nixpkgs/pull/311362
+    # virtualbox.host.enable = true;
     waydroid.enable = true;
   };
 
