@@ -12,9 +12,9 @@ export default function Login(): JSX.Element {
       <div class="bg-ctp-mantle w-fit h-fit flex flex-col py-12">
         <div class="w-full h-full gap-8 flex px-4 md:px-16 justify-center flex-col text-ctp-text">
           <h1 class="font-bold text-2xl md:text-3xl">Manage all with <span class="text-transparent bg-clip-text bg-gradient-to-br from-ctp-sky to-ctp-mauve">one account</span></h1>
-          <input type="text" placeholder="id" class="bg-ctp-overlay0 placeholder:text-ctp-text pl-1" value={id()} onChange={(a)=>setID(a.target.value)} />
-          <input type="password" placeholder="password" class="bg-ctp-overlay0 placeholder:text-ctp-text pl-1" value={pw()} onChange={(a)=>setPW(a.target.value)}/>
-          <button class="bg-ctp-overlay0 w-full" onclick={async ()=>{
+          <input type="text" placeholder="id" class="bg-ctp-mantle border-solid border-2 border-ctp-overlay0 placeholder:text-ctp-text pl-1" value={id()} onChange={(a)=>setID(a.target.value)} />
+          <input type="password" placeholder="password" class="bg-ctp-mantle border-solid border-2 border-ctp-overlay0 placeholder:text-ctp-text pl-1" value={pw()} onChange={(a)=>setPW(a.target.value)}/>
+          <button class="border-ctp-overlay0 border-solid border-2 w-full" onclick={async ()=>{
             let r = await fetch(`${backendurl}/login`, {
               headers: {
                 id: id(),

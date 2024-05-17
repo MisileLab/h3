@@ -27,7 +27,7 @@ export default function Gpg() {
   return (
     <div class="w-screen h-screen bg-ctp-crust flex justify-center items-center">
       <Title>{window.location.pathname}</Title>
-      <select class="w-fit h-fit px-2 bg-ctp-overlay0">
+      <select class="w-fit h-fit px-2 border-solid border-ctp-overlay1 border-2 bg-ctp-overlay0">
         <For each={gpgs()}>
           {(i,_)=><option value={i.pubkey}>{i.name}</option>}
         </For>

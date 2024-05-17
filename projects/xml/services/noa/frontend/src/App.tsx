@@ -40,7 +40,7 @@ export default function App() {
   return (
     <div class="w-screen h-screen bg-ctp-crust flex justify-center items-center">
       <Title>{location().pathname}</Title>
-      <div class="bg-ctp-overlay0 w-fit h-fit flex flex-row gap-2 p-4 text-ctp-text">
+      <div class="border-ctp-overlay0 border-solid border-2 w-fit h-fit flex flex-row gap-2 p-4 text-ctp-text">
         <div class="flex flex-col grow gap-2">
           <p class="font-bold">Name</p>
           {location().pathname != "/" && FileName("..", "..", true)}

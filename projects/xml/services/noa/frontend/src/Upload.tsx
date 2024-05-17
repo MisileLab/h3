@@ -18,9 +18,9 @@ export default function Upload() {
   return (
     <div class="w-screen h-screen bg-ctp-crust flex justify-center items-center">
       <Title>{window.location.pathname}</Title>
-      <div class="w-fit h-fit p-6 bg-ctp-overlay0 flex flex-row">
+      <div class="w-fit h-fit p-6 flex flex-row">
         <span class="text-ctp-subtext0 text-4xl px-2">/</span>
-        <input class="w-fit h-fit p-2 bg-ctp-overlay1 text-ctp-subtext1" placeholder="path" onchange={(a)=>setPath(a.target.value)} value={path()}/>
+        <input class="w-fit h-fit p-2 border-ctp-overlay0 border-solid border-2 bg-ctp-crust text-ctp-subtext1" placeholder="path" onchange={(a)=>setPath(a.target.value)} value={path()}/>
         <span class="text-ctp-subtext0 text-4xl px-2">/</span>
         <button onclick={()=>{
           selectFiles(async ([{source,name,size,file}]) => {
@@ -40,7 +40,7 @@ export default function Upload() {
               }
             }
           });
-        }} class="bg-ctp-overlay1 p-2 text-ctp-text">Select File</button>
+        }} class="border-ctp-overlay0 border-solid border-2 p-2 text-ctp-text">Select File</button>
       </div>
     </div>
   );
