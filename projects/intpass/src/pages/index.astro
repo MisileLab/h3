@@ -5,11 +5,19 @@ import Head from "../components/head.astro";
 <Head>
   <script>
     import JsBarcode from "jsbarcode";
+    for (const i of ["name", "type", "begin", "expire"]) {
+      if (localStorage.getItem(i) === null) {
+        location.href = `${location.href}modify`;
+      }
+    }
     JsBarcode("#barcode", "S2221234", {
       width: document.querySelector("#barcode")?.clientWidth,
       height: document.querySelector("#barcode")?.clientHeight,
       background: "#EEEEEE"
     });
+    document.getElementById("name")!!.innerText = localStorage.getItem("name")!!;
+    document.getElementById("type")!!.innerText = localStorage.getItem("type")!!;
+    document.getElementById("date")!!.innerText = `${localStorage.getItem("begin")!!}~${localStorage.getItem("expire")!!}`;
   </script>
 	<body>
     <div class="flex justify-center items-center w-screen h-screen bg-[#EEEEEE]">
@@ -18,17 +26,21 @@ import Head from "../components/head.astro";
           <div class="flex flex-col p-4 h-full">
             <p class="text-xl font-medium">선린인터넷고등학교</p>
             <div class="gap-2 flex-1 flex-col justify-center flex">
-              <p class="text-5xl font-bold">나선린</p>
-              <p class="text-2xl font-semibold">소프트웨어과</p>
-              <p class="text-xl font-medium tabular-nums">23sunrin000@sunrint.hs.kr</p>
+              <p class="text-5xl font-bold" id="name" />
+              <p class="text-2xl font-semibold" id="type" />
             </div>
-            <p class="text-xl font-semibold">2024~2027</p>
+            <p class="text-xl font-semibold" id="date" />
           </div>
         </div>
         <div class="h-1/3 rounded-b-2xl border-solid border-x-2 border-b-2 border-[#00ADB5]">
           <div class="w-full h-full justify-center items-center flex">
             <canvas id="barcode" class="w-full h-full p-4" />
           </div>
+        </div>
+        <div class="flex-col flex justify-center items-center w-full mt-2">
+          <button class="max-w-fit border-solid border-2 rounded-2xl border-[#00ADB5] px-4" onclick={()=>{
+            location.href = `${location.href}modify`;
+          }}>변경</button>
         </div>
       </div>
     </div>

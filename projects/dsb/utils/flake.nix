@@ -37,6 +37,7 @@
           nativeBuildInputs = with pkgs; [
             zigpkgs.master
             python312
+            zls
           ];
           env = {
             LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib";
