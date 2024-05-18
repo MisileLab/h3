@@ -5,7 +5,7 @@ import Head from "../components/head.astro";
 <Head>
   <script>
     import JsBarcode from "jsbarcode";
-    for (const i of ["name", "type", "begin", "expire"]) {
+    for (const i of ["name", "type", "start", "end"]) {
       if (localStorage.getItem(i) === null) {
         location.href = `${location.href}modify`;
       }
@@ -17,7 +17,7 @@ import Head from "../components/head.astro";
     });
     document.getElementById("name")!!.innerText = localStorage.getItem("name")!!;
     document.getElementById("type")!!.innerText = localStorage.getItem("type")!!;
-    document.getElementById("date")!!.innerText = `${localStorage.getItem("begin")!!}~${localStorage.getItem("expire")!!}`;
+    document.getElementById("date")!!.innerText = `${localStorage.getItem("start")!!}~${localStorage.getItem("end")!!}`;
   </script>
 	<body>
     <div class="flex justify-center items-center w-screen h-screen bg-[#EEEEEE]">
@@ -38,9 +38,7 @@ import Head from "../components/head.astro";
           </div>
         </div>
         <div class="flex-col flex justify-center items-center w-full mt-2">
-          <button class="max-w-fit border-solid border-2 rounded-2xl border-[#00ADB5] px-4" onclick={()=>{
-            location.href = `${location.href}modify`;
-          }}>변경</button>
+          <a href="/modify"><button class="max-w-fit border-solid border-2 rounded-2xl border-[#00ADB5] px-4">변경</button></a>
         </div>
       </div>
     </div>

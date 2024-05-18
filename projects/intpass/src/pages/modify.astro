@@ -1,0 +1,104 @@
+---
+import Head from "../components/head.astro";
+---
+
+<Head>
+  <script>
+    import { map } from "nanostores";
+    enum Type {
+      sw = "소프트웨어과",
+      security = "정보보호과",
+      design = "콘텐츠디자인과",
+      it = "IT경영과"
+    }
+    interface Date {
+      start: number,
+      end: number,
+      manual: boolean
+    }
+    let name: string;
+    let type: Type;
+    const date = map<Date>({
+      start: 2023,
+      end: 2026,
+      manual: false
+    });
+    let pipe = true;
+    date.subscribe((v)=>{
+      if (pipe) {pipe = false;return}
+      if (!v.manual) {
+        (document.getElementById("end") as HTMLInputElement).value = (v.start + 3).toString()
+        date.set({
+          start: v.start,
+          end: v.start + 3,
+          manual: v.manual
+        })
+        pipe = true
+        console.log(date.get())
+      }
+    })
+    document.getElementById("start")?.addEventListener("change", (v)=>{
+      date.setKey("start", Number.parseInt((v.target!! as HTMLInputElement).value))
+      console.log(date.get())
+    })
+    document.getElementById("end")?.addEventListener("change", (v)=>{
+      const vl = Number.parseInt((v.target!! as HTMLInputElement).value);
+      if (vl === date.get().end) {return;}
+      date.set({
+        start: date.get().start,
+        end: vl,
+        manual: (v.target!! as HTMLInputElement).value !== ""
+      })
+    })
+    document.getElementById("cancel")?.addEventListener("click", ()=>{
+      location.href = window.location.origin;
+    })
+    document.getElementById("modify")?.addEventListener("click", ()=>{
+      name = (document.getElementById("name") as HTMLInputElement).value;
+      type = (document.getElementById("type") as HTMLOptionElement).value as unknown as Type;
+      console.log(Type)
+      if (name == "") {
+        alert("값을 입력하지 않는 칸이 존재합니다.")
+        return
+      }
+      if (confirm(`당신의 정보가 맞습니까?\n이름: ${name}\n학과: ${Type[type as unknown as keyof typeof Type]}\n재학 기간: ${date.get().start}~${date.get().end}`)) {
+        localStorage.setItem("name", name)
+        localStorage.setItem("type", type.toString())
+        localStorage.setItem("start", date.get().start!!.toString())
+        localStorage.setItem("end", date.get().end!!.toString())
+      }
+      location.href = window.location.origin;
+    })
+  </script>
+	<body>
+    <div class="flex justify-center items-center w-screen h-screen bg-[#EEEEEE] text-[#222831]">
+      <div class="min-w-72 max-w-96 h-fit p-3 border-2 border-solid border-[#00ADB5] rounded-2xl gap-4 flex flex-col">
+        <div class="flex flex-row gap-2">
+          <h1 class="font-bold text-3xl">이름</h1>
+          <input id="name" type="text" class="flex-1 px-2" placeholder="나선린">
+        </div>
+        <div class="flex flex-row gap-2">
+          <h1 class="font-bold text-3xl">학과</h1>
+          <select id="type">
+            <option value="sw">소프트웨어과</option>
+            <option value="security">정보보호과</option>
+            <option value="design">콘텐츠디자인과</option>
+            <option value="it">IT경영과</option>
+          </select>
+        </div>
+        <div class="flex flex-row gap-2">
+          <h1 class="font-bold text-3xl whitespace-nowrap">재학 기간</h1>
+          <input id="start" type="number" class="min-w-0 px-2" value="2023">
+          <div class="flex items-center justify-center"><p>~</p></div>
+          <input id="end" type="number" class="min-w-0 px-2" value="2026">
+        </div>
+        <div class="flex flex-row w-full justify-center">
+          <div class="flex flex-row gap-2">
+            <button id="modify" class="border-2 border-solid border-black px-2 rounded-2xl">변경</button>
+            <button id="cancel" class="border-2 border-solid border-red-500 px-2 rounded-2xl">취소</button>
+          </div>
+        </div>
+      </div>
+    </div>
+	</body>
+</Head>
