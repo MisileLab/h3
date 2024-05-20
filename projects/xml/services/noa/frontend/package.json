@@ -23,7 +23,7 @@
     "@solid-primitives/upload": "0.0.117",
     "@solidjs/meta": "0.29.4",
     "@solidjs/router": "0.13.3",
-    "axios": "1.7.0",
+    "axios": "1.7.1",
     "solid-icons": "1.1.0",
     "solid-js": "1.8.17"
   }
