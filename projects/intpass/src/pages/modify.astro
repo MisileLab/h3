@@ -18,6 +18,8 @@ import Head from "../components/head.astro";
     }
     let name: string;
     let type: Type;
+    if (localStorage.getItem("name") !== null) {name = localStorage.getItem("name")!!}
+    if (localStorage.getItem("type") !== null) {type = Object.keys(Type)[Object.values(Type).indexOf(localStorage.getItem("type")!! as unknown as Type)] as Type}
     const date = map<Date>({
       start: 2023,
       end: 2026,
@@ -34,12 +36,10 @@ import Head from "../components/head.astro";
           manual: v.manual
         })
         pipe = true
-        console.log(date.get())
       }
     })
     document.getElementById("start")?.addEventListener("change", (v)=>{
       date.setKey("start", Number.parseInt((v.target!! as HTMLInputElement).value))
-      console.log(date.get())
     })
     document.getElementById("end")?.addEventListener("change", (v)=>{
       const vl = Number.parseInt((v.target!! as HTMLInputElement).value);
@@ -63,7 +63,7 @@ import Head from "../components/head.astro";
       }
       if (confirm(`당신의 정보가 맞습니까?\n이름: ${name}\n학과: ${Type[type as unknown as keyof typeof Type]}\n재학 기간: ${date.get().start}~${date.get().end}`)) {
         localStorage.setItem("name", name)
-        localStorage.setItem("type", type.toString())
+        localStorage.setItem("type", Type[type as unknown as keyof typeof Type].toString());
         localStorage.setItem("start", date.get().start!!.toString())
         localStorage.setItem("end", date.get().end!!.toString())
       }
@@ -74,12 +74,12 @@ import Head from "../components/head.astro";
     <div class="flex justify-center items-center w-screen h-screen bg-[#EEEEEE] text-[#222831]">
       <div class="min-w-72 max-w-96 h-fit p-3 border-2 border-solid border-[#00ADB5] rounded-2xl gap-4 flex flex-col">
         <div class="flex flex-row gap-2">
-          <h1 class="font-bold text-3xl">이름</h1>
-          <input id="name" type="text" class="flex-1 px-2" placeholder="나선린">
+          <h1 class="font-bold text-3xl flex-shrink-0">이름</h1>
+          <input id="name" type="text" class="flex-1 px-2 border-2 border-[#393E46] border-solid rounded-2xl bg-[#EEEEEE]" placeholder="나선린">
         </div>
         <div class="flex flex-row gap-2">
           <h1 class="font-bold text-3xl">학과</h1>
-          <select id="type">
+          <select id="type" class="bg-[#EEEEEE] border-solid border-2 border-[#393E46] px-2 rounded-2xl">
             <option value="sw">소프트웨어과</option>
             <option value="security">정보보호과</option>
             <option value="design">콘텐츠디자인과</option>
@@ -88,9 +88,9 @@ import Head from "../components/head.astro";
         </div>
         <div class="flex flex-row gap-2">
           <h1 class="font-bold text-3xl whitespace-nowrap">재학 기간</h1>
-          <input id="start" type="number" class="min-w-0 px-2" value="2023">
+          <input id="start" type="number" class="min-w-0 px-2 bg-[#EEEEEE] border-solid border-2 border-[#393E46] rounded-2xl" value="2023">
           <div class="flex items-center justify-center"><p>~</p></div>
-          <input id="end" type="number" class="min-w-0 px-2" value="2026">
+          <input id="end" type="number" class="min-w-0 px-2 bg-[#EEEEEE] border-solid border-2 border-[#393E46] rounded-2xl" value="2026">
         </div>
         <div class="flex flex-row w-full justify-center">
           <div class="flex flex-row gap-2">
