@@ -5,16 +5,19 @@ import Head from "../components/head.astro";
 <Head>
   <script>
     import JsBarcode from "jsbarcode";
-    for (const i of ["name", "type", "start", "end"]) {
+    for (const i of ["name", "type", "start", "end", "barcode"]) {
       if (localStorage.getItem(i) === null) {
         location.href = `${location.href}modify`;
       }
     }
-    JsBarcode("#barcode", "S2221234", {
-      width: document.querySelector("#barcode")?.clientWidth,
-      height: document.querySelector("#barcode")?.clientHeight,
-      background: "#EEEEEE"
-    });
+    if (localStorage.getItem("barcode") !== "") {
+      JsBarcode("#barcode", localStorage.getItem("barcode")!!, {
+        width: document.querySelector("#barcode")?.clientWidth,
+        height: document.querySelector("#barcode")?.clientHeight,
+        background: "#EEEEEE",
+        displayValue: false
+      });
+    }
     document.getElementById("name")!!.innerText = localStorage.getItem("name")!!;
     document.getElementById("type")!!.innerText = localStorage.getItem("type")!!;
     document.getElementById("date")!!.innerText = `${localStorage.getItem("start")!!}~${localStorage.getItem("end")!!}`;

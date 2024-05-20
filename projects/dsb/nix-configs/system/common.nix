@@ -11,7 +11,7 @@
     };
     kernelPackages = with pkgs; linuxPackages_latest;
     initrd.kernelModules = ["amdgpu"];
-    supportedFilesystems = ["ntfs" "btrfs" "ext4"];
+    supportedFilesystems = ["ntfs" "btrfs" "ext4" "mtpfs"];
   };
 
   hardware = {
