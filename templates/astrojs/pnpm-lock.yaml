@@ -22,9 +22,6 @@ dependencies:
     version: 5.4.5
 
 devDependencies:
-  '@catppuccin/highlightjs':
-    specifier: 0.1.4
-    version: 0.1.4
   '@catppuccin/tailwindcss':
     specifier: 0.1.6
     version: 0.1.6(tailwindcss@3.4.3)
@@ -389,10 +386,6 @@ packages:
       '@babel/helper-validator-identifier': 7.24.5
       to-fast-properties: 2.0.0
     dev: false
-
-  /@catppuccin/highlightjs@0.1.4:
-    resolution: {integrity: sha512-PEzMrpE7VvXFLvQuNAomTcvAuXUJlBlcqvSqhHYFapSxBKye+auNokemssEVuv053KH7Go44Aa4sE+rZNOM5cQ==}
-    dev: true
 
   /@catppuccin/tailwindcss@0.1.6(tailwindcss@3.4.3):
     resolution: {integrity: sha512-V+Y0AwZ5SSyvOVAcDl7Ng30xy+m82OKnEJ+9+kcZZ7lRyXuZrAb2GScdq9XR3v+ggt8qiZ/G4TvaC9cJ88AAXA==}

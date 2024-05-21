@@ -17,7 +17,6 @@
     "typescript": "5.4.5"
   },
   "devDependencies": {
-    "@catppuccin/highlightjs": "0.1.4",
     "@catppuccin/tailwindcss": "0.1.6"
   }
 }
