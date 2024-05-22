@@ -7,10 +7,11 @@
     ./sway.nix
   ];
   home = {
+    # https://github.com/NixOS/nixpkgs/issues/313548
     packages = with pkgs; [
       brightnessctl clipman wl-clipboard pavucontrol
       imagemagick virt-manager gimp onionshare-gui appflowy firefoxpwa
-      exodus /*galaxy-buds-client*/ ferium prismlauncher qemu telegram-desktop
+      /*exodus galaxy-buds-client*/ ferium prismlauncher qemu telegram-desktop
     ];
     file = {
       ".local/share/PrismLauncher/themes/catppuccin-mocha.zip".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
