@@ -7,7 +7,7 @@ authors = [
 ]
 dependencies = [
   "tomli==2.0.1",
-  "requests==2.32.1",
+  "requests==2.32.2",
   "baekjoonapi @ git+https://github.com/MisileLab/baekjoonapi",
 ]
 requires-python = "==3.12.3"
