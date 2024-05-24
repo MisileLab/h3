@@ -9,6 +9,7 @@ let
   '';
 in
 {
+  home.packages = with pkgs; [swaysome];
   wayland.windowManager.sway = {
     enable = true;
     extraConfigEarly = ''
