@@ -2,7 +2,7 @@
   description = "Home Manager configuration of misile";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
     # unstablepkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     catppuccin.url = "github:catppuccin/nix";
     home-manager = {

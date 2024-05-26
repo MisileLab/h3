@@ -8,9 +8,10 @@
   ];
   home = {
     # https://github.com/NixOS/nixpkgs/issues/313548
+    # https://hydra.nixos.org/job/nixos/release-24.05/nixpkgs.onionshare-gui.x86_64-linux
     packages = with pkgs; [
       brightnessctl clipman wl-clipboard pavucontrol
-      imagemagick virt-manager gimp onionshare-gui appflowy firefoxpwa
+      imagemagick virt-manager gimp /* onionshare-gui */ appflowy firefoxpwa
       /*exodus galaxy-buds-client*/ ferium prismlauncher qemu telegram-desktop
     ];
     file = {
@@ -20,7 +21,7 @@
       }}/themes/Mocha/Catppuccin-Mocha.zip";
       ".config/obs-studio/themes/Catppuccin Mocha.qss".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
         url="https://github.com/catppuccin/obs";
-        rev="9a78d89d186afbdcc719a1cb7bbf7fb1c2fdd248";
+        rev="e7c4fcf387415a20cb747121bc0416c4c8ae3362";
       }}";
     };
     pointerCursor = {

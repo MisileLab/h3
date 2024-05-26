@@ -38,15 +38,23 @@ in
 
       bindsym Mod4+y exec ${pkgs.clipman}/bin/clipman pick --tool="rofi" --max-items=30
       bindsym Mod4+shift+y exec ${pkgs.swayfx}/bin/swaynag --type warning -m 'You want to clear clipboard?' -b 'Yes' 'exec ${pkgs.clipman}/bin/clipman clear --all'
-
-      exec "${pkgs.avizo}/bin/avizo-service"
     '';
     config = {
       bars = [];
       startup = [
+        {command = 
+          ''
+          ${pkgs.swayidle}/bin/swayidle -w \
+              timeout 60 '${pkgs.swaylock}/bin/swaylock -f' \
+              timeout 90 "${pkgs.swayfx}/bin/swaymsg 'output * dpms off'" \
+              resume "${pkgs.swayfx}/bin/swaymsg 'output * dpms on'" \
+              before-sleep '${pkgs.swaylock}/bin/swaylock -f' \
+              lock '${pkgs.swaylock}/bin/swaylock -f'
+          '';}
         {command = "${pkgs.waybar}/bin/waybar";}
         {command = "${pkgs.swaybg}/bin/swaybg --image ~/.config/home-manager/bg.png";}
         {command = "${pkgs.wl-clipboard}/bin/wl-paste -t text --watch ${pkgs.clipman}/bin/clipman store --no-persist";}
+        {command = "${pkgs.avizo}/bin/avizo-service";}
       ];
       menu = "${pkgs.rofi-wayland}/bin/rofi -show drun";
       terminal = "${pkgs.alacritty}/bin/alacritty";

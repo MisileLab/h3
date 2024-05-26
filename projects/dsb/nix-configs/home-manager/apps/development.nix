@@ -21,7 +21,7 @@
     file = {
       "non-nixos-things/catppuccin-ghidra".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit{
         url="https://github.com/StanlsSlav/ghidra";
-        rev="f783b5e15836964e720371c0da81819577dd2614";
+        rev="c7e5781c3485912f49c7e4ebf469bb474ffd7d62";
       }}";
     };
   };
