@@ -1,5 +1,5 @@
 {
-  "name": "satellite",
+  "name": "@misile/satellite",
   "version": "0.0.1",
   "description": "",
   "main": "index.ts",
