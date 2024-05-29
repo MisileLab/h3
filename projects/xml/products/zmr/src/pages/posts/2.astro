@@ -4,12 +4,13 @@ import Subtitle from "../../components/subtitle.astro";
 ---
 
 <script>
-import { atom } from "nanostores";
-export const isOpen = atom(false);
-isOpen.subscribe(v=>{
-  document.getElementById("realcontent")!!.style.display = v?"block":"none";
-})
-document.getElementById("toggleOpen")!!.addEventListener("click", ()=>{isOpen.set(!isOpen.get())});
+  import { atom } from "nanostores";
+  import { queryId } from "@misile/satellite";
+  const isOpen = atom(false);
+  isOpen.subscribe(v=>{
+    queryId("realcontent").style.display = v?"block":"none";
+  })
+  queryId("toggleOpen").addEventListener("click", ()=>{isOpen.set(!isOpen.get())});
 </script>
 
 <Post id={2} title="Introducing mail subscription, powered by listmonk" createdDate={1714022000}>

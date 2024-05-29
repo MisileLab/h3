@@ -1,7 +1,6 @@
 import { defineConfig } from 'astro/config';
 import tailwind from "@astrojs/tailwind";
 import mdx from "@astrojs/mdx";
-import node from "@astrojs/node";
 
 import sitemap from "@astrojs/sitemap";
 
@@ -26,9 +25,5 @@ export default defineConfig({
     "/": "/pages/1",
     "/pages": "/pages/1",
     "/posts": "/pages/1"
-  },
-  output: "server",
-  adapter: node({
-    mode: "standalone"
-  })
+  }
 });
