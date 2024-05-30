@@ -10,7 +10,7 @@ readme = "README.md"
 python = "3.12.3"
 disnake = "2.9.2"
 tomli = "2.0.1"
-requests = "2.32.2"
+requests = "2.32.3"
 
 [build-system]
 requires = ["poetry-core"]
