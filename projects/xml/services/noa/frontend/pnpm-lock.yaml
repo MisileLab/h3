@@ -15,8 +15,8 @@ importers:
         specifier: 0.29.4
         version: 0.29.4(solid-js@1.8.17)
       '@solidjs/router':
-        specifier: 0.13.3
-        version: 0.13.3(solid-js@1.8.17)
+        specifier: 0.13.4
+        version: 0.13.4(solid-js@1.8.17)
       axios:
         specifier: 1.7.2
         version: 1.7.2
@@ -528,8 +528,8 @@ packages:
     peerDependencies:
       solid-js: '>=1.8.4'
 
-  '@solidjs/router@0.13.3':
-    resolution: {integrity: sha512-p8zznlvnN3KySMXqT8irhubgDNTETNa/guaGHU/cZl7kuiPO3PmkWNYfoNCygtEpoxLmLpf62/ZKeyhFdZexsw==}
+  '@solidjs/router@0.13.4':
+    resolution: {integrity: sha512-UvL/8TkP3ExE/Z5KDs0wdqesWasISsRTrrredcTbxQx/eNdRXr8BXFsa3GV2f6VSQVjbukWG5cRAcIzV76nl/g==}
     peerDependencies:
       solid-js: ^1.8.6
 
@@ -1634,7 +1634,7 @@ snapshots:
     dependencies:
       solid-js: 1.8.17
 
-  '@solidjs/router@0.13.3(solid-js@1.8.17)':
+  '@solidjs/router@0.13.4(solid-js@1.8.17)':
     dependencies:
       solid-js: 1.8.17
 
