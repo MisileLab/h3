@@ -30,8 +30,8 @@ app = FastAPI()
 async def root():
   return &lcub;"message": "Hello, World!"&rcub;
       </Code>
-      <Code lang="" class="mt-6">fastapi dev main.py</Code>
-      <Code lang="" class="mt-6">fastapi run main.py</Code>
+      <Code lang="css" class="mt-6">fastapi dev main.py</Code>
+      <Code lang="css" class="mt-6">fastapi run main.py</Code>
     </Slide>
     <Slide animate>
       <div class="flex flex-row gap-x-12">
@@ -96,7 +96,7 @@ async def clubs2():
         직접 path쳐서 에러 내보기
         docs 들어가서 실습해보기
       </Notes>
-      <Code lang="python" lines="5-8|10-11">
+      <Code lang="python" lines="2|5-8|10-11">
 from fastapi import FastAPI
 from enum import Enum
 app = FastAPI()
@@ -135,8 +135,9 @@ async def verify(club: Club):
       <Notes>
         http://test?n=on,1,True,true,yes 모두 작동하는거 시험
       </Notes>
-      <Code lang="python" lines="10-12">
+      <Code lang="python" lines="10-13">
 from fastapi import FastAPI
+from enum import Enum
 app = FastAPI()
 
 class Club(str, Enum):
@@ -156,8 +157,9 @@ async def verify(club: Club = Club.ana, n: bool = True):
         http://test?n=on,1,True,true,yes 모두 작동하는거 시험
         없으면 에러 나는거 시험
       </Notes>
-      <Code lang="python" lines="10">
+      <Code lang="python" lines="10-11">
 from fastapi import FastAPI
+from enum import Enum
 app = FastAPI()
 
 class Club(str, Enum):
@@ -177,8 +179,9 @@ async def verify(club: Club = Club.ana, n: int):
         http://test?n=on,1,True,true,yes 모두 작동하는거 시험
         없으면 에러 나는거 시험
       </Notes>
-      <Code lang="python" lines="10">
+      <Code lang="python" lines="11">
 from fastapi import FastAPI
+from enum import Enum
 app = FastAPI()
 
 class Club(str, Enum):
@@ -198,7 +201,7 @@ async def verify(club: Club = Club.ana, n: int = 0):
         request body http로 오는 거 설명
         docs 들어가서 실습
       </Notes>
-      <Code lang="python" lines="3|6-9|11-13|15-19">
+      <Code lang="python" lines="2-3|6-9|11-13|15-19">
 from fastapi import FastAPI
 from enum import Enum
 from pydantic import BaseModel
