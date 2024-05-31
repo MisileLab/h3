@@ -28,6 +28,10 @@
         fi
       '';
     };
+    fzf = {
+      enable = true;
+      catppuccin.enable = true;
+    };
     topgrade.enable = true;
     fish = {
       enable = true;
