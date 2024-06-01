@@ -68,7 +68,7 @@ async def root():
 from fastapi import FastAPI
 app = FastAPI()
 
-@app.get("/items/&lcub;item&rcub;")
+@app.get("/items/&lcub;item_id&rcub;")
 async def read_item(item_id: int):
   return &lcub;"id": item_id&rcub;
       </Code>
@@ -216,7 +216,7 @@ class ClubModel(BaseModel):
   club: Club
   count: int
 
-@app.get("/verify")
+@app.post("/verify")
 async def verify(club: ClubModel):
   if club.club is Club.ana:
     return f"You are AnA, count is &lcub;club.count&rcub;"
