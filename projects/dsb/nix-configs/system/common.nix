@@ -10,6 +10,7 @@
       systemd-boot.enable = true;
     };
     kernelPackages = with pkgs; linuxPackages_latest;
+    kernelParams = ["iommu=soft"];
     initrd.kernelModules = ["amdgpu"];
     supportedFilesystems = ["ntfs" "btrfs" "ext4" "mtpfs"];
   };
@@ -61,6 +62,6 @@
   };
   sound.enable = false;
 
-  system.stateVersion = "24.05";
+  system.stateVersion = "24.11";
 }
 
