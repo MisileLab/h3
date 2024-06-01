@@ -1,27 +1,23 @@
 {
-  "name": "schale",
-  "version": "0.0.0",
-  "description": "Auth daemon",
+  "name": "svelte1",
+  "type": "module",
+  "version": "0.0.1",
   "scripts": {
-    "start": "vite",
-    "dev": "vite",
-    "build": "vite build",
-    "serve": "vite preview"
-  },
-  "license": "MisileLab License",
-  "devDependencies": {
-    "@catppuccin/tailwindcss": "0.1.6",
-    "autoprefixer": "10.4.19",
-    "postcss": "8.4.38",
-    "solid-devtools": "0.30.1",
-    "tailwindcss": "3.4.3",
-    "typescript": "5.4.5",
-    "vite": "5.2.12",
-    "vite-plugin-solid": "2.10.2"
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro"
   },
   "dependencies": {
-    "@solidjs/meta": "0.29.4",
-    "@solidjs/router": "0.13.5",
-    "solid-js": "1.8.17"
+    "@astrojs/check": "0.7.0",
+    "@astrojs/tailwind": "5.1.0",
+    "@misile/satellite": "0.0.2",
+    "astro": "4.9.2",
+    "tailwindcss": "3.4.3",
+    "typescript": "5.4.5"
+  },
+  "devDependencies": {
+    "@catppuccin/tailwindcss": "0.1.6"
   }
 }
