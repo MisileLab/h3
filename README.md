@@ -1,6 +1,7 @@
 # h3
 
 monorepo for my projects
+![Alt](https://repobeats.axiom.co/api/embed/8c9a655ff05333e4ec601ccfd436223510ef6b19.svg "Repobeats analytics image")
 
 ## Folders
 
