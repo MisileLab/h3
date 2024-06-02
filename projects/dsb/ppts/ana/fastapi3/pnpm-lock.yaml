@@ -43,8 +43,8 @@ importers:
         specifier: 8.4.38
         version: 8.4.38
       postcss-load-config:
-        specifier: 5.1.0
-        version: 5.1.0(jiti@1.21.0)(postcss@8.4.38)
+        specifier: 6.0.0
+        version: 6.0.0(jiti@1.21.0)(postcss@8.4.38)(yaml@2.4.2)
       prettier:
         specifier: 3.3.0
         version: 3.3.0
@@ -59,7 +59,7 @@ importers:
         version: 4.2.17
       svelte-check:
         specifier: 3.8.0
-        version: 3.8.0(postcss-load-config@5.1.0(jiti@1.21.0)(postcss@8.4.38))(postcss@8.4.38)(svelte@4.2.17)
+        version: 3.8.0(postcss-load-config@6.0.0(jiti@1.21.0)(postcss@8.4.38)(yaml@2.4.2))(postcss@8.4.38)(svelte@4.2.17)
       tailwindcss:
         specifier: 3.4.3
         version: 3.4.3
@@ -814,19 +814,22 @@ packages:
       ts-node:
         optional: true
 
-  postcss-load-config@5.1.0:
-    resolution: {integrity: sha512-G5AJ+IX0aD0dygOE0yFZQ/huFFMSNneyfp0e3/bT05a8OfPC5FUoZRPfGijUdGOJNMewJiwzcHJXFafFzeKFVA==}
+  postcss-load-config@6.0.0:
+    resolution: {integrity: sha512-Awdbn0DxIoOD0y9ljT7T8nm57tA0EGhnBRN2o8Dn/qZj4XuFfQ9q3mDgB5f4+A8wuD6x23RUgr0RMaId4bcFvA==}
     engines: {node: '>= 18'}
     peerDependencies:
       jiti: '>=1.21.0'
       postcss: '>=8.0.9'
       tsx: ^4.8.1
+      yaml: ^2.4.2
     peerDependenciesMeta:
       jiti:
         optional: true
       postcss:
         optional: true
       tsx:
+        optional: true
+      yaml:
         optional: true
 
   postcss-nested@6.0.1:
@@ -1763,13 +1766,13 @@ snapshots:
     optionalDependencies:
       postcss: 8.4.38
 
-  postcss-load-config@5.1.0(jiti@1.21.0)(postcss@8.4.38):
+  postcss-load-config@6.0.0(jiti@1.21.0)(postcss@8.4.38)(yaml@2.4.2):
     dependencies:
       lilconfig: 3.1.1
-      yaml: 2.4.2
     optionalDependencies:
       jiti: 1.21.0
       postcss: 8.4.38
+      yaml: 2.4.2
 
   postcss-nested@6.0.1(postcss@8.4.38):
     dependencies:
@@ -1918,7 +1921,7 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  svelte-check@3.8.0(postcss-load-config@5.1.0(jiti@1.21.0)(postcss@8.4.38))(postcss@8.4.38)(svelte@4.2.17):
+  svelte-check@3.8.0(postcss-load-config@6.0.0(jiti@1.21.0)(postcss@8.4.38)(yaml@2.4.2))(postcss@8.4.38)(svelte@4.2.17):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
       chokidar: 3.6.0
@@ -1927,7 +1930,7 @@ snapshots:
       picocolors: 1.0.1
       sade: 1.8.1
       svelte: 4.2.17
-      svelte-preprocess: 5.1.4(postcss-load-config@5.1.0(jiti@1.21.0)(postcss@8.4.38))(postcss@8.4.38)(svelte@4.2.17)(typescript@5.4.5)
+      svelte-preprocess: 5.1.4(postcss-load-config@6.0.0(jiti@1.21.0)(postcss@8.4.38)(yaml@2.4.2))(postcss@8.4.38)(svelte@4.2.17)(typescript@5.4.5)
       typescript: 5.4.5
     transitivePeerDependencies:
       - '@babel/core'
@@ -1944,7 +1947,7 @@ snapshots:
     dependencies:
       svelte: 4.2.17
 
-  svelte-preprocess@5.1.4(postcss-load-config@5.1.0(jiti@1.21.0)(postcss@8.4.38))(postcss@8.4.38)(svelte@4.2.17)(typescript@5.4.5):
+  svelte-preprocess@5.1.4(postcss-load-config@6.0.0(jiti@1.21.0)(postcss@8.4.38)(yaml@2.4.2))(postcss@8.4.38)(svelte@4.2.17)(typescript@5.4.5):
     dependencies:
       '@types/pug': 2.0.10
       detect-indent: 6.1.0
@@ -1954,7 +1957,7 @@ snapshots:
       svelte: 4.2.17
     optionalDependencies:
       postcss: 8.4.38
-      postcss-load-config: 5.1.0(jiti@1.21.0)(postcss@8.4.38)
+      postcss-load-config: 6.0.0(jiti@1.21.0)(postcss@8.4.38)(yaml@2.4.2)
       typescript: 5.4.5
 
   svelte@4.2.17:
