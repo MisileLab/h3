@@ -6,7 +6,6 @@ import sitemap from "@astrojs/sitemap";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://blog.misile.xyz",
   integrations: [tailwind(), mdx({
     shikiConfig: {
       theme: "catppuccin-mocha",

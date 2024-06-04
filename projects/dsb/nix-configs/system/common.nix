@@ -10,7 +10,7 @@
       systemd-boot.enable = true;
     };
     kernelPackages = with pkgs; linuxPackages_latest;
-    kernelParams = ["iommu=soft"];
+    kernelParams = ["amdgpu.sg_display=0"];
     initrd.kernelModules = ["amdgpu"];
     supportedFilesystems = ["ntfs" "btrfs" "ext4" "mtpfs"];
   };
