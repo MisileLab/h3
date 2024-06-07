@@ -10,10 +10,9 @@
   home = {
     # https://github.com/NixOS/nixpkgs/issues/313548
     # https://github.com/NixOS/nixpkgs/issues/306670
-    # https://hydra.nixos.org/job/nixos/release-24.05/nixpkgs.onionshare-gui.x86_64-linux
     packages = with pkgs; [
       brightnessctl clipman wl-clipboard pavucontrol
-      imagemagick virt-manager gimp /* onionshare-gui */ appflowy firefoxpwa
+      imagemagick virt-manager gimp onionshare-gui appflowy firefoxpwa
       /* exodus galaxy-buds-client*/ ferium prismlauncher qemu telegram-desktop
     ];
     file = {
