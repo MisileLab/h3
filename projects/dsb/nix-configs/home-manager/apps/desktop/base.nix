@@ -12,13 +12,13 @@
     # https://github.com/NixOS/nixpkgs/issues/306670
     packages = with pkgs; [
       brightnessctl clipman wl-clipboard pavucontrol
-      imagemagick virt-manager gimp onionshare-gui appflowy firefoxpwa
+      imagemagick virt-manager gimp onionshare-gui appflowy firefoxpwa xfce.thunar
       /* exodus galaxy-buds-client*/ ferium prismlauncher qemu telegram-desktop
     ];
     file = {
       ".local/share/PrismLauncher/themes/catppuccin-mocha.zip".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
         url="https://github.com/catppuccin/prismlauncher";
-        rev="07e9c3ca0ff8eb7da9fa8b5329a9d2ceec707f24";
+        rev="2edbdf5295bc3c12c3dd53b203ab91028fce2c54";
       }}/themes/Mocha/Catppuccin-Mocha.zip";
       ".config/obs-studio/themes/Catppuccin Mocha.qss".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
         url="https://github.com/catppuccin/obs";

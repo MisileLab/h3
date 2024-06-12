@@ -1,7 +1,4 @@
 {pkgs, config, ...}:
-let
-  pnpm = pkgs.callPackage ./pnpm.nix {};
-in
 {
   home = {
     packages = with pkgs; [
@@ -19,9 +16,8 @@ in
       clang-tools lldb pkg-config
       niv fh nixpkgs-fmt nix-tree hub
     ]
-    ++ [pnpm]
     ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
-    ++ (with nodePackages_latest; [nodejs /* pnpm */ typescript-language-server svelte-language-server]) # nodejs
+    ++ (with nodePackages_latest; [nodejs pnpm typescript-language-server svelte-language-server]) # nodejs
     ++ (with python312Packages; [pip virtualenv keyring keyrings-cryptfile python-lsp-server]); # python thing
     file = {
       "non-nixos-things/catppuccin-ghidra".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit{
