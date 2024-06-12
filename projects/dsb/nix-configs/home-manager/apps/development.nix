@@ -17,7 +17,7 @@
       niv fh nixpkgs-fmt nix-tree hub
     ]
     ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
-    ++ (with nodePackages_latest; [nodejs pnpm typescript-language-server svelte-language-server]) # nodejs
+    ++ (with nodePackages_latest; [nodejs pnpm_9 typescript-language-server svelte-language-server]) # nodejs
     ++ (with python312Packages; [pip virtualenv keyring keyrings-cryptfile python-lsp-server]); # python thing
     file = {
       "non-nixos-things/catppuccin-ghidra".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit{
