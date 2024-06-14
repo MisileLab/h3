@@ -15,7 +15,8 @@
     '')
   ];
   programs = {
-    glamour.catppuccin.enable=true;
+    nix-index.enable = true;
+    glamour.catppuccin.enable = true;
     gpg = {
       enable = true;
       mutableTrust = true;
