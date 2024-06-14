@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:9058619341b369a346e2afcf20e67ddd9b74649b8cfe898e681da566dec1141b"
+content_hash = "sha256:b70c050221ffc54f28bd5a1a9ac4d8c48ecf04c57f3342c3f950e1574999fd6a"
 
 [[package]]
 name = "ansicon"
@@ -132,7 +132,7 @@ files = [
 
 [[package]]
 name = "inquirer"
-version = "3.2.4"
+version = "3.2.5"
 requires_python = ">=3.8.1"
 summary = "Collection of common interactive command line user interfaces, based on Inquirer.js"
 groups = ["default"]
@@ -142,8 +142,8 @@ dependencies = [
     "readchar>=3.0.6",
 ]
 files = [
-    {file = "inquirer-3.2.4-py3-none-any.whl", hash = "sha256:273a4e4a4345ac1afdb17408d40fc8dccf3485db68203357919468561035a763"},
-    {file = "inquirer-3.2.4.tar.gz", hash = "sha256:33b09efc1b742b9d687b540296a8b6a3f773399673321fcc2ab0eb4c109bf9b5"},
+    {file = "inquirer-3.2.5-py3-none-any.whl", hash = "sha256:017fefa077f023d23b4e9fc310ab33d005789d4558b1121d9611aee27411a63b"},
+    {file = "inquirer-3.2.5.tar.gz", hash = "sha256:4f3773e840aa1346d10b1f958728a0a621adc288065b33a95dade6e214b26b60"},
 ]
 
 [[package]]
