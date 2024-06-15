@@ -1,6 +1,6 @@
 from httpx import post
 from edgedb import create_async_client
-from fastapi import FastAPI, Header, HTTPException, Request, status, UploadFile
+from fastapi import FastAPI, Header, HTTPException, status, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
@@ -15,7 +15,7 @@ if not isdir("files"):
 
 SCHALE_URL = "https://schale.misile.xyz"
 ROOT_PATH = join(getcwd(), "files")
-ORIGINS = ["null","*"]
+ORIGINS = "*"
 
 app = FastAPI()
 app.add_middleware(
@@ -42,11 +42,11 @@ def verify_jwt(jwtv: str):
   return r.text[1:-1]
 
 @app.get("/")
-async def get_gpg(request: Request, jwtv: Annotated[str, Header(alias="jwt")] = ""):
+async def get_gpg(jwtv: Annotated[str, Header(alias="jwt")] = ""):
   return await db.query_json("select User {groups} filter .userid = <str>$userid", userid=verify_jwt(jwtv))
 
 @app.get("/files")
-async def get_files(request: Request, path: Annotated[str, Header()] = "."):
+async def get_files(path: Annotated[str, Header()] = "."):
   rpath = join(ROOT_PATH, path)
   if not is_safe_path(rpath):
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
@@ -55,7 +55,7 @@ async def get_files(request: Request, path: Annotated[str, Header()] = "."):
   return [{"name": x, "size": getsize(join(ROOT_PATH, path, x)), "dir": isdir(join(ROOT_PATH, path, x))} for x in listdir(rpath)]
 
 @app.post("/uploadfile")
-async def upload_file(request: Request, file: UploadFile, jwtv: Annotated[str, Header(alias="jwt")] = "", path: Annotated[str | None, Header()] = None):
+async def upload_file(file: UploadFile, jwtv: Annotated[str, Header(alias="jwt")] = "", path: Annotated[str | None, Header()] = None):
   print(path, is_safe_path(join(ROOT_PATH, str(path))))
   if path is None or not is_safe_path(join(ROOT_PATH, path)):
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
