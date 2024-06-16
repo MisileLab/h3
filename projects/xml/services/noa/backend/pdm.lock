@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:fbd75732f41418606fcfa3c81341307be9ede24738c3dc056de129ed1beff609"
+content_hash = "sha256:3f107bfc5291d7d44df6ac778a7379de69a148c19577b0d542f54440f98ebb97"
 
 [[package]]
 name = "annotated-types"
@@ -607,20 +607,6 @@ dependencies = [
 files = [
     {file = "ruff_lsp-0.0.53-py3-none-any.whl", hash = "sha256:5ea39968510d046b3c62dc5a7e3b52e867c2de14af34a406883fe05d55bab2b0"},
     {file = "ruff_lsp-0.0.53.tar.gz", hash = "sha256:de38eccd06020350630ac3518fe04a9640c8f66908758d8a623b5ea021bf84b0"},
-]
-
-[[package]]
-name = "satellitepy"
-version = "0.1.1"
-requires_python = ">=3.12"
-summary = "fastapi util"
-groups = ["default"]
-dependencies = [
-    "fastapi==0.111.0",
-]
-files = [
-    {file = "satellitepy-0.1.1-py3-none-any.whl", hash = "sha256:8ffbd9c164cc3655a51f847d7e8fad2ffb993dd6d6a33da44bdaf111f58a28d6"},
-    {file = "satellitepy-0.1.1.tar.gz", hash = "sha256:05f0a500b36c50fa64ab5dbdbba166b6f6685d52e2524d18fba3633da8e2aaa4"},
 ]
 
 [[package]]

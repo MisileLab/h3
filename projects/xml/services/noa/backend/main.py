@@ -1,8 +1,8 @@
 from httpx import post
 from edgedb import create_async_client
 from fastapi import FastAPI, Header, HTTPException, status, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from satellitepy import RealWildCardCors
 
 from os import listdir, getcwd, mkdir
 from os.path import getsize, join, realpath, abspath, isdir
@@ -18,7 +18,13 @@ ROOT_PATH = join(getcwd(), "files")
 ORIGINS = "*"
 
 app = FastAPI()
-app.add_middleware(RealWildCardCors)
+app.add_middleware(
+  CORSMiddleware,
+  allow_origins=ORIGINS,
+  allow_credentials=True,
+  allow_methods=["*"],
+  allow_headers=["*"]
+)
 app.mount("/file", StaticFiles(directory="files"), "files")
 
 db = create_async_client()
