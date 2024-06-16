@@ -1,0 +1,32 @@
+---
+import { getCollection } from "astro:content";
+import Post from "../../components/post/post.astro";
+import { parseInt } from "@misile/satellite";
+import Subtitle from "../../components/subtitle.astro";
+import Link from "../../components/link.astro";
+
+export const getStaticPaths = async () => {
+  const collections = await getCollection("urandom");
+  return collections.map((e) => ({
+    params: {
+      slug: e.slug,
+    },
+    props: {
+      element: e,
+      data: e.data
+    }
+  }));
+}
+
+const { slug } = Astro.params;
+const { element, data } = Astro.props;
+const { Content } = await element.render();
+const mdxComponents = {
+  h2: Subtitle,
+  a: Link
+}
+---
+
+<Post id={parseInt(slug)} title={data.title} createdDate={data.createdDate}>
+  <Content components={mdxComponents} />
+</Post>
