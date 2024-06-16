@@ -1,0 +1,20 @@
+[project]
+name = "satellitepy"
+version = "0.1.1"
+description = "fastapi util"
+authors = [
+  {name = "misilelaboratory", email = "misileminecord@gmail.com"},
+]
+dependencies = [
+  "fastapi==0.111.0",
+]
+requires-python = ">=3.12"
+readme = "README.md"
+license = {text = "MisileLab License"}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm]
+distribution = true
