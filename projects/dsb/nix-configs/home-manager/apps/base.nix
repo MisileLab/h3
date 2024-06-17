@@ -107,7 +107,10 @@
           scope = "source.astro";
           injection-regex = "astro";
           file-types = ["astro"];
-          language-servers = [ "astro-ls" "tailwindcss-ls" ];
+          language-servers = ["astro-ls" "tailwindcss-ls"];
+        } {
+          name = "mdx";
+          language-servers = ["marksman" "markdown-oxide"];
         }];
       };
     };

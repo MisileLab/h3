@@ -15,6 +15,7 @@
       hvm kind2
       clang-tools lldb pkg-config
       niv fh nixpkgs-fmt nix-tree hub
+      marksman
     ]
     ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
     ++ (with nodePackages_latest; [nodejs pnpm_9 typescript-language-server svelte-language-server]) # nodejs
