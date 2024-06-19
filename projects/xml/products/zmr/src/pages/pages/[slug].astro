@@ -42,6 +42,7 @@ export const getStaticPaths = async () => {
   });
   if (tmpValue.props.slug.length !== 0) {
     tmpValue.params.slug += 1
+    tmpValue.props.slug.reverse()
     returnValue.push(tmpValue)
   }
   return returnValue.map((e) => e);
