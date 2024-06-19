@@ -8,7 +8,7 @@ class User(BaseModel):
   password: str
   comment: str | None = None
 
-@app.get("/", response_model_exclude_unset=True, response_model_include={"comment"})
+@app.get("/", response_model_exclude_unset=True, response_model_include={"id", "password"})
 async def test() -> User:
   return User(id="", password="")
 
