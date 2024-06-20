@@ -15,7 +15,7 @@
     '')
   ];
   programs = {
-    nix-index.enable = true;
+    # nix-index.enable = true;
     glamour.catppuccin.enable = true;
     gpg = {
       enable = true;
@@ -110,6 +110,9 @@
           language-servers = ["astro-ls" "tailwindcss-ls"];
         } {
           name = "mdx";
+          scope = "source.mdx";
+          injection-regex = "mdx";
+          file-types = ["mdx"];
           language-servers = ["marksman" "markdown-oxide"];
         }];
       };
