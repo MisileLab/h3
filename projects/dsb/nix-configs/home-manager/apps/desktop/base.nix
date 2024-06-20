@@ -1,6 +1,7 @@
 {c, config, pkgs, stablep, ...}:
 let
   briar-desktop = pkgs.callPackage ./briar.nix {};
+  exodus = pkgs.callPackage ./exodus.nix {};
 in
 {
   imports = [
@@ -18,7 +19,7 @@ in
       imagemagick virt-manager gimp onionshare-gui appflowy firefoxpwa xfce.thunar
       /* exodus galaxy-buds-client*/ ferium prismlauncher qemu
       /* briar-desktop */ telegram-desktop
-    ] ++ ([briar-desktop]);
+    ] ++ ([briar-desktop exodus]);
     file = {
       ".local/share/PrismLauncher/themes/catppuccin-mocha.zip".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
         url="https://github.com/catppuccin/prismlauncher";
