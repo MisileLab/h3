@@ -1,4 +1,4 @@
-{c, config, pkgs, /*unstable-pkgs,*/ ...}: 
+{c, config, pkgs, stablep, ...}: 
 {
   imports = [
     ./security.nix
@@ -44,7 +44,7 @@
     enable = true;
     portal = {
       enable = true;
-      extraPortals = with pkgs; [xdg-desktop-portal-gtk xdg-desktop-portal-wlr];
+      extraPortals = with stablep; [xdg-desktop-portal-gtk xdg-desktop-portal-wlr];
       config.common.default = ["gtk" "wlr"];
     };
   };

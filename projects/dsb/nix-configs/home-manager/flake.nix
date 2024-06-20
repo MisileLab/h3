@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs";
-    # unstablepkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    stable.url = "github:nixos/nixpkgs/nixos-unstable";
     catppuccin.url = "github:catppuccin/nix";
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -15,12 +15,12 @@
     };
   };
 
-  outputs = { nixpkgs, /*unstablepkgs,*/ home-manager, catppuccin, c, ... }:
+  outputs = { nixpkgs, stable, home-manager, catppuccin, c, ... }:
     let
       system = "x86_64-linux"; # replace with your system
       pkgs = nixpkgs.legacyPackages.${system};
       c = import ./config.nix;
-      # unstable-pkgs = unstablepkgs.legacyPackages.${system};
+      stablep = stable.legacyPackages.${system};
     in {
       homeConfigurations."misile" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
@@ -30,7 +30,7 @@
         ];
         extraSpecialArgs = {
           inherit c;
-        #   inherit unstable-pkgs;
+          inherit stablep;
         };
       };
     };
