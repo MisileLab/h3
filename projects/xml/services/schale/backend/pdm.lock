@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:8db6dcca388ef55f8354575333ea55d1abfe52a79d620e0bacd02e818c95a0df"
+content_hash = "sha256:b2e9308ff8248fe62d8badacca6d61b2674b56a4b9ae9c5fa367d0387215dc40"
 
 [[package]]
 name = "annotated-types"
@@ -119,7 +119,7 @@ files = [
 
 [[package]]
 name = "edgedb"
-version = "1.9.0"
+version = "2.0.0"
 requires_python = ">=3.8"
 summary = "EdgeDB Python driver"
 groups = ["default"]
@@ -127,7 +127,12 @@ dependencies = [
     "certifi>=2021.5.30; platform_system == \"Windows\"",
 ]
 files = [
-    {file = "edgedb-1.9.0.tar.gz", hash = "sha256:70da9f5d73f590b01b0a844a2ba9a4bff2a0e11630beeddae71592214c99ba06"},
+    {file = "edgedb-2.0.0-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:12600c6650e4576c8362e7e0150328a25a0635702bdf1267965713a13a8d98ec"},
+    {file = "edgedb-2.0.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:f8bec00e4cbd43ddfbeead078f0828adfe4bd01cb554f16cdd64f29df35c49af"},
+    {file = "edgedb-2.0.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:82a9e7d7c24104cbcaf7cf9d05884d9f305aa208db0ecfbeb1dcb78b6e852685"},
+    {file = "edgedb-2.0.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:f6c51f8999b83320974895540f51e0d48a94a59d7b53cf404f386f9045a78a57"},
+    {file = "edgedb-2.0.0-cp312-cp312-win_amd64.whl", hash = "sha256:5d1089d34fa007a36ad14a4b4e8c03404ec5df72d6e334c9b7b96fde64d6b1b0"},
+    {file = "edgedb-2.0.0.tar.gz", hash = "sha256:35a5db34a2a291e126214c124bba78e8f6e5fcf3df7497be2db23a3c9be8d995"},
 ]
 
 [[package]]
