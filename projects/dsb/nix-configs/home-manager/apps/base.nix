@@ -9,7 +9,7 @@
   ];
   home.packages = with pkgs; [
     sbctl bluez cryptsetup smartmontools borgbackup rclone pulsemixer
-    portablemc miniserve openssl
+    portablemc miniserve openssl tribler transmission
     (pkgs.writeShellScriptBin "manual" ''
       ${pkgs.glow}/bin/glow -p ~/.config/home-manager/manual.md
     '')

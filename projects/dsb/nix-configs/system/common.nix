@@ -13,6 +13,10 @@
     kernelParams = ["amdgpu.sg_display=0"];
     initrd.kernelModules = ["amdgpu"];
     supportedFilesystems = ["ntfs" "btrfs" "ext4" "mtpfs"];
+    kernel.sysctl = {
+      "net.core.rmem_max" = 4194304;
+      "net.core.wmem_max" = 1048576;
+    };
   };
 
   hardware = {
