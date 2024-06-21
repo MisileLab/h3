@@ -1,4 +1,4 @@
-{c, config, pkgs, stablep, ...}:
+{c, config, pkgs/*, stablep*/, ...}:
 let
   briar-desktop = pkgs.callPackage ./briar.nix {};
   exodus = pkgs.callPackage ./exodus.nix {};
@@ -43,13 +43,16 @@ in
       catppuccin.enable = true;
       settings = {shell = "${pkgs.fish}/bin/fish";};
     };
-    firefox.enable = true;
+    firefox = {
+      enable = true;
+      nativeMessagingHosts = with pkgs; [firefoxpwa];
+    };
   };
   xdg = {
     enable = true;
     portal = {
       enable = true;
-      extraPortals = with stablep; [xdg-desktop-portal-gtk xdg-desktop-portal-wlr];
+      extraPortals = with pkgs; [xdg-desktop-portal-gtk xdg-desktop-portal-wlr];
       config.common.default = ["gtk" "wlr"];
     };
   };

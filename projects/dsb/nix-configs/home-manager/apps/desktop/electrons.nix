@@ -2,7 +2,7 @@
 let
   # electron-waylandify
   ewl = binaryPath: ''
-    exec ${binaryPath} --enable-features=UseOzonePlatform --ozone-platform=wayland
+    exec ${binaryPath} --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime
   '';
 in
 {

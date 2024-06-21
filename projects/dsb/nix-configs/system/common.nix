@@ -16,9 +16,9 @@
   };
 
   hardware = {
-    opengl = {
+    graphics = {
       enable = true;
-      driSupport = true;
+      enable32Bit = true;
       extraPackages = with pkgs; [amdvlk mesa.drivers];
     };
     enableAllFirmware = true;
