@@ -10,7 +10,7 @@ in
     file = {
       ".config/joplin-desktop/userstyle.css".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
         url="https://github.com/catppuccin/joplin";
-        rev="45505fa68861b3a9dc3d0c051db040acdbbbfd09";
+        rev="b0a886ce7ba71b48fdbf72ad27f3446400ebcdb9";
       }}/src/mocha/userstyle.css";
     };
     packages = [
