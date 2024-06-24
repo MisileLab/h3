@@ -21,6 +21,7 @@ in
       (pkgs.writeShellScriptBin "tetrio" (ewl "${pkgs.tetrio-desktop.override{withTetrioPlus=true;}}/bin/tetrio"))
       (pkgs.writeShellScriptBin "insomnia" (ewl "${pkgs.bruno}/bin/bruno"))
       (pkgs.writeShellScriptBin "joplin" (ewl "${pkgs.joplin-desktop}/bin/joplin-desktop"))
+      (pkgs.writeShellScriptBin "signal" (ewl "${pkgs.signal-desktop}/bin/signal-desktop"))
     ];
   };
   programs = {
