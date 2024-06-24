@@ -11,6 +11,7 @@
     options = "--delete-older-than 1d";
   };
   services = {
+    gnome.gnome-keyring.enable = true;
     pcscd.enable = true;
     chrony = {
       enable = true;

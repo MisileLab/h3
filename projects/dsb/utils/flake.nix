@@ -38,6 +38,7 @@
             zigpkgs.master
             python312
             zls
+            infisical
           ];
           env = {
             LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib";

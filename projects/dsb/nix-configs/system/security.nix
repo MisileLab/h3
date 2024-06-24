@@ -18,6 +18,8 @@
     mullvad-vpn.enable = true;
   };
 
+  security.pam.services.login.enableGnomeKeyring = true;
+
   networking = {
     firewall.checkReversePath = "loose";
     wireguard.enable = true;

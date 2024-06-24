@@ -4,7 +4,7 @@
     packages = with pkgs; [
       # Development
       edgedb d2 pre-commit pijul just dive dvc solana-validator
-      snyk ghidra pwndbg bruno radicle-node
+      snyk ghidra pwndbg bruno radicle-node infisical
 
       # Language tools
       ghc cabal-install
