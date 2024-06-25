@@ -1,9 +1,15 @@
 ---
+import { parseInt } from "@misile/satellite"
+
 interface Props {
   currentID: number;
   path: string;
 }
-const {currentID, path} = Astro.props;
+let {currentID, path} = Astro.props;
+
+if (typeof currentID != "number") {
+  currentID = parseInt(currentID)
+}
 ---
 
 <div class="flex flex-row gap-x-4 w-full justify-center items-center">
