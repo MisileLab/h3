@@ -15,6 +15,6 @@ flagc = {
 }
 
 if release:
-  print(commonc[0], end="")
+  print(flagc[lang][0], end="")
 else:
-  print(commonc[1], end="")
+  print(flagc[lang][1], end="")

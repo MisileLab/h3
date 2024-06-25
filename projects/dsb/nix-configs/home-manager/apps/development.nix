@@ -4,7 +4,7 @@
     packages = with pkgs; [
       # Development
       edgedb d2 pre-commit pijul just dive dvc solana-validator
-      snyk ghidra pwndbg bruno radicle-node infisical
+      snyk ghidra pwndbg bruno radicle-node infisical pnpm_9
 
       # Language tools
       ghc cabal-install
@@ -16,9 +16,12 @@
       clang-tools lldb pkg-config
       niv fh nixpkgs-fmt nix-tree hub
       marksman
+
+      # custom file
+      (pkgs.writeShellScriptBin "bs" "infisical run --project-config-dir=/home/misile/repos/h3/projects/dsb/utils -- pdm run -p ~/repos/h3/projects/dsb/utils ~/repos/h3/projects/dsb/utils/butter-shell.py")
     ]
     ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
-    ++ (with nodePackages_latest; [nodejs pnpm_9 typescript-language-server svelte-language-server]) # nodejs
+    ++ (with nodePackages_latest; [nodejs typescript-language-server svelte-language-server]) # nodejs
     ++ (with python312Packages; [pip virtualenv keyring keyrings-cryptfile python-lsp-server]); # python thing
     file = {
       "non-nixos-things/catppuccin-ghidra".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit{
