@@ -18,7 +18,7 @@ in
       brightnessctl clipman wl-clipboard pavucontrol
       imagemagick virt-manager gimp onionshare-gui appflowy firefoxpwa xfce.thunar
       /* exodus galaxy-buds-client*/ ferium prismlauncher qemu
-      /* briar-desktop */ telegram-desktop gnome.seahorse
+      /* briar-desktop */ telegram-desktop gnome.seahorse kdePackages.filelight
     ] ++ ([briar-desktop exodus]);
     file = {
       ".local/share/PrismLauncher/themes/catppuccin-mocha.zip".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {

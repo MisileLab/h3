@@ -9,6 +9,16 @@ const urandom = defineCollection({
   })
 })
 
+const news = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    createdDate: z.number(),
+    tldr: z.string()
+  })
+})
+
 export const collection = {
-  urandom: urandom
+  urandom: urandom,
+  news: news
 }
