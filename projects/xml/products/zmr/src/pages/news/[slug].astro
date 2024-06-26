@@ -4,6 +4,8 @@ import Post from "../../components/post/post.astro";
 import { parseInt } from "@misile/satellite";
 import Subtitle from "../../components/subtitle.astro";
 import Link from "../../components/link.astro";
+import UL from "../../components/ul.astro";
+import OL from "../../components/ol.astro";
 
 export const getStaticPaths = async () => {
   const collections = await getCollection("news");
@@ -23,10 +25,12 @@ const { element, data } = Astro.props;
 const { Content } = await element.render();
 const mdxComponents = {
   h2: Subtitle,
-  a: Link
+  a: Link,
+  ul: UL,
+  ol: OL
 }
 ---
 
-<Post id={parseInt(slug)} title={data.title} createdDate={data.createdDate}>
+<Post id={parseInt(slug)} title={data.title} createdDate={data.createdDate} tldr={data.tldr}>
   <Content components={mdxComponents} />
 </Post>

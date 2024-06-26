@@ -1,7 +1,34 @@
 ---
-title: asdf
+title: Triplit (KR)
 createdDate: 1719383043
-tldr: skull
+tldr: Triplit은 Matt와 Will이 만든 풀스택 데이터베이스입니다.
 ---
 
-test
+## 기능
+
+- 서버 사이드 데이터베이스
+- 클라이언트 캐시
+- 동기화 엔진
+
+## 부가 기능
+
+- CRDT (Confilct-free Replicated Data Type)
+- SpreadSheet-like GUI (Triplit Console)
+- 일부 복사 (Partial Replication)
+
+## 사용 방법
+
+`(npm/burn/yarn) create triplit-app`
+
+## 설명
+
+Triplit은 이런 걸 가능하게 합니다.
+1. Typescript로 구조(Schema)를 만들고, **마이그레이션 파일 없이** 푸쉬(push)가 가능합니다.
+2. 리얼 타임 업데이트가 되는 최적화된 **Type-Safe**한 쿼리를 만듭니다.
+3. 이 모든 걸 여러 개의 도커 컨테이너 없이 실행할 수 있습니다.
+
+## 로드맵
+
+- 로그인 시스템
+- 파일 업로드
+- Subabase/Firebase 비슷한 경험 제공
