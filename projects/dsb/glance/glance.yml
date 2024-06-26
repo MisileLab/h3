@@ -1,0 +1,19 @@
+pages:
+  - name: Home
+    columns:
+      - size: small
+        widgets:
+          - type: calendar
+      - size: full
+        widgets:
+          - type: weather
+            location: Seoul, South Korea
+
+          - type: markets
+            markets:
+              - symbol: XMR-USD
+                name: Monero
+              - symbol: USDT-USD
+                name: Tether
+              - symbol: INTC
+                name: Intel
