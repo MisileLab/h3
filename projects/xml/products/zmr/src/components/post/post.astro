@@ -9,8 +9,9 @@ interface Props {
   title: string;
   createdDate: number;
   tldr: string;
+  path?: string;
 }
-const { id, title, createdDate, tldr } = Astro.props;
+const { id, title, createdDate, tldr, path = "posts" } = Astro.props;
 const convertedDate = dayjs
   .unix(createdDate)
   .utc()
@@ -38,7 +39,7 @@ const convertedDate = dayjs
             Contact: i@misile.xyz, <a class="text-ctp-blue" href="https://mail.misile.xyz">Subscribe mailing list</a>
           </p>
         </div>
-        <Footer currentID={id} path="posts" />
+        <Footer currentID={id} path={path} />
       </div>
     </div>
   </body>

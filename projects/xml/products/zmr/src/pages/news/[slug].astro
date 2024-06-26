@@ -31,6 +31,6 @@ const mdxComponents = {
 }
 ---
 
-<Post id={parseInt(slug)} title={data.title} createdDate={data.createdDate} tldr={data.tldr}>
+<Post id={parseInt(slug)} title={data.title} createdDate={data.createdDate} tldr={data.tldr} path="news">
   <Content components={mdxComponents} />
 </Post>
