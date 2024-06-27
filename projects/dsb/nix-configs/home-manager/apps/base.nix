@@ -109,11 +109,8 @@
           file-types = ["astro"];
           language-servers = ["astro-ls" "tailwindcss-ls"];
         } {
-          name = "mdx";
-          scope = "source.mdx";
-          injection-regex = "mdx";
-          file-types = ["mdx"];
-          language-servers = ["marksman" "markdown-oxide"];
+          name = "markdown";
+          file-types = ["md" "mdx"];
         }];
       };
     };
