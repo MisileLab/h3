@@ -25,6 +25,6 @@
     "@solidjs/router": "0.13.6",
     "axios": "1.7.2",
     "solid-icons": "1.1.0",
-    "solid-js": "1.8.17"
+    "solid-js": "1.8.18"
   }
 }
