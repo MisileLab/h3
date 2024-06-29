@@ -13,6 +13,11 @@ in
   wayland.windowManager.sway = {
     enable = true;
     extraConfigEarly = ''
+      input type:touchpad {
+        tap enabled
+        natural_scroll enabled
+      }
+
       blur enable
       blur_xray enable
       blur_radius 10
@@ -125,7 +130,7 @@ in
           format = " {}%";
           tooltip-format = "{used}G/{total}G";
           max-length = 10;
-        };
+      };
         network = {
           interface = "wlan0";
           format = "{ifname}";

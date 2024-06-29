@@ -14,14 +14,15 @@
       enable = true;
       client.enable = true;
     };
-    tailscale.enable = true;
+    tailscale = {
+      enable = true;
+      useRoutingFeatures = "client";
+    };
     mullvad-vpn.enable = true;
   };
 
-  security.pam.services.login.enableGnomeKeyring = true;
-
   networking = {
-    firewall.checkReversePath = "loose";
+    firewall.enable = false;
     wireguard.enable = true;
   };
 
