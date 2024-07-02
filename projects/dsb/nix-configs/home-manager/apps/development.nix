@@ -4,7 +4,7 @@
     packages = with pkgs; [
       # Development
       edgedb d2 pre-commit pijul just dive dvc solana-validator
-      snyk ghidra pwndbg bruno radicle-node infisical pnpm_9
+      snyk bruno radicle-node infisical pnpm_9
 
       # Language tools
       ghc cabal-install
@@ -16,6 +16,9 @@
       clang-tools lldb pkg-config
       niv fh nixpkgs-fmt nix-tree hub
       marksman
+
+      # Reverse Engineering
+      ghidra pwndbg apktool jadx
 
       # custom file
       (pkgs.writeShellScriptBin "bs" "infisical run --project-config-dir=/home/misile/repos/h3/projects/dsb/utils -- pdm run -p ~/repos/h3/projects/dsb/utils ~/repos/h3/projects/dsb/utils/butter-shell.py")
