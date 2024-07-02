@@ -25,7 +25,6 @@
       enable32Bit = true;
       extraPackages = with pkgs; [amdvlk mesa.drivers];
     };
-    opengl.enable = true;
     enableAllFirmware = true;
     enableRedistributableFirmware = true;
     firmware = with pkgs; [alsa-firmware sof-firmware];
