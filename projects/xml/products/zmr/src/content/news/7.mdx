@@ -4,83 +4,13 @@ createdDate: 1719843179
 tldr: 추천한다는 것이 꼭 당신에게 맞다는 보장은 없습니다.
 ---
 
-![nextjs hard vote](https://cdn.getmidnight.com/a1241f0fcb8d83a4c0387f234e241914/2024/05/Screen-Shot-2024-05-14-at-9.02.53-AM.png)
+아래 글은 [phind](https://www.phind.com)의 phind-70b로 요약되었습니다.
 
-내 생각엔, NextJS의 App Router의 어렵게 만드는 두 가지 큰 이유는:
-
-- 당신은 쉽게 보이는 것을 하기 위해 내부를 잘 이해해야 한다.
-- 스스로 자기의 발에 총을 쏘는 많은 방법들이 있고, 그리고 그것은 기본(선택할 수 없음)이다.
-
-더 잘 이해하기 위해, Pages Router를 살펴보겠다.
-
-## Pages Router 간단 정리
-Next.JS, Create React App의 메인 “경쟁자"에 대해 처음 알았을 때, 나는 모든 프로젝트의 CRA를, Next.js로 바꾸었고, 그 이유는:
-
-- 반복적인 코드를 덜 사용할 수 있다는 것 때문에 File-Based Router를 좋아했다.
-- dev server를 열 때마다, CRA는 http://localhost:3000 을 열었지만 (이것은 굉장히 싫었다), and Next.js는 그렇지 않았다.
-
-두 번째는 웃기게 보이겠지만, 나에게 NextJS는 **더 좋은 기본값의 리액트**였다.
-
-그리고 그것이 내가 NextJS에게 원하던 것이었다.  
-그리고 내가 NextJS가 가진 다른 기능을 찾은 후에는, 나는 다른 기능도 좋아하게 되었다.  
-API Route는 추가 인프라 없이 서버리스 함수를 가능하게 했다.  
-예를 들어, 마케팅 사이트의 "고객 지원" 같은 것을 말이다.  
-`getServerSideProps`는 페이지가 로드되기 전에 기본적인 함수들을 실행할 수 있게 했다.
-
-이것은 너무나 좋았고, 심지어 간단했다.
-
-API Route는 다른 라이브러리와 비슷하게 생겼고, 작동한다.  
-만약 Express나 Cloudflare Workers를 사용해봤다면, route handler에 바로 적응하고, 이미 아는 개념들을 사용할 수 있다.
-`getServerSideProps`는 조금 달랐지만, 어떻게 보내고, 결과가 어떻게 나오는지 안다면, 더 이상 어려운 것은 없었다.
-
-## App Router 출시
-The Next 13은 App Router를 출시했고, 많은 기능을 추가했다.  
-그 기능들은:
-- React 컴포넌트를 서버에서 렌더링할 수 있는 서버 컴포넌트를 가지고, 클라이언트에 보내는 데이터를 줄일 수 있음
-- UI의 일정 부분을 여러 개의 Route에서 사용하고, 다시 렌더링할 필요가 없는 Layout
-
-캐싱은... 좀 더 정교해졌다.
-
-이런 기능은 모두 좋아보였지만, 가장 큰 문제는 **복잡해짐**이었다.
-
-## 프레임워크가 할 것이라고 생각하는 것을 하지 않을 때
-
-개발자의 흔한 경험 중 하나는 "왜 안되지?"라고 소리 지르며, 벽에 머리를 박는 것 같은 느낌이 드는 것이다.  
-모두 그 경험을 해봤고, 항상 안 좋았다.  
-나로써는, 만약 내 코드가 문제가 아니라, 프레임워크가 해야 할 것을 하지 않는 경우, 더 고통스럽다.  
-나는 더 이상 소리지르지 않고, "왜 안되지?"라고 하지 않는다, 대신 나는 "왜.. 이렇게 되지?"라고 한다.  
-App Router는, 불행스럽게, 저 경험으로 가득차있다.  
-NextJS에 대한 나의 질문을 한번 보자: 나는 서버 컴포넌트에서 단지 URL을 갖고 싶을 뿐입니다.  
-그리고 이것에 대한 답은 유명한 Github 이슈에 있었다, 그것의 내용은 다음과 같았다.
-```
-우리가 한 발짝 물러나서 본다면, "왜 내가 pathname이나 현재 URL에 접근할 수 없나요?"는 다른 큰 질문 "왜 내가 원본 요청이나 결과에 접근할 수 없나요?"에 대한 작은 부분입니다.
-NextJS는 결과를 route 부분들로 나누는 정적이면서 동적인 프레임워크입니다.
-요청과 결과를 공개하는 것은 좋지만, 이것들은 때때로 동적이고, 모든 route에 영향을 끼칩니다.
-이것은 현재(캐싱과 스트리밍)과 미래(미리 부분 렌더링) 최적화에 제한을 둡니다.
-이것을 해결하기 위해, 우리는 리퀘스트를 공개하고, 그것을 어디서 보는지 추적할 수 있습니다.(예: 프록시 사용)
-하지만, 이것은 당신이 코드에서 어떻게 사용하는 지를 보기 어렵게 만들것이고, 개발자를 의도치 않게 동적 렌더링을 선택하게 만들 수 있습니다.
-대신에, 우리는 Web Request API에서 특정 메서드들을 노출시켰으며, 각각을 다른 곳(컴포넌트, 서버 액션, 라우트 핸들러, 미들웨어)에서의 사용을 위해 통합하고 최적화했습니다.
-이 API들은 개발자가 의도적으로 프레임워크의 특징(동적 렌더링 등)을 넣을 수 있게 만들고, NextJS가 최대한 쉽게 사용을 추적하고, 세분화하며, 최적화할 수 있게 만듭니다.
-예를 들어, 헤더를 사용할 때, 프레임워크는 당신이 동적 렌더링 페이지에서 사용할 것을 알게됩니다. 아니면, 쿠키를 사용할 때, React 렌더링 과정에서 쿠키를 읽을 수 있지만, 쓸 수 있는 환경(예: Server Actions와 Route Handlers)에서만 쓸 수 있게 만듭니다. 왜냐하면 스트리밍이 시작된 후 쿠키는 바뀔 수 없기 때문입니다.
-```
-For what it’s worth, this response is incredible. It’s well written, it helps me understand a lot of the underlying issues, and it gives me insight into the tradeoffs associated with different approaches that I absolutely didn’t think about.
-
-That being said, if you are a developer and all you are trying to do is get the URL in a Server Component, you probably read this and left with 5 more things to Google before realizing you probably have to restructure your code.
-
-This post summarizes my feelings about it:
-
-![some screenshot](https://cdn.getmidnight.com/a1241f0fcb8d83a4c0387f234e241914/2024/05/Screen-Shot-2024-05-14-at-1.42.51-AM.png)
-
-It’s not that it’s necessarily incorrect - it’s unexpected.
-
-That original post also mentioned a few other subtleties. One common footgun is in how cookies are handled. You can call cookies().set("key", "value") anywhere and it will type-check, but in some cases it will fail at runtime.
-
-Compare these to the “old” way of doing things where you got a big request object and could do anything you wanted on the server, and it’s fair to say that there’s been a jump in complexity.
-
-I also need to point out that the “on-by-default” aggressive caching is a rough experience. I’d argue that way more people expect to opt-in to caching rather than dig through a lot of documentation to figure out how to opt-out.
-
-I’m sure other companies had similar issues to us, but at PropelAuth we often got bug reports that weren’t bugs but amounted to “You thought you made an API call, but you didn’t, and you are just reading a cached result.”
-
-And all of this begs the question, who are these features and optimizations for?
+- App Router의 복잡성: 기본적인 작업을 수행하기 위해 내부 구조를 깊이 이해해야 하며, 옵트아웃 대신 옵트인 방식으로 자주 실수를 할 수 있는 상황이 많습니다.
+- Pages Router의 장점: 파일 기반 라우팅과 개발 서버 실행 시 자동으로 http://localhost:3000이 열리지 않는 점 등으로 인해 초기에는 Pages Router의 단순성과 유용성을 높이 평가했습니다. API 라우트와 getServerSideProps 같은 기능들은 서버 측 작업에 매우 직관적이고 유익했습니다.
+- 공식 권장 사항 대 실제: Next.js는 공식적으로 App Router 사용을 권장하지만, React 공식 문서는 아직 Bleeding-edge 상태인 App Router보다는 Pages Router를 추천합니다. 이는 App Router가 여전히 베타 버전 수준이며, 일부 기능들이 어려워진 점을 반영한 것입니다.
+- 프레임워크의 성장과 복잡성: 프레임워크가 발전하면서 고객의 요구사항을 충족시키기 위해 필연적으로 복잡해집니다. Andrew Israel은 모든 사용자가 필요하지 않은 복잡성을 다루지 않도록 하는 것이 중요하다고 주장합니다.
+- App Router 릴리스: Next 13에서 도입된 App Router는 많은 새로운 기능을 추가했지만, 그 과정에서 단순성이 상당히 손실되었습니다.
+- 일체형 제품의 한계: 특정 기능들은 일부 사람들에게 중요할 수 있지만, 다른 사람들에게는 그렇지 않을 수 있습니다. 예를 들어, 전자상거래 플랫폼을 구축하는 경우에는 이러한 기능들이 유용할 수 있지만, SaaS 애플리케이션의 대시보드를 구축하는 경우에는 이러한 복잡성이 부담될 수 있습니다.
 
 [출처](https://www.propelauth.com/post/nextjs-challenges)
