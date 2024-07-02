@@ -17,8 +17,10 @@ output = argv[2]
 print(url, output)
 
 ua = UserAgent()
+ra = ua.random
+print(f"agent: {ra}")
 
-with stream("GET", url, headers={"User-Agent": ua.random}) as r:
+with stream("GET", url, headers={"User-Agent": ra}) as r:
   r.raise_for_status()
   print(r.headers.get("content-length"))
   with tqdm(total=int(r.headers.get("content-length", 0)), unit="B", unit_scale=True) as progress:
