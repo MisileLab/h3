@@ -1,25 +1,22 @@
 {pkgs, ...}: 
 let
   bvtop = pkgs.makeDesktopItem {
-    name = "bvtop";
-    desktopName = "bvtop";
+    name = "abtop";
+    desktopName = "abtop";
     icon = "btop";
-    exec = "${pkgs.alacritty}/bin/alacritty -e zellij --layout /home/misile/non-nixos-things/bvtop.kdl";
+    exec = "${pkgs.alacritty}/bin/alacritty -e zellij --layout /home/misile/non-nixos-things/abtop.kdl";
   };
 in
 {
   home = {
     packages = with pkgs; [
-      bvtop hdparm hyperfine nvtopPackages.amd hydra-check usbutils
+      bvtop hdparm hyperfine hydra-check usbutils
     ];
     file = {
-      "non-nixos-things/bvtop.kdl".text = "
+      "non-nixos-things/abtop.kdl".text = "
         layout {
           tab {
             pane command=\"btop\"
-          }
-          tab {
-            pane command=\"nvtop\"
           }
           tab {
             pane command=\"auto-cpufreq\" {
