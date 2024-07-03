@@ -4,7 +4,16 @@
     packages = with pkgs; [
       # Development
       edgedb d2 pre-commit pijul just dive dvc solana-validator
-      snyk ghidra pwndbg bruno radicle-node infisical pnpm_9
+      # https://github.com/NixOS/nixpkgs/pull/323862
+      snyk ghidra pwndbg bruno (radicle-node.overrideAttrs (f: _: {
+        checkFlags = [
+          "--skip=service::message::tests::test_node_announcement_validate"
+          "--skip=tests::test_announcement_relay"
+          "--skip=tests::e2e::test_connection_crossing"
+          "--skip=rad_clone_partial_fail"
+        ];
+      })
+      ) infisical pnpm_9
 
       # Language tools
       ghc cabal-install
