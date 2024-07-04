@@ -1,9 +1,9 @@
 {config, pkgs, ...}:
 let
   # electron-waylandify
-  ewl = binaryPath: ''
+  ewl = name: binaryPath: (pkgs.writeShellScriptBin "${name}" ''
     exec ${binaryPath} --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime
-  '';
+  '');
 in
 {
   home = {
@@ -14,14 +14,14 @@ in
       }}/src/mocha/userstyle.css";
     };
     packages = [
-      (pkgs.writeShellScriptBin "figma" (ewl "${pkgs.figma-linux}/bin/figma-linux"))
-      (pkgs.writeShellScriptBin "discord" (ewl "${pkgs.vesktop}/bin/vesktop"))
-      (pkgs.writeShellScriptBin "vscode" (ewl "${pkgs.vscodium}/bin/codium"))
-      (pkgs.writeShellScriptBin "gdb" "${pkgs.pwndbg}/bin/pwndbg")
-      (pkgs.writeShellScriptBin "tetrio" (ewl "${pkgs.tetrio-desktop.override{withTetrioPlus=true;}}/bin/tetrio"))
-      (pkgs.writeShellScriptBin "insomnia" (ewl "${pkgs.bruno}/bin/bruno"))
-      (pkgs.writeShellScriptBin "joplin" (ewl "${pkgs.joplin-desktop}/bin/joplin-desktop"))
-      (pkgs.writeShellScriptBin "signal" (ewl "${pkgs.signal-desktop}/bin/signal-desktop"))
+      (ewl "figma" "${pkgs.figma-linux}/bin/figma-linux")
+      (ewl "discord" "${pkgs.vesktop}/bin/vesktop")
+      (ewl "vscode" "${pkgs.vscodium}/bin/codium")
+      (ewl "tetrio" "${pkgs.tetrio-desktop.override{withTetrioPlus=true;}}/bin/tetrio")
+      (ewl "insomnia" "${pkgs.bruno}/bin/bruno")
+      (ewl "joplin" "${pkgs.joplin-desktop}/bin/joplin-desktop")
+      (ewl "signal" "${pkgs.signal-desktop}/bin/signal-desktop")
+      (ewl "element" "${pkgs.element-desktop}/bin/element-desktop")
     ];
   };
   programs = {

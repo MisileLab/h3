@@ -17,6 +17,7 @@
         ];
       })
       ) infisical pnpm_9
+      (pkgs.writeShellScriptBin "gdb" "${pkgs.pwndbg}/bin/pwndbg")
 
       # Language tools
       ghc cabal-install
