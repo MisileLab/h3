@@ -19,7 +19,7 @@ in
 
   catppuccin.flavor = "mocha";
   nixpkgs.config.allowUnfree = true;
-  gtk = {enable = true;catppuccin.enable = true;};
+  gtk.enable = true;
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
