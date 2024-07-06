@@ -8,7 +8,8 @@
       # Development
       edgedb d2 pre-commit pijul just dive dvc solana-validator
       # https://github.com/NixOS/nixpkgs/pull/323862
-      snyk ghidra pwndbg bruno (radicle-node.overrideAttrs (f: _: {
+      # https://github.com/NixOS/nixpkgs/pull/311156
+      snyk ghidra /*pwndbg*/ bruno (radicle-node.overrideAttrs (f: _: {
         checkFlags = [
           "--skip=service::message::tests::test_node_announcement_validate"
           "--skip=tests::test_announcement_relay"
@@ -17,7 +18,7 @@
         ];
       })
       ) infisical pnpm_9
-      (pkgs.writeShellScriptBin "gdb" "${pkgs.pwndbg}/bin/pwndbg")
+      #(pkgs.writeShellScriptBin "gdb" "${pkgs.pwndbg}/bin/pwndbg")
 
       # Language tools
       ghc cabal-install
