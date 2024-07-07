@@ -1,4 +1,4 @@
-{c, config, pkgs/*, stablep*/, ...}:
+{c, config, pkgs, stablep, ...}:
 let
   briar-desktop = pkgs.callPackage ./briar.nix {};
   exodus = pkgs.callPackage ./exodus.nix {};
@@ -16,11 +16,10 @@ in
     # https://github.com/NixOS/nixpkgs/issues/306670
     packages = with pkgs; [
       brightnessctl clipman wl-clipboard pavucontrol
-      imagemagick virt-manager gimp onionshare-gui appflowy firefoxpwa xfce.thunar
-      /* exodus galaxy-buds-client*/ ferium prismlauncher qemu
-      /* briar-desktop */ telegram-desktop seahorse kdePackages.filelight
-      element-desktop
-    ] ++ ([briar-desktop exodus]);
+      imagemagick virt-manager gimp appflowy firefoxpwa xfce.thunar
+      /* galaxy-buds-client */ ferium prismlauncher qemu
+      seahorse kdePackages.filelight element-desktop
+    ] ++ ([briar-desktop exodus]) ++ (with stablep; [onionshare-gui telegram-desktop]);
     file = {
       ".local/share/PrismLauncher/themes/catppuccin-mocha.zip".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
         url="https://github.com/catppuccin/prismlauncher";

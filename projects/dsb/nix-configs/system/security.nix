@@ -5,7 +5,8 @@
   ];
 
   services = {
-    fprintd.enable = true;
+    # https://github.com/NixOS/nixpkgs/pull/325196
+    #fprintd.enable = true;
     clamav = {
       daemon.enable = true;
       updater.enable = true;
@@ -44,5 +45,5 @@
     };
   };
 
-  environment.systemPackages = with pkgs; [fprintd];
+  #environment.systemPackages = with pkgs; [fprintd];
 }
