@@ -1,4 +1,4 @@
-{config, pkgs, stablep, ...}:
+{config, pkgs, ...}:
 let
   # electron-waylandify
   ewl = name: binaryPath: (pkgs.writeShellScriptBin "${name}" ''
