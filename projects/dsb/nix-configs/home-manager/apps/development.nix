@@ -21,6 +21,7 @@
       clang-tools lldb pkg-config
       niv fh nixpkgs-fmt nix-tree hub
       marksman
+      packwiz
 
       # custom file
       (pkgs.writeShellScriptBin "bs" "infisical run --project-config-dir=/home/misile/repos/h3/projects/dsb/utils -- pdm run -p ~/repos/h3/projects/dsb/utils ~/repos/h3/projects/dsb/utils/butter-shell.py")
