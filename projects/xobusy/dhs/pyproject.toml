@@ -15,7 +15,7 @@ dependencies = [
   "loguru==0.7.2",
   "selenium==4.22.0",
 ]
-requires-python = "==3.12.3"
+requires-python = "==3.12.4"
 readme = "README.md"
 license = {text = "MisileLab License"}
 

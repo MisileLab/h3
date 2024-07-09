@@ -4,8 +4,8 @@
 [metadata]
 groups = ["default", "dev"]
 strategy = ["cross_platform", "inherit_metadata"]
-lock_version = "4.4.2"
-content_hash = "sha256:fd9f2ff3e25ccc944d3ca69b6b0a43dff65e5c764b5464ace5e5c9c51d52fb4b"
+lock_version = "4.4.1"
+content_hash = "sha256:51ec6a1d35283ee92fc448f98eb85cb97f514ffdf043908f41961ceddc3ea20a"
 
 [[package]]
 name = "baekjoonapi"
