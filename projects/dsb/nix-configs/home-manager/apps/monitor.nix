@@ -1,6 +1,6 @@
 {pkgs, stablep, ...}: 
 let
-  bvtop = pkgs.makeDesktopItem {
+  abtop = pkgs.makeDesktopItem {
     name = "abtop";
     desktopName = "abtop";
     icon = "btop";
@@ -10,7 +10,7 @@ in
 {
   home = {
     packages = with pkgs; [
-      bvtop hdparm hyperfine hydra-check usbutils
+      abtop hdparm hyperfine hydra-check usbutils
     ];
     file = {
       "non-nixos-things/abtop.kdl".text = "

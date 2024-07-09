@@ -32,7 +32,9 @@
       nssmdns4 = true;
       openFirewall = true;
     };
-    auto-cpufreq.enable = true;
+    # https://github.com/NixOS/nixpkgs/issues/325514
+    # auto-cpufreq.enable = true;
+    tlp.enable = true;
     upower.enable = true;
   };
 

@@ -1,4 +1,4 @@
-{c, config, pkgs, ...}:
+{c, config, pkgs, stablep, ...}:
 let
   briar-desktop = pkgs.callPackage ./briar.nix {};
   exodus = pkgs.callPackage ./exodus.nix {};
@@ -17,11 +17,11 @@ in
     # https://github.com/NixOS/nixpkgs/issues/325498
     packages = with pkgs; [
       brightnessctl clipman wl-clipboard pavucontrol
-      imagemagick virt-manager gimp appflowy firefoxpwa xfce.thunar
+      imagemagick virt-manager gimp appflowy xfce.thunar
       /* galaxy-buds-client */ ferium prismlauncher qemu
       seahorse kdePackages.filelight element-desktop telegram-desktop
       # onionshare-gui
-    ] ++ ([briar-desktop exodus]);
+    ] ++ ([briar-desktop exodus]) ++ (with stablep; [firefoxpwa]);
     file = {
       ".local/share/PrismLauncher/themes/catppuccin-mocha.zip".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
         url="https://github.com/catppuccin/prismlauncher";
@@ -47,7 +47,8 @@ in
     };
     firefox = {
       enable = true;
-      nativeMessagingHosts = with pkgs; [firefoxpwa];
+      nativeMessagingHosts = with stablep; [firefoxpwa];
+      package = stablep.firefox;
     };
   };
   xdg = {
