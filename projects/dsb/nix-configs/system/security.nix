@@ -5,9 +5,8 @@
   ];
 
   services = {
-    # https://github.com/NixOS/nixpkgs/pull/325196
     # https://github.com/NixOS/nixpkgs/issues/325510
-    #fprintd.enable = true;
+    fprintd.enable = true;
     # clamav = {
     #   daemon.enable = true;
     #   updater.enable = true;

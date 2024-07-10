@@ -18,7 +18,7 @@ in
     packages = with pkgs; [
       brightnessctl clipman wl-clipboard pavucontrol
       imagemagick virt-manager gimp appflowy xfce.thunar
-      /* galaxy-buds-client */ ferium prismlauncher qemu
+      /* galaxy-buds-client */ ferium (prismlauncher.override{withWaylandGLFW=true;}) qemu
       seahorse kdePackages.filelight element-desktop telegram-desktop
       # onionshare-gui
     ] ++ ([briar-desktop exodus]) ++ (with stablep; [firefoxpwa]);
