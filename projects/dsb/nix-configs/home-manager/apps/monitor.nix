@@ -1,4 +1,4 @@
-{pkgs, stablep, ...}: 
+{pkgs, ...}: 
 let
   abtop = pkgs.makeDesktopItem {
     name = "abtop";
@@ -30,7 +30,7 @@ in
   programs = {
     btop = {
       enable = true;
-      package = stablep.btop.override {rocmSupport=true;};
+      package = pkgs.btop.override {rocmSupport=true;};
       catppuccin.enable = true;
     };
   };
