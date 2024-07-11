@@ -20,6 +20,7 @@ in
       imagemagick virt-manager gimp appflowy xfce.thunar
       /* galaxy-buds-client */ ferium (prismlauncher.override{withWaylandGLFW=true;}) qemu
       seahorse kdePackages.filelight element-desktop telegram-desktop firefoxpwa
+      zed-editor
       # onionshare-gui
     ] ++ ([briar-desktop exodus]);
     file = {
