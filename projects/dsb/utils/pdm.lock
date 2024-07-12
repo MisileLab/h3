@@ -4,8 +4,8 @@
 [metadata]
 groups = ["default", "dev"]
 strategy = ["cross_platform", "inherit_metadata"]
-lock_version = "4.4.1"
-content_hash = "sha256:e85058f32b36a7e9a4e554254504da0db87acc2cf63c135f86787c75f7a60438"
+lock_version = "4.4.2"
+content_hash = "sha256:bf9559ecda75e902dcce431b6d5ff3084594d527b952c38e1745cac21aa8632d"
 
 [[package]]
 name = "ansicon"
@@ -158,7 +158,7 @@ files = [
 
 [[package]]
 name = "gradio-client"
-version = "1.0.2"
+version = "1.1.0"
 requires_python = ">=3.8"
 summary = "Python library for easily interacting with trained machine learning models"
 groups = ["default"]
@@ -171,8 +171,8 @@ dependencies = [
     "websockets<12.0,>=10.0",
 ]
 files = [
-    {file = "gradio_client-1.0.2-py3-none-any.whl", hash = "sha256:f0af3fc39e7459b0703e6b3e9d59b6f7db0f2353b3f5e162a01d94d3bfcd5d97"},
-    {file = "gradio_client-1.0.2.tar.gz", hash = "sha256:3c88136ff64eb9747342efdc706f378ce863396750b463f27e5e114e47052b68"},
+    {file = "gradio_client-1.1.0-py3-none-any.whl", hash = "sha256:5f117fa1163f5673f7f45a226919503a3c1747ee4bbfc6002c6a69386e6e5a57"},
+    {file = "gradio_client-1.1.0.tar.gz", hash = "sha256:823ef2b9ab9b869ffebc51c994efec1f58132795239fe1090ef7dd9cf474d1e4"},
 ]
 
 [[package]]
