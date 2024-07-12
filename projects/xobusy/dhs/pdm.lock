@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:c2913521b771df63dfe4aa9bee653a0c83830c56fbb317b7a5ff38bd2f0b9404"
+content_hash = "sha256:9b500b7de1c3998d6bef86e81530b5db8057b5a8ed4bd2fff349dcfb8753bd96"
 
 [[package]]
 name = "anyio"
@@ -555,6 +555,18 @@ dependencies = [
 files = [
     {file = "plumbum-1.8.3-py3-none-any.whl", hash = "sha256:8595d36dae2472587d6f59789c8d7b26250f45f6f6ed75ccb378de59ee7b9cf9"},
     {file = "plumbum-1.8.3.tar.gz", hash = "sha256:6092c85ab970b7a7a9d5d85c75200bc93be82b33c9bdf640ffa87d2d7c8709f0"},
+]
+
+[[package]]
+name = "promise"
+version = "2.3"
+summary = "Promises/A+ implementation for Python"
+groups = ["default"]
+dependencies = [
+    "six",
+]
+files = [
+    {file = "promise-2.3.tar.gz", hash = "sha256:dfd18337c523ba4b6a58801c164c1904a9d4d1b1747c7d5dbf45b693a49d93d0"},
 ]
 
 [[package]]

@@ -6,7 +6,7 @@
       yubico = {
         enable = true;
         mode = "challenge-response";
-        id = [ "26887030" "26906254" ];
+        id = [ "26906254" ];
       };
       services = {
         swaylock.text = ''
