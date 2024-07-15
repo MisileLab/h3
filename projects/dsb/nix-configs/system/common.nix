@@ -23,8 +23,9 @@
     graphics = {
       enable = true;
       enable32Bit = true;
-      extraPackages = with pkgs; [amdvlk mesa.drivers];
+      extraPackages = with pkgs; [mesa.drivers];
     };
+    amdgpu.amdvlk.enable = true;
     enableAllFirmware = true;
     enableRedistributableFirmware = true;
     firmware = with pkgs; [alsa-firmware sof-firmware];
@@ -64,7 +65,7 @@
     experimental-features = ["nix-command" "flakes"];
     trusted-users = ["root" "misile"];
   };
-  sound.enable = false;
+  programs.appimage.binfmt = true;
 
   system.stateVersion = "24.11";
 }
