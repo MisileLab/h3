@@ -50,6 +50,7 @@ in
     firefox = {
       enable = true;
       nativeMessagingHosts = with pkgs; [firefoxpwa];
+      package = pkgs.librewolf;
     };
   };
   xdg = {
