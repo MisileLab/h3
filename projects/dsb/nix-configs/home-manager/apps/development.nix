@@ -10,7 +10,7 @@
       # Development
       edgedb d2 pre-commit pijul just dive dvc solana-validator
       # https://github.com/NixOS/nixpkgs/pull/311156
-      snyk /*ghidra*/ /*pwndbg*/ bruno radicle-node infisical pnpm_9
+      snyk /*ghidra*/ /*pwndbg*/ radicle-node infisical pnpm_9
       #(pkgs.writeShellScriptBin "gdb" "${pkgs.pwndbg}/bin/pwndbg")
 
       # Language tools

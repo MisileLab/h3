@@ -1,4 +1,4 @@
-{config, pkgs, ...}:
+{config, pkgs, stablep, ...}:
 let
   # electron-waylandify
   ewl = name: binaryPath: (pkgs.writeShellScriptBin "${name}" ''
@@ -14,21 +14,24 @@ in
       }}/src/mocha/userstyle.css";
     };
     packages = [
-      (ewl "figma" "${pkgs.figma-linux}/bin/figma-linux")
-      (ewl "discord" "${pkgs.vesktop}/bin/vesktop")
-      (ewl "vscode" "${pkgs.vscodium}/bin/codium")
-      (ewl "tetrio" "${pkgs.tetrio-desktop.override{withTetrioPlus=true;}}/bin/tetrio")
-      (ewl "insomnia" "${pkgs.bruno}/bin/bruno")
-      (ewl "joplin" "${pkgs.joplin-desktop}/bin/joplin-desktop")
-      (ewl "signal" "${pkgs.signal-desktop}/bin/signal-desktop")
-      (ewl "element" "${pkgs.element-desktop}/bin/element-desktop")
+      (ewl "figma" "${stablep.figma-linux}/bin/figma-linux")
+      (ewl "discord" "${stablep.vesktop}/bin/vesktop")
+      (ewl "vscode" "${stablep.vscodium}/bin/codium")
+      (ewl "tetrio" "${stablep.tetrio-desktop.override{withTetrioPlus=true;}}/bin/tetrio")
+      (ewl "insomnia" "${stablep.bruno}/bin/bruno")
+      # (ewl "joplin" "${stablep.joplin-desktop}/bin/joplin-desktop")
+      (ewl "signal" "${stablep.signal-desktop}/bin/signal-desktop")
+      (ewl "element" "${stablep.element-desktop}/bin/element-desktop")
     ];
   };
   programs = {
-    joplin-desktop.enable=true;
+    # joplin-desktop = {
+    #   enable = true;
+    #   package = stablep.joplin;
+    # };
     vscode = {
       enable = true;
-      package = pkgs.vscodium;
+      package = stablep.vscodium;
     };
   };
 }

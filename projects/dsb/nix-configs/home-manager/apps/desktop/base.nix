@@ -20,7 +20,7 @@ in
       brightnessctl clipman wl-clipboard pavucontrol
       imagemagick virt-manager gimp appflowy xfce.thunar
       /* galaxy-buds-client */ ferium (prismlauncher.override{withWaylandGLFW=true;}) qemu
-      seahorse kdePackages.filelight element-desktop /*telegram-desktop*/ firefoxpwa
+      seahorse kdePackages.filelight /*telegram-desktop*/ firefoxpwa
       zed-editor jetbrains.idea-community-bin
       # onionshare-gui
     ] ++ ([briar-desktop exodus]);
