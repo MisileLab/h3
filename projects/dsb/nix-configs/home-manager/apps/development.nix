@@ -4,19 +4,17 @@
     sessionVariables = {
       LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib";
     };
-    # ruff cache miss https
-    # ghidra cache miss https
     packages = with pkgs; [
       # Development
       edgedb d2 pre-commit pijul just dive dvc solana-validator
       # https://github.com/NixOS/nixpkgs/pull/311156
-      snyk /*ghidra*/ /*pwndbg*/ radicle-node infisical pnpm_9
+      snyk ghidra /*pwndbg*/ radicle-node infisical pnpm_9
       #(pkgs.writeShellScriptBin "gdb" "${pkgs.pwndbg}/bin/pwndbg")
 
       # Language tools
       ghc cabal-install
       rustup cargo-update
-      python312Full micromamba pdm mypy /*ruff-lsp*/
+      python312Full micromamba pdm mypy ruff-lsp
       nasm
       tailwindcss-language-server volta deno
       hvm kind2

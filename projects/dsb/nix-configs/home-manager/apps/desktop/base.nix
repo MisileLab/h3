@@ -14,15 +14,13 @@ in
   home = {
     # https://github.com/NixOS/nixpkgs/issues/313548
     # https://github.com/NixOS/nixpkgs/issues/306670
-    # https://github.com/NixOS/nixpkgs/issues/325498
-    # telegram desktop doesnt have cache (https for rg)
     packages = with pkgs; [
       brightnessctl clipman wl-clipboard pavucontrol
       imagemagick virt-manager gimp appflowy xfce.thunar
       /* galaxy-buds-client */ ferium (prismlauncher.override{withWaylandGLFW=true;}) qemu
-      seahorse kdePackages.filelight /*telegram-desktop*/ firefoxpwa
+      seahorse kdePackages.filelight telegram-desktop firefoxpwa
       zed-editor jetbrains.idea-community-bin
-      # onionshare-gui
+      onionshare-gui
     ] ++ ([briar-desktop exodus]);
     file = {
       ".local/share/PrismLauncher/themes/catppuccin-mocha.zip".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {

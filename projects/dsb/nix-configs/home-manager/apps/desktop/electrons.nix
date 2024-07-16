@@ -19,16 +19,16 @@ in
       (ewl "vscode" "${stablep.vscodium}/bin/codium")
       (ewl "tetrio" "${stablep.tetrio-desktop.override{withTetrioPlus=true;}}/bin/tetrio")
       (ewl "insomnia" "${stablep.bruno}/bin/bruno")
-      # (ewl "joplin" "${stablep.joplin-desktop}/bin/joplin-desktop")
+      (ewl "joplin" "${stablep.joplin-desktop}/bin/joplin-desktop")
       (ewl "signal" "${stablep.signal-desktop}/bin/signal-desktop")
       (ewl "element" "${stablep.element-desktop}/bin/element-desktop")
     ];
   };
   programs = {
-    # joplin-desktop = {
-    #   enable = true;
-    #   package = stablep.joplin;
-    # };
+    joplin-desktop = {
+      enable = true;
+      package = stablep.joplin-desktop;
+    };
     vscode = {
       enable = true;
       package = stablep.vscodium;
