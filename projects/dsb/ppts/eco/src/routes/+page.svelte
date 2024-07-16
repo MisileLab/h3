@@ -1,112 +1,98 @@
 <script lang="ts">
-	import { Presentation, Slide, Code, Transition, Action } from '@animotion/core'
-	import { tween } from '@animotion/motion'
+	import { Presentation, Slide, Code, Action } from '@animotion/core'
 
-	let text: HTMLParagraphElement
 	let code: Code
-	let circle = tween({ x: 0, y: 80, r: 80, fill: '#00ffff' })
-	let items = $state([1, 2, 3, 4])
-	let layout = $state('flex gap-4')
 </script>
 
-<Presentation options={{ history: true, transition: 'slide', controls: true, progress: true }}>
-	<Slide on:out={() => circle.reset()} class="h-full place-content-center place-items-center">
-		<Transition>
-			<p bind:this={text} class="text-8xl font-bold drop-shadow-sm">🪄 Animotion</p>
-		</Transition>
+<link href="https://cdn.jsdelivr.net/gh/sun-typeface/SUIT@2/fonts/variable/woff2/SUIT-Variable.css" rel="stylesheet">
 
-		<Transition do={() => text.classList.replace('text-8xl', 'text-6xl')} class="mt-16">
-			<Code
-				bind:this={code}
-				lang="ts"
-				theme="poimandres"
-				code={`
-					async function animate() {
-						// ...
-					}
-				`}
-				options={{ duration: 600, stagger: 0.3, containerStyle: false }}
-			/>
-		</Transition>
+<style>
+  * {font-family: 'SUIT Variable', sans-serif;}
+</style>
 
-		<Transition class="mt-16">
-			<svg width="560" height={$circle.r * 2} viewBox="-80 0 560 {$circle.r * 2}">
-				<circle cx={$circle.x} cy={$circle.y} r={$circle.r} fill={$circle.fill} />
-				<text
-					x={$circle.x}
-					y={$circle.y}
-					font-size={$circle.r * 0.4}
-					font-family="JetBrains Mono"
-					text-anchor="middle"
-					dominant-baseline="middle"
-				>
-					{$circle.x.toFixed(0)}
-				</text>
-			</svg>
-		</Transition>
-
-		<Action
-			do={async () => {
-				await code.update`
-					async function animate() {
-						await circle.to({ x: 400, fill: '#ffff00' })
-					}
-				`
-				await code.selectLines`2`
-				await circle.to({ x: 400, fill: '#ffff00' })
-			}}
-		/>
-
-		<Action
-			do={async () => {
-				await code.update`
-					async function animate() {
-						await circle.to({ x: 400, fill: '#ffff00' })
-						await circle.to({ x: 0, fill: '#00ffff' })
-					}
-				`
-				await code.selectLines`3`
-				await circle.to({ x: 0, fill: '#00ffff' })
-			}}
-		/>
-
-		<Action do={() => code.selectLines`*`} />
-	</Slide>
-
-	<Slide class="h-full place-content-center place-items-center">
-		<Transition>
-			<p class="text-6xl font-bold drop-shadow-sm">🪄 Layout Animations</p>
-		</Transition>
-
-		<Transition class="mt-16">
-			<div class={layout}>
-				{#each items as item (item)}
-					<Transition
-						class="grid h-[180px] w-[180px] place-content-center rounded-2xl border-t-2 border-white bg-gray-200 text-6xl font-semibold text-black shadow-2xl"
-						enter="rotate"
-						visible
-					>
-						{item}
-					</Transition>
-				{/each}
-			</div>
-		</Transition>
-
-		<Transition do={() => (layout = 'grid grid-cols-2 grid-rows-2 gap-4')} />
-		<Transition do={() => (items = [4, 3, 2, 1])} />
-		<Transition do={() => (items = [2, 1, 4, 3])} />
-		<Transition do={() => (items = [4, 3, 2, 1])} />
-		<Transition do={() => (items = [1, 2, 3, 4])} />
-		<Transition do={() => (layout = 'flex gap-4')} />
-	</Slide>
-
-	<Slide class="h-full place-content-center place-items-center">
-		<p class="mt-8 text-6xl font-bold">🪄 Animotion</p>
-		<p class="mt-16 text-3xl">
-			Learn more by reading the
-			<a class="underline" href="https://animotion.pages.dev/docs" target="_blank">
-				Animotion docs
-			</a>.
-		</p>
-	</Slide>
+<Presentation options={{ history: true, transition: 'fade', controls: true, progress: true }}>
+  <Slide>
+    <section class="flex-col justify-center w-full h-full">
+      <div class="flex w-screen h-full justify-center items-center gap-10">
+        <img src="ecoProgressBefore.png" alt="" width="200%" />
+        <span class="w-fit grow whitespace-nowrap">{`->`}</span>
+        <img src="ecoProgressAfter.png" alt="" width="200%" />
+      </div>
+      <p class="text-7xl">행동을 실행하기 전에 고민을 하고,</p>
+    </section>
+    <section class="flex-col justify-center w-full h-full">
+      <div class="flex w-screen h-full justify-center items-center gap-10">
+        <img src="ecoProgressBefore.png" alt="" width="200%" />
+        <span class="w-fit grow whitespace-nowrap">{`->`}</span>
+        <img src="ecoProgressAfter.png" alt="" width="200%" />
+      </div>
+      <p class="text-7xl">그 후에 위험한 행동을 합니다.</p>
+    </section>
+    <section class="flex-col justify-center w-full h-full">
+      <div class="flex w-screen h-full justify-center items-center gap-10">
+        <img src="ecoProgressBefore.png" alt="" width="200%" />
+        <span class="w-fit grow whitespace-nowrap">{`->`}</span>
+        <img src="ecoProgressAfter.png" alt="" width="200%" />
+      </div>
+      <p class="text-7xl">사람이 위험한 행동을 하면 오염도가 늘어납니다.</p>
+    </section>
+    <section class="flex-col justify-center w-full h-full">
+      <div class="flex w-screen h-full justify-center items-center gap-10">
+        <img src="kickButton.png" alt="" width="50%" />
+      </div>
+      <p class="text-7xl">아이템을 사용해서 위험한 행동을 그만하게 하거나</p>
+    </section>
+    <section class="flex-col justify-center w-full h-full">
+      <div class="flex w-screen h-full justify-center items-center gap-10">
+        <img src="kickButton.png" alt="" width="50%" />
+      </div>
+      <p class="text-7xl">문제의 근원을 제거할 수도 있습니다.</p>
+    </section>
+    <section class="flex-col justify-center w-full h-full">
+      <div class="flex w-screen h-full justify-center items-center gap-10">
+        <img src="kickButton.png" alt="" width="50%" />
+      </div>
+      <p class="text-6xl">내쫓기를 사용하면 다른 사람들이 위험한 행동을 조금 더 하거나, 조금 덜 합니다.</p>
+    </section>
+    <section class="flex-col justify-center w-full h-full">
+      <div class="flex w-screen h-full justify-center items-center gap-10">
+        <img src="kickButton.png" alt="" width="50%" />
+      </div>
+      <p class="text-7xl">시간이 흐를 수록 사람의 수와 행동 빈도가 증가합니다.</p>
+    </section>
+    <section class="flex-col justify-center w-full h-screen">
+      <div class="flex w-screen h-full justify-center items-center">
+        <img src="ecoProgressFull.png" alt="" width="50%" />
+      </div>
+      <p class="text-7xl">오염도가 일정 수준에 다다르면 패배합니다.</p>
+    </section>
+  </Slide>
+  <Slide>
+    <section class="flex-col justify-center w-full h-screen">
+      <div class="flex w-screen h-full justify-center items-center">
+<Code
+bind:this={code}
+code={`  using System;
+  using X;
+  using Y;`} lang="csharp" theme="catppuccin-mocha"/>
+        <Action do={() => code.selectLines`2`} />
+        <Action do={() => code.selectLines`1`} />
+        <Action do={() => code.selectLines`3`} />
+      </div>
+    </section>
+  </Slide>
+  <Slide>
+    <section class="flex-col justify-center w-full h-screen">
+      <div class="flex w-screen h-full justify-center items-center">
+<Code
+bind:this={code}
+code={`  using System;
+  using X;
+  using Y;`} lang="csharp" theme="catppuccin-mocha"/>
+        <Action do={() => code.selectLines`2`} />
+        <Action do={() => code.selectLines`1`} />
+        <Action do={() => code.selectLines`3`} />
+      </div>
+    </section>
+  </Slide>
 </Presentation>
