@@ -9,10 +9,10 @@ importers:
   .:
     dependencies:
       '@animotion/core':
-        specifier: ^1.0.11
+        specifier: 1.0.11
         version: 1.0.11(svelte@5.0.0-next.184)(vite@5.3.4(lightningcss@1.25.1))
       '@animotion/motion':
-        specifier: ^0.0.8
+        specifier: 0.0.8
         version: 0.0.8(svelte@5.0.0-next.184)
       '@fontsource-variable/jetbrains-mono':
         specifier: 5.0.21
