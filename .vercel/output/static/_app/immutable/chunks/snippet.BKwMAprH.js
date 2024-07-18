@@ -1,1 +1,0 @@
-import{b as i,E as n,a as o,d as p}from"./runtime.4Ab5sdzz.js";import{h as c,a as d}from"./disclose-version.Dle8pKw4.js";function E(e,s,...f){var t=e,a,r;i(()=>{a!==(a=s())&&(r&&(p(r),r=null),a&&(r=o(()=>a(t,...f))))},n),c&&(t=d)}export{E as s};
