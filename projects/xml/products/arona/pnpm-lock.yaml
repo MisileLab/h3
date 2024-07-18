@@ -13,10 +13,10 @@ importers:
         version: 0.8.2(typescript@5.5.3)
       '@astrojs/tailwind':
         specifier: 5.1.0
-        version: 5.1.0(astro@4.12.0(typescript@5.5.3))(tailwindcss@3.4.6)
+        version: 5.1.0(astro@4.12.1(typescript@5.5.3))(tailwindcss@3.4.6)
       astro:
-        specifier: 4.12.0
-        version: 4.12.0(typescript@5.5.3)
+        specifier: 4.12.1
+        version: 4.12.1(typescript@5.5.3)
       tailwindcss:
         specifier: 3.4.6
         version: 3.4.6
@@ -705,8 +705,8 @@ packages:
   array-iterate@2.0.1:
     resolution: {integrity: sha512-I1jXZMjAgCMmxT4qxXfPXa6SthSoE8h6gkSI9BGGNv8mP8G/v0blc+qFnZu6K42vTOiuME596QaLO0TP3Lk0xg==}
 
-  astro@4.12.0:
-    resolution: {integrity: sha512-JCfrJemDRgc87KVBQ9x4zIwadSuWdG1WjzR3b59nUY+mVeph8W5Y68DrYU5s1JMhQN3+yn2p3lexg4lJM41rsg==}
+  astro@4.12.1:
+    resolution: {integrity: sha512-KwBoXYL4L1XLTTjoj4z6q1g/tZfWDKR1pKSTAshVqt5FH2eu82pnGW737SxcT/Ssg/hLlb9KnWiclXmqWpcbCQ==}
     engines: {node: ^18.17.1 || ^20.3.0 || >=21.0.0, npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
 
@@ -2133,9 +2133,9 @@ snapshots:
     dependencies:
       prismjs: 1.29.0
 
-  '@astrojs/tailwind@5.1.0(astro@4.12.0(typescript@5.5.3))(tailwindcss@3.4.6)':
+  '@astrojs/tailwind@5.1.0(astro@4.12.1(typescript@5.5.3))(tailwindcss@3.4.6)':
     dependencies:
-      astro: 4.12.0(typescript@5.5.3)
+      astro: 4.12.1(typescript@5.5.3)
       autoprefixer: 10.4.19(postcss@8.4.39)
       postcss: 8.4.39
       postcss-load-config: 4.0.2(postcss@8.4.39)
@@ -2723,7 +2723,7 @@ snapshots:
 
   array-iterate@2.0.1: {}
 
-  astro@4.12.0(typescript@5.5.3):
+  astro@4.12.1(typescript@5.5.3):
     dependencies:
       '@astrojs/compiler': 2.9.1
       '@astrojs/internal-helpers': 0.4.1
