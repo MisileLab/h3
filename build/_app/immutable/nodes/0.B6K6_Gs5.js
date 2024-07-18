@@ -1,1 +1,0 @@
-import{c as m,f as n,b as e,$ as i}from"../chunks/disclose-version.Dle8pKw4.js";import{p,e as s}from"../chunks/runtime.4Ab5sdzz.js";import{h as c}from"../chunks/svelte-head.CJOXNnCy.js";import{s as f}from"../chunks/snippet.BKwMAprH.js";function _(a,o){p(o,!0);var t=m();c(d=>{i.title="Animotion"});var r=n(t);f(r,()=>o.children),e(a,t),s()}export{_ as component};
