@@ -1,4 +1,4 @@
-{c, config, pkgs, ...}:
+{c, config, pkgs, stablep, ...}:
 let
   briar-desktop = pkgs.callPackage ./briar.nix {};
   exodus = pkgs.callPackage ./exodus.nix {};
@@ -17,11 +17,11 @@ in
     packages = with pkgs; [
       brightnessctl clipman wl-clipboard pavucontrol
       imagemagick virt-manager gimp appflowy xfce.thunar
-      /* galaxy-buds-client */ ferium (prismlauncher.override{withWaylandGLFW=true;}) qemu
+      /* galaxy-buds-client */ ferium (prismlauncher.override{withWaylandGLFW=true;})
       seahorse kdePackages.filelight telegram-desktop firefoxpwa
       zed-editor jetbrains.idea-community-bin
       onionshare-gui
-    ] ++ ([briar-desktop exodus]);
+    ] ++ ([briar-desktop exodus]) ++ (with stablep; [qemu]);
     file = {
       ".local/share/PrismLauncher/themes/catppuccin-mocha.zip".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
         url="https://github.com/catppuccin/prismlauncher";
