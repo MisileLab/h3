@@ -26,5 +26,5 @@ distribution = false
 [tool.pdm.dev-dependencies]
 dev = [
   "tqdm==4.66.4",
-  "ruff==0.5.2",
+  "ruff==0.5.3",
 ]
