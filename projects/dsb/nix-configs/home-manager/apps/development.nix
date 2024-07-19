@@ -7,9 +7,8 @@
     packages = with pkgs; [
       # Development
       edgedb d2 pre-commit pijul just dive dvc solana-validator
-      # https://github.com/NixOS/nixpkgs/pull/311156
-      snyk /*pwndbg*/ radicle-node infisical pnpm_9 jetbrains-toolbox
-      #(pkgs.writeShellScriptBin "gdb" "${pkgs.pwndbg}/bin/pwndbg")
+      snyk pwndbg radicle-node infisical pnpm_9 jetbrains-toolbox ghidra
+      (pkgs.writeShellScriptBin "gdb" "${pkgs.pwndbg}/bin/pwndbg")
 
       # Language tools
       ghc cabal-install
@@ -29,8 +28,7 @@
     ]
     ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
     ++ (with nodePackages_latest; [nodejs typescript-language-server svelte-language-server]) # nodejs
-    ++ (with python312Packages; [pip virtualenv keyring keyrings-cryptfile python-lsp-server mitmproxy]) # python thing
-    ++ (with stablep; [ghidra]);
+    ++ (with python312Packages; [pip virtualenv keyring keyrings-cryptfile python-lsp-server mitmproxy]); # python thing
     file = {
       "non-nixos-things/catppuccin-ghidra".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit{
         url="https://github.com/StanlsSlav/ghidra";
