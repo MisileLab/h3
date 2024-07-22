@@ -31,7 +31,7 @@ in
     };
     vscode = {
       enable = true;
-      package = pkgs.vscodium;
+      package = pkgs.vscode-with-extensions.override { vscodeExtensions = with pkgs.vscode-extensions; [ ms-vsliveshare.vsliveshare ]; };
     };
   };
 }

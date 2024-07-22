@@ -1,4 +1,4 @@
-{pkgs, config, stablep, ...}:
+{pkgs, config, ...}:
 {
   home = {
     sessionVariables = {
