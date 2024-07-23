@@ -34,6 +34,7 @@
     };
     auto-cpufreq.enable = true;
     upower.enable = true;
+    tumbler.enable = true;
   };
 
   virtualisation = {
