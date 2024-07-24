@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:b4359066ccd86f96d20cb52fa03eb994b3c09cf46633750df4b7f7a62c58dc2e"
+content_hash = "sha256:33e9fb582f6e7325ff121254359ac14fb0adc915753bdf36702916917574ca2c"
 
 [[metadata.targets]]
 requires_python = "==3.12.4"
@@ -610,7 +610,6 @@ name = "pyelftools"
 version = "0.31"
 summary = "Library for analyzing ELF files and DWARF debugging information"
 groups = ["default"]
-marker = "python_version >= \"3\""
 files = [
     {file = "pyelftools-0.31-py3-none-any.whl", hash = "sha256:f52de7b3c7e8c64c8abc04a79a1cf37ac5fb0b8a49809827130b858944840607"},
     {file = "pyelftools-0.31.tar.gz", hash = "sha256:c774416b10310156879443b81187d182d8d9ee499660380e645918b50bc88f99"},
@@ -769,7 +768,7 @@ files = [
 
 [[package]]
 name = "selenium"
-version = "4.23.0"
+version = "4.23.1"
 requires_python = ">=3.8"
 summary = "Official Python bindings for Selenium WebDriver"
 groups = ["default"]
@@ -777,13 +776,13 @@ dependencies = [
     "certifi>=2021.10.8",
     "trio-websocket~=0.9",
     "trio~=0.17",
-    "typing-extensions~=4.9.0",
+    "typing-extensions~=4.9",
     "urllib3[socks]<3,>=1.26",
-    "websocket-client==1.8.0",
+    "websocket-client~=1.8",
 ]
 files = [
-    {file = "selenium-4.23.0-py3-none-any.whl", hash = "sha256:3fa5124c8ba071a2d22f7512a80e7799f5a5492d5e20ada1909fe66a476b2a44"},
-    {file = "selenium-4.23.0.tar.gz", hash = "sha256:88f36e3fe6d1d3a9e0626f527f4bd00f0300d43e93f51f59771a911078d4f472"},
+    {file = "selenium-4.23.1-py3-none-any.whl", hash = "sha256:3a8d9f23dc636bd3840dd56f00c2739e32ec0c1e34a821dd553e15babef24477"},
+    {file = "selenium-4.23.1.tar.gz", hash = "sha256:128d099e66284437e7128d2279176ec7a06e6ec7426e167f5d34987166bd8f46"},
 ]
 
 [[package]]
@@ -881,13 +880,13 @@ files = [
 
 [[package]]
 name = "typing-extensions"
-version = "4.9.0"
+version = "4.12.2"
 requires_python = ">=3.8"
 summary = "Backported and Experimental Type Hints for Python 3.8+"
 groups = ["default"]
 files = [
-    {file = "typing_extensions-4.9.0-py3-none-any.whl", hash = "sha256:af72aea155e91adfc61c3ae9e0e342dbc0cba726d6cba4b6c72c1f34e47291cd"},
-    {file = "typing_extensions-4.9.0.tar.gz", hash = "sha256:23478f88c37f27d76ac8aee6c905017a143b0b1b886c3c9f66bc2fd94f9f5783"},
+    {file = "typing_extensions-4.12.2-py3-none-any.whl", hash = "sha256:04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d"},
+    {file = "typing_extensions-4.12.2.tar.gz", hash = "sha256:1a7ead55c7e559dd4dee8856e3a88b41225abfe1ce8df57b7c13915fe121ffb8"},
 ]
 
 [[package]]
@@ -913,7 +912,6 @@ version = "0.2.1"
 requires_python = "~=3.6"
 summary = "AR file handling"
 groups = ["default"]
-marker = "python_version >= \"3\""
 files = [
     {file = "unix_ar-0.2.1-py2.py3-none-any.whl", hash = "sha256:2acb718bc1308bf80e5b9da2614d8242cc2fe3be4cd8b2fd4719bce189aafcf1"},
     {file = "unix_ar-0.2.1.tar.gz", hash = "sha256:bf9328ec70fa3a82f94dc26dc125264dbf62a2d8ffb1a3c8c8a8230175e72c4e"},
