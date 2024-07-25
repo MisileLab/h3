@@ -11,7 +11,7 @@
   },
   "license": "AGPL",
   "dependencies": {
-    "@astrojs/check": "0.8.2",
+    "@astrojs/check": "0.8.3",
     "@astrojs/tailwind": "5.1.0",
     "astro": "4.12.2",
     "jsbarcode": "3.11.6",
