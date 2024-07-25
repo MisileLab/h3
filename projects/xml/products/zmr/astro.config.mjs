@@ -20,5 +20,8 @@ export default defineConfig({
       theme: "catppuccin-mocha",
       wrap: true
     }
+  },
+  experimental: {
+    contentCollectionCache: true
   }
 });
