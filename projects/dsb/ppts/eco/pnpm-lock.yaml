@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@animotion/core':
-        specifier: 1.0.11
-        version: 1.0.11(svelte@5.0.0-next.199)(vite@5.3.5(lightningcss@1.25.1))
+        specifier: 1.0.12
+        version: 1.0.12(svelte@5.0.0-next.199)(vite@5.3.5(lightningcss@1.25.1))
       '@animotion/motion':
         specifier: 0.0.8
         version: 0.0.8(svelte@5.0.0-next.199)
@@ -79,8 +79,8 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@animotion/core@1.0.11':
-    resolution: {integrity: sha512-dRMU6Wj//mHTnI33n4l7NZFmv1hy7ehXxEMu/AstjDds+8SXGRTbbMlNBllOLfQYuQW1TajLVZ4ZVZAtpSGRRg==}
+  '@animotion/core@1.0.12':
+    resolution: {integrity: sha512-lFcPsRx5S4EbyTequAbJmiWLpn6rHjzPpBTWRW30FMz7LRPzCGL79uRNLnlTGMdFxg/flENmmHXiQWkqAn2WHw==}
     peerDependencies:
       svelte: 5.0.0-next.167
 
@@ -1064,7 +1064,7 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
 
-  '@animotion/core@1.0.11(svelte@5.0.0-next.199)(vite@5.3.5(lightningcss@1.25.1))':
+  '@animotion/core@1.0.12(svelte@5.0.0-next.199)(vite@5.3.5(lightningcss@1.25.1))':
     dependencies:
       '@animotion/motion': 0.0.8(svelte@5.0.0-next.199)
       '@fontsource-variable/jetbrains-mono': 5.0.21
