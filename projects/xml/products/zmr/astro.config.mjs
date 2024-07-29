@@ -13,7 +13,7 @@ export default defineConfig({
       wrap: true
     }
   }), sitemap({
-    filter: (p)=>p !== "https://blog.misile.xyz/" && !p.startsWith("https://blog.misile.xyz/pages/" && !p.startsWith("https://blog.misile.xyz/news/"))
+    filter: (p)=>p !== "https://blog.misile.xyz/" && !p.startsWith("https://blog.misile.xyz/pages/") && !p.startsWith("https://blog.misile.xyz/news/")
   })],
   markdown: {
     shikiConfig: {
