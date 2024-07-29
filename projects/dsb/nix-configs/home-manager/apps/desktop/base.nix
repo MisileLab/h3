@@ -19,9 +19,9 @@ in
       imagemagick virt-manager gimp appflowy xfce.thunar
       /* galaxy-buds-client */ ferium (prismlauncher.override{withWaylandGLFW=true;})
       seahorse kdePackages.filelight qemu
-      zed-editor jetbrains.idea-community-bin
+      jetbrains.idea-community-bin
       onionshare-gui firefoxpwa
-    ] ++ ([briar-desktop exodus]) ++ (with stablep; [telegram-desktop]);
+    ] ++ ([briar-desktop exodus]) ++ (with stablep; [telegram-desktop zed-editor]);
     file = {
       ".local/share/PrismLauncher/themes/catppuccin-mocha.zip".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
         url="https://github.com/catppuccin/prismlauncher";
