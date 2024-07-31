@@ -1,0 +1,36 @@
+[project]
+name = "butter"
+version = "0.1.0"
+description = "An AI assistant"
+authors = [
+  {name = "MisileLaboratory", email = "misileminecord@gmail.com"},
+  {name = "Landy"}
+]
+dependencies = [
+    "tomli==2.0.1",
+    "loguru==0.7.2",
+    "orjson==3.10.6",
+    "duckduckgo-search==6.2.5",
+    "openai==1.37.1",
+    "chromadb==0.5.5",
+    "gradio==4.39.0",
+    "selenium==4.23.1",
+    "lxml==5.2.2",
+    "beautifulsoup4==4.12.3",
+    "langchain-openai==0.1.19",
+    "pillow==10.4.0",
+    "binaryornot==0.4.4",
+    "mem0ai>=0.0.9",
+]
+requires-python = "==3.12.4"
+readme = "README.md"
+license = {text = "MisileLab License"}
+
+[tool.pdm]
+distribution = false
+
+[tool.pdm.dev-dependencies]
+dev = [
+  "python-lsp-server==1.11.0",
+  "ruff-lsp==0.0.54",
+]

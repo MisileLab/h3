@@ -1,4 +1,4 @@
-{c, config, pkgs, stablep, ...}:
+{c, config, pkgs, ...}:
 let
   briar-desktop = pkgs.callPackage ./briar.nix {};
   exodus = pkgs.callPackage ./exodus.nix {};
@@ -20,8 +20,8 @@ in
       /* galaxy-buds-client */ ferium (prismlauncher.override{withWaylandGLFW=true;})
       seahorse kdePackages.filelight qemu
       jetbrains.idea-community-bin
-      onionshare-gui firefoxpwa
-    ] ++ ([briar-desktop exodus]) ++ (with stablep; [telegram-desktop zed-editor]);
+      onionshare-gui firefoxpwa telegram-desktop zed-editor
+    ] ++ ([briar-desktop exodus]);
     file = {
       ".local/share/PrismLauncher/themes/catppuccin-mocha.zip".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
         url="https://github.com/catppuccin/prismlauncher";
@@ -39,10 +39,7 @@ in
     };
   };
   programs = {
-    obs-studio = {
-      enable = true;
-      package = stablep.obs-studio;
-    };
+    obs-studio.enable = true;
     alacritty = {
       enable = true;
       catppuccin.enable = true;
