@@ -37,9 +37,13 @@ except NameError:
 
 @non_async_print_it
 def process_memories(memories: list[dict]):
-  return [[
-    i["id"], datetime.fromtimestamp(i["metadata"].get("created_at", i["metadata"].get(None))), i["metadata"].get("user_id", None), i["text"]
-  ] for i in memories]
+  a = []
+  for i in memories:
+    tmp = i["metadata"].get("created_at", None)
+    if tmp is None:
+      tmp = i["metadata"].get("updated_at", None)
+    a.append([i["id"], datetime.fromtimestamp(tmp), i["metadata"].get("user_id", None), i["text"]])
+  return a
 
 def convert_to_real_content(content_text, content_files, voice, user):
   result = ""
