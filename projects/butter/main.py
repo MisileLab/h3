@@ -170,7 +170,7 @@ with gr.Blocks() as frontend:
     memory_content = gr.Textbox(label="content of memory that modify", value=temp["memory_content"])
     memory_content.change(lambda x: temp.__setitem__("memory_content", x), memory_content)
     
-    memory_user = gr.Textbox(label="content of memory that modify", value=temp["memory_user"])
+    memory_user = gr.Textbox(label="user of memory that modify", value=temp["memory_user"])
     memory_user.change(lambda x: temp.__setitem__("memory_user", x), memory_user)
     
     memory_save = gr.Button("Save", variant="primary")
