@@ -14,6 +14,7 @@ from pathlib import Path
 from base64 import b64encode
 from datetime import datetime
 from copy import deepcopy
+from typing import Any
 
 try:
   user # type: ignore
@@ -35,6 +36,10 @@ except NameError:
   }
   messages: list[SystemMessage | AIMessage | ToolMessage | HumanMessage] = [SystemMessage(prompt)]
   whisper = OpenAI(api_key=api_key)
+
+def persist_temp(key: str, value: Any):
+  temp[key] = value
+  return temp[key]
 
 @print_it
 def process_memories(memories: list[dict]):
@@ -148,16 +153,16 @@ with gr.Blocks() as frontend:
       file.change(lambda x: temp.__setitem__("files", x), file)
   with gr.Tab("Configuration"):
     user_input = gr.Textbox(label="user")
-    user_input.input(lambda x: temp.__setitem__("user", x), user_input)
+    user_input.input(lambda x: persist_temp("user", x), user_input, user_input)
 
     prompt_input = gr.Textbox(label="prompt", value=prompt, show_copy_button=True, interactive=True, lines=13) # type: ignore not unbound
-    prompt_input.input(lambda x: temp.__setitem__("prompt", x), prompt_input)
+    prompt_input.input(lambda x: persist_temp("prompt", x), prompt_input, prompt_input)
 
     middle_prompt_input = gr.Textbox(label="middle_prompt", value=middle_prompt, show_copy_button=True, interactive=True)
-    middle_prompt_input.input(lambda x: temp.__setitem__("middle_prompt", x), middle_prompt_input)
+    middle_prompt_input.input(lambda x: persist_temp("middle_prompt", x), middle_prompt_input, middle_prompt_input)
 
     summarize_prompt_input = gr.Textbox(label="summarize_prompt", value=summarize_prompt, show_copy_button=True, interactive=True) # type: ignore not unbound
-    summarize_prompt_input.input(lambda x: temp.__setitem__("summarize_prompt", x), summarize_prompt_input)
+    summarize_prompt_input.input(lambda x: persist_temp("summarize_prompt", x), summarize_prompt_input, summarize_prompt_input)
 
     confirm_button = gr.Button("Confirm")
     confirm_button.click(confirm)
