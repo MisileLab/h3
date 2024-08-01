@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:084a6a6577e7034daca27b28787acfdfb383233547f4c69d6ff446e6d7579b23"
+content_hash = "sha256:3ca46a7f4f452d46b1ea01d2767a2090c73a4ac471f4010a3def553b990db4f4"
 
 [[metadata.targets]]
 requires_python = "==3.12.4"
@@ -135,7 +135,7 @@ files = [
 
 [[package]]
 name = "gradio-client"
-version = "1.1.1"
+version = "1.2.0"
 requires_python = ">=3.8"
 summary = "Python library for easily interacting with trained machine learning models"
 groups = ["default"]
@@ -145,11 +145,11 @@ dependencies = [
     "huggingface-hub>=0.19.3",
     "packaging",
     "typing-extensions~=4.0",
-    "websockets<12.0,>=10.0",
+    "websockets<13.0,>=10.0",
 ]
 files = [
-    {file = "gradio_client-1.1.1-py3-none-any.whl", hash = "sha256:7822ee1b55c12e387c792100835c9bb79fa48acd7b5c65e3dfce64c00ba1894c"},
-    {file = "gradio_client-1.1.1.tar.gz", hash = "sha256:8c286a061d997282132f17cf9dda3d93835655097ddce3dbec9a720798e61da5"},
+    {file = "gradio_client-1.2.0-py3-none-any.whl", hash = "sha256:9a05b3ebe992e7307dc9a50dc5e7b4cdcf0db468906844f3f7039a12d0d26224"},
+    {file = "gradio_client-1.2.0.tar.gz", hash = "sha256:7aaaf0aa8563d3d6bd257d347098d1d4beea889747fa5c8454e8803c6ca5cb14"},
 ]
 
 [[package]]
@@ -201,7 +201,7 @@ files = [
 
 [[package]]
 name = "huggingface-hub"
-version = "0.24.2"
+version = "0.24.5"
 requires_python = ">=3.8.0"
 summary = "Client library to download and publish models, datasets and other repos on the huggingface.co hub"
 groups = ["default"]
@@ -215,8 +215,8 @@ dependencies = [
     "typing-extensions>=3.7.4.3",
 ]
 files = [
-    {file = "huggingface_hub-0.24.2-py3-none-any.whl", hash = "sha256:abdf3244d3a274c4b1fbc5c4a1ef700032b3f60ba93cc63e4f036fd082aa2805"},
-    {file = "huggingface_hub-0.24.2.tar.gz", hash = "sha256:92be892405d2f6a7a8479016f9a5662354f202b2c6c1ff499609621aed1fae10"},
+    {file = "huggingface_hub-0.24.5-py3-none-any.whl", hash = "sha256:d93fb63b1f1a919a22ce91a14518974e81fc4610bf344dfe7572343ce8d3aced"},
+    {file = "huggingface_hub-0.24.5.tar.gz", hash = "sha256:7b45d6744dd53ce9cbf9880957de00e9d10a9ae837f1c9b7255fc8fa4e8264f3"},
 ]
 
 [[package]]
@@ -496,13 +496,14 @@ files = [
 
 [[package]]
 name = "websockets"
-version = "11.0.3"
-requires_python = ">=3.7"
+version = "12.0"
+requires_python = ">=3.8"
 summary = "An implementation of the WebSocket Protocol (RFC 6455 & 7692)"
 groups = ["default"]
 files = [
-    {file = "websockets-11.0.3-py3-none-any.whl", hash = "sha256:6681ba9e7f8f3b19440921e99efbb40fc89f26cd71bf539e45d8c8a25c976dc6"},
-    {file = "websockets-11.0.3.tar.gz", hash = "sha256:88fc51d9a26b10fc331be344f1781224a375b78488fc343620184e95a4b27016"},
+    {file = "websockets-12.0-cp312-cp312-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:1f38a7b376117ef7aff996e737583172bdf535932c9ca021746573bce40165ed"},
+    {file = "websockets-12.0-py3-none-any.whl", hash = "sha256:dc284bbc8d7c78a6c69e0c7325ab46ee5e40bb4d50e494d8131a07ef47500e9e"},
+    {file = "websockets-12.0.tar.gz", hash = "sha256:81df9cbcbb6c260de1e007e58c011bfebe2dafc8435107b0537f393dd38c8b1b"},
 ]
 
 [[package]]
