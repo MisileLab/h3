@@ -14,6 +14,7 @@ from pathlib import Path
 from base64 import b64encode
 from datetime import datetime
 from copy import deepcopy
+from typing import Any
 
 try:
   user # type: ignore
@@ -35,6 +36,10 @@ except NameError:
   }
   messages: list[SystemMessage | AIMessage | ToolMessage | HumanMessage] = [SystemMessage(prompt)]
   whisper = OpenAI(api_key=api_key)
+
+def persist_temp(key: str, value: Any):
+  temp[key] = value
+  return temp[key]
 
 @print_it
 def process_memories(memories: list[dict]):
@@ -136,6 +141,7 @@ def confirm():
   Path("./prompts/middle_prompt").write_text(temp['middle_prompt'])
   global user
   user = temp["user"]
+  return [user, prompt, middle_prompt, summarize_prompt]
 
 with gr.Blocks() as frontend:
   with gr.Tab("Chatting"):
@@ -160,7 +166,7 @@ with gr.Blocks() as frontend:
     summarize_prompt_input.input(lambda x: temp.__setitem__("summarize_prompt", x), summarize_prompt_input)
 
     confirm_button = gr.Button("Confirm")
-    confirm_button.click(confirm)
+    confirm_button.click(confirm, None, [user_input, prompt_input, middle_prompt_input, summarize_prompt_input])
   with gr.Tab("Admin Panel"):
     reset_history = gr.Button("Reset History", variant="stop")
     reset_history.click(reset)
