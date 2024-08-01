@@ -9,7 +9,7 @@
   ];
   home.packages = with pkgs; [
     sbctl bluez cryptsetup smartmontools borgbackup rclone pulsemixer
-    portablemc miniserve openssl transmission glance glances
+    portablemc miniserve openssl transmission glance glances lunarvim
     (pkgs.writeShellScriptBin "manual" ''
       ${pkgs.glow}/bin/glow -p ~/.config/home-manager/manual.md
     '')
@@ -46,6 +46,7 @@
         onefetch = "${onefetch}/bin/onefetch --number-of-languages 9999";
         lzg = "${lazygit}/bin/lazygit";
         gdiff = "${git}/bin/git diff | ${delta}/bin/delta";
+	nv = "${neovim}/bin/nvim";
       };
       shellInit = with pkgs; ''
         fish_add_path -m ~/.cargo/bin
@@ -76,43 +77,9 @@
         end
       '';
     };
-    helix = {
+    neovim = {
       enable = true;
       catppuccin.enable = true;
-      languages = {
-        language-server.ruff-lsp = {
-          command = "ruff-lsp";
-        };
-        language-server.astro-ls = {
-          command = "astro-ls";
-          args = ["--stdio"];
-          config = { typescript = { tsdk = "${pkgs.typescript}/lib/node_modules/typescript/lib";}; environment = "node"; };
-        };
-        language = [{
-          name = "python";
-          auto-format = false;
-          indent = {tab-width = 2; unit = " ";};
-          language-servers = ["ruff-lsp" "pylsp"];
-        } {
-          name = "jsx";
-          language-servers = ["tailwindcss-ls" "typescript-language-server"];
-        } {
-          name = "tsx";
-          language-servers = ["tailwindcss-ls" "typescript-language-server"];
-        } {
-          name = "svelte";
-          language-servers = ["tailwindcss-ls" "svelteserver"];
-        } {
-          name = "astro";
-          scope = "source.astro";
-          injection-regex = "astro";
-          file-types = ["astro"];
-          language-servers = ["astro-ls" "tailwindcss-ls"];
-        } {
-          name = "markdown";
-          file-types = ["md" "mdx"];
-        }];
-      };
     };
   };
   services = {

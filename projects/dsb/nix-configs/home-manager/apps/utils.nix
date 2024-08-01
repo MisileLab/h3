@@ -10,7 +10,10 @@
     killall screen
   ];
   programs = {
-    mpv.enable = true;
+    mpv = {
+      enable = true;
+      catppuccin.enable = true;
+    };
     zoxide = {
       enable = true;
       options = ["--cmd cd"];

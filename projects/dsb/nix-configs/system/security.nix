@@ -5,7 +5,7 @@
   ];
 
   services = {
-    fprintd.enable = true;
+    # fprintd.enable = true;
     clamav = {
       daemon.enable = true;
       updater.enable = true;
