@@ -129,6 +129,7 @@ async def generate_message(content, _):
       tmp_messages = tmp_messages[1:]
     messages = [SystemMessage(prompt), HumanMessage(summarized), AIMessage("알았어!")] + deepcopy(tmp_messages)
 
+@print_it
 def confirm():
   global prompt
   global middle_prompt
