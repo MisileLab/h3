@@ -157,13 +157,13 @@ with gr.Blocks() as frontend:
     user_input = gr.Textbox(label="user")
     user_input.change(lambda x: temp.__setitem__("user", x), user_input)
 
-    prompt_input = gr.Textbox(label="prompt", value=prompt, show_copy_button=True, interactive=True, lines=13) # type: ignore not unbound
+    prompt_input = gr.Textbox(label="prompt", show_copy_button=True, interactive=True, lines=13) # type: ignore not unbound
     prompt_input.change(lambda x: temp.__setitem__("prompt", x), prompt_input)
 
-    middle_prompt_input = gr.Textbox(label="middle_prompt", value=middle_prompt, show_copy_button=True, interactive=True)
+    middle_prompt_input = gr.Textbox(label="middle_prompt", show_copy_button=True, interactive=True)
     middle_prompt_input.change(lambda x: temp.__setitem__("middle_prompt", x), middle_prompt_input)
 
-    summarize_prompt_input = gr.Textbox(label="summarize_prompt", value=summarize_prompt, show_copy_button=True, interactive=True) # type: ignore not unbound
+    summarize_prompt_input = gr.Textbox(label="summarize_prompt", show_copy_button=True, interactive=True) # type: ignore not unbound
     summarize_prompt_input.change(lambda x: temp.__setitem__("summarize_prompt", x), summarize_prompt_input)
 
     confirm_button = gr.Button("Confirm")
@@ -193,5 +193,6 @@ with gr.Blocks() as frontend:
     
     memory_delete = gr.Button("Delete", variant="stop")
     memory_delete.click(lambda: non_async_delete_memory(temp["memory_id"]))
+  frontend.load(lambda: [user, prompt, middle_prompt, summarize_prompt], None, [user_input, prompt_input, middle_prompt_input, summarize_prompt_input])
 
 frontend.launch(show_error=True, show_api=True, auth=(config['auth']['id'], config['auth']['password']), server_name='0.0.0.0')
