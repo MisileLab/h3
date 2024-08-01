@@ -1,7 +1,7 @@
 from modules.llm_function import middle_prompt, llm_mini
 from modules.llm import api_key, llm, functions, middle_converting_functions
-from modules.memory import non_async_print_it, non_async_save_memory, non_async_get_all_memories, non_async_update_memory, non_async_delete_memory
-from modules.config import _config
+from modules.memory import print_it, non_async_save_memory, non_async_get_all_memories, non_async_update_memory, non_async_delete_memory
+from modules.config import config
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage, ToolMessage
 
 import gradio as gr
@@ -16,8 +16,9 @@ from datetime import datetime
 from copy import deepcopy
 
 try:
-  user
+  user # type: ignore
 except NameError:
+  # first launch before gradio reload
   user = ""
   prompt = Path("./prompts/prompt").read_text()
   summarize_prompt = Path("./prompts/summarize_prompt").read_text()
@@ -35,7 +36,7 @@ except NameError:
   messages: list[SystemMessage | AIMessage | ToolMessage | HumanMessage] = [SystemMessage(prompt)]
   whisper = OpenAI(api_key=api_key)
 
-@non_async_print_it
+@print_it
 def process_memories(memories: list[dict]):
   a = []
   for i in memories:
@@ -93,7 +94,7 @@ async def generate_message(content, _):
   logger.info(content, temp["files"])
   msg = convert_to_real_content(content, temp["files"], temp["voice"], user)
   global messages
-  messages.append(HumanMessage([{"type": "text", "text": msg[0]}] + [{"type": "image_url", "image_url": {"url": i}} for i in msg[1]]))
+  messages.append(HumanMessage([{"type": "text", "text": msg[0]}] + [{"type": "image_url", "image_url": {"url": i}} for i in msg[1]])) # type: ignore
   while True:
     first = True
     logger.debug(messages)
@@ -102,13 +103,13 @@ async def generate_message(content, _):
         gathered = i
         first = False
       else:
-        gathered += i
+        gathered += i # type: ignore gathered not unbound
       logger.debug(i)
-      yield gathered.content
-    messages.append(gathered)
-    if len(gathered.tool_calls) == 0:
+      yield gathered.content # type: ignore gathered is ai's message
+    messages.append(gathered) # type: ignore gathered not unbound
+    if len(gathered.tool_calls) == 0: # type: ignore gathered is ai's message
       break
-    for i in gathered.tool_calls:
+    for i in gathered.tool_calls: # type: ignore gathered is ai's message
       logger.info(f"calling {i["name"]}")
       messages.append(ToolMessage(tool_call_id=i["id"], content=await middle_converting_functions[functions[i["name"]]](**i["args"])))
   if len(messages) >= 70:
@@ -149,13 +150,13 @@ with gr.Blocks() as frontend:
     user_input = gr.Textbox(label="user")
     user_input.input(lambda x: temp.__setitem__("user", x), user_input)
 
-    prompt_input = gr.Textbox(label="prompt", value=prompt, show_copy_button=True, interactive=True, lines=13)
+    prompt_input = gr.Textbox(label="prompt", value=prompt, show_copy_button=True, interactive=True, lines=13) # type: ignore not unbound
     prompt_input.input(lambda x: temp.__setitem__("prompt", x), prompt_input)
 
     middle_prompt_input = gr.Textbox(label="middle_prompt", value=middle_prompt, show_copy_button=True, interactive=True)
     middle_prompt_input.input(lambda x: temp.__setitem__("middle_prompt", x), middle_prompt_input)
 
-    summarize_prompt_input = gr.Textbox(label="summarize_prompt", value=summarize_prompt, show_copy_button=True, interactive=True)
+    summarize_prompt_input = gr.Textbox(label="summarize_prompt", value=summarize_prompt, show_copy_button=True, interactive=True) # type: ignore not unbound
     summarize_prompt_input.input(lambda x: temp.__setitem__("summarize_prompt", x), summarize_prompt_input)
 
     confirm_button = gr.Button("Confirm")
@@ -168,13 +169,13 @@ with gr.Blocks() as frontend:
     refresh = gr.Button("Refresh", variant="secondary")
     refresh.click(lambda: process_memories(non_async_get_all_memories()), None, df)
     
-    memory_id = gr.Textbox(label="id of memory that modify", value=temp["memory_id"])
+    memory_id = gr.Textbox(label="id of memory that modify", value=temp["memory_id"]) # type: ignore temp not unbound
     memory_id.change(lambda x: temp.__setitem__("memory_id", x), memory_id)
     
-    memory_content = gr.Textbox(label="content of memory that modify", value=temp["memory_content"])
+    memory_content = gr.Textbox(label="content of memory that modify", value=temp["memory_content"]) # type: ignore temp not unbound
     memory_content.change(lambda x: temp.__setitem__("memory_content", x), memory_content)
     
-    memory_user = gr.Textbox(label="user of memory that modify", value=temp["memory_user"])
+    memory_user = gr.Textbox(label="user of memory that modify", value=temp["memory_user"]) # type: ignore temp not unbound
     memory_user.change(lambda x: temp.__setitem__("memory_user", x), memory_user)
     
     memory_save = gr.Button("Save", variant="primary")
@@ -186,4 +187,4 @@ with gr.Blocks() as frontend:
     memory_delete = gr.Button("Delete", variant="stop")
     memory_delete.click(lambda: non_async_delete_memory(temp["memory_id"]))
 
-frontend.launch(show_error=True, show_api=True, auth=(_config['auth']['id'], _config['auth']['password']), server_name='0.0.0.0')
+frontend.launch(show_error=True, show_api=True, auth=(config['auth']['id'], config['auth']['password']), server_name='0.0.0.0')

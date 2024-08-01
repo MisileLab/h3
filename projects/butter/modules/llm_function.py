@@ -13,18 +13,54 @@ from pydantic import BaseModel, Field
 
 from datetime import datetime, timezone
 from pathlib import Path
+from functools import wraps
+from inspect import iscoroutinefunction
 
 middle_prompt = Path("./prompts/middle_prompt").read_text()
 llm_mini = ChatOpenAI(model="gpt-4o-mini", api_key=api_key)
 
+async def summarize_and_answer(content: str, question: str) -> str:
+  finalvalue: list[str] = []
+  end = False
+  while True:
+    _content = content
+    if len(_content) >= 16384:
+      _content = content[:16384]
+      content = content[16384:]
+    else:
+      end = True
+    summarized = ""
+    for i, i2 in enumerate(finalvalue):
+      summarized += f"String {i*16384}~{(i+1)*16384} summarized:\n{i2}"
+    tmp = (await llm_mini.ainvoke([
+      {"role": "system", "content": middle_prompt},
+      {"role": "user", "content": f"content: {content}\nquestion: {question}\n{summarized}"}
+    ])).content
+    if not isinstance(tmp, str):
+      logger.error("summarize and answer doesn't return string")
+      return "failed"
+    finalvalue.append(tmp)
+    if end:
+      break
+  return '\n'.join(f"Part {i+1}:\n{i2}" for i, i2 in enumerate(finalvalue))
+
 def print_it(func):
+  @wraps(func)
   async def wrapper(*args, **kwargs):
     logger.debug(f'{func.__name__}, {args}, {kwargs}')
     res = await func(*args, **kwargs)
     logger.debug(f"return {res}")
     logger.debug(f"type is {type(res)}")
     return res
-  return wrapper
+
+  @wraps(func)
+  def non_async_wrapper(*args, **kwargs):
+    logger.debug(f'{func.__name__}, {args}, {kwargs}')
+    res = func(*args, **kwargs)
+    logger.debug(f"return {res}")
+    logger.debug(f"type is {type(res)}")
+    return res
+  return wrapper if iscoroutinefunction(func) else non_async_wrapper
 
 def tag_visible(element):
   if element.parent.name in ['style', 'script', 'head', 'title', 'meta', '[document]']:
@@ -34,23 +70,19 @@ def tag_visible(element):
 def text_from_html(body):
   soup = BeautifulSoup(body, 'lxml')
   texts = soup.findAll(text=True)
-  visible_texts = filter(tag_visible, texts)  
+  visible_texts = filter(tag_visible, texts) 
   return u" ".join(t.strip() for t in visible_texts)
 
 def get_date_from_string(date: str) -> datetime:
   d = datetime.fromisoformat(date)
-  if d.tzinfo is None:
-    d = d.replace(tzinfo=timezone.utc)
-  return d
+  return d if d.tzinfo is not None else d.replace(tzinfo=timezone.utc)
 
 @print_it
 async def send_request(url: str, question: str) -> str:
   async with AsyncClient() as c:
     resp = await c.get(url)
   con = text_from_html(resp.content)
-  if len(con) >= 16385:
-    con = con[:16384]
-  return (await llm_mini.ainvoke([{"role": "system", "content": middle_prompt},{"role": "user", "content": f"content: {con}\nquestion: {question}"}])).content
+  return await summarize_and_answer(con, question)
 
 @print_it
 async def send_request_using_browser(url: str, question: str) -> str:
@@ -60,9 +92,7 @@ async def send_request_using_browser(url: str, question: str) -> str:
   web.get(url)
   con = text_from_html(web.page_source)
   web.close()
-  if len(con) >= 16385:
-    con = con[:16384]
-  return (await llm_mini.ainvoke([{"role": "system", "content": middle_prompt},{"role": "user", "content": f"content: {con}\nquestion: {question}"}])).content
+  return await summarize_and_answer(con, question)
 
 @print_it
 async def search_internet(query: str, question: str) -> str:
@@ -72,7 +102,14 @@ async def search_internet(query: str, question: str) -> str:
   for i in tmp:
     res.append({"type": "text", "text": f"Title: {i["title"]}\ndescription: {i["body"]}\nhref: {i["href"]}"})
   logger.debug(res)
-  return (await llm_mini.ainvoke([{"role": "system", "content": middle_prompt},{"role": "user", "content": f"content: {res}\nquestion: {question}"}])).content
+  f = (await llm_mini.ainvoke([
+    {"role": "system", "content": middle_prompt},
+    {"role": "user", "content": f"content: {res}\nquestion: {question}"}
+  ])).content
+  if not isinstance(f, str):
+    logger.error("search_internet does not return string")
+    return "failed"
+  return f
 
 class sendRequestBase(BaseModel):
   """send request to url and return the summarized content with llm, you can send the question to llm."""

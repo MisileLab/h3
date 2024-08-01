@@ -1,5 +1,5 @@
 from modules.llm_function import print_it
-from .config import api_key, _config
+from .config import api_key, config
 
 from pydantic import BaseModel, Field
 from mem0 import Memory
@@ -8,12 +8,12 @@ from loguru import logger
 from os import environ
 from typing import Callable
 
-config = {
+mem0_config = {
   "vector_store": {
     "provider": "qdrant",
     "config": {
-      "host": _config['qdrant']['host'],
-      "port": _config['qdrant']['port']
+      "host": config['qdrant']['host'],
+      "port": config['qdrant']['port']
     }
   },
   "llm": {
@@ -26,15 +26,6 @@ config = {
   }
 }
 
-def non_async_print_it(func: Callable):
-  def wrapper(*args, **kwargs):
-    logger.debug(func.__name__, args, kwargs)
-    res = func(*args, **kwargs)
-    logger.debug(f"return {res}")
-    logger.debug(f"type is {type(res)}")
-    return res
-  return wrapper
-
 def preload(callback: Callable):
   environ['OPENAI_API_KEY'] = api_key
   res = callback()
@@ -43,19 +34,19 @@ def preload(callback: Callable):
 
 m: Memory = preload(lambda: Memory.from_config(config))
 
-@non_async_print_it
+@print_it
 def non_async_update_memory(id: str, content: str):
   return preload(lambda: m.update(id, content))
 
-@non_async_print_it
+@print_it
 def non_async_save_memory(username: str, content: str):
   return preload(lambda: m.add(content, username))
 
-@non_async_print_it
+@print_it
 def non_async_get_all_memories():
   return preload(lambda: m.get_all())
 
-@non_async_print_it
+@print_it
 def non_async_delete_memory(id: str):
   return preload(lambda: m.delete(id))
 
