@@ -155,16 +155,16 @@ with gr.Blocks() as frontend:
       file.change(lambda x: temp.__setitem__("files", x), file)
   with gr.Tab("Configuration"):
     user_input = gr.Textbox(label="user")
-    user_input.input(lambda x: temp.__setitem__("user", x), user_input)
+    user_input.change(lambda x: temp.__setitem__("user", x), user_input)
 
     prompt_input = gr.Textbox(label="prompt", value=prompt, show_copy_button=True, interactive=True, lines=13) # type: ignore not unbound
-    prompt_input.input(lambda x: temp.__setitem__("prompt", x), prompt_input)
+    prompt_input.change(lambda x: temp.__setitem__("prompt", x), prompt_input)
 
     middle_prompt_input = gr.Textbox(label="middle_prompt", value=middle_prompt, show_copy_button=True, interactive=True)
-    middle_prompt_input.input(lambda x: temp.__setitem__("middle_prompt", x), middle_prompt_input)
+    middle_prompt_input.change(lambda x: temp.__setitem__("middle_prompt", x), middle_prompt_input)
 
     summarize_prompt_input = gr.Textbox(label="summarize_prompt", value=summarize_prompt, show_copy_button=True, interactive=True) # type: ignore not unbound
-    summarize_prompt_input.input(lambda x: temp.__setitem__("summarize_prompt", x), summarize_prompt_input)
+    summarize_prompt_input.change(lambda x: temp.__setitem__("summarize_prompt", x), summarize_prompt_input)
 
     confirm_button = gr.Button("Confirm")
     confirm_button.click(confirm, None, [user_input, prompt_input, middle_prompt_input, summarize_prompt_input])
