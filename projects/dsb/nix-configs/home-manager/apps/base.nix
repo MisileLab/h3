@@ -46,7 +46,8 @@
         onefetch = "${onefetch}/bin/onefetch --number-of-languages 9999";
         lzg = "${lazygit}/bin/lazygit";
         gdiff = "${git}/bin/git diff | ${delta}/bin/delta";
-	nv = "${neovim}/bin/nvim";
+	      nv = "${lunarvim}/bin/lvim";
+        lv = "${lunarvim}/bin/lvim";
       };
       shellInit = with pkgs; ''
         fish_add_path -m ~/.cargo/bin
@@ -87,6 +88,6 @@
       enable = true;
       enableSshSupport = true;
       extraConfig = "pinentry-program ${pkgs.pinentry.curses}/bin/pinentry-curses";
-    };   
+    };
   };
 }
