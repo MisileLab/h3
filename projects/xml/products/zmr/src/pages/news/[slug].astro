@@ -6,6 +6,7 @@ import Subtitle from "../../components/subtitle.astro";
 import Link from "../../components/link.astro";
 import UL from "../../components/ul.astro";
 import OL from "../../components/ol.astro";
+import Blockquote from "../../components/blockquote.astro";
 
 export const getStaticPaths = async () => {
   const collections = await getCollection("news");
@@ -27,7 +28,8 @@ const mdxComponents = {
   h2: Subtitle,
   a: Link,
   ul: UL,
-  ol: OL
+  ol: OL,
+  blockquote: Blockquote
 }
 ---
 
