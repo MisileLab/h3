@@ -8,7 +8,7 @@ authors = [
 dependencies = [
   "fastapi==0.112.0",
   "websockets==12.0",
-  "uvicorn==0.30.4",
+  "uvicorn==0.30.5",
   "orjson==3.10.6",
   "pycryptodome==3.20.0",
 ]
