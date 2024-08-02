@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:052bc565684213ddcc19347f0a91d509cc064f9c13b57f483bf32e2ca19264c4"
+content_hash = "sha256:2ab2bd7a7570df360a47172468ab6f88ab7e99e2e810b89712e9c06a90c7a15f"
 
 [[metadata.targets]]
 requires_python = "==3.12.4"
@@ -85,13 +85,13 @@ files = [
 
 [[package]]
 name = "backoff"
-version = "2.2.1"
-requires_python = ">=3.7,<4.0"
+version = "1.11.1"
+requires_python = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 summary = "Function decoration for backoff and retry"
 groups = ["default"]
 files = [
-    {file = "backoff-2.2.1-py3-none-any.whl", hash = "sha256:63579f9a0628e06278f7e47b7d7d5b6ce20dc65c5e96a6f3ca99a6adca0396e8"},
-    {file = "backoff-2.2.1.tar.gz", hash = "sha256:03f829f5bb1923180821643f8753b0502c3b682293992485b0eef2807afa5cba"},
+    {file = "backoff-1.11.1-py2.py3-none-any.whl", hash = "sha256:61928f8fa48d52e4faa81875eecf308eccfb1016b018bb6bd21e05b5d90a96c5"},
+    {file = "backoff-1.11.1.tar.gz", hash = "sha256:ccb962a2378418c667b3c979b504fdeb7d9e0d29c0579e3b13b86467177728cb"},
 ]
 
 [[package]]
@@ -228,21 +228,7 @@ summary = "The Real First Universal Charset Detector. Open, modern and actively 
 groups = ["default"]
 files = [
     {file = "charset-normalizer-3.3.2.tar.gz", hash = "sha256:f30c3cb33b24454a82faecaf01b19c18562b1e89558fb6c56de4d9118a032fd5"},
-    {file = "charset_normalizer-3.3.2-cp312-cp312-macosx_10_9_universal2.whl", hash = "sha256:0b2b64d2bb6d3fb9112bafa732def486049e63de9618b5843bcdd081d8144cd8"},
-    {file = "charset_normalizer-3.3.2-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:ddbb2551d7e0102e7252db79ba445cdab71b26640817ab1e3e3648dad515003b"},
-    {file = "charset_normalizer-3.3.2-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:55086ee1064215781fff39a1af09518bc9255b50d6333f2e4c74ca09fac6a8f6"},
-    {file = "charset_normalizer-3.3.2-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:8f4a014bc36d3c57402e2977dada34f9c12300af536839dc38c0beab8878f38a"},
-    {file = "charset_normalizer-3.3.2-cp312-cp312-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:a10af20b82360ab00827f916a6058451b723b4e65030c5a18577c8b2de5b3389"},
-    {file = "charset_normalizer-3.3.2-cp312-cp312-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:8d756e44e94489e49571086ef83b2bb8ce311e730092d2c34ca8f7d925cb20aa"},
     {file = "charset_normalizer-3.3.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:90d558489962fd4918143277a773316e56c72da56ec7aa3dc3dbbe20fdfed15b"},
-    {file = "charset_normalizer-3.3.2-cp312-cp312-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:6ac7ffc7ad6d040517be39eb591cac5ff87416c2537df6ba3cba3bae290c0fed"},
-    {file = "charset_normalizer-3.3.2-cp312-cp312-musllinux_1_1_aarch64.whl", hash = "sha256:7ed9e526742851e8d5cc9e6cf41427dfc6068d4f5a3bb03659444b4cabf6bc26"},
-    {file = "charset_normalizer-3.3.2-cp312-cp312-musllinux_1_1_i686.whl", hash = "sha256:8bdb58ff7ba23002a4c5808d608e4e6c687175724f54a5dade5fa8c67b604e4d"},
-    {file = "charset_normalizer-3.3.2-cp312-cp312-musllinux_1_1_ppc64le.whl", hash = "sha256:6b3251890fff30ee142c44144871185dbe13b11bab478a88887a639655be1068"},
-    {file = "charset_normalizer-3.3.2-cp312-cp312-musllinux_1_1_s390x.whl", hash = "sha256:b4a23f61ce87adf89be746c8a8974fe1c823c891d8f86eb218bb957c924bb143"},
-    {file = "charset_normalizer-3.3.2-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:efcb3f6676480691518c177e3b465bcddf57cea040302f9f4e6e191af91174d4"},
-    {file = "charset_normalizer-3.3.2-cp312-cp312-win32.whl", hash = "sha256:d965bba47ddeec8cd560687584e88cf699fd28f192ceb452d1d7ee807c5597b7"},
-    {file = "charset_normalizer-3.3.2-cp312-cp312-win_amd64.whl", hash = "sha256:96b02a3dc4381e5494fad39be677abcb5e6634bf7b4fa83a6dd3112607547001"},
     {file = "charset_normalizer-3.3.2-py3-none-any.whl", hash = "sha256:3e4d1f6587322d2788836a99c69062fbb091331ec940e02d12d179c1d53e25fc"},
 ]
 
@@ -631,46 +617,43 @@ files = [
 ]
 
 [[package]]
+name = "greenlet"
+version = "3.0.3"
+requires_python = ">=3.7"
+summary = "Lightweight in-process concurrent programming"
+groups = ["default"]
+marker = "(platform_machine == \"win32\" or platform_machine == \"WIN32\" or platform_machine == \"AMD64\" or platform_machine == \"amd64\" or platform_machine == \"x86_64\" or platform_machine == \"ppc64le\" or platform_machine == \"aarch64\") and python_version < \"3.13\""
+files = [
+    {file = "greenlet-3.0.3-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:881b7db1ebff4ba09aaaeae6aa491daeb226c8150fc20e836ad00041bcb11230"},
+    {file = "greenlet-3.0.3-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:fcd2469d6a2cf298f198f0487e0a5b1a47a42ca0fa4dfd1b6862c999f018ebbf"},
+    {file = "greenlet-3.0.3.tar.gz", hash = "sha256:43374442353259554ce33599da8b692d5aa96f8976d567d4badf263371fbe491"},
+]
+
+[[package]]
 name = "grpcio"
-version = "1.65.1"
+version = "1.65.4"
 requires_python = ">=3.8"
 summary = "HTTP/2-based RPC framework"
 groups = ["default"]
 files = [
-    {file = "grpcio-1.65.1-cp312-cp312-linux_armv7l.whl", hash = "sha256:54cb822e177374b318b233e54b6856c692c24cdbd5a3ba5335f18a47396bac8f"},
-    {file = "grpcio-1.65.1-cp312-cp312-macosx_10_9_universal2.whl", hash = "sha256:aaf3c54419a28d45bd1681372029f40e5bfb58e5265e3882eaf21e4a5f81a119"},
-    {file = "grpcio-1.65.1-cp312-cp312-manylinux_2_17_aarch64.whl", hash = "sha256:557de35bdfbe8bafea0a003dbd0f4da6d89223ac6c4c7549d78e20f92ead95d9"},
-    {file = "grpcio-1.65.1-cp312-cp312-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:8bfd95ef3b097f0cc86ade54eafefa1c8ed623aa01a26fbbdcd1a3650494dd11"},
-    {file = "grpcio-1.65.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:9e6a8f3d6c41e6b642870afe6cafbaf7b61c57317f9ec66d0efdaf19db992b90"},
-    {file = "grpcio-1.65.1-cp312-cp312-musllinux_1_1_i686.whl", hash = "sha256:1faaf7355ceed07ceaef0b9dcefa4c98daf1dd8840ed75c2de128c3f4a4d859d"},
-    {file = "grpcio-1.65.1-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:60f1f38eed830488ad2a1b11579ef0f345ff16fffdad1d24d9fbc97ba31804ff"},
-    {file = "grpcio-1.65.1-cp312-cp312-win32.whl", hash = "sha256:e75acfa52daf5ea0712e8aa82f0003bba964de7ae22c26d208cbd7bc08500177"},
-    {file = "grpcio-1.65.1-cp312-cp312-win_amd64.whl", hash = "sha256:ff5a84907e51924973aa05ed8759210d8cdae7ffcf9e44fd17646cf4a902df59"},
-    {file = "grpcio-1.65.1.tar.gz", hash = "sha256:3c492301988cd720cd145d84e17318d45af342e29ef93141228f9cd73222368b"},
+    {file = "grpcio-1.65.4-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:74c34fc7562bdd169b77966068434a93040bfca990e235f7a67cdf26e1bd5c63"},
+    {file = "grpcio-1.65.4.tar.gz", hash = "sha256:2a4f476209acffec056360d3e647ae0e14ae13dcf3dfb130c227ae1c594cbe39"},
 ]
 
 [[package]]
 name = "grpcio-tools"
-version = "1.62.2"
-requires_python = ">=3.7"
+version = "1.65.4"
+requires_python = ">=3.8"
 summary = "Protobuf code generator for gRPC"
 groups = ["default"]
 dependencies = [
-    "grpcio>=1.62.2",
-    "protobuf<5.0dev,>=4.21.6",
+    "grpcio>=1.65.4",
+    "protobuf<6.0dev,>=5.26.1",
     "setuptools",
 ]
 files = [
-    {file = "grpcio-tools-1.62.2.tar.gz", hash = "sha256:5fd5e1582b678e6b941ee5f5809340be5e0724691df5299aae8226640f94e18f"},
-    {file = "grpcio_tools-1.62.2-cp312-cp312-linux_armv7l.whl", hash = "sha256:10cc3321704ecd17c93cf68c99c35467a8a97ffaaed53207e9b2da6ae0308ee1"},
-    {file = "grpcio_tools-1.62.2-cp312-cp312-macosx_10_10_universal2.whl", hash = "sha256:9be84ff6d47fd61462be7523b49d7ba01adf67ce4e1447eae37721ab32464dd8"},
-    {file = "grpcio_tools-1.62.2-cp312-cp312-manylinux_2_17_aarch64.whl", hash = "sha256:d82f681c9a9d933a9d8068e8e382977768e7779ddb8870fa0cf918d8250d1532"},
-    {file = "grpcio_tools-1.62.2-cp312-cp312-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:04c607029ae3660fb1624ed273811ffe09d57d84287d37e63b5b802a35897329"},
-    {file = "grpcio_tools-1.62.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:72b61332f1b439c14cbd3815174a8f1d35067a02047c32decd406b3a09bb9890"},
-    {file = "grpcio_tools-1.62.2-cp312-cp312-musllinux_1_1_i686.whl", hash = "sha256:8214820990d01b52845f9fbcb92d2b7384a0c321b303e3ac614c219dc7d1d3af"},
-    {file = "grpcio_tools-1.62.2-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:462e0ab8dd7c7b70bfd6e3195eebc177549ede5cf3189814850c76f9a340d7ce"},
-    {file = "grpcio_tools-1.62.2-cp312-cp312-win32.whl", hash = "sha256:fa107460c842e4c1a6266150881694fefd4f33baa544ea9489601810c2210ef8"},
-    {file = "grpcio_tools-1.62.2-cp312-cp312-win_amd64.whl", hash = "sha256:759c60f24c33a181bbbc1232a6752f9b49fbb1583312a4917e2b389fea0fb0f2"},
+    {file = "grpcio_tools-1.65.4-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6da3adf692b55fb52019b79294a6b4b6833186b2fa68186e7cc993a53b232982"},
+    {file = "grpcio_tools-1.65.4.tar.gz", hash = "sha256:638486d9ebf68a847f59dad0480292142a3c5143a2943bce7721c3ce9f665148"},
 ]
 
 [[package]]
@@ -1161,7 +1144,7 @@ files = [
 
 [[package]]
 name = "mem0ai"
-version = "0.0.9"
+version = "0.0.11"
 requires_python = "<4.0,>=3.8"
 summary = "Long-term memory for AI Agents"
 groups = ["default"]
@@ -1169,11 +1152,13 @@ dependencies = [
     "openai<2.0.0,>=1.33.0",
     "posthog<4.0.0,>=3.5.0",
     "pydantic<3.0.0,>=2.7.3",
+    "pytz<2025.0,>=2024.1",
     "qdrant-client<2.0.0,>=1.9.1",
+    "sqlalchemy<3.0.0,>=2.0.31",
 ]
 files = [
-    {file = "mem0ai-0.0.9-py3-none-any.whl", hash = "sha256:d4de435729af4fd3d597d022ffb2af89a0630d6c3b4769792bbe27d2ce816858"},
-    {file = "mem0ai-0.0.9.tar.gz", hash = "sha256:e4374d5d04aa3f543cd3325f700e4b62f5358ae1c6fa5c44b2ff790c10c4e5f1"},
+    {file = "mem0ai-0.0.11-py3-none-any.whl", hash = "sha256:e2e2103ad0b8661a6d5187d7a2967a69698f0dce313f26bc1ba5290349f8d752"},
+    {file = "mem0ai-0.0.11.tar.gz", hash = "sha256:52b255d8a31913dfcf9c26aa06c7c35723c190e0dea4f881b846e42af714ba64"},
 ]
 
 [[package]]
@@ -1228,14 +1213,7 @@ requires_python = ">=3.9"
 summary = "Fundamental package for array computing in Python"
 groups = ["default"]
 files = [
-    {file = "numpy-1.26.4-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:b3ce300f3644fb06443ee2222c2201dd3a89ea6040541412b8fa189341847218"},
-    {file = "numpy-1.26.4-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:03a8c78d01d9781b28a6989f6fa1bb2c4f2d51201cf99d3dd875df6fbd96b23b"},
-    {file = "numpy-1.26.4-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:9fad7dcb1aac3c7f0584a5a8133e3a43eeb2fe127f47e3632d43d677c66c102b"},
     {file = "numpy-1.26.4-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:675d61ffbfa78604709862923189bad94014bef562cc35cf61d3a07bba02a7ed"},
-    {file = "numpy-1.26.4-cp312-cp312-musllinux_1_1_aarch64.whl", hash = "sha256:ab47dbe5cc8210f55aa58e4805fe224dac469cde56b9f731a4c098b91917159a"},
-    {file = "numpy-1.26.4-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:1dda2e7b4ec9dd512f84935c5f126c8bd8b9f2fc001e9f54af255e8c5f16b0e0"},
-    {file = "numpy-1.26.4-cp312-cp312-win32.whl", hash = "sha256:50193e430acfc1346175fcbdaa28ffec49947a06918b7b92130744e81e640110"},
-    {file = "numpy-1.26.4-cp312-cp312-win_amd64.whl", hash = "sha256:08beddf13648eb95f8d867350f6a018a4be2e5ad54c8d8caed89ebca558b2818"},
     {file = "numpy-1.26.4.tar.gz", hash = "sha256:2a02aba9ed12e4ac4eb3ea9421c420301a0c6460d9830d74a9df87efa4912010"},
 ]
 
@@ -1308,37 +1286,22 @@ files = [
 ]
 
 [[package]]
-name = "opentelemetry-exporter-otlp-proto-common"
-version = "1.26.0"
-requires_python = ">=3.8"
-summary = "OpenTelemetry Protobuf encoding"
-groups = ["default"]
-dependencies = [
-    "opentelemetry-proto==1.26.0",
-]
-files = [
-    {file = "opentelemetry_exporter_otlp_proto_common-1.26.0-py3-none-any.whl", hash = "sha256:ee4d8f8891a1b9c372abf8d109409e5b81947cf66423fd998e56880057afbc71"},
-    {file = "opentelemetry_exporter_otlp_proto_common-1.26.0.tar.gz", hash = "sha256:bdbe50e2e22a1c71acaa0c8ba6efaadd58882e5a5978737a44a4c4b10d304c92"},
-]
-
-[[package]]
 name = "opentelemetry-exporter-otlp-proto-grpc"
-version = "1.26.0"
-requires_python = ">=3.8"
+version = "1.11.1"
+requires_python = ">=3.6"
 summary = "OpenTelemetry Collector Protobuf over gRPC Exporter"
 groups = ["default"]
 dependencies = [
-    "deprecated>=1.2.6",
+    "backoff<2.0.0,>=1.10.0",
     "googleapis-common-protos~=1.52",
     "grpcio<2.0.0,>=1.0.0",
-    "opentelemetry-api~=1.15",
-    "opentelemetry-exporter-otlp-proto-common==1.26.0",
-    "opentelemetry-proto==1.26.0",
-    "opentelemetry-sdk~=1.26.0",
+    "opentelemetry-api~=1.3",
+    "opentelemetry-proto==1.11.1",
+    "opentelemetry-sdk~=1.11",
 ]
 files = [
-    {file = "opentelemetry_exporter_otlp_proto_grpc-1.26.0-py3-none-any.whl", hash = "sha256:e2be5eff72ebcb010675b818e8d7c2e7d61ec451755b8de67a140bc49b9b0280"},
-    {file = "opentelemetry_exporter_otlp_proto_grpc-1.26.0.tar.gz", hash = "sha256:a65b67a9a6b06ba1ec406114568e21afe88c1cdb29c464f2507d529eb906d8ae"},
+    {file = "opentelemetry-exporter-otlp-proto-grpc-1.11.1.tar.gz", hash = "sha256:e34fc79c76e299622812da5fe37cfeffdeeea464007530488d824e6c413e6a58"},
+    {file = "opentelemetry_exporter_otlp_proto_grpc-1.11.1-py3-none-any.whl", hash = "sha256:7cabcf548604ab8156644bba0e9cb0a9c50561d621be39429e32581f5c8247a6"},
 ]
 
 [[package]]
@@ -1395,16 +1358,16 @@ files = [
 
 [[package]]
 name = "opentelemetry-proto"
-version = "1.26.0"
-requires_python = ">=3.8"
+version = "1.11.1"
+requires_python = ">=3.6"
 summary = "OpenTelemetry Python Proto"
 groups = ["default"]
 dependencies = [
-    "protobuf<5.0,>=3.19",
+    "protobuf>=3.13.0",
 ]
 files = [
-    {file = "opentelemetry_proto-1.26.0-py3-none-any.whl", hash = "sha256:6c4d7b4d4d9c88543bcf8c28ae3f8f0448a753dc291c18c5390444c90b76a725"},
-    {file = "opentelemetry_proto-1.26.0.tar.gz", hash = "sha256:c5c18796c0cab3751fc3b98dee53855835e90c0422924b484432ac852d93dc1e"},
+    {file = "opentelemetry-proto-1.11.1.tar.gz", hash = "sha256:5df0ec69510a9e2414c0410d91a698ded5a04d3dd37f7d2a3e119e3c42a30647"},
+    {file = "opentelemetry_proto-1.11.1-py3-none-any.whl", hash = "sha256:4d4663123b4777823aa533f478c6cef3ecbcf696d8dc6ac7fd6a90f37a01eafd"},
 ]
 
 [[package]]
@@ -1620,18 +1583,14 @@ files = [
 
 [[package]]
 name = "protobuf"
-version = "4.25.4"
+version = "5.27.3"
 requires_python = ">=3.8"
 summary = ""
 groups = ["default"]
 files = [
-    {file = "protobuf-4.25.4-cp310-abi3-win32.whl", hash = "sha256:db9fd45183e1a67722cafa5c1da3e85c6492a5383f127c86c4c4aa4845867dc4"},
-    {file = "protobuf-4.25.4-cp310-abi3-win_amd64.whl", hash = "sha256:ba3d8504116a921af46499471c63a85260c1a5fc23333154a427a310e015d26d"},
-    {file = "protobuf-4.25.4-cp37-abi3-macosx_10_9_universal2.whl", hash = "sha256:eecd41bfc0e4b1bd3fa7909ed93dd14dd5567b98c941d6c1ad08fdcab3d6884b"},
-    {file = "protobuf-4.25.4-cp37-abi3-manylinux2014_aarch64.whl", hash = "sha256:4c8a70fdcb995dcf6c8966cfa3a29101916f7225e9afe3ced4395359955d3835"},
-    {file = "protobuf-4.25.4-cp37-abi3-manylinux2014_x86_64.whl", hash = "sha256:3319e073562e2515c6ddc643eb92ce20809f5d8f10fead3332f71c63be6a7040"},
-    {file = "protobuf-4.25.4-py3-none-any.whl", hash = "sha256:bfbebc1c8e4793cfd58589acfb8a1026be0003e852b9da7db5a4285bde996978"},
-    {file = "protobuf-4.25.4.tar.gz", hash = "sha256:0dc4a62cc4052a036ee2204d26fe4d835c62827c855c8a03f29fe6da146b380d"},
+    {file = "protobuf-5.27.3-cp38-abi3-manylinux2014_x86_64.whl", hash = "sha256:a55c48f2a2092d8e213bd143474df33a6ae751b781dd1d1f4d953c128a415b25"},
+    {file = "protobuf-5.27.3-py3-none-any.whl", hash = "sha256:8572c6533e544ebf6899c360e91d6bcbbee2549251643d32c52cf8a5de295ba5"},
+    {file = "protobuf-5.27.3.tar.gz", hash = "sha256:82460903e640f2b7e34ee81a947fdaad89de796d324bcbc38ff5430bcdead82c"},
 ]
 
 [[package]]
@@ -2050,13 +2009,13 @@ files = [
 
 [[package]]
 name = "setuptools"
-version = "71.1.0"
+version = "72.1.0"
 requires_python = ">=3.8"
 summary = "Easily download, build, install, upgrade, and uninstall Python packages"
 groups = ["default"]
 files = [
-    {file = "setuptools-71.1.0-py3-none-any.whl", hash = "sha256:33874fdc59b3188304b2e7c80d9029097ea31627180896fb549c578ceb8a0855"},
-    {file = "setuptools-71.1.0.tar.gz", hash = "sha256:032d42ee9fb536e33087fb66cac5f840eb9391ed05637b3f2a76a7c8fb477936"},
+    {file = "setuptools-72.1.0-py3-none-any.whl", hash = "sha256:5a03e1860cf56bb6ef48ce186b0e557fdba433237481a9a625176c2831be15d1"},
+    {file = "setuptools-72.1.0.tar.gz", hash = "sha256:8d243eff56d095e5817f796ede6ae32941278f542e0f941867cc05ae52b162ec"},
 ]
 
 [[package]]
@@ -2111,6 +2070,23 @@ groups = ["default"]
 files = [
     {file = "soupsieve-2.5-py3-none-any.whl", hash = "sha256:eaa337ff55a1579b6549dc679565eac1e3d000563bcb1c8ab0d0fefbc0c2cdc7"},
     {file = "soupsieve-2.5.tar.gz", hash = "sha256:5663d5a7b3bfaeee0bc4372e7fc48f9cff4940b3eec54a6451cc5299f1097690"},
+]
+
+[[package]]
+name = "sqlalchemy"
+version = "2.0.31"
+requires_python = ">=3.7"
+summary = "Database Abstraction Library"
+groups = ["default"]
+dependencies = [
+    "greenlet!=0.4.17; (platform_machine == \"win32\" or platform_machine == \"WIN32\" or platform_machine == \"AMD64\" or platform_machine == \"amd64\" or platform_machine == \"x86_64\" or platform_machine == \"ppc64le\" or platform_machine == \"aarch64\") and python_version < \"3.13\"",
+    "importlib-metadata; python_version < \"3.8\"",
+    "typing-extensions>=4.6.0",
+]
+files = [
+    {file = "SQLAlchemy-2.0.31-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:74afabeeff415e35525bf7a4ecdab015f00e06456166a2eba7590e49f8db940e"},
+    {file = "SQLAlchemy-2.0.31-py3-none-any.whl", hash = "sha256:69f3e3c08867a8e4856e92d7afb618b95cdee18e0bc1647b77599722c9a28911"},
+    {file = "SQLAlchemy-2.0.31.tar.gz", hash = "sha256:b607489dd4a54de56984a0c7656247504bd5523d9d0ba799aef59d4add009484"},
 ]
 
 [[package]]
