@@ -20,7 +20,7 @@ dependencies = [
   "langchain-openai==0.1.20",
   "pillow==10.4.0",
   "binaryornot==0.4.4",
-  "mem0ai==0.0.13",
+  "mem0ai==0.0.14",
 ]
 requires-python = "==3.12.4"
 readme = "README.md"
