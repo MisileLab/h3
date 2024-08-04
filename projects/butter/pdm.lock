@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:bb006c7d18057e43148ab49c1d54c4120a718a8cde8c6f4c945db94c005396e3"
+content_hash = "sha256:20218d35cd0dbec6bb89ca66579b5e297cf15bbad486a23241d9a2689723417e"
 
 [[metadata.targets]]
 requires_python = "==3.12.4"
@@ -1100,7 +1100,7 @@ files = [
 
 [[package]]
 name = "litellm"
-version = "1.42.11"
+version = "1.42.12"
 requires_python = "!=2.7.*,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*,!=3.7.*,>=3.8"
 summary = "Library to easily interface with LLM API providers"
 groups = ["default"]
@@ -1118,8 +1118,8 @@ dependencies = [
     "tokenizers",
 ]
 files = [
-    {file = "litellm-1.42.11-py3-none-any.whl", hash = "sha256:42f44aff8755e857e1545efadd0647a65dc49a2ef94274b5eeb94f4cecbd2258"},
-    {file = "litellm-1.42.11.tar.gz", hash = "sha256:6b8af910ddcd2ffcfa65f2b1d7dd8b34a5da491d7ac61ea6041f89e8d3c8670a"},
+    {file = "litellm-1.42.12-py3-none-any.whl", hash = "sha256:63fa89457f70f21b522fc1be41e668c0492d1bc0949a50ec18542b3884517d40"},
+    {file = "litellm-1.42.12.tar.gz", hash = "sha256:63a1db91647ec5208a9e3282dd640c3a9e76cee788f6526105b52d312141d090"},
 ]
 
 [[package]]
@@ -1250,7 +1250,7 @@ files = [
 
 [[package]]
 name = "mem0ai"
-version = "0.0.13"
+version = "0.0.14"
 requires_python = "<4.0,>=3.8"
 summary = "Long-term memory for AI Agents"
 groups = ["default"]
@@ -1264,8 +1264,8 @@ dependencies = [
     "sqlalchemy<3.0.0,>=2.0.31",
 ]
 files = [
-    {file = "mem0ai-0.0.13-py3-none-any.whl", hash = "sha256:1bee4f8e881c8e282d1e644e46ff24ab7bcd5486091dd4fb11a1c4f826e5293c"},
-    {file = "mem0ai-0.0.13.tar.gz", hash = "sha256:9f1585125cbb154d777712cb2889d8627aafb7ccbca5a3ed1601701a709595be"},
+    {file = "mem0ai-0.0.14-py3-none-any.whl", hash = "sha256:8a6878529aad7742a66c31132ed5046baa85cb0191933cae7303eca029a3d429"},
+    {file = "mem0ai-0.0.14.tar.gz", hash = "sha256:5ae281007ecfed67c1f18ef9226b9617390a163c68a4e2972476cf4f6a131439"},
 ]
 
 [[package]]
@@ -2307,7 +2307,7 @@ files = [
 
 [[package]]
 name = "tqdm"
-version = "4.66.4"
+version = "4.66.5"
 requires_python = ">=3.7"
 summary = "Fast, Extensible Progress Meter"
 groups = ["default"]
@@ -2315,8 +2315,8 @@ dependencies = [
     "colorama; platform_system == \"Windows\"",
 ]
 files = [
-    {file = "tqdm-4.66.4-py3-none-any.whl", hash = "sha256:b75ca56b413b030bc3f00af51fd2c1a1a5eac6a0c1cca83cbb37a5c52abce644"},
-    {file = "tqdm-4.66.4.tar.gz", hash = "sha256:e4d936c9de8727928f3be6079590e97d9abfe8d39a590be678eb5919ffc186bb"},
+    {file = "tqdm-4.66.5-py3-none-any.whl", hash = "sha256:90279a3770753eafc9194a0364852159802111925aa30eb3f9d85b0e805ac7cd"},
+    {file = "tqdm-4.66.5.tar.gz", hash = "sha256:e1020aef2e5096702d8a025ac7d16b1577279c9d63f8375b63083e9a5f0fcbad"},
 ]
 
 [[package]]
