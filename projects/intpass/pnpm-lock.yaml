@@ -18,8 +18,8 @@ dependencies:
     specifier: 3.11.6
     version: 3.11.6
   nanostores:
-    specifier: 0.10.3
-    version: 0.10.3
+    specifier: 0.11.0
+    version: 0.11.0
   tailwindcss:
     specifier: 3.4.7
     version: 3.4.7
@@ -2722,8 +2722,8 @@ packages:
     hasBin: true
     dev: false
 
-  /nanostores@0.10.3:
-    resolution: {integrity: sha512-Nii8O1XqmawqSCf9o2aWqVxhKRN01+iue9/VEd1TiJCr9VT5XxgPFbF1Edl1XN6pwJcZRsl8Ki+z01yb/T/C2g==}
+  /nanostores@0.11.0:
+    resolution: {integrity: sha512-fT2u3vmWmUt93G9dmUgpnbs3AAYJb6lzu7KrJ1FdC/rjFopGiboS3bfKYv6NNkuY6g6eiRakTR48wKSL/F5C+g==}
     engines: {node: ^18.0.0 || >=20.0.0}
     dev: false
 
