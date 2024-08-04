@@ -30,8 +30,8 @@ importers:
         specifier: 1.11.12
         version: 1.11.12
       nanostores:
-        specifier: 0.10.3
-        version: 0.10.3
+        specifier: 0.11.0
+        version: 0.11.0
       sharp:
         specifier: 0.33.4
         version: 0.33.4
@@ -1549,8 +1549,8 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  nanostores@0.10.3:
-    resolution: {integrity: sha512-Nii8O1XqmawqSCf9o2aWqVxhKRN01+iue9/VEd1TiJCr9VT5XxgPFbF1Edl1XN6pwJcZRsl8Ki+z01yb/T/C2g==}
+  nanostores@0.11.0:
+    resolution: {integrity: sha512-fT2u3vmWmUt93G9dmUgpnbs3AAYJb6lzu7KrJ1FdC/rjFopGiboS3bfKYv6NNkuY6g6eiRakTR48wKSL/F5C+g==}
     engines: {node: ^18.0.0 || >=20.0.0}
 
   nlcst-to-string@4.0.0:
@@ -4126,7 +4126,7 @@ snapshots:
 
   nanoid@3.3.7: {}
 
-  nanostores@0.10.3: {}
+  nanostores@0.11.0: {}
 
   nlcst-to-string@4.0.0:
     dependencies:
