@@ -48,6 +48,7 @@
         gdiff = "${git}/bin/git diff | ${delta}/bin/delta";
 	      nv = "${lunarvim}/bin/lvim";
         lv = "${lunarvim}/bin/lvim";
+        hx = "${lunarvim}/bin/lvim";
       };
       shellInit = with pkgs; ''
         fish_add_path -m ~/.cargo/bin

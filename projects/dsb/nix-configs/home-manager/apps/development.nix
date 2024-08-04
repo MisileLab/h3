@@ -15,7 +15,7 @@
       rustup cargo-update
       python312Full micromamba pdm mypy ruff-lsp
       nasm
-      tailwindcss-language-server deno volta
+      tailwindcss-language-server volta deno
       hvm kind2
       clang-tools lldb pkg-config
       # https://github.com/NixOS/nixpkgs/issues/331240
