@@ -13,38 +13,38 @@ in
   wayland.windowManager.sway = {
     enable = true;
     extraConfigEarly = ''
-      input type:touchpad {
-        tap enabled
-        natural_scroll enabled
-      }
+input type:touchpad {
+  tap enabled
+  natural_scroll enabled
+}
 
-      blur enable
-      blur_xray enable
-      blur_radius 10
-      corner_radius 8
-      blur_passes 4
-      shadows enable
-      
-      for_window [class=".*"] opacity 0.9
-      for_window [app_id=".*"] opacity 0.9
-      for_window [class=".*"] inhibit_idle fullscreen
-      for_window [app_id=".*"] inhibit_idle fullscreen
-      for_window [instance="GalaxyBudsClient"] floating enable
-      
-      bindsym Print exec ${pkgs.sway-contrib.grimshot}/bin/grimshot --notify copy area
-      bindsym Shift+Print	exec ${pkgs.sway-contrib.grimshot}/bin/grimshot --notify copy screen
-      bindsym Shift+Alt+Print exec ${pkgs.sway-contrib.grimshot}/bin/grimshot --notify savecopy anything
-      bindsym Alt+Print exec ${pkgs.sway-contrib.grimshot}/bin/grimshot --notify save area
-      
-      bindsym XF86AudioRaiseVolume exec ${pkgs.avizo}/bin/volumectl -u up
-      bindsym XF86AudioLowerVolume exec ${pkgs.avizo}/bin/volumectl -u down
-      bindsym XF86AudioMute exec ${pkgs.avizo}/bin/volumectl toggle-mute
-      bindsym XF86AudioMicMute exec ${pkgs.avizo}/bin/volumectl -m toggle-mute
-      bindsym XF86MonBrightnessUp exec ${pkgs.avizo}/bin/lightctl up
-      bindsym XF86MonBrightnessDown exec ${pkgs.avizo}/bin/lightctl down
+blur enable
+blur_xray enable
+blur_radius 10
+corner_radius 8
+blur_passes 4
+shadows enable
 
-      bindsym Mod4+y exec ${pkgs.clipman}/bin/clipman pick --tool="rofi" --max-items=30
-      bindsym Mod4+shift+y exec ${pkgs.swayfx}/bin/swaynag --type warning -m 'You want to clear clipboard?' -b 'Yes' 'exec ${pkgs.clipman}/bin/clipman clear --all'
+for_window [class=".*"] opacity 0.9
+for_window [app_id=".*"] opacity 0.9
+for_window [class=".*"] inhibit_idle fullscreen
+for_window [app_id=".*"] inhibit_idle fullscreen
+for_window [instance="GalaxyBudsClient"] floating enable
+
+bindsym Print exec ${pkgs.sway-contrib.grimshot}/bin/grimshot --notify copy area
+bindsym Shift+Print	exec ${pkgs.sway-contrib.grimshot}/bin/grimshot --notify copy screen
+bindsym Shift+Alt+Print exec ${pkgs.sway-contrib.grimshot}/bin/grimshot --notify savecopy anything
+bindsym Alt+Print exec ${pkgs.sway-contrib.grimshot}/bin/grimshot --notify save area
+
+bindsym XF86AudioRaiseVolume exec ${pkgs.avizo}/bin/volumectl -u up
+bindsym XF86AudioLowerVolume exec ${pkgs.avizo}/bin/volumectl -u down
+bindsym XF86AudioMute exec ${pkgs.avizo}/bin/volumectl toggle-mute
+bindsym XF86AudioMicMute exec ${pkgs.avizo}/bin/volumectl -m toggle-mute
+bindsym XF86MonBrightnessUp exec ${pkgs.avizo}/bin/lightctl up
+bindsym XF86MonBrightnessDown exec ${pkgs.avizo}/bin/lightctl down
+
+bindsym Mod4+y exec ${pkgs.clipman}/bin/clipman pick --tool="rofi" --max-items=30
+bindsym Mod4+shift+y exec ${pkgs.swayfx}/bin/swaynag --type warning -m 'You want to clear clipboard?' -b 'Yes' 'exec ${pkgs.clipman}/bin/clipman clear --all'
     '';
     config = {
       bars = [];
