@@ -35,54 +35,35 @@ def preload(callback: Callable):
 m: Memory = preload(lambda: Memory.from_config(config))
 
 @print_it
-def non_async_update_memory(id: str, content: str):
-  return preload(lambda: m.update(id, content))
-
-@print_it
-def non_async_save_memory(username: str, content: str):
+def save_memory(content: str, username: str | None = None):
   return preload(lambda: m.add(content, username))
 
 @print_it
-def non_async_get_all_memories():
-  return preload(lambda: m.get_all())
+def get_all_memories(username: str | None = None):
+  return preload(lambda: m.get_all(username))
 
 @print_it
-def non_async_delete_memory(id: str):
+def get_memory(id: str):
+  return preload(lambda: m.get(id))
+
+@print_it
+def search_memory(query: str, username: str | None = None):
+  return preload(lambda: m.search(query, username, limit=10))
+
+@print_it
+def update_memory(id: str, content: str):
+  return preload(lambda: m.update(id, content))
+
+@print_it
+def get_memory_history(id: str):
+  return preload(lambda: m.history(id))
+
+@print_it
+def delete_memory(id: str):
   return preload(lambda: m.delete(id))
 
-@print_it
-async def save_memory(content: str, username: str | None = None):
-  logger.debug(preload(lambda: m.add(content, username)))
-  return 'success'
-
-@print_it
-async def get_all_memories(username: str | None = None):
-  return str(preload(lambda: m.get_all(username)))
-
-@print_it
-async def get_memory(id: str):
-  return str(preload(lambda: m.get(id)))
-
-@print_it
-async def search_memory(query: str, username: str | None = None):
-  return str(preload(lambda: m.search(query, username, limit=10)))
-
-@print_it
-async def update_memory(id: str, content: str):
-  logger.debug(preload(lambda: m.update(id, content)))
-  return 'success'
-
-@print_it
-async def get_memory_history(id: str):
-  return str(preload(lambda: m.history(id)))
-
-@print_it
-async def delete_memory(id: str):
-  logger.debug(preload(lambda: m.delete(id)))
-  return 'success'
-
 class saveMemoryBase(BaseModel):
-  """Save memory"""
+  """Save memory and returns id of memory"""
   content: str = Field(..., content="The content of the memory")
   username: str | None = Field(None, content="The most related user's username")
 

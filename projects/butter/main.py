@@ -1,6 +1,7 @@
+from inspect import iscoroutinefunction
 from modules.llm_function import middle_prompt, llm_mini
 from modules.llm import api_key, llm, functions, middle_converting_functions
-from modules.memory import print_it, non_async_save_memory, non_async_get_all_memories, non_async_update_memory, non_async_delete_memory
+from modules.memory import print_it, save_memory, get_all_memories, update_memory, delete_memory
 from modules.config import config
 from langchain_core.messages import HumanMessage, AIMessage, SystemMessage, ToolMessage
 
@@ -116,7 +117,13 @@ async def generate_message(content, _):
       break
     for i in gathered.tool_calls: # type: ignore gathered is ai's message
       logger.info(f"calling {i["name"]}")
-      messages.append(ToolMessage(tool_call_id=i["id"], content=await middle_converting_functions[functions[i["name"]]](**i["args"])))
+      f = middle_converting_functions[functions[i["name"]]]
+      if iscoroutinefunction(f):
+        func_response = await f(**i["args"])
+      else:
+        func_response = f(**i["args"])
+      func_response = str(func_response)
+      messages.append(ToolMessage(tool_call_id=i["id"], content=func_response))
   if len(messages) >= 70:
     tmp_messages = messages[1:60]
     while tmp_messages[-1].__class__ in [ToolMessage, HumanMessage]:
@@ -172,9 +179,9 @@ with gr.Blocks() as frontend:
     reset_history = gr.Button("Reset History", variant="stop")
     reset_history.click(reset)
     
-    df = gr.Dataframe(label="memories", headers=["id", "created_at", "user", "text"], datatype=["str", "date", "str", "str"], value=process_memories(non_async_get_all_memories()))
+    df = gr.Dataframe(label="memories", headers=["id", "created_at", "user", "text"], datatype=["str", "date", "str", "str"], value=process_memories(get_all_memories()))
     refresh = gr.Button("Refresh", variant="secondary")
-    refresh.click(lambda: process_memories(non_async_get_all_memories()), None, df)
+    refresh.click(lambda: process_memories(get_all_memories()), None, df)
     
     memory_id = gr.Textbox(label="id of memory that modify", value=temp["memory_id"]) # type: ignore temp not unbound
     memory_id.change(lambda x: temp.__setitem__("memory_id", x), memory_id)
@@ -186,13 +193,13 @@ with gr.Blocks() as frontend:
     memory_user.change(lambda x: temp.__setitem__("memory_user", x), memory_user)
     
     memory_save = gr.Button("Save", variant="primary")
-    memory_save.click(lambda: non_async_save_memory(temp["memory_user"], temp["memory_content"]))
+    memory_save.click(lambda: save_memory(temp["memory_user"], temp["memory_content"]))
     
     memory_update = gr.Button("Update", variant="primary")
-    memory_update.click(lambda: non_async_update_memory(temp["memory_id"], temp["memory_content"]))
+    memory_update.click(lambda: update_memory(temp["memory_id"], temp["memory_content"]))
     
     memory_delete = gr.Button("Delete", variant="stop")
-    memory_delete.click(lambda: non_async_delete_memory(temp["memory_id"]))
+    memory_delete.click(lambda: delete_memory(temp["memory_id"]))
   frontend.load(lambda: [user, prompt, middle_prompt, summarize_prompt], None, [user_input, prompt_input, middle_prompt_input, summarize_prompt_input])
 
 frontend.launch(show_error=True, show_api=True, auth=(config['auth']['id'], config['auth']['password']), server_name='0.0.0.0')
