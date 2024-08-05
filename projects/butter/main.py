@@ -48,7 +48,7 @@ def process_memories(memories: list[dict]):
     tmp = i["metadata"].get("created_at", None)
     if tmp is None:
       tmp = i["metadata"].get("updated_at", None)
-    a.append([i["id"], datetime.fromtimestamp(tmp), i["metadata"].get("user_id", None), i["text"]])
+    a.append([i["id"], datetime.fromtimestamp(tmp), i["metadata"].get("user_id", None) if i["metadata"] is not None else i["user_id"], i["text"]])
   return a
 
 def convert_to_real_content(content_text, content_files, voice, user):
