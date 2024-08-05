@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Request, status, Header, HTTPException
+from fastapi import Path as FPath
 from fastapi.middleware.cors import CORSMiddleware
 from edgedb import create_async_client
 from jwt import decode, encode, exceptions
@@ -30,15 +31,20 @@ async def check_dupe(userid: str) -> bool:
   return await db.query("select User {id} filter .userid = <str>$userid", userid=userid) != []
 
 @app.get("/check/{userid}")
-async def check(request: Request, userid: str) -> bool:
+async def check(userid: str = FPath(description="user's id")) -> bool:
+  """check user's id is duplicated or not"""
   return await check_dupe(userid)
 
 @app.post("/login")
 async def login(
-  request: Request,
-  userid: Annotated[str | None, Header(alias="id")] = None,
-  pw: Annotated[str | None, Header()] = None
+  userid: Annotated[str | None, Header(alias="id", description="user's id")] = None,
+  pw: Annotated[str | None, Header(description="user's password")] = None
 ) -> str:
+  """
+  login with user's id and password.
+  if header is invalid, return 400
+  if login failed, return 401
+  """
   if userid is None or pw is None:
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
   if await db.query("select User {id} filter .userid = <str>$userid and .pw = <str>$pw", userid=userid,pw=(sha3_256(pw.encode('utf8'))).hexdigest()) == []:
@@ -47,9 +53,13 @@ async def login(
 
 @app.post("/verify")
 async def verify(
-  request: Request,
-  jwtv: Annotated[str | None, Header(alias="jwt")] = None
+  jwtv: Annotated[str | None, Header(alias="jwt", description="auth jwt value")] = None
 ):
+  """
+  verify jwt is valid
+  if header is invalid or jwt failed to decode, return 400
+  if signature expired, return 403
+  """
   if jwtv is None:
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
   try:
@@ -63,10 +73,14 @@ async def verify(
 
 @app.post("/register")
 async def register(
-  request: Request,
-  userid: Annotated[str | None, Header(alias="id")] = None,
-  pw: Annotated[str | None, Header()] = None
+  userid: Annotated[str | None, Header(alias="id", description="user's id")] = None,
+  pw: Annotated[str | None, Header(description="user's password")] = None
 ):
+  """
+  register with id and password
+  if header is invalid, return 400
+  if same id exists, return 409
+  """
   if userid is None or pw is None:
     return HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
   if await check_dupe(userid):

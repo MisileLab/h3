@@ -1,7 +1,7 @@
 [project]
 name = "schale"
 version = "0.1.0"
-description = "Default template for PDM package"
+description = "Auth daemon"
 authors = [
   {name = "MisileLaboratory", email = "misileminecord@gmail.com"},
 ]
