@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, status, Header, HTTPException
+from fastapi import FastAPI, status, Header, HTTPException
 from fastapi import Path as FPath
 from fastapi.middleware.cors import CORSMiddleware
 from edgedb import create_async_client
@@ -32,7 +32,9 @@ async def check_dupe(userid: str) -> bool:
 
 @app.get("/check/{userid}")
 async def check(userid: str = FPath(description="user's id")) -> bool:
-  """check user's id is duplicated or not"""
+  """
+  returns check user's id is duplicated or not
+  """
   return await check_dupe(userid)
 
 @app.post("/login")
@@ -42,8 +44,9 @@ async def login(
 ) -> str:
   """
   login with user's id and password.
-  if header is invalid, return 400
-  if login failed, return 401
+  if header is invalid, status code is 400
+  if login failed, status code is 401
+  returns encoded jwt {'exp': expire unix timestamp, 'id': userid}
   """
   if userid is None or pw is None:
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
@@ -54,11 +57,12 @@ async def login(
 @app.post("/verify")
 async def verify(
   jwtv: Annotated[str | None, Header(alias="jwt", description="auth jwt value")] = None
-):
+) -> str:
   """
-  verify jwt is valid
-  if header is invalid or jwt failed to decode, return 400
-  if signature expired, return 403
+  verify jwt is valid (please use on server, not client)
+  if header is invalid or jwt failed to decode, status code is 400
+  if signature expired, status code is 403
+  returns id of jwt 
   """
   if jwtv is None:
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)

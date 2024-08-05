@@ -22,7 +22,7 @@ export default function Gpg() {
         jwt: getCookie('jwt')
       }
     })
-    setgpgs(await r.text() as unknown as KeyStore[])
+    setgpgs(JSON.parse(await r.text()) as unknown as KeyStore[])
   })
   return (
     <div class="w-screen h-screen bg-ctp-crust flex justify-center items-center">
