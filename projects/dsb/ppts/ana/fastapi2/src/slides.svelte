@@ -73,7 +73,7 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse
 
 app = FastAPI()
-url = "https://xml.misile.xyz/noa/file/test/ny64issus.png"
+url = "https://xml.misile.xyz/noa/f/file/test/ny64issus.png"
 
 @app.get("/external-api")
 async def call_external_api():

@@ -17,5 +17,5 @@ export default defineConfig({
   build: {
     target: 'esnext',
   },
-  base: '/noa'
+  base: '/noa/f'
 });
