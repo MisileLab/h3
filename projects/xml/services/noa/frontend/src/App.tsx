@@ -31,7 +31,7 @@ export default function App() {
   createEffect(async ()=>{
     let r = await fetch(`${backendurl}/files`, {
       headers: {
-        "path": params.path
+        "path": params.path.slice("/noa/f".length)
       }
     });
     if (statusCheck(r)) {return;}
