@@ -9,6 +9,6 @@ Services -> ./services
 
 ## Services
 
-- Noa (New Object Archiver) (tor, noa.misile.xyz)
-- Schale (Auth daemon) (tor, auth.misile.xyz)
+- Noa (New Object Archiver) (tor, xml.misile.xyz/noa)
+- Schale (Auth daemon) (tor, xml.misile.xyz/schale)
 

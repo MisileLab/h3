@@ -14,7 +14,7 @@ TIMEOUT = timedelta(weeks=4) # four weeks
 ALG = "HS256"
 ORIGINS = ["null", "*"]
 
-app = FastAPI()
+app = FastAPI(root_path="/schale/api")
 app.add_middleware(
   CORSMiddleware,
   allow_origins=ORIGINS,

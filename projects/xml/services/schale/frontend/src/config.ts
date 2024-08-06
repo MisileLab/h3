@@ -2,7 +2,7 @@ export interface Data {
   status: number
 }
 
-export const backendurl = import.meta.env.PROD ? (location.hostname.includes(".onion") ? "http://zcif36gyercekeitpfb24e7hrzstzwzbhxh22shcn2emsv2vhaf6cdad.onion" : "https://schale.misile.xyz") : "http://127.0.0.1:10001"
+export const backendurl = import.meta.env.PROD ? (location.hostname.includes(".onion") ? "http://2vbh4msbvvbzo6wlzzsj3zeztjbh4fubh6h2lhqdh5xgpjs2hs7js2yd.onion/schale/api" : "https://xml.misile.xyz/schale/api") : "http://127.0.0.1:10001/schale/api"
 export const host = location.protocol + "//" + location.hostname;
 
 export default function statusCheck(r: Data) {

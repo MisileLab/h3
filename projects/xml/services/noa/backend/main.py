@@ -15,11 +15,11 @@ from shutil import copyfileobj
 if not isdir("files"):
   mkdir("files")
 
-SCHALE_URL = "https://schale.misile.xyz"
+SCHALE_URL = "https://xml.misile.xyz/schale/api"
 ROOT_PATH = join(getcwd(), "files")
 ORIGINS = ["null","*"]
 
-app = FastAPI()
+app = FastAPI(root_path="/noa/api")
 app.add_middleware(
   CORSMiddleware,
   allow_origins=ORIGINS,
@@ -52,7 +52,7 @@ class Group(BaseModel):
 async def get_gpg(jwtv: Annotated[str, Header(alias="jwt", description="auth jwt")] = "") -> list[Group]:
   """
   returns list of group
-  status code follows https://noa.misile.xyz/verify
+  status code follows https://xml.misile.xyz/noa/api/verify
   """
   resp = loads(await db.query_json("select User {groups} filter .userid = <str>$userid", userid=verify_jwt(jwtv)))
   return [Group(name = i["name"], pubkey = i["pubkey"]) for i in resp["groups"]]
@@ -84,7 +84,7 @@ async def upload_file(
   path: Annotated[str | None, Header(description="parent path of file")] = None
 ):
   """
-  status code follows https://noa.misile.xyz/verify, and below codes added.
+  status code follows https://xml.misile.xyz/noa/api/verify, and below codes added.
   if user isn't admin, status code is 403
   if path isn't safe, status code is 400
   if file exists, status code is 409
