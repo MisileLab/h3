@@ -34,7 +34,7 @@ import Head from "../components/head.astro";
         <input type="text" placeholder="id" class="bg-ctp-mantle border-solid border-2 border-ctp-overlay0 placeholder:text-ctp-text pl-1" id="id" />
         <input type="password" placeholder="password" class="bg-ctp-mantle border-solid border-2 border-ctp-overlay0 placeholder:text-ctp-text pl-1" id="pw" />
         <button class="border-ctp-overlay0 border-solid border-2 w-full" id="login" >Login</button>
-        <a href="/register" class="w-full text-ctp-blue">No account? Click & Register</a>
+        <a href={import.meta.env.PROD?"/schale/f/register":"/register"} class="w-full text-ctp-blue">No account? Click & Register</a>
       </div>
     </div>
   </div>
