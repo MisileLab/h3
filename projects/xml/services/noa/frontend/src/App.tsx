@@ -26,7 +26,7 @@ export function FileName(name: string, path: string, isDir: boolean) {
 
 export default function App() {
   const params = useParams();
-  const location = createMemo(()=>useLocation());
+  const pathname = createMemo(()=>useLocation().pathname.slice("/noa/f".length))
   let [res, setRes] = createSignal<File[]>([]);
   createEffect(async ()=>{
     let r = await fetch(`${backendurl}/files`, {
