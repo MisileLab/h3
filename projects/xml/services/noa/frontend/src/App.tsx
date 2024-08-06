@@ -17,7 +17,7 @@ export function Icon(props: {isDirectory: boolean}): JSX.Element {
 export function FileName(name: string, path: string, isDir: boolean) {
   if (path.startsWith("/")) {path=path.slice(1)}
   return (
-    <a href={`${isDir?host:`${backendurl}/file`}/${path===""?"":`${path}/`}${name}`} class="flex flex-row items-center gap-1">
+    <a href={`${isDir?`${host}/noa/f`:`${backendurl}/file`}/${path===""?"":`${path}/`}${name}`} class="flex flex-row items-center gap-1">
       <Icon isDirectory={isDir} />
       <span class="text-ctp-sky">{name}</span>
     </a>
