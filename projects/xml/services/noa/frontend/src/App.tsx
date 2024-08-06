@@ -39,18 +39,18 @@ export default function App() {
   });
   return (
     <div class="w-screen h-screen bg-ctp-crust flex justify-center items-center">
-      <Title>{pathname}</Title>
+      <Title>{pathname()}</Title>
       <div class="border-ctp-overlay0 border-solid border-2 w-fit h-fit flex flex-row gap-2 p-4 text-ctp-text">
         <div class="flex flex-col grow gap-2">
           <p class="font-bold">Name</p>
-          {pathname != "/" && FileName("..", "..", true)}
+          {pathname() != "/" && FileName("..", "..", true)}
           <For each={res()}>
             {(i,_) => FileName(i.name, params.path, i.dir)}
           </For>
         </div>
         <div class="flex flex-col gap-2">
           <p class="font-bold">Size (Bytes)</p>
-          {pathname != "/" && <p>dir</p>}
+          {pathname() != "/" && <p>dir</p>}
           <For each={res()}>
             {(i,_) => <p>{!i.dir ? i.size : "dir"}</p>}
           </For>
