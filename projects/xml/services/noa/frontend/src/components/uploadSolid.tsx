@@ -11,7 +11,7 @@ export default function uploadButton() {
     const {schale_url, host, backendurl: _backendurl} = getUrls();
     backendurl = _backendurl;
     if (getCookie("jwt") === null) {
-      window.location.href = `${schale_url}?redirect=${host}/upload`;
+      window.location.href = `${schale_url}?redirect=${host}/noa/f/upload`;
     }
     if (new URLSearchParams(window.location.search).get("jwt") !== null) {
       setCookie("jwt", new URLSearchParams(window.location.search).get("jwt") || "", 21);

@@ -19,7 +19,7 @@ import Default from "../components/default.astro"
       setCookie("jwt", jwt, 21);
     }
     if (getCookie("jwt") === null) {
-      window.location.href = `${schale_url}/?redirect=${host}/noa/f/gpg`;
+      window.location.href = `${schale_url}?redirect=${host}/noa/f/gpg`;
     }
     let r = await fetch(`${backendurl}/`, {
       headers: {
@@ -27,7 +27,7 @@ import Default from "../components/default.astro"
       }
     })
     if (r.status === 400 || r.status === 403) {
-      window.location.href = `${schale_url}/?redirect=${host}/noa/f/gpg`;
+      window.location.href = `${schale_url}?redirect=${host}/noa/f/gpg`;
     }
     let keys: KeyStore[] = await r.json();
     const gpgs = queryId("gpgs");
