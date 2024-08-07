@@ -2,7 +2,7 @@ export interface Data {
   status: number
 }
 
-export const backendurl = import.meta.env.PROD ? (location.hostname.includes(".onion") ? "http://2vbh4msbvvbzo6wlzzsj3zeztjbh4fubh6h2lhqdh5xgpjs2hs7js2yd.onion/noa/api" : "https://xml.misile.xyz/noa/api") : "http://127.0.0.1:8000/noa/api"
+export const backendurl = location.hostname.includes(".onion") ? "http://2vbh4msbvvbzo6wlzzsj3zeztjbh4fubh6h2lhqdh5xgpjs2hs7js2yd.onion/noa/api" : "https://xml.misile.xyz/noa/api"
 export const host = location.protocol + "//" + location.host;
 export const schale_url = location.hostname.includes(".onion") ? "http://2vbh4msbvvbzo6wlzzsj3zeztjbh4fubh6h2lhqdh5xgpjs2hs7js2yd.onion/schale/f" : "https://xml.misile.xyz/schale/f"
 export function setCookie(name: string, value: string, days: number) {
