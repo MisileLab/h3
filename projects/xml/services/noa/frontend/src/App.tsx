@@ -1,5 +1,5 @@
 import { Title } from "@solidjs/meta";
-import { useLocation, useParams, useSearchParams } from "@solidjs/router";
+import { useSearchParams } from "@solidjs/router";
 import { VsFolder, VsFile } from "solid-icons/vs";
 import { For, JSX, createEffect, createMemo, createSignal } from "solid-js";
 import statusCheck, { backendurl, host } from "./config";
@@ -46,13 +46,12 @@ function simplifyUrl(url: string) {
 export function FileName(name: string, path: string, isDir: boolean) {
   if (path.startsWith("/")) {path=path.slice(1)}
   return (
-    <a
-      href={`${isDir?`${host}/noa/f`:`${backendurl}/file`}/${isDir?(`?path=${simplifyUrl(`${path}/${name}`)}`):(`${path===""?"":`${path}/`}${name}`)}`}
-      class="flex flex-row items-center gap-1"
-    >
+    <div class="flex flex-row items-center gap-1" onClick={()=>{
+      window.location.href = `${isDir?`${host}/noa/f`:`${backendurl}/file`}/${isDir?(`?path=${simplifyUrl(`${path}/${name}`)}`):(`${path===""?"":`${path}/`}${name}`)}`;}
+    }>
       <Icon isDirectory={isDir} />
       <span class="text-ctp-sky">{name}</span>
-    </a>
+    </div>
   );
 }
 
