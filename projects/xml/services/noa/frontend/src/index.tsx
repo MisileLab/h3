@@ -19,9 +19,9 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 render(() =>
 <MetaProvider>
   <Router>
-    <Route path="/upload" component={Upload} />
-    <Route path="/gpg" component={Gpg} />
-    <Route path="*path" component={App} />
+    <Route path="/noa/f/upload" component={Upload} />
+    <Route path="/noa/f/gpg" component={Gpg} />
+    <Route path="/noa/f/" component={App} />
   </Router>
 </MetaProvider>
 , root!);
