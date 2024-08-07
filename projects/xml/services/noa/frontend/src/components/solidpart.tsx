@@ -1,8 +1,8 @@
-import { Title } from "@solidjs/meta";
-import { useSearchParams } from "@solidjs/router";
 import { VsFolder, VsFile } from "solid-icons/vs";
-import { For, JSX, createEffect, createMemo, createSignal } from "solid-js";
-import statusCheck, { backendurl, host } from "./config";
+import { For, type JSX, createEffect, createSignal } from "solid-js";
+import { useStore } from "@nanostores/solid";
+import { path } from "../stores"
+import statusCheck, { getUrls } from "../config";
 
 export interface File {
   name: string,
@@ -43,7 +43,7 @@ function simplifyUrl(url: string) {
 }
 
 
-export function FileName(name: string, path: string, isDir: boolean) {
+export function FileName(name: string, path: string, isDir: boolean, host: string, backendurl: string): JSX.Element {
   if (path.startsWith("/")) {path=path.slice(1)}
   return (
     <div class="flex flex-row items-center gap-1 cursor-pointer" onClick={()=>{
@@ -56,8 +56,8 @@ export function FileName(name: string, path: string, isDir: boolean) {
 }
 
 export default function App() {
-  const [sparams, _] = useSearchParams();
-  const pathname = createMemo(()=>sparams['path'] || '')
+  const {backendurl, host} = getUrls();
+  const pathname = useStore(path)
   let [res, setRes] = createSignal<File[]>([]);
   createEffect(async ()=>{
     let r = await fetch(`${backendurl}/files`, {
@@ -69,25 +69,22 @@ export default function App() {
     setRes(JSON.parse(await r.text()) as unknown as File[]);
   });
   return (
-    <div class="w-screen h-screen bg-ctp-crust flex justify-center items-center">
-      <Title>{pathname()}</Title>
-      <div class="border-ctp-overlay0 border-solid border-2 w-fit h-fit flex flex-row gap-2 p-4 text-ctp-text">
-        <div class="flex flex-col grow gap-2">
-          <p class="font-bold">Name</p>
-          {pathname() != "" && FileName("..", pathname(), true)}
-          <For each={res()}>
-            {(i,_) => FileName(i.name, pathname(), i.dir)}
-          </For>
-        </div>
-        <div class="flex flex-col gap-2">
-          <p class="font-bold">Size (Bytes)</p>
-          {pathname() != "" && <p>dir</p>}
-          <For each={res()}>
-            {(i,_) => <p>{!i.dir ? i.size : "dir"}</p>}
-          </For>
-        </div>
+    <>
+      <div class="flex flex-col grow gap-2">
+        <p class="font-bold">Name</p>
+        {pathname() != "/" && FileName("..", pathname(), true, host, backendurl)}
+        <For each={res()}>
+          {(i,_) => FileName(i.name, pathname(), i.dir, host, backendurl)}
+        </For>
       </div>
-    </div>
+      <div class="flex flex-col gap-2">
+        <p class="font-bold">Size (Bytes)</p>
+        {pathname() != "/" && <p>dir</p>}
+        <For each={res()}>
+          {(i,_) => <p>{!i.dir ? i.size : "dir"}</p>}
+        </For>
+      </div>
+    </>
   );
 };
 

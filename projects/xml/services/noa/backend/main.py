@@ -4,7 +4,6 @@ from fastapi import FastAPI, Header, HTTPException, status, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
-from orjson import loads
 
 from os import listdir, getcwd, mkdir
 from os.path import getsize, join, realpath, abspath, isdir
@@ -54,8 +53,8 @@ async def get_gpg(jwtv: Annotated[str, Header(alias="jwt", description="auth jwt
   returns list of group
   status code follows https://xml.misile.xyz/noa/api/verify
   """
-  resp = loads(await db.query_json("select User {groups} filter .userid = <str>$userid", userid=verify_jwt(jwtv)))
-  return [Group(name = i["name"], pubkey = i["pubkey"]) for i in resp["groups"]]
+  resp = await db.query("select User {groups} filter .userid = <str>$userid", userid=verify_jwt(jwtv))
+  return [Group(name = i.name, pubkey = i.pubkey) for i in resp[0].groups]
 
 class Object(BaseModel):
   """Object(File or Directory) Info"""
