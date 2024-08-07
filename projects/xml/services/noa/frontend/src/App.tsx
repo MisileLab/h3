@@ -46,7 +46,7 @@ function simplifyUrl(url: string) {
 export function FileName(name: string, path: string, isDir: boolean) {
   if (path.startsWith("/")) {path=path.slice(1)}
   return (
-    <div class="flex flex-row items-center gap-1" onClick={()=>{
+    <div class="flex flex-row items-center gap-1 cursor-pointer" onClick={()=>{
       window.location.href = `${isDir?`${host}/noa/f`:`${backendurl}/file`}/${isDir?(`?path=${simplifyUrl(`${path}/${name}`)}`):(`${path===""?"":`${path}/`}${name}`)}`;}
     }>
       <Icon isDirectory={isDir} />
