@@ -39,7 +39,7 @@ function simplifyUrl(url: string) {
   }
   
   // Join the processed segments back together
-  return processedSegments.join('/');
+  return processedSegments.length == 0?"/":processedSegments.join('/');
 }
 
 

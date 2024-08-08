@@ -10,11 +10,11 @@ export default function uploadButton() {
   createEffect(()=>{
     const {schale_url, host, backendurl: _backendurl} = getUrls();
     backendurl = _backendurl;
-    if (getCookie("jwt") === null) {
-      window.location.href = `${schale_url}?redirect=${host}/noa/f/upload`;
-    }
     if (new URLSearchParams(window.location.search).get("jwt") !== null) {
       setCookie("jwt", new URLSearchParams(window.location.search).get("jwt") || "", 21);
+    }
+    if (getCookie("jwt") === null) {
+      window.location.href = `${schale_url}?redirect=${host}/noa/f/upload`;
     }
   })
   return (
@@ -24,7 +24,7 @@ export default function uploadButton() {
       <span class="text-ctp-subtext0 text-4xl px-2">/</span>
       <button onclick={()=>{
         selectFiles(async ([{source,name,size,file}]) => {
-          console.log(source,name,size,file);
+          console.log(path(),source,name,size,file);
           if (files()[0] !== undefined) {
             for (const i of files()) {
               console.log(i.name);
