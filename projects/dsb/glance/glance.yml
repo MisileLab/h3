@@ -17,10 +17,6 @@ pages:
             hour-format: 24h
       - size: full
         widgets:
-          - type: hacker-news
-            limit: 15
-            collapse-after: 5
-
           - type: markets
             markets:
               - symbol: XMR-USD
@@ -29,3 +25,17 @@ pages:
                 name: Tether
               - symbol: INTC
                 name: Intel
+
+          - type: hacker-news
+            limit: 15
+            collapse-after: 5
+ 
+          - type: reddit
+            subreddit: linux
+
+          - type: reddit
+            subreddit: nixos
+
+          - type: reddit
+            subreddit: gentoo
+
