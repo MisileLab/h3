@@ -24,8 +24,8 @@ importers:
         specifier: 1.0.7
         version: 1.0.7(tailwindcss@3.4.8)
       vite-tsconfig-paths:
-        specifier: 4.3.2
-        version: 4.3.2(typescript@5.5.4)(vite@5.4.0)
+        specifier: 5.0.0
+        version: 5.0.0(typescript@5.5.4)(vite@5.4.0)
     devDependencies:
       autoprefixer:
         specifier: 10.4.20
@@ -1174,8 +1174,8 @@ packages:
       '@testing-library/jest-dom':
         optional: true
 
-  vite-tsconfig-paths@4.3.2:
-    resolution: {integrity: sha512-0Vd/a6po6Q+86rPlntHye7F31zA2URZMbH8M3saAZ/xR9QoGN/L21bxEGfXdWmFdNkqPpRdxFT7nmNe12e9/uA==}
+  vite-tsconfig-paths@5.0.0:
+    resolution: {integrity: sha512-sCdKc6uC7ir102lW8deBiMnS0NGEs0100OJX8WZQmf3Uf7tJ/T3uQnzznq/tZWph7tkG+44JYOsKE7YTZjDn+Q==}
     peerDependencies:
       vite: '*'
     peerDependenciesMeta:
@@ -2335,7 +2335,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  vite-tsconfig-paths@4.3.2(typescript@5.5.4)(vite@5.4.0):
+  vite-tsconfig-paths@5.0.0(typescript@5.5.4)(vite@5.4.0):
     dependencies:
       debug: 4.3.6
       globrex: 0.1.2
