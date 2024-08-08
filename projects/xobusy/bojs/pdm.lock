@@ -5,10 +5,10 @@
 groups = ["default", "dev"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:212634db7d089d827b1480a483af566e8f5f32a23d6f9a3ee4a87bfc66170a8b"
+content_hash = "sha256:5b5cbe529e149292468cd86da922033476659c6f07997d42d12cbfc99694c907"
 
 [[metadata.targets]]
-requires_python = "==3.12.4"
+requires_python = ">=3.12.4"
 
 [[package]]
 name = "baekjoonapi"
