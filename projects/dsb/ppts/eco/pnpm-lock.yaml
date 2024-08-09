@@ -31,8 +31,8 @@ importers:
         version: 4.0.0-alpha.18
     devDependencies:
       '@sveltejs/adapter-netlify':
-        specifier: 4.3.1
-        version: 4.3.1(@sveltejs/kit@2.5.20(@sveltejs/vite-plugin-svelte@3.1.1(svelte@5.0.0-next.210)(vite@5.4.0(lightningcss@1.25.1)))(svelte@5.0.0-next.210)(vite@5.4.0(lightningcss@1.25.1)))
+        specifier: 4.3.2
+        version: 4.3.2(@sveltejs/kit@2.5.20(@sveltejs/vite-plugin-svelte@3.1.1(svelte@5.0.0-next.210)(vite@5.4.0(lightningcss@1.25.1)))(svelte@5.0.0-next.210)(vite@5.4.0(lightningcss@1.25.1)))
       '@sveltejs/kit':
         specifier: 2.5.20
         version: 2.5.20(@sveltejs/vite-plugin-svelte@3.1.1(svelte@5.0.0-next.210)(vite@5.4.0(lightningcss@1.25.1)))(svelte@5.0.0-next.210)(vite@5.4.0(lightningcss@1.25.1))
@@ -340,8 +340,8 @@ packages:
   '@shikijs/core@1.12.1':
     resolution: {integrity: sha512-biCz/mnkMktImI6hMfMX3H9kOeqsInxWEyCHbSlL8C/2TR1FqfmGxTLRNwYCKsyCyxWLbB8rEqXRVZuyxuLFmA==}
 
-  '@sveltejs/adapter-netlify@4.3.1':
-    resolution: {integrity: sha512-KG/We5SbNygKSSU2zagWqLrV7RGHlmcnOPWn/9W9RYjNaMwgsvtw+4h50lP12+Dj9dZ2xDZcBl/X+R9kgiuL5g==}
+  '@sveltejs/adapter-netlify@4.3.2':
+    resolution: {integrity: sha512-lsm81Pp1U6FKPtDwUToAIfVpo1zi0T97kMMxzSGpHbux2e3jU1Dp4W0hF9uSTjC+OtP9Jxu1XwD5ZJ+Pm0JAzg==}
     peerDependencies:
       '@sveltejs/kit': ^2.4.0
 
@@ -1234,7 +1234,7 @@ snapshots:
     dependencies:
       '@types/hast': 3.0.4
 
-  '@sveltejs/adapter-netlify@4.3.1(@sveltejs/kit@2.5.20(@sveltejs/vite-plugin-svelte@3.1.1(svelte@5.0.0-next.210)(vite@5.4.0(lightningcss@1.25.1)))(svelte@5.0.0-next.210)(vite@5.4.0(lightningcss@1.25.1)))':
+  '@sveltejs/adapter-netlify@4.3.2(@sveltejs/kit@2.5.20(@sveltejs/vite-plugin-svelte@3.1.1(svelte@5.0.0-next.210)(vite@5.4.0(lightningcss@1.25.1)))(svelte@5.0.0-next.210)(vite@5.4.0(lightningcss@1.25.1)))':
     dependencies:
       '@iarna/toml': 2.2.5
       '@sveltejs/kit': 2.5.20(@sveltejs/vite-plugin-svelte@3.1.1(svelte@5.0.0-next.210)(vite@5.4.0(lightningcss@1.25.1)))(svelte@5.0.0-next.210)(vite@5.4.0(lightningcss@1.25.1))
