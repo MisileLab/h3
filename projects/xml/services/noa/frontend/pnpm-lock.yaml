@@ -12,11 +12,11 @@ importers:
         specifier: 0.9.2
         version: 0.9.2(typescript@5.5.4)
       '@astrojs/solid-js':
-        specifier: 4.4.0
-        version: 4.4.0(solid-devtools@0.30.1(solid-js@1.8.20)(vite@5.3.5))(solid-js@1.8.20)(vite@5.3.5)
+        specifier: 4.4.1
+        version: 4.4.1(solid-devtools@0.30.1(solid-js@1.8.20)(vite@5.3.5))(solid-js@1.8.20)(vite@5.3.5)
       '@astrojs/tailwind':
         specifier: 5.1.0
-        version: 5.1.0(astro@4.13.2(typescript@5.5.4))(tailwindcss@3.4.9)
+        version: 5.1.0(astro@4.13.3(typescript@5.5.4))(tailwindcss@3.4.9)
       '@misile/satellite':
         specifier: 0.0.2
         version: 0.0.2
@@ -27,8 +27,8 @@ importers:
         specifier: ^0.0.117
         version: 0.0.117(solid-js@1.8.20)
       astro:
-        specifier: 4.13.2
-        version: 4.13.2(typescript@5.5.4)
+        specifier: 4.13.3
+        version: 4.13.3(typescript@5.5.4)
       axios:
         specifier: 1.7.3
         version: 1.7.3
@@ -96,8 +96,8 @@ packages:
     resolution: {integrity: sha512-Z9IYjuXSArkAUx3N6xj6+Bnvx8OdUSHA8YoOgyepp3+zJmtVYJIl/I18GozdJVW1p5u/CNpl3Km7/gwTJK85cw==}
     engines: {node: ^18.17.1 || ^20.3.0 || >=21.0.0}
 
-  '@astrojs/solid-js@4.4.0':
-    resolution: {integrity: sha512-nNX7x9dTcutb69yVGGC7/4vRECsV0dySmkl48AeV4qIAdCYXuH74Yu8KvPwRWRjtF0Z2Xp9ZgXG5KYCVHdBXJw==}
+  '@astrojs/solid-js@4.4.1':
+    resolution: {integrity: sha512-C8t+0sK8myZ9xJyL+GvNo0LjiqL8KTAJReb8Bn+0WjsOfCm+0N8GKQdBt5Gqf9Ig59KVZon3ydGa6GmqrkCojw==}
     engines: {node: ^18.17.1 || ^20.3.0 || >=21.0.0}
     peerDependencies:
       solid-devtools: ^0.30.1
@@ -838,8 +838,8 @@ packages:
   array-iterate@2.0.1:
     resolution: {integrity: sha512-I1jXZMjAgCMmxT4qxXfPXa6SthSoE8h6gkSI9BGGNv8mP8G/v0blc+qFnZu6K42vTOiuME596QaLO0TP3Lk0xg==}
 
-  astro@4.13.2:
-    resolution: {integrity: sha512-bdfUV6zfOWOV/IbROqVx+1cuAFXY0PZpVxr4JO9YxCKa5AfQRR8RKXJ2k8QUjalA6dmxQ9FgAQw3FRrzHVOGEQ==}
+  astro@4.13.3:
+    resolution: {integrity: sha512-MyhmM0v5sphiVwxAm5jjKxWeuPZijWPJ8Ajdign9QzEmLWSH8vUYIJWx/dWRQ6vF1I0jXrksoj3wtw5nzXt9nw==}
     engines: {node: ^18.17.1 || ^20.3.0 || >=21.0.0, npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
 
@@ -2380,7 +2380,7 @@ snapshots:
     dependencies:
       prismjs: 1.29.0
 
-  '@astrojs/solid-js@4.4.0(solid-devtools@0.30.1(solid-js@1.8.20)(vite@5.3.5))(solid-js@1.8.20)(vite@5.3.5)':
+  '@astrojs/solid-js@4.4.1(solid-devtools@0.30.1(solid-js@1.8.20)(vite@5.3.5))(solid-js@1.8.20)(vite@5.3.5)':
     dependencies:
       solid-js: 1.8.20
       vite-plugin-solid: 2.10.2(solid-js@1.8.20)(vite@5.3.5)
@@ -2391,9 +2391,9 @@ snapshots:
       - supports-color
       - vite
 
-  '@astrojs/tailwind@5.1.0(astro@4.13.2(typescript@5.5.4))(tailwindcss@3.4.9)':
+  '@astrojs/tailwind@5.1.0(astro@4.13.3(typescript@5.5.4))(tailwindcss@3.4.9)':
     dependencies:
-      astro: 4.13.2(typescript@5.5.4)
+      astro: 4.13.3(typescript@5.5.4)
       autoprefixer: 10.4.20(postcss@8.4.40)
       postcss: 8.4.40
       postcss-load-config: 4.0.2(postcss@8.4.40)
@@ -3096,7 +3096,7 @@ snapshots:
 
   array-iterate@2.0.1: {}
 
-  astro@4.13.2(typescript@5.5.4):
+  astro@4.13.3(typescript@5.5.4):
     dependencies:
       '@astrojs/compiler': 2.10.2
       '@astrojs/internal-helpers': 0.4.1
