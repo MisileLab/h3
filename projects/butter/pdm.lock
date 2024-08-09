@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:ade51576c237eb8b2e7a1a2d02e7f7c4115c0100b321844bb0b93f3638656c4f"
+content_hash = "sha256:4294e732ab41ac6442fda2baac178cce9010ac79323c72d2376491cdc2b6458b"
 
 [[metadata.targets]]
 requires_python = "==3.12.4"
@@ -1420,13 +1420,12 @@ files = [
 
 [[package]]
 name = "orjson"
-version = "3.10.6"
+version = "3.10.7"
 requires_python = ">=3.8"
-summary = "Fast, correct Python JSON library supporting dataclasses, datetimes, and numpy"
+summary = ""
 groups = ["default"]
 files = [
-    {file = "orjson-3.10.6-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:446dee5a491b5bc7d8f825d80d9637e7af43f86a331207b9c9610e2f93fee22a"},
-    {file = "orjson-3.10.6.tar.gz", hash = "sha256:e54b63d0a7c6c54a5f5f726bc93a2078111ef060fec4ecbf34c5db800ca3b3a7"},
+    {file = "orjson-3.10.7.tar.gz", hash = "sha256:75ef0640403f945f3a1f9f6400686560dbfb0fb5b16589ad62cd477043c4eee3"},
 ]
 
 [[package]]
