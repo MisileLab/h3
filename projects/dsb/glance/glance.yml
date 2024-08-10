@@ -25,17 +25,17 @@ pages:
                 name: Tether
               - symbol: INTC
                 name: Intel
-
+  - name: Home
+    columns:
+      - size: small
+        widgets:
           - type: hacker-news
-            limit: 15
-            collapse-after: 5
- 
           - type: reddit
             subreddit: linux
-
           - type: reddit
             subreddit: nixos
-
           - type: reddit
             subreddit: gentoo
+          - type: reddit
+            subreddit: privacy
 
