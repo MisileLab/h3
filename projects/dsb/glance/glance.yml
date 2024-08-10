@@ -25,7 +25,7 @@ pages:
                 name: Tether
               - symbol: INTC
                 name: Intel
-  - name: Home
+  - name: Communities
     columns:
       - size: full
         widgets:
