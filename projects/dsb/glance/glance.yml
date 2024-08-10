@@ -27,7 +27,7 @@ pages:
                 name: Intel
   - name: Home
     columns:
-      - size: small
+      - size: full
         widgets:
           - type: hacker-news
           - type: reddit
