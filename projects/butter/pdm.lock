@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:88c496c4c5b0361d923ab814f3d6edaf85777ded29220f4911517c930d59f1be"
+content_hash = "sha256:ed10554bc9b379f4e19a53c2546f0d0dd441ed209fd38ae5587a4e45d1520b9d"
 
 [[metadata.targets]]
 requires_python = "==3.12.4"
@@ -960,7 +960,7 @@ files = [
 
 [[package]]
 name = "langchain-core"
-version = "0.2.28"
+version = "0.2.29"
 requires_python = "<4.0,>=3.8.1"
 summary = "Building applications with LLMs through composability"
 groups = ["default"]
@@ -975,29 +975,29 @@ dependencies = [
     "typing-extensions>=4.7",
 ]
 files = [
-    {file = "langchain_core-0.2.28-py3-none-any.whl", hash = "sha256:0728761d02ce696a1c6a57cfad18b874cf6c9566ba86120e2f542e442cb77a06"},
-    {file = "langchain_core-0.2.28.tar.gz", hash = "sha256:589f907fcb1f15acea55ea3f451a37faaa61c2e68b3d39d436cf73ca3dd23ef5"},
+    {file = "langchain_core-0.2.29-py3-none-any.whl", hash = "sha256:846c04a3bb72e409a9b928e0eb3ea1762e1473f2c4fb6df2596fbd7b3ab75973"},
+    {file = "langchain_core-0.2.29.tar.gz", hash = "sha256:491324745a7afee5a7b285c3904edd9dd0c6efa7daf26b92fec6e84a2d2f5d10"},
 ]
 
 [[package]]
 name = "langchain-openai"
-version = "0.1.20"
+version = "0.1.21"
 requires_python = "<4.0,>=3.8.1"
 summary = "An integration package connecting OpenAI and LangChain"
 groups = ["default"]
 dependencies = [
-    "langchain-core<0.3.0,>=0.2.26",
-    "openai<2.0.0,>=1.32.0",
+    "langchain-core<0.3.0,>=0.2.29",
+    "openai<2.0.0,>=1.40.0",
     "tiktoken<1,>=0.7",
 ]
 files = [
-    {file = "langchain_openai-0.1.20-py3-none-any.whl", hash = "sha256:232ebfe90b1898ef7cf181e364d45191edcf04bfc31b292ecaa1d2121942c28e"},
-    {file = "langchain_openai-0.1.20.tar.gz", hash = "sha256:2c91e9f771541076b138e65dd4c5427b26957a2272406a7f4ee747d7896f9b35"},
+    {file = "langchain_openai-0.1.21-py3-none-any.whl", hash = "sha256:44420f0c84859ae236a80c8ac8754a16d5b660c24377c27ba98308145d346352"},
+    {file = "langchain_openai-0.1.21.tar.gz", hash = "sha256:2c65feaf12bb284eccf7bce35725fd06f3035fa751babad6aa84af2f99867f88"},
 ]
 
 [[package]]
 name = "langsmith"
-version = "0.1.96"
+version = "0.1.98"
 requires_python = "<4.0,>=3.8.1"
 summary = "Client library to connect to the LangSmith LLM Tracing and Evaluation Platform."
 groups = ["default"]
@@ -1008,8 +1008,8 @@ dependencies = [
     "requests<3,>=2",
 ]
 files = [
-    {file = "langsmith-0.1.96-py3-none-any.whl", hash = "sha256:1e8285c3f84cffebc761ff5624647de20686dbbf659f5d1135918261f85bad13"},
-    {file = "langsmith-0.1.96.tar.gz", hash = "sha256:01b7fa7d538b6409ee74bff458cc3dcdc1799fc70d329f79eb26ba54c32991ae"},
+    {file = "langsmith-0.1.98-py3-none-any.whl", hash = "sha256:f79e8a128652bbcee4606d10acb6236973b5cd7dde76e3741186d3b97b5698e9"},
+    {file = "langsmith-0.1.98.tar.gz", hash = "sha256:e07678219a0502e8f26d35294e72127a39d25e32fafd091af5a7bb661e9a6bd1"},
 ]
 
 [[package]]
