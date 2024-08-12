@@ -8,7 +8,7 @@ authors = [
 dependencies = [
   "tomli==2.0.1",
   "tomli-w==1.0.0",
-  "inquirer==3.3.0",
+  "inquirer==3.4.0",
   "httpx==0.27.0",
   "fake-useragent==1.5.1",
   "tqdm==4.66.5",
