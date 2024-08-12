@@ -29,9 +29,9 @@ async def summarize_and_answer(content: str, question: str) -> str:
       content = content[16384:]
     else:
       end = True
-    summarized = ""
-    for i, i2 in enumerate(finalvalue):
-      summarized += f"String {i*16384}~{(i+1)*16384} summarized:\n{i2}"
+    summarized = "".join(
+      f"String {i * 16384}~{(i + 1) * 16384} summarized:\n{i2}"
+      for i, i2 in enumerate(finalvalue))
     tmp = (await llm_mini.ainvoke([
       {"role": "system", "content": middle_prompt},
       {"role": "user", "content": f"content: {content}\nquestion: {question}\n{summarized}"}
