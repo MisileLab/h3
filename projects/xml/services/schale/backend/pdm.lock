@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:62389d07db2934a5293487e73c0c5c8707b2460a9b8042d2d22f5bcdb03332a4"
+content_hash = "sha256:760e5916c9807276d73d1f225c77be493bc1a0caf4ee271543d17a5b88cf3aee"
 
 [[metadata.targets]]
 requires_python = "==3.12.4"
@@ -123,7 +123,7 @@ files = [
 
 [[package]]
 name = "edgedb"
-version = "2.0.0"
+version = "2.0.1"
 requires_python = ">=3.8"
 summary = "EdgeDB Python driver"
 groups = ["default"]
@@ -131,12 +131,12 @@ dependencies = [
     "certifi>=2021.5.30; platform_system == \"Windows\"",
 ]
 files = [
-    {file = "edgedb-2.0.0-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:12600c6650e4576c8362e7e0150328a25a0635702bdf1267965713a13a8d98ec"},
-    {file = "edgedb-2.0.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:f8bec00e4cbd43ddfbeead078f0828adfe4bd01cb554f16cdd64f29df35c49af"},
-    {file = "edgedb-2.0.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:82a9e7d7c24104cbcaf7cf9d05884d9f305aa208db0ecfbeb1dcb78b6e852685"},
-    {file = "edgedb-2.0.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:f6c51f8999b83320974895540f51e0d48a94a59d7b53cf404f386f9045a78a57"},
-    {file = "edgedb-2.0.0-cp312-cp312-win_amd64.whl", hash = "sha256:5d1089d34fa007a36ad14a4b4e8c03404ec5df72d6e334c9b7b96fde64d6b1b0"},
-    {file = "edgedb-2.0.0.tar.gz", hash = "sha256:35a5db34a2a291e126214c124bba78e8f6e5fcf3df7497be2db23a3c9be8d995"},
+    {file = "edgedb-2.0.1-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:793ecbc0669ec22042159fe1349acf7e31dea6416ccb47ac8f1a7508bbba9234"},
+    {file = "edgedb-2.0.1-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:c00d7e27626d3671929b4bd1ff8ac4997d2582a0ad3cac83b84d69d9ae35756d"},
+    {file = "edgedb-2.0.1-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:b6e6f63575f9463c706551729798346d9d063dc8f72661592d8f60b9504e315f"},
+    {file = "edgedb-2.0.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:43a3f83c5735100a03727e072b32daf5615dff989e757cf7e37d395a556a056f"},
+    {file = "edgedb-2.0.1-cp312-cp312-win_amd64.whl", hash = "sha256:205bec08afd7f2c5d0afbee7523f18c84ecc11187e495d56b5d37ab1a0dc2f28"},
+    {file = "edgedb-2.0.1.tar.gz", hash = "sha256:4884054aea8836577a3c8608ba3ffac735672d279fc734c856de795600c3b1f0"},
 ]
 
 [[package]]
