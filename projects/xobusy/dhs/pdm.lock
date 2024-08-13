@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:2701351fbf7c40cfda8cba9ce31133c627744ddc5a7521c88c083435f3cb9f54"
+content_hash = "sha256:f39adb06fb56098ef2fc4bb4e90d09f9cf368b9902609d15c9c0cf7865275b1c"
 
 [[metadata.targets]]
 requires_python = "==3.12.4"
@@ -100,19 +100,26 @@ files = [
 
 [[package]]
 name = "capstone"
-version = "5.0.1"
-requires_python = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "5.0.2"
+requires_python = ">=3.8"
 summary = "Capstone disassembly engine"
 groups = ["default"]
+dependencies = [
+    "importlib-resources; python_version < \"3.9\"",
+]
 files = [
-    {file = "capstone-5.0.1-py3-none-macosx_10_9_universal2.whl", hash = "sha256:740a70624d3f258cf8503898dbfd968052c008ddd4fc4ab938c7046c8828c294"},
-    {file = "capstone-5.0.1-py3-none-manylinux1_i686.manylinux_2_5_i686.whl", hash = "sha256:3f34a949699c298e88d7c9a576a2fd7685dba658a9c432bce826eeb88676cf24"},
-    {file = "capstone-5.0.1-py3-none-manylinux1_i686.whl", hash = "sha256:08f16c2782e54d05c95f1d40e1ae0e58e4a57d6a6c3192f8c5ff61476f4130de"},
-    {file = "capstone-5.0.1-py3-none-manylinux1_x86_64.manylinux_2_5_x86_64.whl", hash = "sha256:ea8d0be06d2faa39545937fe88db239fd62227915f9744d8990439011c479f05"},
-    {file = "capstone-5.0.1-py3-none-manylinux1_x86_64.whl", hash = "sha256:04223a4e5c2374f21da59c5c5a5b90471bfcef5cb938e7b32de68579cf863b7a"},
-    {file = "capstone-5.0.1-py3-none-win32.whl", hash = "sha256:4356bdee55639c4448d025dc9d8a3b6c07f2b188c62b88df3d554a84e2cd89af"},
-    {file = "capstone-5.0.1-py3-none-win_amd64.whl", hash = "sha256:1bfa5c81e6880caf41a31946cd6d2d069c048bcc22edf121254b501a048de675"},
-    {file = "capstone-5.0.1.tar.gz", hash = "sha256:740afacc29861db591316beefe30df382c4da08dcb0345a0d10f0cac4f8b1ee2"},
+    {file = "capstone-5.0.2-py3-none-macosx_10_9_universal2.whl", hash = "sha256:d4148c094e33e19d0bc98e1b161143722ddd1ff5d4994a09f871d3fa22f4ef89"},
+    {file = "capstone-5.0.2-py3-none-macosx_10_9_x86_64.whl", hash = "sha256:4ac27de0f5ba3adcfb95a1a5a0c4964aa3d2fb1c3da924ef6bc0b3533ede7367"},
+    {file = "capstone-5.0.2-py3-none-macosx_11_0_arm64.whl", hash = "sha256:d2ba67d6ab5bdd64486614915ffad5df02571093deb0dff20d5d47db32a7c467"},
+    {file = "capstone-5.0.2-py3-none-manylinux1_i686.manylinux_2_5_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:f694cabe9a874e214ffec4c8ac3bd01926301cf2de829b857d1a9230759ccede"},
+    {file = "capstone-5.0.2-py3-none-manylinux1_i686.musllinux_1_1_i686.whl", hash = "sha256:9151c03c105ee5ded4cdcc2080eb0da8eb822ed27ffc79d2113226c299aa7697"},
+    {file = "capstone-5.0.2-py3-none-manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7edc160b8363d61e2ab14505ae9ce5e39529eee4b91c4558b170446f724ef4a1"},
+    {file = "capstone-5.0.2-py3-none-manylinux1_x86_64.musllinux_1_1_x86_64.whl", hash = "sha256:3c4720e7be3e569d3a48cf36fc37dee4dcce4dbad70077d74c4e8e72aba34d05"},
+    {file = "capstone-5.0.2-py3-none-manylinux2014_aarch64.whl", hash = "sha256:80abdd5091662e58b0b2afefbcbb76a01f83c46ad53a51e3ce4737824714242b"},
+    {file = "capstone-5.0.2-py3-none-musllinux_1_1_aarch64.whl", hash = "sha256:5e6bc5e3bfeeb84fa5a0c3bbeb295a4011626a3ea64e0c8e7a47bd3fbd9310b1"},
+    {file = "capstone-5.0.2-py3-none-win32.whl", hash = "sha256:6c2074a3c2e11aceac87499b92ad043fddfef0f79221aa47b07be074021bf413"},
+    {file = "capstone-5.0.2-py3-none-win_amd64.whl", hash = "sha256:fb8391fc58f9fe75e64ce67aeb680d237c0eb50c259b1636fd5580dd85f8d465"},
+    {file = "capstone-5.0.2.tar.gz", hash = "sha256:2bcebb5746027fbd082b5392c9f56c9f5645bdf11555fff70eedb6ed724f4d5d"},
 ]
 
 [[package]]
@@ -197,7 +204,7 @@ version = "0.4.6"
 requires_python = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*,>=2.7"
 summary = "Cross-platform colored terminal text."
 groups = ["default", "dev"]
-marker = "sys_platform == \"win32\" or platform_system == \"Windows\" or os_name == \"nt\""
+marker = "os_name == \"nt\" and python_version >= \"3\" or sys_platform == \"win32\" or platform_system == \"Windows\""
 files = [
     {file = "colorama-0.4.6-py2.py3-none-any.whl", hash = "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6"},
     {file = "colorama-0.4.6.tar.gz", hash = "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44"},
@@ -208,6 +215,7 @@ name = "colored-traceback"
 version = "0.4.2"
 summary = "Automatically color uncaught exception tracebacks"
 groups = ["default"]
+marker = "python_version >= \"3\""
 dependencies = [
     "colorama; os_name == \"nt\"",
     "pygments",
@@ -557,13 +565,14 @@ files = [
 
 [[package]]
 name = "pwntools"
-version = "4.12.0"
+version = "4.13.0"
 requires_python = ">=2.7"
 summary = "Pwntools CTF framework and exploit development library."
 groups = ["default"]
 dependencies = [
     "capstone>=3.0.5rc2",
-    "colored-traceback",
+    "colored-traceback; python_version >= \"3\"",
+    "colored-traceback<0.4; python_version < \"3\"",
     "intervaltree>=3.0",
     "mako>=1.0.0",
     "packaging",
@@ -571,8 +580,8 @@ dependencies = [
     "pathlib2; python_version < \"3.4\"",
     "pip>=6.0.8",
     "psutil>=3.3.0",
-    "pyelftools<0.30,>=0.24; python_version < \"3\"",
-    "pyelftools>=0.24; python_version >= \"3\"",
+    "pyelftools<0.30,>=0.29; python_version < \"3\"",
+    "pyelftools>=0.29; python_version >= \"3\"",
     "pygments>=2.0",
     "pyserial>=2.7",
     "pysocks",
@@ -582,13 +591,13 @@ dependencies = [
     "rpyc",
     "six>=1.12.0",
     "sortedcontainers",
-    "unicorn>=1.0.2rc1",
+    "unicorn>=2.0.1",
     "unix-ar; python_version >= \"3\"",
     "zstandard",
 ]
 files = [
-    {file = "pwntools-4.12.0-py2.py3-none-any.whl", hash = "sha256:621a7545615a64f24c44ec7a45c0e504640ad0151d81a2e90205e66f76079c4c"},
-    {file = "pwntools-4.12.0.tar.gz", hash = "sha256:320285bd9266152fdba3b81de3a31e61a25076645507a38d85f34e1b15998eb1"},
+    {file = "pwntools-4.13.0-py2.py3-none-any.whl", hash = "sha256:34805dd433bd20a0f46a15b51ee8668793b61e85d783c0e0838d687653cbf34e"},
+    {file = "pwntools-4.13.0.tar.gz", hash = "sha256:1d5ca25383ec10fb64e28d142c1d868f91ea1c53a93d3531d3015d830828d3c3"},
 ]
 
 [[package]]
