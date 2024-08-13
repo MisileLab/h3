@@ -10,7 +10,7 @@ dependencies:
     version: 0.9.2(typescript@5.5.4)
   '@astrojs/tailwind':
     specifier: 5.1.0
-    version: 5.1.0(astro@4.13.3)(tailwindcss@3.4.9)
+    version: 5.1.0(astro@4.13.3)(tailwindcss@3.4.10)
   astro:
     specifier: 4.13.3
     version: 4.13.3(typescript@5.5.4)
@@ -21,8 +21,8 @@ dependencies:
     specifier: 0.11.2
     version: 0.11.2
   tailwindcss:
-    specifier: 3.4.9
-    version: 3.4.9
+    specifier: 3.4.10
+    version: 3.4.10
   typescript:
     specifier: 5.5.4
     version: 5.5.4
@@ -132,7 +132,7 @@ packages:
       prismjs: 1.29.0
     dev: false
 
-  /@astrojs/tailwind@5.1.0(astro@4.13.3)(tailwindcss@3.4.9):
+  /@astrojs/tailwind@5.1.0(astro@4.13.3)(tailwindcss@3.4.10):
     resolution: {integrity: sha512-BJoCDKuWhU9FT2qYg+fr6Nfb3qP4ShtyjXGHKA/4mHN94z7BGcmauQK23iy+YH5qWvTnhqkd6mQPQ1yTZTe9Ig==}
     peerDependencies:
       astro: ^3.0.0 || ^4.0.0
@@ -142,7 +142,7 @@ packages:
       autoprefixer: 10.4.20(postcss@8.4.41)
       postcss: 8.4.41
       postcss-load-config: 4.0.2(postcss@8.4.41)
-      tailwindcss: 3.4.9
+      tailwindcss: 3.4.10
     transitivePeerDependencies:
       - ts-node
     dev: false
@@ -3410,8 +3410,8 @@ packages:
     engines: {node: '>= 0.4'}
     dev: false
 
-  /tailwindcss@3.4.9:
-    resolution: {integrity: sha512-1SEOvRr6sSdV5IDf9iC+NU4dhwdqzF4zKKq3sAbasUWHEM6lsMhX+eNN5gkPx1BvLFEnZQEUFbXnGj8Qlp83Pg==}
+  /tailwindcss@3.4.10:
+    resolution: {integrity: sha512-KWZkVPm7yJRhdu4SRSl9d4AK2wM3a50UsvgHZO7xY77NQr2V+fIrEuoDGQcbvswWvFGbS2f6e+jC/6WJm1Dl0w==}
     engines: {node: '>=14.0.0'}
     hasBin: true
     dependencies:
