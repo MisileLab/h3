@@ -12,7 +12,8 @@
 
       # Language tools
       ghc cabal-install
-      rustup cargo-update
+      # https://github.com/NixOS/nixpkgs/pull/334821
+      rustup # cargo-update
       python312Full micromamba pdm mypy ruff-lsp pipx
       nasm
       tailwindcss-language-server volta deno
