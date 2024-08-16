@@ -7,10 +7,9 @@
     ./network.nix
     ./utils.nix
   ];
-  # https://github.com/NixOS/nixpkgs/pull/334815
   home.packages = with pkgs; [
     sbctl bluez cryptsetup smartmontools borgbackup rclone pulsemixer
-    portablemc /*miniserve*/ openssl transmission glance glances lunarvim
+    portablemc miniserve openssl transmission glance glances lunarvim
     (pkgs.writeShellScriptBin "manual" ''
       ${pkgs.glow}/bin/glow -p ~/.config/home-manager/manual.md
     '')

@@ -6,10 +6,11 @@
 
   services = {
     # fprintd.enable = true;
-    clamav = {
+    # https://github.com/NixOS/nixpkgs/issues/334852
+    /*clamav = {
       daemon.enable = true;
       updater.enable = true;
-    };
+    };*/
     tor = {
       enable = true;
       client.enable = true;
