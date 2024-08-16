@@ -23,6 +23,6 @@ distribution = false
 
 [tool.pdm.dev-dependencies]
 dev = [
-  "ruff==0.6.0",
+  "ruff==0.6.1",
   "python-lsp-server==1.11.0",
 ]
