@@ -12,8 +12,8 @@ importers:
         specifier: 1.0.12
         version: 1.0.12(svelte@5.0.0-next.223)(vite@5.4.1(lightningcss@1.26.0))
       '@animotion/motion':
-        specifier: 0.0.8
-        version: 0.0.8(svelte@5.0.0-next.223)
+        specifier: 0.0.9
+        version: 0.0.9(svelte@5.0.0-next.223)
       '@fontsource-variable/jetbrains-mono':
         specifier: 5.0.21
         version: 5.0.21
@@ -86,6 +86,11 @@ packages:
 
   '@animotion/motion@0.0.8':
     resolution: {integrity: sha512-ZucwEXLMH0NwvdhhRV4nk6obozyNb+2eThRWsiJXqIc/14yxrfr00UOT1MLd7rHVhlp6gc0WcGLNszgYKCfvtg==}
+    peerDependencies:
+      svelte: ^5.0.0
+
+  '@animotion/motion@0.0.9':
+    resolution: {integrity: sha512-1WEwrhGaSYTHipuaQ1B7xd6hd4nbH0to70dXPRaEwdoF1Z6vnf/uO9z5nYXJoqNMOsew01Tep98HBj1aA/A8ZQ==}
     peerDependencies:
       svelte: ^5.0.0
 
@@ -1115,6 +1120,11 @@ snapshots:
       - vue
 
   '@animotion/motion@0.0.8(svelte@5.0.0-next.223)':
+    dependencies:
+      d3-interpolate: 3.0.1
+      svelte: 5.0.0-next.223
+
+  '@animotion/motion@0.0.9(svelte@5.0.0-next.223)':
     dependencies:
       d3-interpolate: 3.0.1
       svelte: 5.0.0-next.223
