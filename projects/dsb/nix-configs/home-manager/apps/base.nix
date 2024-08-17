@@ -21,6 +21,7 @@
     (pkgs.writeShellScriptBin "gdiff" "${pkgs.git}/bin/diff | ${pkgs.delta}/bin/delta")
     (pkgs.writeShellScriptBin "nv" "${pkgs.lunarvim}/bin/lvim")
     (pkgs.writeShellScriptBin "lv" "${pkgs.lunarvim}/bin/lvim")
+    (pkgs.writeShellScriptBin "git-c" "pdm run -p ~/repos/h3/projects/dsb/utils ~/repos/h3/projects/dsb/utils/gen-commit-message.py")
   ];
   programs = {
     # nix-index.enable = true;
