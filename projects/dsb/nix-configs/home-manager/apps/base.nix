@@ -13,6 +13,14 @@
     (pkgs.writeShellScriptBin "manual" ''
       ${pkgs.glow}/bin/glow -p ~/.config/home-manager/manual.md
     '')
+    (pkgs.writeShellScriptBin "nix-clean" "nix store optimise && sudo nix store optimise && nix-collect-garbage -d && sudo nix-collect-garbage -d")
+    (pkgs.writeShellScriptBin "cat" "${pkgs.bat}/bin/bat")
+    (pkgs.writeShellScriptBin "ocat" "${pkgs.coreutils}/bin/cat")
+    (pkgs.writeShellScriptBin "ls" "${pkgs.bat}/bin/bat")
+    (pkgs.writeShellScriptBin "lzg" "${pkgs.lazygit}/bin/lazygit")
+    (pkgs.writeShellScriptBin "gdiff" "${pkgs.git}/bin/diff | ${pkgs.delta}/bin/delta")
+    (pkgs.writeShellScriptBin "nv" "${pkgs.lunarvim}/bin/lvim")
+    (pkgs.writeShellScriptBin "lv" "${pkgs.lunarvim}/bin/lvim")
   ];
   programs = {
     # nix-index.enable = true;
@@ -37,19 +45,8 @@
     fish = {
       enable = true;
       catppuccin.enable = true;
+      shellAliases = {onefetch = "${pkgs.onefetch}/bin/onefetch --numbers-of-languages 9999";};
       plugins = [{name="tide"; src=pkgs.fishPlugins.tide.src;}];
-      shellAliases = with pkgs; {
-        nix-clean = "nix store optimise && sudo nix store optimise && nix-collect-garbage -d && sudo nix-collect-garbage -d";
-        cat = "${bat}/bin/bat";
-        ocat = "${coreutils}/bin/cat";
-        ls = "${eza}/bin/eza --icons";
-        onefetch = "${onefetch}/bin/onefetch --number-of-languages 9999";
-        lzg = "${lazygit}/bin/lazygit";
-        gdiff = "${git}/bin/git diff | ${delta}/bin/delta";
-	      nv = "${lunarvim}/bin/lvim";
-        lv = "${lunarvim}/bin/lvim";
-        hx = "${lunarvim}/bin/lvim";
-      };
       shellInit = with pkgs; ''
         fish_add_path -m ~/.cargo/bin
         fish_add_path -m ~/.avm/bin
