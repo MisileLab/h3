@@ -21,7 +21,7 @@ in
       (ewl "insomnia" "${pkgs.bruno}/bin/bruno")
       (ewl "joplin" "${pkgs.joplin-desktop}/bin/joplin-desktop")
       (ewl "signal" "${pkgs.signal-desktop}/bin/signal-desktop")
-      (ewl "element" "${pkgs.element-desktop}/bin/element-desktop")
+      #(ewl "element" "${pkgs.element-desktop}/bin/element-desktop")
       (ewl "slack" "${pkgs.slack}/bin/slack")
     ];
   };

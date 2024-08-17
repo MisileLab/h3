@@ -14,6 +14,7 @@ questions = [
 ]
 
 answers = inquirer.prompt(questions)
+print(answers)
 
 if answers is None:
   exit(1)
@@ -28,11 +29,17 @@ if answers["bchanges"] == "y":
 
 output = f"{output}: {answers["shortdesc"]}"
 
-if len(answers["longdesc"]) != 0:
-  output = f"{output}\n\n{answers["longdesc"]}"
+if answers["longdesc"].strip("\n") != "":
+  output = f"{output}\n{answers["longdesc"]}"
 
 if answers["bchanges"] == "y":
-  output = f"{output}\n\n{answers["bchangescon"]}"
+  output = f"{output}\n--breaking changes--\n{answers["bchangescon"]}"
 
 print(output)
+answer = inquirer.prompt([inquirer.Confirm('confirm', message='Is it right?')])
+if answer is not None and answer.get('confirm', None) is True:
+  add_all = inquirer.prompt([inquirer.Confirm('confirm', message='Do you want add all before commit?')])
+  if add_all is not None and add_all.get('confirm', None) is True:
+    run(args=["git", "add", "-A"])
+  run(args=["git", "commit", "-m", output, "-s"])
 
