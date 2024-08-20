@@ -12,7 +12,7 @@ in
     ];
     home.packages = with pkgs; [
       sbctl bluez cryptsetup smartmontools borgbackup rclone pulsemixer
-      portablemc miniserve openssl transmission glance glances lunarvim
+      portablemc miniserve openssl transmission glances lunarvim
       (writeScript "manual" ''
         ${pkgs.glow}/bin/glow -p ~/.config/home-manager/manual.md
       '')
