@@ -17,11 +17,6 @@ monorepo for my projects
 
 using my [josh](https://github.com/josh-project/josh) page: `https://gith.misile.xyz/h3.git`  
 
-## DVC (Data Version Control)
-
-currently, i'm using rclone, link remote to ../../external/repos/h3  
-[my onedrive](https://sen1014-my.sharepoint.com/:f:/g/personal/m1_sunrint_sen_hs_kr/EiTO5Wb2zeZBjqcFrKEzsT8BY-zXw9EQZjYi4gWPAJe_qw?e=ViqoCe)
-
 ## License?
 
 Default is [MisileLab License](LICENSE.md), but project can have own license in folder.
