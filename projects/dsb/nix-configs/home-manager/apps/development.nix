@@ -1,4 +1,4 @@
-{pkgs, config, stablep, ...}:
+{pkgs, config, ...}:
 {
   home = {
     sessionVariables = {
@@ -13,13 +13,12 @@
       # Language tools
       ghc cabal-install
       rustup cargo-update
-      python312Full pdm mypy ruff-lsp pipx
+      python312Full pdm mypy ruff-lsp pipx micromamba
       nasm
       tailwindcss-language-server volta deno
       hvm kind2
       clang-tools lldb pkg-config
-      # https://github.com/NixOS/nixpkgs/issues/331240
-      niv nixpkgs-fmt nix-tree hub # fh
+      niv nixpkgs-fmt nix-tree hub fh
       marksman
       packwiz
       unityhub dotnet-sdk_8
@@ -29,8 +28,7 @@
     ]
     ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
     ++ (with nodePackages_latest; [nodejs typescript-language-server svelte-language-server]) # nodejs
-    ++ (with python312Packages; [pip virtualenv keyring keyrings-cryptfile python-lsp-server mitmproxy]) # python thing
-    ++ (with stablep; [micromamba]);
+    ++ (with python312Packages; [pip virtualenv keyring keyrings-cryptfile python-lsp-server mitmproxy]); # python thing
     file = {
       "non-nixos-things/catppuccin-ghidra".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit{
         url="https://github.com/StanlsSlav/ghidra";
