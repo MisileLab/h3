@@ -19,7 +19,7 @@
 		"shiki": "1.14.1",
 		"shiki-magic-move": "0.4.4",
 		"svelte": "5.0.0-next.234",
-		"svelte-check": "3.8.5",
+		"svelte-check": "3.8.6",
 		"tslib": "2.6.3",
 		"typescript": "5.5.4",
 		"vite": "5.4.2"
