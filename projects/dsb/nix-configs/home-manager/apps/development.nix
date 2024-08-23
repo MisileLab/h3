@@ -1,4 +1,4 @@
-{pkgs, config, ...}:
+{pkgs, config, stablep, ...}:
 {
   home = {
     sessionVariables = {
@@ -13,7 +13,7 @@
       # Language tools
       ghc cabal-install
       rustup cargo-update
-      python312Full pdm mypy ruff-lsp pipx micromamba
+      python312Full pdm mypy (stablep.ruff-lsp) pipx micromamba
       nasm
       tailwindcss-language-server volta deno
       hvm kind2
