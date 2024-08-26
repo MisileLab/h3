@@ -13,7 +13,7 @@
       # Language tools
       ghc cabal-install
       rustup cargo-update
-      python312Full pdm mypy ruff-lsp pipx micromamba
+      python312Full pdm mypy ruff-lsp pipx pixi
       nasm
       tailwindcss-language-server volta deno
       hvm kind2
