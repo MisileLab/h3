@@ -1,8 +1,7 @@
 {pkgs, stablep, ...}: {
   home.packages = with pkgs; [
-    dhcpcd cloudflare-warp
+    dhcpcd cloudflare-warp trayscale
     nethogs (pkgs.writeShellScriptBin "nhs" "sudo ${pkgs.nethogs}/bin/nethogs -b wg0-mullvad")
-    (stablep.trayscale)
   ];
   programs = {
     irssi.enable = true;
