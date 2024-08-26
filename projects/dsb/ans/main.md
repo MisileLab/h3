@@ -70,4 +70,4 @@ int main() {
 
 ## 시뮬레이션
 
-./simulations/SelectionSort.mp4
+[SelectionSort Simulation](https://raw.githubusercontent.com/MisileLab/h3/main/projects/dsb/ans/simulations/SelectionSort.mp4)
