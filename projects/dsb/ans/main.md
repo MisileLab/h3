@@ -25,5 +25,4 @@
 
 ## 시뮬레이션
 
-![./simulations/1.mp4](./simulations/1.mp4)
-
+./simulations/SelectionSort.mp4
