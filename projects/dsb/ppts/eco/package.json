@@ -18,7 +18,7 @@
 		"prettier-plugin-tailwindcss": "0.6.6",
 		"shiki": "1.14.1",
 		"shiki-magic-move": "0.4.4",
-		"svelte": "5.0.0-next.239",
+		"svelte": "5.0.0-next.240",
 		"svelte-check": "3.8.6",
 		"tslib": "2.7.0",
 		"typescript": "5.5.4",
