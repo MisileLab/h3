@@ -5,25 +5,17 @@
 #define TYPE int
 #define MAX_SIZE 10
 
-void swap(TYPE* x, TYPE* y) {
-  TYPE t=*x;
-  *x=*y;
-  *y=t;
-}
-
 int list[MAX_SIZE];
 int n;
 
-void selectionSort(int list[], int n) {
-  int i, j, least, temp;
+void swap(TYPE* x, TYPE* y) {TYPE t=*x;*x=*y;*x=t;}
+
+void bubbleSort(int arr[], int n) {
   for (int i=0; i<n; i++) {
-    int min = i;
-    // 최솟값 찾기
-    for (int j=i+1; j<n; j++) {
-      if (list[min]>list[j]) {min = j;}
+    for (int j=0; j<i; j++) {
+      printf("\n%d %d", arr[j], arr[j+1]);
+      if (arr[j]<arr[j+1]) {printf("\n");for(int k=0;k<n;k++){printf("%d ", arr[k]);};swap(&arr[j], &arr[j+1]);}
     }
-    // 최솟값과 현재 값 교환
-    swap(&list[i], &list[min]);
   }
 }
 
@@ -35,7 +27,7 @@ int main() {
   printf("Before Sorting:\n");
   for (i=0; i<n; i++) {printf("%d ", list[i]);}
   printf("\ntry sorting:\n");
-  selectionSort(list, n);
+  bubbleSort(list, n);
   printf("\nAfter Sorting:\n");
   for (i=0; i<n; i++) {printf("%d ", list[i]);}
   printf("\n");
