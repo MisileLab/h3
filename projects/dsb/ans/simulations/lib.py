@@ -1,4 +1,5 @@
 from manim import *
+from manim.typing import Point3D
 
 from secrets import SystemRandom
 
@@ -9,9 +10,9 @@ def create_textbox(rect: Rectangle, value: str) -> VGroup:
   return res
 
 def get_non_duplicated_list(elements: int = 10) -> list[int]:
-  rvalue = [SystemRandom().randint(1, 100) for _ in range(10)]
+  rvalue = [SystemRandom().randint(1, 100) for _ in range(elements)]
   while list(sorted(dict.fromkeys(rvalue))) != list(sorted(rvalue)):
-    rvalue = [SystemRandom().randint(1, 100) for _ in range(10)]
+    rvalue = [SystemRandom().randint(1, 100) for _ in range(elements)]
   return rvalue
 
 def list_to_vgroup(elements: list[int]) -> list[VGroup]:
@@ -21,18 +22,25 @@ def list_to_vgroup(elements: list[int]) -> list[VGroup]:
     vgroups.append(create_textbox(rect, str(i)))
   return vgroups
 
-def move_vgroup(elements: list[VGroup]) -> list[Create]:
-  elements[0].set_x(-5).set_y(0)
+def move_vgroup(elements: list[VGroup], base_x: float = -5, base_y: float = 0) -> list[Animation]:
+  elements[0].set_x(base_x).set_y(base_y)
   for i in range(1, len(elements)):
     elements[i].next_to(elements[i-1], RIGHT)
-    logger.debug(f"{elements[i].get_x()} {elements[i].get_y()}")
+    logger.info(f"{elements[i].get_x()} {elements[i].get_y()}")
   return [Create(i) for i in elements]
 
-def set_fill(vgroup: VGroup, color: str):
-  return vgroup.submobjects[0].animate.set_fill(color, opacity=0.5)
+def realign_vgroup(elements: list[VGroup], base_x: float = -5, base_y: float = 0) -> list[Animation]:
+  animations = [elements[0].animate.move_to((base_x, base_y, 0))]
+  for i in range(1, len(elements)):
+    animations.append(elements[i].animate.move_to((base_x+i*1.25, base_y, 0)))
+    logger.info(f"{elements[i].get_x()} {elements[i].get_y()}")
+  return animations # type: ignore
 
-def swap(vgroup1: VMobject, vgroup2: VMobject):
+def set_fill(vgroup: VGroup, color: str) -> Animation:
+  return vgroup.submobjects[0].animate.set_fill(color, opacity=0.5) # type: ignore
+
+def swap(vgroup1: VMobject, vgroup2: VMobject) -> list[Animation]:
   a = vgroup1.get_center()
   b = vgroup2.get_center()
-  return [vgroup1.animate.move_to(b), vgroup2.animate.move_to(a)]
-
+  return [vgroup1.animate.move_to(b), vgroup2.animate.move_to(a)] # type: ignore
+    
