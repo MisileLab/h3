@@ -28,7 +28,7 @@ in
       }}/themes/Mocha/Catppuccin-Mocha.zip";
       ".config/obs-studio/themes/Catppuccin Mocha.qss".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
         url="https://github.com/catppuccin/obs";
-        rev="e7c4fcf387415a20cb747121bc0416c4c8ae3362";
+        rev="b17939991545bdd6232e688ec5004b6dfae46f69";
       }}";
     };
     pointerCursor = {
