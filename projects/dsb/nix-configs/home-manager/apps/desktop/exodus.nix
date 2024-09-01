@@ -27,12 +27,12 @@
 
 stdenv.mkDerivation (finalAttrs: {
   pname = "exodus";
-  version = "24.33.4";
+  version = "24.33.5";
 
   src = requireFile {
     name = "exodus-linux-x64-${finalAttrs.version}.zip";
     url = "https://downloads.exodus.com/releases/exodus-linux-x64-${finalAttrs.version}.zip";
-    sha256 = "08620z31gfl70v0hdnf0s7a4hry1hfxvybmmmcwqp132586dgqpg";
+    sha256 = "0596rf2sddwdzkfdw26bvszpb0dbylyx8y8bzjr7llp8kwc60pqk";
   };
 
   nativeBuildInputs = [ unzip ];

@@ -10,7 +10,7 @@ dependencies = [
   "requests==2.32.3",
   "baekjoonapi @ git+https://github.com/MisileLab/baekjoonapi",
 ]
-requires-python = ">=3.12.4"
+requires-python = "==3.12.5"
 readme = "README.md"
 license = {text = "MisileLab License"}
 
