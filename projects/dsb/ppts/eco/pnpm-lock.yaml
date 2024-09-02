@@ -21,8 +21,8 @@ importers:
         specifier: 5.0.21
         version: 5.0.21
       '@tailwindcss/vite':
-        specifier: 4.0.0-alpha.20
-        version: 4.0.0-alpha.20(postcss@8.4.44)(vite@5.4.2(lightningcss@1.26.0))
+        specifier: 4.0.0-alpha.21
+        version: 4.0.0-alpha.21(postcss@8.4.44)(vite@5.4.2(lightningcss@1.26.0))
       reveal.js:
         specifier: 5.1.0
         version: 5.1.0
@@ -372,14 +372,17 @@ packages:
       svelte: ^4.0.0 || ^5.0.0-next.0
       vite: ^5.0.0
 
+  '@tailwindcss/node@4.0.0-alpha.21':
+    resolution: {integrity: sha512-DE3jab0rIyAMYaspf36hRM2JP4DtROCxMKCapCVRpPw04cRMN/cfhlM7YRbAZp/r1c1fagBVIt/X8d4NTQ+kIg==}
+
   '@tailwindcss/oxide-android-arm64@4.0.0-alpha.15':
     resolution: {integrity: sha512-Z1nJQilQ7r2qNcOqWz8pkZOIXSI5BAwfBn9i1MfIkuAzSrK1iUVxPdxH6KPuResKBRa2WhJrouymg/rRVR9Icg==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [android]
 
-  '@tailwindcss/oxide-android-arm64@4.0.0-alpha.20':
-    resolution: {integrity: sha512-aZFvNDl73UuziTZQAIV+ixRBuPB8J8EB/GHgTgtAqbBDxB2t4k3jEqolZvktNUG3FyO4vkpJ+kr5j9yINU3e8g==}
+  '@tailwindcss/oxide-android-arm64@4.0.0-alpha.21':
+    resolution: {integrity: sha512-GXMA77D4+qI3lCo7EMU4HEETm8jgyUshuVkhJQczLlR2nBqaQZ3xk4aFBNmyTjAdKWVjwXVj7uINe4ggZJSvXg==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [android]
@@ -390,8 +393,8 @@ packages:
     cpu: [arm64]
     os: [darwin]
 
-  '@tailwindcss/oxide-darwin-arm64@4.0.0-alpha.20':
-    resolution: {integrity: sha512-Rb5dnHnc6lfwR1571iCxORPb6iX3rLAW26WaI/5Z/PxYwxHCFdsI0qHQzu+GmU1Frj2J/78su4GeWDUMKQ+dVQ==}
+  '@tailwindcss/oxide-darwin-arm64@4.0.0-alpha.21':
+    resolution: {integrity: sha512-F0pxXQV+IWLRWFmlrgvo3yDtQpMx2DzvjCoC40IHGS9WnWtLO6H0JRInhatQT/04Ov+JIbOF/aXSUo/uAwXQCA==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [darwin]
@@ -402,8 +405,8 @@ packages:
     cpu: [x64]
     os: [darwin]
 
-  '@tailwindcss/oxide-darwin-x64@4.0.0-alpha.20':
-    resolution: {integrity: sha512-ijuQQpR3kBVmBZ8flqUNS/EAqxMgF55+IBlP3Zw//LDESfz0Qn9XhgGDzNXDp5oRHuRC3mRdhj18XpXfCTiubA==}
+  '@tailwindcss/oxide-darwin-x64@4.0.0-alpha.21':
+    resolution: {integrity: sha512-EyYoSEQQxYxEkWKaXs3hh5QXPjd4JQIsKXBhZvAmFPLLMyD3THL5SO8Jt2AQC5SXPFSCJRhCLDfaiACpw1orUA==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [darwin]
@@ -414,8 +417,8 @@ packages:
     cpu: [x64]
     os: [freebsd]
 
-  '@tailwindcss/oxide-freebsd-x64@4.0.0-alpha.20':
-    resolution: {integrity: sha512-RSt3RJ68jwTJn5comgPxYESzyPJ2IShrkfb297fHoINg4icoSrKfD7j/GdgJHh76jbN1OyxJs/KAS92jwph1mQ==}
+  '@tailwindcss/oxide-freebsd-x64@4.0.0-alpha.21':
+    resolution: {integrity: sha512-FShflqJxKlMs6sYb+tvfT6SIkz9P8VrJ1FCrv/poQJaC/MP0MWmHWVsGbyz0M3MpYh7rzuNFnDTrMNCkvq2ahg==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [freebsd]
@@ -426,8 +429,8 @@ packages:
     cpu: [arm]
     os: [linux]
 
-  '@tailwindcss/oxide-linux-arm-gnueabihf@4.0.0-alpha.20':
-    resolution: {integrity: sha512-vCfD284hLDD6paN1MWc6dOG8Fkhq935sODXLYqef2oLAq/NylQYznVejQfJBvkbcYipyfADCBl9RbrwwiJ63AA==}
+  '@tailwindcss/oxide-linux-arm-gnueabihf@4.0.0-alpha.21':
+    resolution: {integrity: sha512-Pw4lony5efd8JpcY0WXL1VtqXjAuegQXthHKkXd9I83WcSxZ8gt6HHCt5DYzwPl52CVQDAzz796bX7LTGxpEAA==}
     engines: {node: '>= 10'}
     cpu: [arm]
     os: [linux]
@@ -438,8 +441,8 @@ packages:
     cpu: [arm64]
     os: [linux]
 
-  '@tailwindcss/oxide-linux-arm64-gnu@4.0.0-alpha.20':
-    resolution: {integrity: sha512-R9vJT1lXHMwOkcVZcn3dR/HdVf/0Cyu7soUjZDkZPMRVhsmBqypxiDyDVpr3pm3F7KTNKt3mIfipwDN7zLX0EQ==}
+  '@tailwindcss/oxide-linux-arm64-gnu@4.0.0-alpha.21':
+    resolution: {integrity: sha512-JGpy9u3JWUw4lJZCoFsxbuSnEsjN2E7Kq5frmG0RIoJKImwxShyQwrop1gE15iPP3GvF66zPqb/T5xQuq553xQ==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
@@ -450,8 +453,8 @@ packages:
     cpu: [arm64]
     os: [linux]
 
-  '@tailwindcss/oxide-linux-arm64-musl@4.0.0-alpha.20':
-    resolution: {integrity: sha512-oikEVW+LoEsDOpjeME6Y25zccmWITJ4XgTROmgRf3O/t7767HmZr4XVyBcWORCLNKe/fzw0il990XVBr8E7i3g==}
+  '@tailwindcss/oxide-linux-arm64-musl@4.0.0-alpha.21':
+    resolution: {integrity: sha512-wwQuSCMbaXpopzMyvrcZOpDhXmClwFV+WUZltr1Ij8B9Nyzw6ic1d3rVanXcS2B/e6x5ffyFLX63tp3GNXXU4A==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
@@ -462,8 +465,8 @@ packages:
     cpu: [x64]
     os: [linux]
 
-  '@tailwindcss/oxide-linux-x64-gnu@4.0.0-alpha.20':
-    resolution: {integrity: sha512-w+INqq8rcCfNK7FfYUJV33B5DXBMII+rePlYBri3nc/kIv0b1hGul3uBW5CxcmhS5zuExFAL9kYvBzatXe1L5w==}
+  '@tailwindcss/oxide-linux-x64-gnu@4.0.0-alpha.21':
+    resolution: {integrity: sha512-EPEX+T6F/UK6PKM8O9St+kT9vA2ohhy4orqxRQhWlByueDAfzcyALzPZFu+wafMpjIts6eU06lRcEy75tPc8+Q==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
@@ -474,8 +477,8 @@ packages:
     cpu: [x64]
     os: [linux]
 
-  '@tailwindcss/oxide-linux-x64-musl@4.0.0-alpha.20':
-    resolution: {integrity: sha512-O63RFK0aRgwuN3BXvRF+uFC33NL141vorqqbV3/vau68Sv4dxnn55SqSOaou0PdVMrAzxRC5AUgPZxtyHs0SlA==}
+  '@tailwindcss/oxide-linux-x64-musl@4.0.0-alpha.21':
+    resolution: {integrity: sha512-spHkaxSSF7qzjT3+reWTEyfFQgduDJNjy/ceQ/tVesZ8NzV1yDO5YDMj0VHSnGYovVeeT5a4CofN0HZ0M1ydqg==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
@@ -486,8 +489,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@tailwindcss/oxide-win32-x64-msvc@4.0.0-alpha.20':
-    resolution: {integrity: sha512-TPcY2bZTTxzKQ9hlWfZkstVIStX+ZNzENJ4XLkaNaLAHjpy8yg+Pnh67WL+LlQGHGM3agXer8drdjCISO+QjFw==}
+  '@tailwindcss/oxide-win32-x64-msvc@4.0.0-alpha.21':
+    resolution: {integrity: sha512-sGD+VsRLzXDGv51yhlXREzrWpLkNJWvbE/8fwpnobnevlHHhf8qlMs+T51OLGclT/VIMUtdZ7h7zt2a3ettdoA==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
@@ -496,8 +499,8 @@ packages:
     resolution: {integrity: sha512-8rJzC+spphf7YK+gVJegYE2r3FIcT/dXFEtM6BuC1kDpyNtldEujYzmmxzj+Coq3GNuRK9OjLv0PzVtG7zo6MQ==}
     engines: {node: '>= 10'}
 
-  '@tailwindcss/oxide@4.0.0-alpha.20':
-    resolution: {integrity: sha512-qem01LDyzYwbPUazt6HVDPz0WQpHiXdoVjzzb9dHSpvoJXEUwDY7y1Ujlj3g56lHizo+xJEJ3g3av0Wzuqr/QQ==}
+  '@tailwindcss/oxide@4.0.0-alpha.21':
+    resolution: {integrity: sha512-58l1/FQrYbQM15ksVmwRcAqQfO6s40ihpYM2vJUDdKQXl9FNipl9rRI7TnvwV93degUgaC/hdLId8LoJOrTQ1Q==}
     engines: {node: '>= 10'}
 
   '@tailwindcss/vite@4.0.0-alpha.15':
@@ -505,8 +508,8 @@ packages:
     peerDependencies:
       vite: ^5.2.0
 
-  '@tailwindcss/vite@4.0.0-alpha.20':
-    resolution: {integrity: sha512-NsqlqTfFEVFp9lOhYTNbiglli9d0kag9mJ1lHHC5WBvkmgAXMwbah1ZPL02qrYUTMjSVrkN0astqQw/CS1zptA==}
+  '@tailwindcss/vite@4.0.0-alpha.21':
+    resolution: {integrity: sha512-54uBFd1UavjKoYng2IApvB+B8X/6O7k1gPGk4T0KrtzV0ZsoT7K/MyAnm6zyi1mIHez8btzNiOSV38YPb9i90A==}
     peerDependencies:
       vite: ^5.2.0
 
@@ -1030,6 +1033,9 @@ packages:
   tailwindcss@4.0.0-alpha.20:
     resolution: {integrity: sha512-ULNYqtGezc5R2mPLv/UpJBxBDllVrGHbMdO/y+irV/nZO+OnrI+qXX+lYWEsBn2tk1p5bmAOuI8wMXZDNap0Pw==}
 
+  tailwindcss@4.0.0-alpha.21:
+    resolution: {integrity: sha512-Ps3oqLhvjPt/XSm4dx4ky4sYkCSMHfn7JWattsEQyFkbLYo77t4/FOnRuQzjATLCMQz10e/HbZYjosSD/pBfSg==}
+
   tiny-glob@0.2.9:
     resolution: {integrity: sha512-g/55ssRPUjShh+xkfx9UPDXqhckHEsHr4Vd9zX55oSdGZc/MD0m3sferOkwWtp98bv+kcVfEHtRJgBVJzelrzg==}
 
@@ -1319,64 +1325,66 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@tailwindcss/node@4.0.0-alpha.21': {}
+
   '@tailwindcss/oxide-android-arm64@4.0.0-alpha.15':
     optional: true
 
-  '@tailwindcss/oxide-android-arm64@4.0.0-alpha.20':
+  '@tailwindcss/oxide-android-arm64@4.0.0-alpha.21':
     optional: true
 
   '@tailwindcss/oxide-darwin-arm64@4.0.0-alpha.15':
     optional: true
 
-  '@tailwindcss/oxide-darwin-arm64@4.0.0-alpha.20':
+  '@tailwindcss/oxide-darwin-arm64@4.0.0-alpha.21':
     optional: true
 
   '@tailwindcss/oxide-darwin-x64@4.0.0-alpha.15':
     optional: true
 
-  '@tailwindcss/oxide-darwin-x64@4.0.0-alpha.20':
+  '@tailwindcss/oxide-darwin-x64@4.0.0-alpha.21':
     optional: true
 
   '@tailwindcss/oxide-freebsd-x64@4.0.0-alpha.15':
     optional: true
 
-  '@tailwindcss/oxide-freebsd-x64@4.0.0-alpha.20':
+  '@tailwindcss/oxide-freebsd-x64@4.0.0-alpha.21':
     optional: true
 
   '@tailwindcss/oxide-linux-arm-gnueabihf@4.0.0-alpha.15':
     optional: true
 
-  '@tailwindcss/oxide-linux-arm-gnueabihf@4.0.0-alpha.20':
+  '@tailwindcss/oxide-linux-arm-gnueabihf@4.0.0-alpha.21':
     optional: true
 
   '@tailwindcss/oxide-linux-arm64-gnu@4.0.0-alpha.15':
     optional: true
 
-  '@tailwindcss/oxide-linux-arm64-gnu@4.0.0-alpha.20':
+  '@tailwindcss/oxide-linux-arm64-gnu@4.0.0-alpha.21':
     optional: true
 
   '@tailwindcss/oxide-linux-arm64-musl@4.0.0-alpha.15':
     optional: true
 
-  '@tailwindcss/oxide-linux-arm64-musl@4.0.0-alpha.20':
+  '@tailwindcss/oxide-linux-arm64-musl@4.0.0-alpha.21':
     optional: true
 
   '@tailwindcss/oxide-linux-x64-gnu@4.0.0-alpha.15':
     optional: true
 
-  '@tailwindcss/oxide-linux-x64-gnu@4.0.0-alpha.20':
+  '@tailwindcss/oxide-linux-x64-gnu@4.0.0-alpha.21':
     optional: true
 
   '@tailwindcss/oxide-linux-x64-musl@4.0.0-alpha.15':
     optional: true
 
-  '@tailwindcss/oxide-linux-x64-musl@4.0.0-alpha.20':
+  '@tailwindcss/oxide-linux-x64-musl@4.0.0-alpha.21':
     optional: true
 
   '@tailwindcss/oxide-win32-x64-msvc@4.0.0-alpha.15':
     optional: true
 
-  '@tailwindcss/oxide-win32-x64-msvc@4.0.0-alpha.20':
+  '@tailwindcss/oxide-win32-x64-msvc@4.0.0-alpha.21':
     optional: true
 
   '@tailwindcss/oxide@4.0.0-alpha.15':
@@ -1392,18 +1400,18 @@ snapshots:
       '@tailwindcss/oxide-linux-x64-musl': 4.0.0-alpha.15
       '@tailwindcss/oxide-win32-x64-msvc': 4.0.0-alpha.15
 
-  '@tailwindcss/oxide@4.0.0-alpha.20':
+  '@tailwindcss/oxide@4.0.0-alpha.21':
     optionalDependencies:
-      '@tailwindcss/oxide-android-arm64': 4.0.0-alpha.20
-      '@tailwindcss/oxide-darwin-arm64': 4.0.0-alpha.20
-      '@tailwindcss/oxide-darwin-x64': 4.0.0-alpha.20
-      '@tailwindcss/oxide-freebsd-x64': 4.0.0-alpha.20
-      '@tailwindcss/oxide-linux-arm-gnueabihf': 4.0.0-alpha.20
-      '@tailwindcss/oxide-linux-arm64-gnu': 4.0.0-alpha.20
-      '@tailwindcss/oxide-linux-arm64-musl': 4.0.0-alpha.20
-      '@tailwindcss/oxide-linux-x64-gnu': 4.0.0-alpha.20
-      '@tailwindcss/oxide-linux-x64-musl': 4.0.0-alpha.20
-      '@tailwindcss/oxide-win32-x64-msvc': 4.0.0-alpha.20
+      '@tailwindcss/oxide-android-arm64': 4.0.0-alpha.21
+      '@tailwindcss/oxide-darwin-arm64': 4.0.0-alpha.21
+      '@tailwindcss/oxide-darwin-x64': 4.0.0-alpha.21
+      '@tailwindcss/oxide-freebsd-x64': 4.0.0-alpha.21
+      '@tailwindcss/oxide-linux-arm-gnueabihf': 4.0.0-alpha.21
+      '@tailwindcss/oxide-linux-arm64-gnu': 4.0.0-alpha.21
+      '@tailwindcss/oxide-linux-arm64-musl': 4.0.0-alpha.21
+      '@tailwindcss/oxide-linux-x64-gnu': 4.0.0-alpha.21
+      '@tailwindcss/oxide-linux-x64-musl': 4.0.0-alpha.21
+      '@tailwindcss/oxide-win32-x64-msvc': 4.0.0-alpha.21
 
   '@tailwindcss/vite@4.0.0-alpha.15(vite@5.4.2(lightningcss@1.26.0))':
     dependencies:
@@ -1412,12 +1420,13 @@ snapshots:
       tailwindcss: 4.0.0-alpha.15
       vite: 5.4.2(lightningcss@1.26.0)
 
-  '@tailwindcss/vite@4.0.0-alpha.20(postcss@8.4.44)(vite@5.4.2(lightningcss@1.26.0))':
+  '@tailwindcss/vite@4.0.0-alpha.21(postcss@8.4.44)(vite@5.4.2(lightningcss@1.26.0))':
     dependencies:
-      '@tailwindcss/oxide': 4.0.0-alpha.20
+      '@tailwindcss/node': 4.0.0-alpha.21
+      '@tailwindcss/oxide': 4.0.0-alpha.21
       lightningcss: 1.26.0
       postcss-load-config: 6.0.1(postcss@8.4.44)
-      tailwindcss: 4.0.0-alpha.20
+      tailwindcss: 4.0.0-alpha.21
       vite: 5.4.2(lightningcss@1.26.0)
     transitivePeerDependencies:
       - jiti
@@ -1844,6 +1853,8 @@ snapshots:
   tailwindcss@4.0.0-alpha.15: {}
 
   tailwindcss@4.0.0-alpha.20: {}
+
+  tailwindcss@4.0.0-alpha.21: {}
 
   tiny-glob@0.2.9:
     dependencies:
