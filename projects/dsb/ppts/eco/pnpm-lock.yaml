@@ -22,7 +22,7 @@ importers:
         version: 5.0.21
       '@tailwindcss/vite':
         specifier: 4.0.0-alpha.20
-        version: 4.0.0-alpha.20(postcss@8.4.43)(vite@5.4.2(lightningcss@1.26.0))
+        version: 4.0.0-alpha.20(postcss@8.4.44)(vite@5.4.2(lightningcss@1.26.0))
       reveal.js:
         specifier: 5.1.0
         version: 5.1.0
@@ -62,7 +62,7 @@ importers:
         version: 5.0.0-next.242
       svelte-check:
         specifier: 3.8.6
-        version: 3.8.6(postcss@8.4.43)(svelte@5.0.0-next.242)
+        version: 3.8.6(postcss@8.4.44)(svelte@5.0.0-next.242)
       tslib:
         specifier: 2.7.0
         version: 2.7.0
@@ -837,8 +837,8 @@ packages:
       yaml:
         optional: true
 
-  postcss@8.4.43:
-    resolution: {integrity: sha512-gJAQVYbh5R3gYm33FijzCZj7CHyQ3hWMgJMprLUlIYqCwTeZhBQ19wp0e9mA25BUbEvY5+EXuuaAjqQsrBxQBQ==}
+  postcss@8.4.44:
+    resolution: {integrity: sha512-Aweb9unOEpQ3ezu4Q00DPvvM2ZTUitJdNKeP/+uQgr1IBIqu574IaZoURId7BKtWMREwzKa9OgzPzezWGPWFQw==}
     engines: {node: ^10 || ^12 || >=14}
 
   prettier-plugin-svelte@3.2.6:
@@ -1412,11 +1412,11 @@ snapshots:
       tailwindcss: 4.0.0-alpha.15
       vite: 5.4.2(lightningcss@1.26.0)
 
-  '@tailwindcss/vite@4.0.0-alpha.20(postcss@8.4.43)(vite@5.4.2(lightningcss@1.26.0))':
+  '@tailwindcss/vite@4.0.0-alpha.20(postcss@8.4.44)(vite@5.4.2(lightningcss@1.26.0))':
     dependencies:
       '@tailwindcss/oxide': 4.0.0-alpha.20
       lightningcss: 1.26.0
-      postcss-load-config: 6.0.1(postcss@8.4.43)
+      postcss-load-config: 6.0.1(postcss@8.4.44)
       tailwindcss: 4.0.0-alpha.20
       vite: 5.4.2(lightningcss@1.26.0)
     transitivePeerDependencies:
@@ -1686,13 +1686,13 @@ snapshots:
 
   picomatch@2.3.1: {}
 
-  postcss-load-config@6.0.1(postcss@8.4.43):
+  postcss-load-config@6.0.1(postcss@8.4.44):
     dependencies:
       lilconfig: 3.1.2
     optionalDependencies:
-      postcss: 8.4.43
+      postcss: 8.4.44
 
-  postcss@8.4.43:
+  postcss@8.4.44:
     dependencies:
       nanoid: 3.3.7
       picocolors: 1.0.1
@@ -1789,14 +1789,14 @@ snapshots:
     dependencies:
       min-indent: 1.0.1
 
-  svelte-check@3.8.6(postcss@8.4.43)(svelte@5.0.0-next.242):
+  svelte-check@3.8.6(postcss@8.4.44)(svelte@5.0.0-next.242):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
       chokidar: 3.6.0
       picocolors: 1.0.1
       sade: 1.8.1
       svelte: 5.0.0-next.242
-      svelte-preprocess: 5.1.4(postcss@8.4.43)(svelte@5.0.0-next.242)(typescript@5.5.4)
+      svelte-preprocess: 5.1.4(postcss@8.4.44)(svelte@5.0.0-next.242)(typescript@5.5.4)
       typescript: 5.5.4
     transitivePeerDependencies:
       - '@babel/core'
@@ -1813,7 +1813,7 @@ snapshots:
     dependencies:
       svelte: 5.0.0-next.242
 
-  svelte-preprocess@5.1.4(postcss@8.4.43)(svelte@5.0.0-next.242)(typescript@5.5.4):
+  svelte-preprocess@5.1.4(postcss@8.4.44)(svelte@5.0.0-next.242)(typescript@5.5.4):
     dependencies:
       '@types/pug': 2.0.10
       detect-indent: 6.1.0
@@ -1822,7 +1822,7 @@ snapshots:
       strip-indent: 3.0.0
       svelte: 5.0.0-next.242
     optionalDependencies:
-      postcss: 8.4.43
+      postcss: 8.4.44
       typescript: 5.5.4
 
   svelte@5.0.0-next.242:
@@ -1863,7 +1863,7 @@ snapshots:
   vite@5.4.2(lightningcss@1.26.0):
     dependencies:
       esbuild: 0.21.5
-      postcss: 8.4.43
+      postcss: 8.4.44
       rollup: 4.21.2
     optionalDependencies:
       fsevents: 2.3.3
