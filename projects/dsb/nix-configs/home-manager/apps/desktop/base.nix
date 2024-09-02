@@ -17,8 +17,8 @@ in
     packages = with pkgs; [
       brightnessctl clipman wl-clipboard pavucontrol
       imagemagick virt-manager gimp appflowy xfce.thunar
-      /* galaxy-buds-client */ ferium (stablep.prismlauncher.override{withWaylandGLFW=true;})
-      seahorse kdePackages.filelight qemu firefoxpwa zed-editor
+      /* galaxy-buds-client */ ferium prismlauncher
+      seahorse kdePackages.filelight qemu firefoxpwa (stablep.zed-editor)
       onionshare jetbrains.idea-community-bin telegram-desktop
     ] ++ ([briar-desktop exodus]);
     file = {
