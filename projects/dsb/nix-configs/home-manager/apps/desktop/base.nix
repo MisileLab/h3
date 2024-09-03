@@ -18,7 +18,7 @@ in
       brightnessctl clipman wl-clipboard pavucontrol
       imagemagick virt-manager gimp appflowy xfce.thunar
       /* galaxy-buds-client */ ferium prismlauncher
-      seahorse kdePackages.filelight qemu firefoxpwa (stablep.zed-editor)
+      seahorse kdePackages.filelight qemu (stablep.firefoxpwa) zed-editor
       onionshare jetbrains.idea-community-bin telegram-desktop
     ] ++ ([briar-desktop exodus]);
     file = {
@@ -46,7 +46,8 @@ in
     };
     firefox = {
       enable = true;
-      nativeMessagingHosts = with pkgs; [firefoxpwa];
+      package = stablep.firefox;
+      nativeMessagingHosts = with stablep; [firefoxpwa];
     };
   };
   xdg = {
