@@ -99,3 +99,41 @@
 ## 시뮬레이션
 
 [BubbleSort Simulation](https://raw.githubusercontent.com/MisileLab/h3/main/projects/dsb/ans/simulations/BubbleSort.mp4)
+
+# 해싱
+
+특정 함수에 입력값을 넣어 특정한 고정된 길이의 값으로 추출하는 것을 말함\
+이론적으로 해싱한 경우 똑같은 값을 넣었을 때 똑같이 나오며, 다른 값을 넣으면 다르게 나와야 함
+
+## 사용 범위
+
+> 키: 해싱할 때 입력하는 값, 중복되지 않음
+
+1. HashMap, O(1) 속도로 접근 가능
+  - 키를 해싱하고, 그 곳에 값을 저장하는 방식으로 만들어짐
+
+2. 암호화
+  - 중요 정보를 해싱해 원래 정보로 복호화할 수 없게 만듬
+
+## 해싱 충돌
+
+다른 두개의 값이 같은 하나의 해시값을 가지는 것을 충돌이라 함\
+이론적으로는 일어나지 말아야 하지만, 일어날 수 밖에 없음
+
+# 쉘 소트
+
+- 평균 O(n^1.5), 최악 O(n^2)
+
+## 방법
+
+- k=배열 크기
+- k를 2로 나누고 짝수면 1을 더함
+- i=0
+- k-1만큼 아래 줄을 반복하고, 반복할 때마다 i를 1 증가시킴
+- i번째와 i+k, i+2k...로 이루어진 배열을 k*i가 배열 크기를 넘지 않을 때까지 반복함, 이 배열을 arr[i]로 정의함
+- arr 안에 있는 배열들을 모두 삽입 정렬함
+- 만약 k가 1이라면 정렬됨, 아니면 두번째 스텝으로 다시 이동함
+
+## 시뮬레이션
+
+[Shell Simulation](https://raw.githubusercontent.com/MisileLab/h3/main/projects/dsb/ans/simulations/ShellSort.mp4)
