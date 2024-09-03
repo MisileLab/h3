@@ -31,8 +31,8 @@ importers:
         version: 5.5.4
     devDependencies:
       '@vite-pwa/astro':
-        specifier: 0.4.0
-        version: 0.4.0(astro@4.15.2(rollup@2.79.1)(terser@5.31.6)(typescript@5.5.4))(vite-plugin-pwa@0.20.2(vite@5.4.2(terser@5.31.6))(workbox-build@7.1.1(@types/babel__core@7.20.5))(workbox-window@7.1.0))
+        specifier: 0.4.1
+        version: 0.4.1(astro@4.15.2(rollup@2.79.1)(terser@5.31.6)(typescript@5.5.4))(vite-plugin-pwa@0.20.2(vite@5.4.2(terser@5.31.6))(workbox-build@7.1.1(@types/babel__core@7.20.5))(workbox-window@7.1.0))
 
 packages:
 
@@ -1178,12 +1178,12 @@ packages:
   '@ungap/structured-clone@1.2.0':
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
 
-  '@vite-pwa/astro@0.4.0':
-    resolution: {integrity: sha512-Fw9XCZsS808TRQVCe5nSwiOHGbiUgyXPu8VQBPan7P52JnJpZOomHQsKGBeFGYcwE5RQC6DNXXDGXm9WgYtXuw==}
+  '@vite-pwa/astro@0.4.1':
+    resolution: {integrity: sha512-E7JAo3XPap8sj3jlYz+mUBt8I+cfvzogjVX3qnwZakQEgLT9cj3DvcicQu6CRE5NhP8YjNHClsvD8sQ9yxPpkA==}
     peerDependencies:
       '@vite-pwa/assets-generator': ^0.2.4
       astro: ^1.6.0 || ^2.0.0 || ^3.0.0 || ^4.0.0
-      vite-plugin-pwa: '>=0.20.0 <1'
+      vite-plugin-pwa: '>=0.20.3 <1'
     peerDependenciesMeta:
       '@vite-pwa/assets-generator':
         optional: true
@@ -4566,7 +4566,7 @@ snapshots:
 
   '@ungap/structured-clone@1.2.0': {}
 
-  '@vite-pwa/astro@0.4.0(astro@4.15.2(rollup@2.79.1)(terser@5.31.6)(typescript@5.5.4))(vite-plugin-pwa@0.20.2(vite@5.4.2(terser@5.31.6))(workbox-build@7.1.1(@types/babel__core@7.20.5))(workbox-window@7.1.0))':
+  '@vite-pwa/astro@0.4.1(astro@4.15.2(rollup@2.79.1)(terser@5.31.6)(typescript@5.5.4))(vite-plugin-pwa@0.20.2(vite@5.4.2(terser@5.31.6))(workbox-build@7.1.1(@types/babel__core@7.20.5))(workbox-window@7.1.0))':
     dependencies:
       astro: 4.15.2(rollup@2.79.1)(terser@5.31.6)(typescript@5.5.4)
       vite-plugin-pwa: 0.20.2(vite@5.4.2(terser@5.31.6))(workbox-build@7.1.1(@types/babel__core@7.20.5))(workbox-window@7.1.0)
