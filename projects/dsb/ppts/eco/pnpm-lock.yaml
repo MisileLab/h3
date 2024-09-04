@@ -32,10 +32,10 @@ importers:
     devDependencies:
       '@sveltejs/adapter-netlify':
         specifier: 4.3.3
-        version: 4.3.3(@sveltejs/kit@2.5.25(@sveltejs/vite-plugin-svelte@3.1.2(svelte@5.0.0-next.243)(vite@5.4.3(lightningcss@1.26.0)))(svelte@5.0.0-next.243)(vite@5.4.3(lightningcss@1.26.0)))
+        version: 4.3.3(@sveltejs/kit@2.5.26(@sveltejs/vite-plugin-svelte@3.1.2(svelte@5.0.0-next.243)(vite@5.4.3(lightningcss@1.26.0)))(svelte@5.0.0-next.243)(vite@5.4.3(lightningcss@1.26.0)))
       '@sveltejs/kit':
-        specifier: 2.5.25
-        version: 2.5.25(@sveltejs/vite-plugin-svelte@3.1.2(svelte@5.0.0-next.243)(vite@5.4.3(lightningcss@1.26.0)))(svelte@5.0.0-next.243)(vite@5.4.3(lightningcss@1.26.0))
+        specifier: 2.5.26
+        version: 2.5.26(@sveltejs/vite-plugin-svelte@3.1.2(svelte@5.0.0-next.243)(vite@5.4.3(lightningcss@1.26.0)))(svelte@5.0.0-next.243)(vite@5.4.3(lightningcss@1.26.0))
       '@sveltejs/vite-plugin-svelte':
         specifier: 3.1.2
         version: 3.1.2(svelte@5.0.0-next.243)(vite@5.4.3(lightningcss@1.26.0))
@@ -348,8 +348,8 @@ packages:
     peerDependencies:
       '@sveltejs/kit': ^2.4.0
 
-  '@sveltejs/kit@2.5.25':
-    resolution: {integrity: sha512-5hBSEN8XEjDZ5+2bHkFh8Z0QyOk0C187cyb12aANe1c8aeKbfu5ZD5XaC2vEH4h0alJFDXPdUkXQBmeeXeMr1A==}
+  '@sveltejs/kit@2.5.26':
+    resolution: {integrity: sha512-8l1JTIM2L+bS8ebq1E+nGjv/YSKSnD9Q19bYIUkc41vaEG2JjVUx6ikvPIJv2hkQAuqJLzoPrXlKk4KcyWOv3Q==}
     engines: {node: '>=18.13'}
     hasBin: true
     peerDependencies:
@@ -1167,14 +1167,14 @@ snapshots:
 
   '@shikijs/vscode-textmate@9.2.0': {}
 
-  '@sveltejs/adapter-netlify@4.3.3(@sveltejs/kit@2.5.25(@sveltejs/vite-plugin-svelte@3.1.2(svelte@5.0.0-next.243)(vite@5.4.3(lightningcss@1.26.0)))(svelte@5.0.0-next.243)(vite@5.4.3(lightningcss@1.26.0)))':
+  '@sveltejs/adapter-netlify@4.3.3(@sveltejs/kit@2.5.26(@sveltejs/vite-plugin-svelte@3.1.2(svelte@5.0.0-next.243)(vite@5.4.3(lightningcss@1.26.0)))(svelte@5.0.0-next.243)(vite@5.4.3(lightningcss@1.26.0)))':
     dependencies:
       '@iarna/toml': 2.2.5
-      '@sveltejs/kit': 2.5.25(@sveltejs/vite-plugin-svelte@3.1.2(svelte@5.0.0-next.243)(vite@5.4.3(lightningcss@1.26.0)))(svelte@5.0.0-next.243)(vite@5.4.3(lightningcss@1.26.0))
+      '@sveltejs/kit': 2.5.26(@sveltejs/vite-plugin-svelte@3.1.2(svelte@5.0.0-next.243)(vite@5.4.3(lightningcss@1.26.0)))(svelte@5.0.0-next.243)(vite@5.4.3(lightningcss@1.26.0))
       esbuild: 0.21.5
       set-cookie-parser: 2.7.0
 
-  '@sveltejs/kit@2.5.25(@sveltejs/vite-plugin-svelte@3.1.2(svelte@5.0.0-next.243)(vite@5.4.3(lightningcss@1.26.0)))(svelte@5.0.0-next.243)(vite@5.4.3(lightningcss@1.26.0))':
+  '@sveltejs/kit@2.5.26(@sveltejs/vite-plugin-svelte@3.1.2(svelte@5.0.0-next.243)(vite@5.4.3(lightningcss@1.26.0)))(svelte@5.0.0-next.243)(vite@5.4.3(lightningcss@1.26.0))':
     dependencies:
       '@sveltejs/vite-plugin-svelte': 3.1.2(svelte@5.0.0-next.243)(vite@5.4.3(lightningcss@1.26.0))
       '@types/cookie': 0.6.0
