@@ -52,11 +52,11 @@ importers:
         specifier: 0.6.6
         version: 0.6.6(prettier-plugin-svelte@3.2.6(prettier@3.3.3)(svelte@5.0.0-next.243))(prettier@3.3.3)
       shiki:
-        specifier: 1.16.1
-        version: 1.16.1
+        specifier: 1.16.2
+        version: 1.16.2
       shiki-magic-move:
         specifier: 0.4.4
-        version: 0.4.4(shiki@1.16.1)(svelte@5.0.0-next.243)
+        version: 0.4.4(shiki@1.16.2)(svelte@5.0.0-next.243)
       svelte:
         specifier: 5.0.0-next.243
         version: 5.0.0-next.243
@@ -337,8 +337,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@shikijs/core@1.16.1':
-    resolution: {integrity: sha512-aI0hBtw+a6KsJp2jcD4YuQqKpeCbURMZbhHVozDknJpm+KJqeMRkEnfBC8BaKE/5XC+uofPgCLsa/TkTk0Ba0w==}
+  '@shikijs/core@1.16.2':
+    resolution: {integrity: sha512-XSVH5OZCvE4WLMgdoBqfPMYmGHGmCC3OgZhw0S7KcSi2XKZ+5oHGe71GFnTljgdOxvxx5WrRks6QoTLKrl1eAA==}
 
   '@shikijs/vscode-textmate@9.2.0':
     resolution: {integrity: sha512-5FinaOp6Vdh/dl4/yaOTh0ZeKch+rYS8DUb38V3GMKYVkdqzxw53lViRKUYkVILRiVQT7dcPC7VvAKOR73zVtQ==}
@@ -894,8 +894,8 @@ packages:
       vue:
         optional: true
 
-  shiki@1.16.1:
-    resolution: {integrity: sha512-tCJIMaxDVB1mEIJ5TvfZU7kCPB5eo9fli5+21Olc/bmyv+w8kye3JOp+LZRmGkAyT71hrkefQhTiY+o9mBikRQ==}
+  shiki@1.16.2:
+    resolution: {integrity: sha512-gSym0hZf5a1U0iDPsdoOAZbvoi+e0c6c3NKAi03FoSLTm7oG20tum29+gk0wzzivOasn3loxfGUPT+jZXIUbWg==}
 
   sirv@2.0.4:
     resolution: {integrity: sha512-94Bdh3cC2PKrbgSOUqTiGPWVZeSiXfKOVZNJniWoqrWrRkB1CJzBU3NEbiTsPcYy1lDsANA/THzS+9WBiy5nfQ==}
@@ -1004,8 +1004,8 @@ snapshots:
       '@fontsource-variable/manrope': 5.0.21
       '@tailwindcss/vite': 4.0.0-alpha.15(vite@5.4.3(lightningcss@1.26.0))
       reveal.js: 5.1.0
-      shiki: 1.16.1
-      shiki-magic-move: 0.4.4(shiki@1.16.1)(svelte@5.0.0-next.243)
+      shiki: 1.16.2
+      shiki-magic-move: 0.4.4(shiki@1.16.2)(svelte@5.0.0-next.243)
       svelte: 5.0.0-next.243
       tailwindcss: 4.0.0-alpha.15
     transitivePeerDependencies:
@@ -1160,7 +1160,7 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.21.2':
     optional: true
 
-  '@shikijs/core@1.16.1':
+  '@shikijs/core@1.16.2':
     dependencies:
       '@shikijs/vscode-textmate': 9.2.0
       '@types/hast': 3.0.4
@@ -1591,17 +1591,17 @@ snapshots:
 
   set-cookie-parser@2.7.0: {}
 
-  shiki-magic-move@0.4.4(shiki@1.16.1)(svelte@5.0.0-next.243):
+  shiki-magic-move@0.4.4(shiki@1.16.2)(svelte@5.0.0-next.243):
     dependencies:
       diff-match-patch-es: 0.1.0
       ohash: 1.1.3
     optionalDependencies:
-      shiki: 1.16.1
+      shiki: 1.16.2
       svelte: 5.0.0-next.243
 
-  shiki@1.16.1:
+  shiki@1.16.2:
     dependencies:
-      '@shikijs/core': 1.16.1
+      '@shikijs/core': 1.16.2
       '@shikijs/vscode-textmate': 9.2.0
       '@types/hast': 3.0.4
 
