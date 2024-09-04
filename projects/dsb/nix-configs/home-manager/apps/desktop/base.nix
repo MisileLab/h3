@@ -16,11 +16,11 @@ in
     # https://github.com/NixOS/nixpkgs/issues/306670
     packages = with pkgs; [
       brightnessctl clipman wl-clipboard pavucontrol
-      imagemagick virt-manager gimp appflowy xfce.thunar
+      imagemagick virt-manager appflowy xfce.thunar
       /* galaxy-buds-client */ ferium prismlauncher
       seahorse kdePackages.filelight qemu (stablep.firefoxpwa) zed-editor
-      onionshare jetbrains.idea-community-bin telegram-desktop
-    ] ++ ([briar-desktop exodus]);
+      onionshare jetbrains.idea-community-bin
+    ] ++ ([briar-desktop exodus]) ++ (with stablep; [telegram-desktop gimp]);
     file = {
       ".local/share/PrismLauncher/themes/catppuccin-mocha.zip".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
         url="https://github.com/catppuccin/prismlauncher";
