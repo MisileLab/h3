@@ -18,9 +18,9 @@ in
       brightnessctl clipman wl-clipboard pavucontrol
       imagemagick virt-manager appflowy xfce.thunar
       /* galaxy-buds-client */ ferium prismlauncher
-      seahorse kdePackages.filelight qemu (stablep.firefoxpwa) zed-editor
-      onionshare jetbrains.idea-community-bin
-    ] ++ ([briar-desktop exodus]) ++ (with stablep; [telegram-desktop gimp]);
+      seahorse kdePackages.filelight qemu firefoxpwa
+      onionshare jetbrains.idea-community-bin gimp
+    ] ++ ([briar-desktop exodus]) ++ (with stablep; [zed-editor telegram-desktop]);
     file = {
       ".local/share/PrismLauncher/themes/catppuccin-mocha.zip".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
         url="https://github.com/catppuccin/prismlauncher";
@@ -46,8 +46,7 @@ in
     };
     firefox = {
       enable = true;
-      package = stablep.firefox;
-      nativeMessagingHosts = with stablep; [firefoxpwa];
+      nativeMessagingHosts = with pkgs; [firefoxpwa];
     };
   };
   xdg = {
