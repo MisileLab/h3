@@ -7,7 +7,7 @@ authors = [
 ]
 dependencies = [
   "edgedb==2.0.1",
-  "fastapi==0.112.2",
+  "fastapi==0.112.3",
   "uvicorn==0.30.6",
   "pyjwt==2.9.0",
 ]
