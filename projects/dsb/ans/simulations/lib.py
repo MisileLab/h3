@@ -36,11 +36,17 @@ def realign_vgroup(elements: list[VGroup], base_x: float = -5, base_y: float = 0
     logger.info(f"{elements[i].get_x()} {elements[i].get_y()}")
   return animations # type: ignore
 
-def set_fill(vgroup: VGroup, color: str) -> Animation:
-  return vgroup.submobjects[0].animate.set_fill(color, opacity=0.5) # type: ignore
+def set_fill(vgroup: VGroup, color: str | ManimColor, index: int = 0, opacity: float = 0.5) -> Animation:
+  return vgroup.submobjects[index].animate.set_fill(color, opacity=opacity) # type: ignore
 
 def swap(vgroup1: VMobject, vgroup2: VMobject) -> list[Animation]:
   a = vgroup1.get_center()
   b = vgroup2.get_center()
   return [vgroup1.animate.move_to(b), vgroup2.animate.move_to(a)] # type: ignore
+
+def swap_value(l: list, index: int, index_2: int):
+  tmp = l[index]
+  l[index] = l[index_2]
+  l[index_2] = tmp
+  del tmp
     
