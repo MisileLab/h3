@@ -48,7 +48,7 @@ in
         enable = true;
         catppuccin.enable = true;
         shellAliases = {
-          onefetch = "${pkgs.onefetch}/bin/onefetch --numbers-of-languages 9999";
+          onefetch = "${pkgs.onefetch}/bin/onefetch --number-of-languages 9999";
           ls = "${pkgs.eza}/bin/eza --icons";
         };
         plugins = [{name="tide"; src=pkgs.fishPlugins.tide.src;}];
