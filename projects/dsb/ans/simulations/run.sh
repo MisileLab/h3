@@ -1,0 +1,1 @@
+ffmpeg -hwaccel auto -i $1 -filter_complex "setpts=0.5*PTS" -c:v h264_amf -preset fast output.mp4

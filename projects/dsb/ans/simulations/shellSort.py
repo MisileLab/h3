@@ -14,46 +14,48 @@ class ShellSort(Scene):
 
   def construct(self):
     colors = [BLUE_C, RED_C, PURPLE_C, YELLOW_C, GREEN_C]
-    #self.elements = get_non_duplicated_list()
-    self.elements = [10,4,32,9,5,3,20,94,99,30]
+    self.elements = get_non_duplicated_list()
     self.squares: list[VGroup] = list_to_vgroup(self.elements)
     self.play(*[move_vgroup(self.squares)])
-    self.subelements: list[list[int]] = []
-    self.subsquares: list[list[VGroup]] = []
-    k = len(self.elements)
-    while True:
-      self.subsquares = []
-      self.subelements = []
-      k = floor(k / 2)
-      if k == 1:
-        break
-      if k % 2 == 0:
-        k += 1
-      logger.info(k)
-      for i in range(0, k):
-        logger.info(self.subsquares)
-        logger.info(self.subelements)
-        self.subsquares.append([])
-        self.subelements.append([])
-        for j in range(i, len(self.elements), k):
-          self.subsquares[-1].append(self.squares[j])
-          self.subelements[-1].append(self.elements[j])
-        self.play(*[set_fill(j, colors[i], opacity=0.8, index=1) for j in self.subsquares[-1]]) # type: ignore
-        for j in range(1, len(self.subelements[-1])):
-          for v in range(j-1, 0, -1):
-            logger.info(f"info: {self.subelements[-1][j]}, {self.subelements[-1][i]}")
-            self.play(*[set_fill(self.subsquares[-1][l], 'yellow') for l in [j, v]])
-            if self.subelements[-1][j]>self.subelements[-1][v]:
-              logger.warning(v)
-              tmp = self.subsquares[-1][v]
-              del self.subsquares[-1][v]
-              self.subsquares[-1].insert(v, tmp)
-              del tmp
-              self.play(*realign_vgroup(self.squares))
-              self.play(*[set_fill(self.subsquares[-1][l], 'black') for l in [j, v]])
-              break
-            self.play(*[set_fill(self.subsquares[-1][l], 'black') for l in [j, v]])
+    h = len(self.elements)
+    while h > 1:
+      h = floor(h / 2)
+      if h % 2 == 0:
+        h += 1
+      logger.info(h)
+      for i in range(h):
+        self.play(*[set_fill(self.squares[j], colors[i], opacity=0.8, index=1) for j in range(i, len(self.elements), h)]) # type: ignore
+      for i in range(h):
+        for j in range(i+h, len(self.elements), h):
+          k = self.elements[j]
+          k_sqr = self.squares[j]
+          l = j - h
+          print(l, i, k)
+          early_return = False
+          if l < i or self.elements[l] <= k:
+            self.play(*[set_fill(a, 'yellow') for a in [k_sqr, self.squares[l]]])
+            early_return = True
+          while l >= i and self.elements[l] > k:
+            self.play(*[set_fill(a, 'yellow') for a in [k_sqr, self.squares[l]]])
+            tmp = self.elements[l]
+            self.elements[l] = self.elements[l+h]
+            self.elements[l+h] = tmp
+            del tmp
+            self.play(*[set_fill(a, 'black') for a in [k_sqr, self.squares[l]]])
+            tmp = self.squares[l]
+            self.squares[l] = self.squares[l+h]
+            self.squares[l+h] = tmp
+            del tmp
+            l -= h
+          if not early_return:
+            self.elements[l+h] = k
+            self.squares[l+h] = k_sqr
+            self.play(*realign_vgroup(self.squares))
+          if early_return:
+            self.play(*[set_fill(a, 'black') for a in self.squares])
+        print("one iteration completed")
+      print("two iterations completed")
       self.play(*[set_fill(j, 'white', opacity=1, index=1) for j in self.squares])
     self.play(*[set_fill(j, 'green') for j in self.squares])
     self.wait(2)
-
+    print(self.elements)
