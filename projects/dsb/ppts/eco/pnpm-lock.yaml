@@ -15,8 +15,8 @@ importers:
         specifier: 0.0.9
         version: 0.0.9(svelte@5.0.0-next.244)
       '@fontsource-variable/jetbrains-mono':
-        specifier: 5.0.22
-        version: 5.0.22
+        specifier: 5.0.23
+        version: 5.0.23
       '@fontsource-variable/manrope':
         specifier: 5.0.21
         version: 5.0.21
@@ -227,8 +227,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@fontsource-variable/jetbrains-mono@5.0.22':
-    resolution: {integrity: sha512-2LZQFb37H9iUY92qrhqjvrrkBPROdmBy5MMDgQX+FGeHdVE2WwvGt4lOpxOAy0L/bwE2Y0UCe/eb/tOs1kaTYQ==}
+  '@fontsource-variable/jetbrains-mono@5.0.23':
+    resolution: {integrity: sha512-AzdFE3IqYJ9/2hFRwcqJre/+/MKZHMz2y6dRYPwfz6aC0WE3Hv/PwzCLcv3W/oGMmu/xmBL3URbkUfxjgmMhjQ==}
 
   '@fontsource-variable/manrope@5.0.21':
     resolution: {integrity: sha512-1/t27ShnhKYxMTIZInD0k48FuziNeFXzk3ACKdXO20aIAoG1RwLQ6l++o8DTj7k6aq0Kos7AhUn47TOQysGY9Q==}
@@ -1020,7 +1020,7 @@ snapshots:
   '@animotion/core@1.0.13(svelte@5.0.0-next.244)(vite@5.4.3(lightningcss@1.26.0))':
     dependencies:
       '@animotion/motion': 0.0.9(svelte@5.0.0-next.244)
-      '@fontsource-variable/jetbrains-mono': 5.0.22
+      '@fontsource-variable/jetbrains-mono': 5.0.23
       '@fontsource-variable/manrope': 5.0.21
       '@tailwindcss/vite': 4.0.0-alpha.15(vite@5.4.3(lightningcss@1.26.0))
       reveal.js: 5.1.0
@@ -1107,7 +1107,7 @@ snapshots:
   '@esbuild/win32-x64@0.21.5':
     optional: true
 
-  '@fontsource-variable/jetbrains-mono@5.0.22': {}
+  '@fontsource-variable/jetbrains-mono@5.0.23': {}
 
   '@fontsource-variable/manrope@5.0.21': {}
 

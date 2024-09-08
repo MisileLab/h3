@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@fontsource-variable/jetbrains-mono':
-    specifier: 5.0.22
-    version: 5.0.22
+    specifier: 5.0.23
+    version: 5.0.23
   '@fontsource-variable/manrope':
     specifier: 5.0.21
     version: 5.0.21
@@ -296,8 +296,8 @@ packages:
     dev: true
     optional: true
 
-  /@fontsource-variable/jetbrains-mono@5.0.22:
-    resolution: {integrity: sha512-2LZQFb37H9iUY92qrhqjvrrkBPROdmBy5MMDgQX+FGeHdVE2WwvGt4lOpxOAy0L/bwE2Y0UCe/eb/tOs1kaTYQ==}
+  /@fontsource-variable/jetbrains-mono@5.0.23:
+    resolution: {integrity: sha512-AzdFE3IqYJ9/2hFRwcqJre/+/MKZHMz2y6dRYPwfz6aC0WE3Hv/PwzCLcv3W/oGMmu/xmBL3URbkUfxjgmMhjQ==}
     dev: false
 
   /@fontsource-variable/manrope@5.0.21:
