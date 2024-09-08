@@ -138,4 +138,58 @@
 
 [Shell Simulation](https://raw.githubusercontent.com/MisileLab/h3/main/projects/dsb/ans/simulations/ShellSort.mp4)
 
+# RSA (Rivest-Shamir-Adleman, RSA)
 
+- 1977년에 Ron Rivest, Adi Shamir, Lenoard Adleman에 의해 개발되었다고 알려져 있음
+- 1973년에 [GCHQ](https://www.gchq.gov.uk)에서 먼저 개발하고 1997년에 발표됨 - [Wikipedia](https://ko.wikipedia.org/wiki/RSA_%EC%95%94%ED%98%B8)
+- 공개 키로 암호화하고, 개인 키로 해석하는 방식을 사용함
+
+## 방법, [이 글](https://m.blog.naver.com/luexr/223146918812)을 참고함
+
+### 키 생성
+
+1. 큰 소수 p와 q를 선택, pk(public key)를 p와 q의 곱으로 정의
+2. [오일러 Phi 함수](https://ko.wikipedia.org/wiki/%EC%98%A4%EC%9D%BC%EB%9F%AC_%ED%94%BC_%ED%95%A8%EC%88%98) f(pk) = (p - 1)(q - 1)임
+3. 1과 f(pk) 안에 있고, f(pk)와 서로소인 pk2(public key 2)를 정의함
+4. PK(Private Key) * pk2가 k(임의의 정수) * f(pk) + 1를 만족시키는 PK를 구함
+
+### 암호/복호화
+
+P(Plain text), E(Encrypted text)로 정의함
+
+- $\equiv$는 무엇과 같다는 것을 의미하며, $=$은 무엇을 정의한다는 것을 의미함
+- $mod$는 나머지를 의미함
+- 암호화 식: $E \equiv P^{pk2} \mod {pk}$
+- 복호화 식: $P \equiv E^{PK} \mod {pk}$
+
+## 기타
+
+양자컴퓨터가 상용화되면 뚫릴 가능성이 존재하나, 아직 큰 수를 소인수분해할 수 있는 양자컴퓨터가 나오지 않았으며, 상용화되기엔 시간이 오래 걸릴 것임
+
+# 이진 탐색 트리
+
+자신보다 작은 값의 노드를 왼쪽에 두고, 자신보다 높은 값의 노드를 오른 쪽에 두는 형태의 트리
+
+## 검색
+
+맨 위부터 시작해서 찾을 값이 현재 노드보다 작으면 왼쪽으로 가고, 크면 오른쪽으로 감\
+만약 끝까지 갔는데 못 찾았다면 없음, 찾았다면 있는 것
+
+## 추가(같은 값이 없다고 가정)
+
+검색과 똑같이 하고 자기가 들어갈 자리가 있을 때까지 반복\
+들어갈 자리가 생기면 자기 자신을 추가
+
+## 삭제
+
+만약 자기 아래에 아무것도 없다면 삭제\
+만약 자기 아래에 하나의 노드가 있다면 끌어올리고 삭제\
+만약 자기 아래에 두개의 노드가 있다면 오른쪽의 서브 트리의 최소 값이나 왼쪽의 최대 값 중 하나를 끌어올리고 삭제
+
+## 시간 복잡도 - [이 글](https://www.geeksforgeeks.org/complexity-analysis-of-binary-search)을 참고
+
+n은 보통 트리의 높이임
+
+- 최선 복잡도: O(1)
+- 보통 복잡도: O(log n)
+- 최악 복잡도: O(log n)
