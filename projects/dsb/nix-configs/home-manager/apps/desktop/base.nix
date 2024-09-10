@@ -42,7 +42,13 @@ in
     alacritty = {
       enable = true;
       catppuccin.enable = true;
-      settings = {shell = "${pkgs.fish}/bin/fish";};
+      settings = {
+        shell = "${pkgs.fish}/bin/fish";
+        keyboard.bindings = [
+          {key = "Plus";mods = "Control";action = "IncreaseFontSize";}
+          {key = "Minus";mods = "Control";action = "DecreaseFontSize";}
+        ];
+      };
     };
     firefox = {
       enable = true;
