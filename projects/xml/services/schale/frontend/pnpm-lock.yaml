@@ -15,8 +15,8 @@ importers:
         specifier: 5.1.0
         version: 5.1.0(astro@4.15.4(rollup@4.21.2)(typescript@5.6.2))(tailwindcss@3.4.10)
       '@misile/satellite':
-        specifier: 0.0.2
-        version: 0.0.2
+        specifier: 0.0.3
+        version: 0.0.3
       astro:
         specifier: 4.15.4
         version: 4.15.4(rollup@4.21.2)(typescript@5.6.2)
@@ -470,8 +470,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
 
-  '@misile/satellite@0.0.2':
-    resolution: {integrity: sha512-rAoAA+cy37pPQEZ09gLiS/NiOokHbfaBjctLBcVkbhgzq5x/nJuauW67XJ3ujqdLs2DyA8YQP3TPWH7792KFsg==}
+  '@misile/satellite@0.0.3':
+    resolution: {integrity: sha512-Pi2/ywTPeu3D/g0ayzhZqdW5bK/95yMudg+D/hFlfAMkSDifet6KITjXpmO44AsRyD4Wc61yO/03wJn0S78dxw==}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -2541,7 +2541,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
-  '@misile/satellite@0.0.2': {}
+  '@misile/satellite@0.0.3': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
