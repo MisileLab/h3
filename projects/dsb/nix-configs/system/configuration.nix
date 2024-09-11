@@ -32,7 +32,16 @@
       nssmdns4 = true;
       openFirewall = true;
     };
-    auto-cpufreq.enable = true;
+    auto-cpufreq = {
+      enable = true;
+      settings = {
+        charger = {
+          turbo = "never";
+          scaling_max_freq = 5100000;
+          scaling_min_freq = 1600000;
+        };
+      };
+    };
     upower.enable = true;
     tumbler.enable = true;
   };

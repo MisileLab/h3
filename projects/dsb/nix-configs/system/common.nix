@@ -10,7 +10,7 @@
       systemd-boot.enable = true;
     };
     kernelPackages = with pkgs; linuxPackages_latest;
-    kernelParams = ["amdgpu.sg_display=0"];
+    kernelParams = ["amdgpu.sg_display=0" "initcall_blacklist=amd_pstate_init" "amd_pstate.enable=0"];
     initrd.kernelModules = ["amdgpu"];
     supportedFilesystems = ["ntfs" "btrfs" "ext4" "mtpfs"];
     kernel.sysctl = {
