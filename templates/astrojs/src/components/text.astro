@@ -13,11 +13,11 @@ enum AnimationType {
 }
 
 export interface Props {
-  initialTime: number,
-  hover: HoverType,
-  completeTime: number,
-  animationType: AnimationType,
-  class: string
+  initialTime?: number,
+  hover?: HoverType,
+  completeTime?: number,
+  animationType?: AnimationType,
+  class?: string
 }
 const { initialTime = 2, hover = HoverType.reanimate, completeTime = 1, animationType = AnimationType.normal } = Astro.props;
 ---
@@ -95,14 +95,13 @@ const { initialTime = 2, hover = HoverType.reanimate, completeTime = 1, animatio
     init: number,
     hided: boolean[]
   ) {
-    const start = rewind?a.innerText.length:0;
-    const end = rewind?0:a.innerText.length;
-    for (let i=start;i<end;i++) {
+    const l = a.innerText.length-1;
+    for (let i=0;i<a.innerText.length;i++) {
       hided[index] = true;
       setTimeout(()=>{
         console.debug('start');
-        a.innerText=replaceCharacterAtIndex(a.innerText, i, '_')
-        if (i == end-1) {hided[index] = false;}
+        a.innerText=replaceCharacterAtIndex(a.innerText, rewind?l-i:i, '_')
+        if (i == l) {hided[index] = false;}
       }, init+complete*i);
     }
   }
@@ -140,14 +139,13 @@ const { initialTime = 2, hover = HoverType.reanimate, completeTime = 1, animatio
     init: number,
     showed: boolean[],
   ) {
-    const start = rewind?a.innerText.length:0;
-    const end = rewind?0:a.innerText.length;
-    for (let i=start;i<end;i++) {
+    const l = a.innerText.length-1;
+    for (let i=0;i<a.innerText.length;i++) {
       showed[index] = true;
       setTimeout(()=>{
         console.debug('end');
-        a.innerText=replaceCharacterAtIndex(a.innerText, i, original[i]);
-        if (i == end-1) {console.log('a');showed[index] = false;}
+        a.innerText=replaceCharacterAtIndex(a.innerText, rewind?l-i:i, original[rewind?l-i:i]);
+        if (i == l) {console.log('a');showed[index] = false;}
       }, init+complete*i);
     }
   }
@@ -189,6 +187,52 @@ const { initialTime = 2, hover = HoverType.reanimate, completeTime = 1, animatio
               randomHide(realv, i, aps/2, initialTime, showed);
               randomShow(realv, i, org, aps/2, initialTime+aps*(realv.innerText.length/2), hided);
             });
+          }
+        } else if (hover == "hide") {
+          if (animationType == "normal" || animationType == 'rewind') {
+            realv.addEventListener('mouseover', ()=>{
+              if (showed[i]||hided[i]) {return;}
+              normalHide(realv, i, animationType == 'rewind', aps, 0, hided);
+            })
+            realv.addEventListener('mouseout', ()=>{
+              if (showed[i]||hided[i]) {return;}
+              normalShow(realv, i, org, animationType == 'rewind', aps, 0, hided);
+            })
+          } else {
+            realv.addEventListener('mouseover', ()=>{
+              if (showed[i]||hided[i]) {return;}
+              randomHide(realv, i, aps, 0, hided);
+            })
+            realv.addEventListener('mouseout', ()=>{
+              if (showed[i]||hided[i]) {return;}
+              randomShow(realv, i, org, aps, 0, hided);
+            })
+          }
+        } else if (hover == "show") {
+          if (animationType == "normal" || animationType == 'rewind') {
+            realv.addEventListener('mouseover', ()=>{
+              if (showed[i]||hided[i]) {return;}
+              normalShow(realv, i, org, animationType == 'rewind', aps, 0, showed);
+            })
+            document.addEventListener('DOMContentLoaded', ()=>{
+              normalHide(realv, i, animationType == 'rewind', aps, initialTime, hided);
+            });
+            realv.addEventListener('mouseout', ()=>{
+              if (showed[i]||hided[i]) {return;}
+              normalHide(realv, i, animationType == 'rewind', aps, 0, hided);
+            })
+          } else {
+            realv.addEventListener('mouseover', ()=>{
+              if (showed[i]||hided[i]) {return;}
+              randomShow(realv, i, org, aps, 0, showed);
+            })
+            document.addEventListener('DOMContentLoaded', ()=>{
+              randomHide(realv, i, aps, initialTime, hided);
+            });
+            realv.addEventListener('mouseout', ()=>{
+              if (showed[i]||hided[i]) {return;}
+              randomHide(realv, i, aps, 0, hided);
+            })
           }
         }
       }

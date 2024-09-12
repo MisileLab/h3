@@ -1,6 +1,7 @@
 ---
 import Base from "../components/base.astro"
 import Text from "../components/text.astro"
+import { AnimationType, HoverType } from "../components/enum";
 ---
 
 <Base>
@@ -12,10 +13,10 @@ import Text from "../components/text.astro"
       <div class="flex flex-col">
         <Text><p class="text-black text-6xl font-bold">Animatified Minimalism</p></Text>
         <div class="flex flex-row w-fit h-fit text-4xl font-normal text-gray">
-          <Text animationType="random"><span>Beyond&nbsp;</span></Text>
-          <Text><span class="text-blue">Minimalism</span></Text>
+          <Text animationType={AnimationType.random}><span>Beyond&nbsp;</span></Text>
+          <Text animationType={AnimationType.rewind} initialTime={0} hover={HoverType.show}><span class="text-blue">Minimalism</span></Text>
         </div>
-        <Text><p class="text-red text-3xl font-thin">This is red btw</p></Text>
+        <Text><p class="text-red text-3xl font-thin">The next-generation of Minimalism</p></Text>
       </div>
     </div>
 	</div>
