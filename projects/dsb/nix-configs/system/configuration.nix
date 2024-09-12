@@ -37,7 +37,7 @@
       settings = {
         charger = {
           turbo = "never";
-          scaling_max_freq = 5100000;
+          scaling_max_freq = 4100000;
           scaling_min_freq = 1600000;
         };
       };

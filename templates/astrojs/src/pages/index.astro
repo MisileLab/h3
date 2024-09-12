@@ -1,16 +1,22 @@
 ---
-
+import Base from "../components/base.astro"
+import Text from "../components/text.astro"
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Base>
+  <Fragment name="head">
+    <title>Animatified Minimalism</title>
+  </Fragment>
+	<div class="bg-gray w-full h-full flex flex-row">
+    <div class="w-full h-screen justify-center items-center flex flex-col bg-white">
+      <div class="flex flex-col">
+        <Text><p class="text-black text-6xl font-bold">Animatified Minimalism</p></Text>
+        <div class="flex flex-row w-fit h-fit text-4xl font-normal text-gray">
+          <Text animationType="random"><span>Beyond&nbsp;</span></Text>
+          <Text><span class="text-blue">Minimalism</span></Text>
+        </div>
+        <Text><p class="text-red text-3xl font-thin">This is red btw</p></Text>
+      </div>
+    </div>
+	</div>
+</Base>

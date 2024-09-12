@@ -1,0 +1,200 @@
+---
+enum HoverType {
+  none = "none",
+  hide = "hide",
+  show = "show",
+  reanimate = "reanimate"
+}
+
+enum AnimationType {
+  rewind = "rewind",
+  normal = "normal",
+  random = "random"
+}
+
+export interface Props {
+  initialTime: number,
+  hover: HoverType,
+  completeTime: number,
+  animationType: AnimationType,
+  class: string
+}
+const { initialTime = 2, hover = HoverType.reanimate, completeTime = 1, animationType = AnimationType.normal } = Astro.props;
+---
+
+<astro-animation data-initialTime={initialTime} data-hover={hover} data-completeTime={completeTime} data-animationType={animationType}><slot /></astro-animation>
+<script>
+  import { parseInt, nullVerify } from "@misile/satellite"
+
+  function replaceCharacterAtIndex(string: string, index: number, replacement: string) {
+    // Check if the index is within bounds
+    if (index < 0 || index >= string.length) {
+      throw new Error('Index out of bounds');
+    }
+
+    // Extract the substring before the index
+    const before = string.slice(0, index);
+    
+    // Extract the substring after the index
+    const after = string.slice(index + 1);
+
+    // Return the new string with the replacement character inserted
+    return before + replacement + after;
+  }
+
+  function range(start: number, end: number, step = 1) {
+    // Initialize an empty array to hold the range of numbers
+    const result = [];
+    
+    // Check if step is valid to prevent an infinite loop
+    if (step === 0) {
+      throw new Error("Step cannot be zero.");
+    }
+    
+    // Generate the range of numbers based on start, end, and step
+    if (step > 0) {
+      for (let i = start; i < end; i += step) {
+        result.push(i);
+      }
+    } else {
+      for (let i = start; i > end; i += step) {
+        result.push(i);
+      }
+    }
+    
+    return result;
+  }
+
+  function randomHide(
+    a: HTMLElement,
+    index: number,
+    complete: number,
+    init: number,
+    hided: boolean[]
+  ) {
+    const start = 0;
+    const end = a.innerText.length;
+    const ended = range(start, end);
+    for (let i=start;i<end;i++) {
+      hided[index] = true;
+      setTimeout(()=>{
+        const _rand = Math.floor(Math.random() * ended.length);
+        const rand = ended[_rand];
+        ended.splice(_rand, 1)
+        a.innerText=replaceCharacterAtIndex(a.innerText, rand, '_')
+        if (i == end-1) {hided[index] = false;}
+      }, init+complete*i);
+    }
+  }
+
+  function normalHide(
+    a: HTMLElement,
+    index: number,
+    rewind: boolean,
+    complete: number,
+    init: number,
+    hided: boolean[]
+  ) {
+    const start = rewind?a.innerText.length:0;
+    const end = rewind?0:a.innerText.length;
+    for (let i=start;i<end;i++) {
+      hided[index] = true;
+      setTimeout(()=>{
+        console.debug('start');
+        a.innerText=replaceCharacterAtIndex(a.innerText, i, '_')
+        if (i == end-1) {hided[index] = false;}
+      }, init+complete*i);
+    }
+  }
+
+  function randomShow(
+    a: HTMLElement,
+    index: number,
+    original: string,
+    complete: number,
+    init: number,
+    showed: boolean[]
+  ) {
+    const start = 0;
+    const end = a.innerText.length;
+    const ended = range(start, end);
+    for (let i=start;i<end;i++) {
+      showed[index] = true;
+      setTimeout(()=>{
+        console.log(`length: ${ended}`);
+        const _rand = Math.floor(Math.random() * ended.length);
+        const rand = ended[_rand];
+        ended.splice(_rand, 1)
+        a.innerText=replaceCharacterAtIndex(a.innerText, rand, original[rand])
+        if (i == end-1) {showed[index] = false;}
+      }, init+complete*i);
+    }
+  }
+
+  function normalShow(
+    a: HTMLElement,
+    index: number,
+    original: string,
+    rewind: boolean,
+    complete: number,
+    init: number,
+    showed: boolean[],
+  ) {
+    const start = rewind?a.innerText.length:0;
+    const end = rewind?0:a.innerText.length;
+    for (let i=start;i<end;i++) {
+      showed[index] = true;
+      setTimeout(()=>{
+        console.debug('end');
+        a.innerText=replaceCharacterAtIndex(a.innerText, i, original[i]);
+        if (i == end-1) {console.log('a');showed[index] = false;}
+      }, init+complete*i);
+    }
+  }
+
+  class AstroAnimation extends HTMLElement {
+    connectedCallback() {
+      const initialTime: number = parseInt(nullVerify(this.dataset.initialtime)) * 1000;
+      const hover: string = nullVerify(this.dataset.hover);
+      const completeTime: number = parseInt(nullVerify(this.dataset.completetime)) * 1000;
+      const animationType: string = nullVerify(this.dataset.animationtype);
+
+      console.debug(this.dataset, this.childNodes);
+      const showed: boolean[] = [];
+      const hided: boolean[] = [];
+
+      for (let i=0;i<this.childNodes.length;i++) {
+        const realv = this.childNodes[i] as HTMLElement;
+        const org = realv.innerText;
+        console.debug(org);
+        const aps = completeTime / realv.innerText.length;
+        if (hover == "reanimate") {
+          if (animationType == "normal" || animationType == 'rewind') {
+            realv.addEventListener('mouseover', ()=>{
+              if (showed[i]||hided[i]) {return;}
+              normalHide(realv, i, animationType == 'rewind', aps/2, 0, showed);
+              normalShow(realv, i, org, animationType == 'rewind', aps/2, aps*(realv.innerText.length/2), hided);
+            })
+            document.addEventListener('DOMContentLoaded', ()=>{
+              normalHide(realv, i, animationType == 'rewind', aps/2, initialTime, showed);
+              normalShow(realv, i, org, animationType == 'rewind', aps/2, initialTime+aps*(realv.innerText.length/2), hided);
+            });
+          } else {
+            realv.addEventListener('mouseover', ()=>{
+              if (showed[i]||hided[i]) {return;}
+              randomHide(realv, i, aps/2, 0, showed);
+              randomShow(realv, i, org, aps/2, aps*(realv.innerText.length/2), hided);
+            })
+            document.addEventListener('DOMContentLoaded', ()=>{
+              randomHide(realv, i, aps/2, initialTime, showed);
+              randomShow(realv, i, org, aps/2, initialTime+aps*(realv.innerText.length/2), hided);
+            });
+          }
+        }
+      }
+    }
+  }
+
+  customElements.define('astro-animation', AstroAnimation)
+</script>
+

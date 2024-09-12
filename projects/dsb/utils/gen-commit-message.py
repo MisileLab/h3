@@ -1,4 +1,5 @@
 import inquirer
+
 from subprocess import run
 
 convtypes = ["feat","fix","docs","style","refactor","perf","test","build","ci","chore","revert"]
@@ -41,5 +42,8 @@ if answer is not None and answer.get('confirm', None) is True:
   add_all = inquirer.prompt([inquirer.Confirm('confirm', message='Do you want add all before commit?')])
   if add_all is not None and add_all.get('confirm', None) is True:
     run(args=["git", "add", "-A"])
+  push = inquirer.prompt([inquirer.Confirm('confirm', message='Do you want to push it?')])
   run(args=["git", "commit", "-m", output, "-s"])
+  if push is not None and push.get('confirm', None) is True:
+    run(args=["git", "push"])
 

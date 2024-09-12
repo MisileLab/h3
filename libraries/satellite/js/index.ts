@@ -1,6 +1,6 @@
 import { nullValue, NaNValue } from "./errors";
 
-export function nullVerify<T>(v: T | null): T {
+export function nullVerify<T>(v: T | null | undefined): T {
   if (v == null || v == undefined) {throw new nullValue();} else {return v;}
 }
 
@@ -16,7 +16,7 @@ export function getItems(key: Array<string>): object {
 export function redirect(url: string) { location.href = `${location.href}${url}`; }
 export function redirectExternal(url: string) { location.href = url; }
 
-export function query(selector: string): HTMLElement { return nullVerify(document.querySelector(selector)) }
+export function query(selector: string): Element { return nullVerify(document.querySelector(selector)) }
 export function queryAll(selector: string): NodeListOf<HTMLElement> { return nullVerify(document.querySelectorAll(selector))  }
 export function queryId(id: string): HTMLElement { return nullVerify(document.getElementById(id)) }
 

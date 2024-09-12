@@ -13,7 +13,10 @@ importers:
         version: 0.9.3(typescript@5.6.2)
       '@astrojs/tailwind':
         specifier: 5.1.0
-        version: 5.1.0(astro@4.15.4(rollup@4.21.2)(typescript@5.6.2))(tailwindcss@3.4.11)
+        version: 5.1.0(astro@4.15.4(rollup@4.21.2)(typescript@5.6.2))(tailwindcss@3.4.10)
+      '@misile/satellite':
+        specifier: 0.0.3
+        version: 0.0.3
       astro:
         specifier: 4.15.4
         version: 4.15.4(rollup@4.21.2)(typescript@5.6.2)
@@ -23,10 +26,6 @@ importers:
       typescript:
         specifier: 5.6.2
         version: 5.6.2
-    devDependencies:
-      '@catppuccin/tailwindcss':
-        specifier: 0.1.6
-        version: 0.1.6(tailwindcss@3.4.11)
 
 packages:
 
@@ -172,11 +171,6 @@ packages:
   '@babel/types@7.25.6':
     resolution: {integrity: sha512-/l42B1qxpG6RdfYf343Uw1vmDjeNhneUXtzhojE7pDgfpEypmRhI6j1kr17XCVv4Cgl9HdAiQY2x0GwKm7rWCw==}
     engines: {node: '>=6.9.0'}
-
-  '@catppuccin/tailwindcss@0.1.6':
-    resolution: {integrity: sha512-V+Y0AwZ5SSyvOVAcDl7Ng30xy+m82OKnEJ+9+kcZZ7lRyXuZrAb2GScdq9XR3v+ggt8qiZ/G4TvaC9cJ88AAXA==}
-    peerDependencies:
-      tailwindcss: '>=3.0.0'
 
   '@emmetio/abbreviation@2.3.3':
     resolution: {integrity: sha512-mgv58UrU3rh4YgbE/TzgLQwJ3pFsHHhCLqY20aJq+9comytTXUDNGG/SMtSeMJdkpxgXSXunBGLD8Boka3JyVA==}
@@ -466,6 +460,9 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
+
+  '@misile/satellite@0.0.3':
+    resolution: {integrity: sha512-Pi2/ywTPeu3D/g0ayzhZqdW5bK/95yMudg+D/hFlfAMkSDifet6KITjXpmO44AsRyD4Wc61yO/03wJn0S78dxw==}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -2333,10 +2330,6 @@ snapshots:
       '@babel/helper-validator-identifier': 7.24.7
       to-fast-properties: 2.0.0
 
-  '@catppuccin/tailwindcss@0.1.6(tailwindcss@3.4.11)':
-    dependencies:
-      tailwindcss: 3.4.11
-
   '@emmetio/abbreviation@2.3.3':
     dependencies:
       '@emmetio/scanner': 1.0.4
@@ -2534,6 +2527,8 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
+
+  '@misile/satellite@0.0.3': {}
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
