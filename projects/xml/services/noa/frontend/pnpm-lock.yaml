@@ -16,7 +16,7 @@ importers:
         version: 4.4.1(solid-devtools@0.30.1(solid-js@1.8.22)(vite@5.4.4))(solid-js@1.8.22)(vite@5.4.4)
       '@astrojs/tailwind':
         specifier: 5.1.0
-        version: 5.1.0(astro@4.15.4(rollup@4.21.3)(typescript@5.6.2))(tailwindcss@3.4.11)
+        version: 5.1.0(astro@4.15.5(rollup@4.21.3)(typescript@5.6.2))(tailwindcss@3.4.11)
       '@misile/satellite':
         specifier: 0.0.4
         version: 0.0.4
@@ -27,8 +27,8 @@ importers:
         specifier: 0.0.117
         version: 0.0.117(solid-js@1.8.22)
       astro:
-        specifier: 4.15.4
-        version: 4.15.4(rollup@4.21.3)(typescript@5.6.2)
+        specifier: 4.15.5
+        version: 4.15.5(rollup@4.21.3)(typescript@5.6.2)
       axios:
         specifier: 1.7.7
         version: 1.7.7
@@ -857,8 +857,8 @@ packages:
   array-iterate@2.0.1:
     resolution: {integrity: sha512-I1jXZMjAgCMmxT4qxXfPXa6SthSoE8h6gkSI9BGGNv8mP8G/v0blc+qFnZu6K42vTOiuME596QaLO0TP3Lk0xg==}
 
-  astro@4.15.4:
-    resolution: {integrity: sha512-wqy+m3qygt9DmCSqMsckxyK4ccCUFtti2d/WlLkEpAlqHgyDIg20zRTLHO2v/H4YeSlJ8sAcN0RW2FhOeYbINg==}
+  astro@4.15.5:
+    resolution: {integrity: sha512-zcHXpRav0dtYpddxoGMDN7A7SKrGL9wsu5IxLjqCcZhylfZ/5mfLfoGYnSg7aFwuAleUXP66lyfY+GDbFTbF2w==}
     engines: {node: ^18.17.1 || ^20.3.0 || >=21.0.0, npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
 
@@ -1718,9 +1718,6 @@ packages:
     resolution: {integrity: sha512-Xa4Nw17FS9ApQFJ9umLiJS4orGjm7ZzwUrwamcGQuHSzDyth9boKDaycYdDcZDuqYATXw4HFXgaqWTctW/v1HA==}
     engines: {node: '>=16 || 14 >=14.18'}
 
-  path-to-regexp@6.3.0:
-    resolution: {integrity: sha512-Yhpw4T9C6hPpgPeA28us07OJeqZ5EzQTkbfwuhsUg0c237RomFoETJgmp2sa3F/41gfLE6G5cqcYwznmeEeOlQ==}
-
   picocolors@1.1.0:
     resolution: {integrity: sha512-TQ92mBOW0l3LeMeyLV6mzy/kWr8lkd/hp3mTg7wYK7zJhuBStmGMBG0BdeDZS/dZx1IukaX6Bk11zcln25o1Aw==}
 
@@ -2470,9 +2467,9 @@ snapshots:
       - supports-color
       - vite
 
-  '@astrojs/tailwind@5.1.0(astro@4.15.4(rollup@4.21.3)(typescript@5.6.2))(tailwindcss@3.4.11)':
+  '@astrojs/tailwind@5.1.0(astro@4.15.5(rollup@4.21.3)(typescript@5.6.2))(tailwindcss@3.4.11)':
     dependencies:
-      astro: 4.15.4(rollup@4.21.3)(typescript@5.6.2)
+      astro: 4.15.5(rollup@4.21.3)(typescript@5.6.2)
       autoprefixer: 10.4.20(postcss@8.4.45)
       postcss: 8.4.45
       postcss-load-config: 4.0.2(postcss@8.4.45)
@@ -3213,7 +3210,7 @@ snapshots:
 
   array-iterate@2.0.1: {}
 
-  astro@4.15.4(rollup@4.21.3)(typescript@5.6.2):
+  astro@4.15.5(rollup@4.21.3)(typescript@5.6.2):
     dependencies:
       '@astrojs/compiler': 2.10.3
       '@astrojs/internal-helpers': 0.4.1
@@ -3261,7 +3258,6 @@ snapshots:
       ora: 8.1.0
       p-limit: 6.1.0
       p-queue: 8.0.1
-      path-to-regexp: 6.3.0
       preferred-pm: 4.0.0
       prompts: 2.4.2
       rehype: 13.0.1
@@ -4316,8 +4312,6 @@ snapshots:
     dependencies:
       lru-cache: 10.4.3
       minipass: 7.1.2
-
-  path-to-regexp@6.3.0: {}
 
   picocolors@1.1.0: {}
 
