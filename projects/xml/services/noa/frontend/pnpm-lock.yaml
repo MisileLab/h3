@@ -18,8 +18,8 @@ importers:
         specifier: 5.1.0
         version: 5.1.0(astro@4.15.6(rollup@4.21.3)(typescript@5.6.2))(tailwindcss@3.4.11)
       '@misile/satellite':
-        specifier: 0.0.4
-        version: 0.0.4
+        specifier: 0.0.5
+        version: 0.0.5
       '@nanostores/solid':
         specifier: 0.4.2
         version: 0.4.2(nanostores@0.11.3)(solid-js@1.8.22)
@@ -514,8 +514,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
 
-  '@misile/satellite@0.0.4':
-    resolution: {integrity: sha512-6bo5didVW5cjjxBkDGzkLwoeYoRSgL+5kgPFUr235kR80kKzn8eXdx3OC8GgCGlTnDqS2HjDjuR7HFRO/kw7fw==}
+  '@misile/satellite@0.0.5':
+    resolution: {integrity: sha512-vb0Ztn7UunW+CZRN/gSvWBovph8PX6WWKMn7QY0VkhU6+BMWXdbgX41BIPj1qzY8xXK4MFn5/F/EUj7FxoYLYg==}
 
   '@nanostores/solid@0.4.2':
     resolution: {integrity: sha512-8v32+C9KdRbnvP4x4Oiw/CtL1tZwbRxYfmFsPIY9PXevCgxSFnicG6VnLLtNAR7F0kl8Ec7OROHO34Ffv0KDzg==}
@@ -2841,7 +2841,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
-  '@misile/satellite@0.0.4': {}
+  '@misile/satellite@0.0.5': {}
 
   '@nanostores/solid@0.4.2(nanostores@0.11.3)(solid-js@1.8.22)':
     dependencies:
