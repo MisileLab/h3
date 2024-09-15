@@ -1,9 +1,0 @@
-<script>
-  import { atom } from "nanostores";
-  import { queryId } from "@misile/satellite";
-  const isOpen = atom(false);
-  isOpen.subscribe(v=>{
-    queryId("realcontent").style.display = v?"block":"none";
-  })
-  queryId("toggleOpen").addEventListener("click", ()=>{isOpen.set(!isOpen.get())});
-</script>

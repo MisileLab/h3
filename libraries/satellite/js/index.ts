@@ -6,7 +6,7 @@ export function nullVerify<T>(v: T | null | undefined): T {
 
 export function getItem(key: string): string { return nullVerify(localStorage.getItem(key)) }
 export function getItems(key: Array<string>): object {
-  const vl = new Array();
+  const vl: Array<string> = [];
   for (const i of key) {
     vl.push(getItem(i));
   }
@@ -30,5 +30,10 @@ export function enumvToKey<V>(value: V, T: enumType): string {
 
 export function parseInt(value: string): number {
   const v = Number.parseInt(value);
+  if (isNaN(v)) {throw NaNValue;} else {return v;}
+}
+
+export function parseFloat(value: string): number {
+  const v = Number.parseFloat(value);
   if (isNaN(v)) {throw NaNValue;} else {return v;}
 }

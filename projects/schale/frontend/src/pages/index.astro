@@ -1,0 +1,121 @@
+---
+import Base from "../components/base.astro"
+import Text from "../components/text.astro"
+import { AnimationType } from "../components/lib";
+
+interface CPair {
+  type: string,
+  address: string
+}
+
+const addresses: Array<CPair> = [{
+  type: "btc",
+  address: "bc1qen29n05zxh0qdflguwd9ww8n4x80ekms2ktp7f"
+}, {
+  type: "eth",
+  address: "0x5E3dBe5A7323116787F3B8d73B373B1E1E87DBf7"
+}, {
+  type: "sol",
+  address: "AgkYzP6epbkM9PwK2LDpoktSrgxDDfwAxQEeCVuvmM8U"
+},{
+  type: "xrp",
+  address: "rBSrNady2uadJcNEYYG1chodvXyRWYwBro"
+},{
+  type: "ada",
+  address: "addr1q9hw57vsxc2cn6zpxr8qalygelfyeded7r5sm67dj9ayyznwafueqds4385yzvxwpm7g3n7jfjmjmu8fph4umyt6gg9qs9qkcy"
+},{
+  type: "bch",
+  address: "qr9p8txf06jenudlm7yazsx2r6twtj8jgc68zcfeva"
+},{
+  type: "ltc",
+  address: "LfJQS65MgeiJXGkHtPQnirWr92SttNZXhk"
+},{
+  type: "atom",
+  address: "cosmos1z592423lgu4g4mcp5nmchqmc0daftphkkrm0zh"
+},{
+  type: "etc",
+  address: "0x5319857cBaf3b88aAc96702F16bb35a25a39f928"
+},{
+  type: "xlm",
+  address: "GD7NHRI7KINK5WSCPUL73HC3OLNITW7IJOIRYJJGEC4NMTG6BU4MFBW3"
+},{
+  type: "xmr",
+  address: "48ikVWgH3pXUWUDvA38g3geGiQnLxpSUfbkScodZPQTQKvQCex8UY6X9iLBmwj3guF5Cy1jzqRehzd3rZNdGe6Gp3p746QB"
+},{
+  type: "neo",
+  address: "Aef9kxznER4bUN496j7G42vAjCXWSsCady"
+},{
+  type: "btg",
+  address: "GKz8wbRLhMHDkoQF4pHoJb6eMxSkZsKKXg"
+},{
+  type: "zec",
+  address: "t1ec5hxGnqj6cMKFcuENKq7nDFbyqXVhsrQ"
+},{
+  type: "xem",
+  address: "NAGNEPJC5FPZAKN5QIQDOCRS3JS62UU6WZPYJH4V"
+},{
+  type: "ont",
+  address: "Adyd2pNwKL4RU4CVtAB4LCQYZGZWH3MNYU"
+}]
+---
+
+<Base>
+  <Fragment name="head">
+    <title>Misile</title>
+    <script>
+      import { atom } from "nanostores"
+      import { queryId, nullVerify } from "@misile/satellite"
+
+      const cryptoAddr = atom<string>("bc1qen29n05zxh0qdflguwd9ww8n4x80ekms2ktp7f")
+      cryptoAddr.subscribe((v)=>{
+        queryId("crypto-placeholder").innerText = v.slice(0, 4) + "..." + v.slice(-4)
+      })
+      queryId("crypto-placeholder").addEventListener("click", ()=>{
+        navigator.clipboard.writeText(cryptoAddr.get())
+        alert("Copied!")
+      })
+      queryId("crypto-select").addEventListener("change", (e)=>{
+        cryptoAddr.set((nullVerify(e.target) as HTMLSelectElement).value);
+      })
+    </script>
+  </Fragment>
+	<div class="w-full h-full flex flex-row">
+    <div class="w-full h-screen justify-center items-center flex flex-col">
+      <div class="flex flex-col">
+        <Text><p class="text-black text-4xl sm:text-6xl font-bold">Misile</p></Text>
+        <div class="flex flex-row w-fit h-fit text-2xl sm:text-4xl font-normal text-gray">
+          <Text animationType={AnimationType.random}>
+            <span>The</span>
+            <span class="text-blue">Python</span>
+            <span>and</span>
+            <span class="text-purple">AstroJS</span>
+            <span>User</span>
+          </Text>
+        </div>
+        <div class="flex flex-row w-fit h-fit text-xl sm:text-3xl font-normal text-blue gap-2">
+          <Text animationType={AnimationType.random}>
+            <a href="/projects">Projects</a>
+          </Text>
+          <span class="text-gray">|</span>
+          <Text animationType={AnimationType.random}>
+            <a href="/blog">Blog</a>
+          </Text>
+          <span class="text-gray">|</span>
+          <Text animationType={AnimationType.random}>
+            <a href="/contact">Contact</a>
+          </Text>
+        </div>
+        <div class="flex flex-row gap-x-2 items-center text-xl lg:text-2xl md:text-4xl">
+          <span>Donate</span>
+          <select class="w-auto max-w-1/2 bg-white" id="crypto-select">
+            {addresses.map((v)=>{
+              return <option value={v.address}>{v.type}</option>
+            })}
+          </select>
+          <span>(Click to Copy) -></span>
+          <span class="text-blue" id="crypto-placeholder">None</span>
+        </div>
+      </div>
+    </div>
+	</div>
+</Base>

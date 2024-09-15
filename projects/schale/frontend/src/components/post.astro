@@ -1,0 +1,17 @@
+---
+import Text from "../components/text.astro"
+import { AnimationType, HoverType, DataType } from "./lib";
+
+export interface Props {
+  title: string
+  description: string
+  path: string,
+  type: DataType
+}
+const {title, description, path, type} = Astro.props;
+---
+
+<a class="flex flex-col text-black border-b-2 border-solid border-black w-fit h-fit" href=`/data/${type}/${path}`>
+  <Text initialTime={0} animationType={AnimationType.random} hover={HoverType.hide}><p class="text-5xl">{title}</p></Text>
+  <Text initialTime={0} animationType={AnimationType.random} hover={HoverType.hide}><p class="text-gray text-4xl">{description}</p></Text>
+</a>

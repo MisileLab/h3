@@ -1,0 +1,28 @@
+
+<html lang="en">
+  <head>
+    <slot name="head" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <meta http-equiv="onion-location" content=`http://idk.onion${Astro.url.pathname}`/>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <style is:global>
+    @font-face {
+      font-family: 'JetbrainsMono';
+      src: url('/fonts/JetBrainsMono-Regular.woff2') format('Woff');
+    }
+    * {
+      font-family: 'JetbrainsMono';
+    }
+    p, span {
+      width: fit-content;
+      height: fit-content;
+    }
+    </style>
+  </head>
+  <body class="bg-white">
+    <slot />
+  </body>
+</html>
+

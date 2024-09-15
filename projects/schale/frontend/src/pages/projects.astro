@@ -1,0 +1,141 @@
+---
+import Base from "../components/base.astro"
+import Text from "../components/text.astro"
+
+interface Project {
+  description: string;
+  url: string;
+  stacks: string[];
+}
+
+const projects: Record<string, Project> = {
+  "ignofier+": {
+    description: "Fast gitignore generator",
+    url: "https://github.com/misilelab/ignofierplus",
+    stacks: ["rust"]
+  },
+  "klojure": {
+    description: "Search koreanbots with multiple keywords",
+    url: "Search koreanbots with multiple keywords",
+    stacks: ["python", "sqlite"],
+  },
+  "sntapi": {
+    description: "Sunrint school meal api",
+    url: "https://github.com/MisileLab/h3/tree/78c1d37ace0c612915e44e91e6cfec38d7842508/archives/sntapi",
+    stacks: ["python"]
+  },
+  "calendar": {
+    description: "Simple calendar",
+    url: "https://github.com/misilelab/calendar",
+    stacks: ["solidjs", "tailwindcss", "tauri", "rust"]
+  },
+  "anasite": {
+    description: "AnA website",
+    url: "AnA website",
+    stacks: ["solidjs", "tailwindcss"]
+  },
+  "lambda": {
+    description: "The simplest form",
+    url: "https://github.com/MisileLab/h3/tree/a13896cca09c5a93d9a98673e908a6e62df893c2/archives/lambda",
+    stacks: ["solidjs", "tailwindcss", "python", "fastapi", "graphql"]
+  },
+  "schale": {
+    description: "The monolithic website and backend",
+    url: "https://github.com/MisileLab/h3/tree/main/projects/schale",
+    stacks: ["fastapi", "python", "tailwindcss", "astrojs"]
+  },
+  "butter": {
+    description: "The ai assistant that can search, listen, and say with voice",
+    url: "https://github.com/misilelab/butter",
+    stacks: ["python"]
+  }
+}
+---
+
+<Base>
+  <Fragment name="head">
+    <title>Projects</title>
+    <script>
+      import { isMobileOnly } from "mobile-device-detect";
+      import { queryId, nullVerify } from "@misile/satellite";
+
+      interface Project {
+        description: string;
+        url: string;
+        stacks: string[];
+      }
+
+      const projects: Record<string, Project> = {
+        "ignofier+": {
+          description: "Fast gitignore generator",
+          url: "https://github.com/misilelab/ignofierplus",
+          stacks: ["rust"]
+        },
+        "klojure": {
+          description: "Search koreanbots with multiple keywords",
+          url: "https://github.com/lawnseol/klojure",
+          stacks: ["python", "sqlite"],
+        },
+        "sntapi": {
+          description: "Sunrint school meal api",
+          url: "https://github.com/MisileLab/h3/tree/78c1d37ace0c612915e44e91e6cfec38d7842508/archives/sntapi",
+          stacks: ["python"]
+        },
+        "calendar": {
+          description: "Simple calendar",
+          url: "https://github.com/misilelab/calendar",
+          stacks: ["solidjs", "tailwindcss", "tauri", "rust"]
+        },
+        "anasite": {
+          description: "AnA website",
+          url: "AnA website",
+          stacks: ["solidjs", "tailwindcss"]
+        },
+        "lambda": {
+          description: "The simplest form",
+          url: "https://github.com/MisileLab/h3/tree/a13896cca09c5a93d9a98673e908a6e62df893c2/archives/lambda",
+          stacks: ["solidjs", "tailwindcss", "python", "fastapi", "graphql"]
+        },
+        "schale": {
+          description: "The monolithic website and backend",
+          url: "https://github.com/MisileLab/h3/tree/main/projects/schale",
+          stacks: ["fastapi", "python", "tailwindcss", "astrojs"]
+        },
+        "butter": {
+          description: "The ai assistant that can search, listen, and say with voice",
+          url: "https://github.com/misilelab/butter",
+          stacks: ["python"]
+        }
+      }
+
+      if (isMobileOnly) {
+        const d = document.createElement("span");
+        d.innerText = "Click = Open with new tab"
+        queryId("mobile-div").prepend(d);
+        queryId("select").addEventListener("change", (e)=>{
+          window.open(projects[(nullVerify(e.target) as HTMLOptionElement).value].url, "_blank");
+        })
+      } else {
+        queryId("select").addEventListener("change", (e)=>{
+          if ((nullVerify(e.target) as HTMLSelectElement).value === "") {return;}
+          const p = projects[(nullVerify(e.target) as HTMLOptionElement).value];
+          queryId("description").innerText = `description: ${p.description}`;
+          queryId("stacks").innerText = `stacks: ${p.stacks.join(", ")}`;
+          (queryId("clicktogo") as HTMLAnchorElement).innerText = "click to go to source";
+          (queryId("clicktogo") as HTMLAnchorElement).href = p.url;
+        })
+      }
+    </script>
+  </Fragment>
+  <div class="w-full h-full flex flex-row">
+    <div class="w-full h-screen justify-center items-center flex flex-col text-black text-xl lg:text-2xl md:text-4xl gap-y-2" id="mobile-div">
+      <select id="select">
+        <option value="" />
+        {Object.keys(projects).toSorted().map((p)=><option value={p}>{p}</option>)}
+      </select>
+      <Text id="description" />
+      <Text id="stacks" />
+      <a id="clicktogo" class="text-blue" />
+    </div>
+  </div>
+</Base>

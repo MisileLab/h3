@@ -1,0 +1,57 @@
+---
+import dayjs from "dayjs"
+
+import Text from "../components/text.astro"
+import { AnimationType, HoverType } from "./lib";
+import Base from "../components/base.astro"
+
+export interface Props {
+  title: string
+  description: string,
+  date: number
+}
+const {title, description, date} = Astro.props;
+---
+
+<Base>
+  <div class="mx-[30%]">
+    <div class="flex flex-col text-black border-b-2 border-solid border-black">
+      <Text initialTime={0} animationType={AnimationType.random} hover={HoverType.reanimate}>
+        <p class="text-5xl">{title}</p>
+      </Text>
+      <Text initialTime={0} animationType={AnimationType.random} hover={HoverType.reanimate}>
+        <p class="text-gray text-4xl">{description}</p>
+      </Text>
+      <Text initialTime={0} animationType={AnimationType.random} hover={HoverType.reanimate}>
+        <p class="text-gray text-3xl">{dayjs(date).toString().replace('GMT', 'UTC')}</p>
+      </Text>
+    </div>
+    <slot />
+  </div>
+  <style is:global>
+    h1 {
+      @apply text-5xl;
+    }
+    h2 {
+      @apply text-4xl;
+    }
+    h3 {
+      @apply text-3xl;
+    }
+    p {
+      @apply text-2xl;
+    }
+    a {
+      @apply text-blue;
+    }
+    ul {
+      @apply list-disc;
+    }
+    ol {
+      @apply list-decimal;
+    }
+    blockquote {
+      @apply border-l-4 pl-2 border-solid border-gray;
+    }
+  </style>
+</Base>

@@ -1,0 +1,14 @@
+[project]
+name = "Schale"
+version = "0.1.0"
+description = "The monolith API"
+authors = [
+  {name = "MisileLab", email = "misileminecord@gmail.com"},
+]
+dependencies = []
+requires-python = "~=3.12.6"
+readme = "README.md"
+license = {text = "MisileLab License"}
+
+[tool.pdm]
+distribution = false
