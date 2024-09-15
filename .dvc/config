@@ -4,4 +4,4 @@
 ['remote "myremote"']
     url = s3://dvc/h3
     endpointurl = https://minio.misile.xyz
-
+    allow_anonymous_login = true
