@@ -14,44 +14,49 @@ const {title, description, date} = Astro.props;
 ---
 
 <Base>
-  <div class="mx-[30%]">
+  <div class="md:mx-[20%]">
     <div class="flex flex-col text-black border-b-2 border-solid border-black">
       <Text initialTime={0} animationType={AnimationType.random} hover={HoverType.reanimate}>
-        <p class="text-5xl">{title}</p>
+        <h1 class="text-4xl md:text-5xl">{title}</h1>
       </Text>
       <Text initialTime={0} animationType={AnimationType.random} hover={HoverType.reanimate}>
-        <p class="text-gray text-4xl">{description}</p>
+        <p class="text-gray text-3xl md:text-4xl">{description}</p>
       </Text>
       <Text initialTime={0} animationType={AnimationType.random} hover={HoverType.reanimate}>
-        <p class="text-gray text-3xl">{dayjs(date).toString().replace('GMT', 'UTC')}</p>
+        <p class="text-gray text-2xl md:text-3xl">{dayjs.unix(date).toString().replace('GMT', 'UTC')}</p>
       </Text>
+      <p class="text-gray text-xl md:text-2xl">GPT-4o-mini 기반 Jessica로 요약됨</p>
     </div>
     <slot />
   </div>
   <style is:global>
     h1 {
-      @apply text-5xl;
+      @apply text-3xl md:text-4xl;
     }
     h2 {
-      @apply text-4xl;
+      @apply text-2xl md:text-3xl;
     }
     h3 {
-      @apply text-3xl;
+      @apply text-xl md:text-2xl;
     }
     p {
-      @apply text-2xl;
+      @apply md:text-xl;
     }
     a {
       @apply text-blue;
     }
     ul {
-      @apply list-disc;
+      @apply list-disc pl-6 md:pl-0;
     }
     ol {
-      @apply list-decimal;
+      @apply list-decimal pl-6 md:pl-0;
     }
     blockquote {
       @apply border-l-4 pl-2 border-solid border-gray;
+    }
+
+    bold {
+      @apply font-bold;
     }
   </style>
 </Base>

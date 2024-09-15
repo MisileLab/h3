@@ -5,20 +5,20 @@ import tailwind from "@astrojs/tailwind";
 import node from '@astrojs/node';
 import sitemap from '@astrojs/sitemap';
 
-import mdx from '@astrojs/mdx';
-
 // https://astro.build/config
 export default defineConfig({
+  site: "https://misile.xyz",
   integrations: [tailwind(), sitemap({
-    filter: ({ route }) => {
+    filter: (route) => {
       const vs = ["/news"]
       for (const v of vs) {
         if (route.startsWith(v)) {
           return false;
         }
       }
+      return true;
     }
-  }), mdx()],
+  })],
   output: 'server',
   adapter: node({
     mode: 'standalone'
