@@ -169,15 +169,16 @@ files = [
 
 [[package]]
 name = "manimpango"
-version = "0.5.0"
+version = "0.6.0"
 requires_python = ">=3.8"
 summary = "Bindings for Pango for using with Manim."
 groups = ["default"]
 files = [
-    {file = "ManimPango-0.5.0-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:bf4a09fe1989763ea041fcce044ce501d89678bcc14084949f6792fc3b204517"},
-    {file = "ManimPango-0.5.0-cp312-cp312-win32.whl", hash = "sha256:0b5e47755cce7848fa268b5f77f17fc4fe363d30f5412fef845560df26dece82"},
-    {file = "ManimPango-0.5.0-cp312-cp312-win_amd64.whl", hash = "sha256:aef7151c210fce42518eff7a00e4b07d497a2516e13945d56b9b4a6427fae3f6"},
-    {file = "ManimPango-0.5.0.tar.gz", hash = "sha256:299913bbccb0f15954b64401cf9df24607e1a01edda589ea77de1ed4cc2bc284"},
+    {file = "ManimPango-0.6.0-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:9d10bf902dbb66c98f28909ac9327296da141eaa696986a59b3459e3358d9a34"},
+    {file = "ManimPango-0.6.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:6ab751239d82233d9c9ea1aa8f9cb23257733ee0607e82a76abc0cd75dde66e5"},
+    {file = "ManimPango-0.6.0-cp312-cp312-win32.whl", hash = "sha256:7a8e2c164e7f03e2152e94fd5bf597e977ef67fbbf1031c72f2254479fc892af"},
+    {file = "ManimPango-0.6.0-cp312-cp312-win_amd64.whl", hash = "sha256:061fd61a9f27df0c8ed75beb1fa4e5c06d5186eb37a5830a852aa3ac0737fcfe"},
+    {file = "manimpango-0.6.0.tar.gz", hash = "sha256:d959708e5c05e87317b37df5f6c5258aa9d1ed694a0b25b19d6a4f861841e191"},
 ]
 
 [[package]]
@@ -410,7 +411,7 @@ files = [
 
 [[package]]
 name = "rich"
-version = "13.8.0"
+version = "13.8.1"
 requires_python = ">=3.7.0"
 summary = "Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal"
 groups = ["default"]
@@ -420,8 +421,8 @@ dependencies = [
     "typing-extensions<5.0,>=4.0.0; python_version < \"3.9\"",
 ]
 files = [
-    {file = "rich-13.8.0-py3-none-any.whl", hash = "sha256:2e85306a063b9492dffc86278197a60cbece75bcb766022f3436f567cae11bdc"},
-    {file = "rich-13.8.0.tar.gz", hash = "sha256:a5ac1f1cd448ade0d59cc3356f7db7a7ccda2c8cbae9c7a90c28ff463d3e91f4"},
+    {file = "rich-13.8.1-py3-none-any.whl", hash = "sha256:1760a3c0848469b97b558fc61c85233e3dafb69c7a071b4d60c38099d3cd4c06"},
+    {file = "rich-13.8.1.tar.gz", hash = "sha256:8260cda28e3db6bf04d2d1ef4dbc03ba80a824c88b0e7668a0f23126a424844a"},
 ]
 
 [[package]]
