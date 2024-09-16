@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@animotion/core':
-        specifier: 1.0.15
-        version: 1.0.15(svelte@5.0.0-next.246)(vite@5.4.5(lightningcss@1.27.0))
+        specifier: 1.0.16
+        version: 1.0.16(svelte@5.0.0-next.246)(vite@5.4.5(lightningcss@1.27.0))
       '@animotion/motion':
         specifier: 0.0.9
         version: 0.0.9(svelte@5.0.0-next.246)
@@ -79,10 +79,10 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@animotion/core@1.0.15':
-    resolution: {integrity: sha512-3fZFAwC7g8in53eU5zX0ouxEM3p1Sj57Lwzt72WHoFa45wbY88tr96/SoT+OuLXM0QV+UcGWTpMD4LyZZ0zCBQ==}
+  '@animotion/core@1.0.16':
+    resolution: {integrity: sha512-79HUOrAT4aRFg6jMJqSE6vOFFZ/zCEoLabfqGmHWVddSHFzClNGoamhsq5NNQjCzq81a/UyN7JyzAplARDSKjQ==}
     peerDependencies:
-      svelte: 5.0.0-next.167
+      svelte: ^5.0.0 || ^5.0.0-next.1
 
   '@animotion/motion@0.0.9':
     resolution: {integrity: sha512-1WEwrhGaSYTHipuaQ1B7xd6hd4nbH0to70dXPRaEwdoF1Z6vnf/uO9z5nYXJoqNMOsew01Tep98HBj1aA/A8ZQ==}
@@ -1117,7 +1117,7 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
 
-  '@animotion/core@1.0.15(svelte@5.0.0-next.246)(vite@5.4.5(lightningcss@1.27.0))':
+  '@animotion/core@1.0.16(svelte@5.0.0-next.246)(vite@5.4.5(lightningcss@1.27.0))':
     dependencies:
       '@animotion/motion': 0.0.9(svelte@5.0.0-next.246)
       '@fontsource-variable/jetbrains-mono': 5.1.0
