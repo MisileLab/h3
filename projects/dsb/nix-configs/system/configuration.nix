@@ -37,7 +37,7 @@
       settings = {
         charger = {
           turbo = "never";
-          govenor = "schedutil";
+          govenor = "powersave";
         };
       };
     };

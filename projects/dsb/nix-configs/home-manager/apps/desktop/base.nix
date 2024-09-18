@@ -18,8 +18,8 @@ in
       brightnessctl clipman wl-clipboard pavucontrol
       imagemagick virt-manager appflowy xfce.thunar
       /* galaxy-buds-client */ ferium prismlauncher
-      seahorse kdePackages.filelight qemu (stablep.firefoxpwa) gparted
-      onionshare jetbrains.idea-community-bin gimp (stablep.zed-editor) telegram-desktop
+      seahorse kdePackages.filelight qemu firefoxpwa gparted
+      onionshare jetbrains.idea-community-bin gimp zed-editor (stablep.telegram-desktop)
     ] ++ ([briar-desktop exodus]);
     file = {
       ".local/share/PrismLauncher/themes/catppuccin-mocha.zip".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
@@ -38,7 +38,10 @@ in
     };
   };
   programs = {
-    obs-studio.enable = true;
+    obs-studio = {
+      enable = true;
+      package = stablep.obs-studio;
+    };
     alacritty = {
       enable = true;
       catppuccin.enable = true;
@@ -52,8 +55,7 @@ in
     };
     firefox = {
       enable = true;
-      package = stablep.firefox;
-      nativeMessagingHosts = with stablep; [firefoxpwa];
+      nativeMessagingHosts = with pkgs; [firefoxpwa];
     };
   };
   xdg = {
