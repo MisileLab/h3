@@ -13,10 +13,10 @@ importers:
         version: 0.9.3(typescript@5.6.2)
       '@astrojs/tailwind':
         specifier: 5.1.1
-        version: 5.1.1(astro@4.15.7(@types/node@22.5.5)(rollup@4.21.3)(typescript@5.6.2))(tailwindcss@3.4.12)
+        version: 5.1.1(astro@4.15.8(@types/node@22.5.5)(rollup@4.21.3)(typescript@5.6.2))(tailwindcss@3.4.12)
       astro:
-        specifier: 4.15.7
-        version: 4.15.7(@types/node@22.5.5)(rollup@4.21.3)(typescript@5.6.2)
+        specifier: 4.15.8
+        version: 4.15.8(@types/node@22.5.5)(rollup@4.21.3)(typescript@5.6.2)
       astro-icon:
         specifier: 1.1.1
         version: 1.1.1
@@ -743,8 +743,8 @@ packages:
   astro-icon@1.1.1:
     resolution: {integrity: sha512-HKBesWk2Faw/0+klLX+epQVqdTfSzZz/9+5vxXUjTJaN/HnpDf608gRPgHh7ZtwBPNJMEFoU5GLegxoDcT56OQ==}
 
-  astro@4.15.7:
-    resolution: {integrity: sha512-RGZjGpLcR3jcnXA1+g56i73O77krmqs7VjpoBOfk9UVP8Js5T2YSeUBAyComOUb6vj31wEw1vgRgOEN0MzYc8w==}
+  astro@4.15.8:
+    resolution: {integrity: sha512-pdXjtRF6O1xChiPAUF32R7oVRTW7AK1/Oy/JqPNhLfbelO0l6C7cLdSEuSLektwOEnMhOVXqccetjBs7HPaoxA==}
     engines: {node: ^18.17.1 || ^20.3.0 || >=21.0.0, npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
 
@@ -1713,9 +1713,6 @@ packages:
     resolution: {integrity: sha512-Xa4Nw17FS9ApQFJ9umLiJS4orGjm7ZzwUrwamcGQuHSzDyth9boKDaycYdDcZDuqYATXw4HFXgaqWTctW/v1HA==}
     engines: {node: '>=16 || 14 >=14.18'}
 
-  path-to-regexp@6.2.2:
-    resolution: {integrity: sha512-GQX3SSMokngb36+whdpRXE+3f9V8UzyAorlYvOGx87ufGHehNTn5lCxrKtLyZ4Yl/wEKnNnr98ZzOwwDZV5ogw==}
-
   pathe@1.1.2:
     resolution: {integrity: sha512-whLdWMYL2TwI08hn8/ZqAbrVemu0LNaNNJZX73O6qaIdCTfXutsLhMkjdENX0qhsQ9uIimo4/aQOmXkoon2nDQ==}
 
@@ -2456,9 +2453,9 @@ snapshots:
     dependencies:
       prismjs: 1.29.0
 
-  '@astrojs/tailwind@5.1.1(astro@4.15.7(@types/node@22.5.5)(rollup@4.21.3)(typescript@5.6.2))(tailwindcss@3.4.12)':
+  '@astrojs/tailwind@5.1.1(astro@4.15.8(@types/node@22.5.5)(rollup@4.21.3)(typescript@5.6.2))(tailwindcss@3.4.12)':
     dependencies:
-      astro: 4.15.7(@types/node@22.5.5)(rollup@4.21.3)(typescript@5.6.2)
+      astro: 4.15.8(@types/node@22.5.5)(rollup@4.21.3)(typescript@5.6.2)
       autoprefixer: 10.4.20(postcss@8.4.47)
       postcss: 8.4.47
       postcss-load-config: 4.0.2(postcss@8.4.47)
@@ -3116,7 +3113,7 @@ snapshots:
       - debug
       - supports-color
 
-  astro@4.15.7(@types/node@22.5.5)(rollup@4.21.3)(typescript@5.6.2):
+  astro@4.15.8(@types/node@22.5.5)(rollup@4.21.3)(typescript@5.6.2):
     dependencies:
       '@astrojs/compiler': 2.10.3
       '@astrojs/internal-helpers': 0.4.1
@@ -3164,7 +3161,6 @@ snapshots:
       ora: 8.1.0
       p-limit: 6.1.0
       p-queue: 8.0.1
-      path-to-regexp: 6.2.2
       preferred-pm: 4.0.0
       prompts: 2.4.2
       rehype: 13.0.1
@@ -4364,8 +4360,6 @@ snapshots:
     dependencies:
       lru-cache: 10.4.3
       minipass: 7.1.2
-
-  path-to-regexp@6.2.2: {}
 
   pathe@1.1.2: {}
 
