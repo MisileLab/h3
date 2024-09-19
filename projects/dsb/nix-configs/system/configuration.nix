@@ -37,7 +37,7 @@
       settings = {
         charger = {
           turbo = "never";
-          govenor = "powersave";
+          scaling_max_freq = 3300000;
         };
       };
     };
