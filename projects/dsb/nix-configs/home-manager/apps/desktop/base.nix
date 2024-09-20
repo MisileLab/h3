@@ -1,4 +1,4 @@
-{c, config, pkgs, ...}:
+{c, config, pkgs, stablep, ...}:
 let
   briar-desktop = pkgs.callPackage ./briar.nix {};
   exodus = pkgs.callPackage ./exodus.nix {};
@@ -19,7 +19,7 @@ in
       imagemagick virt-manager appflowy xfce.thunar
       /* galaxy-buds-client */ ferium prismlauncher
       seahorse kdePackages.filelight qemu firefoxpwa gparted
-      onionshare jetbrains.idea-community-bin gimp zed-editor telegram-desktop
+      onionshare jetbrains.idea-community-bin gimp (stablep.zed-editor) telegram-desktop
     ] ++ ([briar-desktop exodus]);
     file = {
       ".local/share/PrismLauncher/themes/catppuccin-mocha.zip".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
@@ -38,7 +38,10 @@ in
     };
   };
   programs = {
-    obs-studio.enable = true;
+    obs-studio = {
+      enable = true;
+      package = stablep.obs-studio;
+    };
     alacritty = {
       enable = true;
       catppuccin.enable = true;
