@@ -1,0 +1,25 @@
+---
+import Content from "../../../components/content.astro"
+---
+
+<Content title="GitLab 17.3.3 릴리즈" description="" date={1727066005} isnews={true}>
+  <h1>GitLab 17.3.3 패치 릴리즈 요약</h1>
+  <ul>
+    <li><bold>릴리즈 날짜</bold>: 2024년 9월 17일에 17.3.3, 17.2.7, 17.1.8, 17.0.8 및 16.11.10 버전 출시</li>
+    <li><bold>중요성</bold>: 이 릴리스는 주요 버그 및 보안 수정을 포함하고 있음</li>
+  </ul>
+
+  <h2>수정된 버그</h1>
+  <ul>
+    <li>CVE-2024-45409 해결</li>
+    <li>OpenSSL 경고 노트 개선 및 종속성 업데이트</li>
+  </ul>
+
+  <h2>주요 권장 사항</h1>
+  <ul>
+    <li>가능한 빨리 업데이트 하기 바람</li>
+    <li>Self-hosted GitLab을 사용하는 사람은 이중 인증 활성화 및 SAML 이중 인증 우회를 비활성화해야 함</li>
+    <li>특정 로그 파일에서 시도 증거를 찾을 수 있으며, 고유한 extern_ids가 무단 접근을 나타낼 수 있음</li>
+  </ul>
+</Content>
+

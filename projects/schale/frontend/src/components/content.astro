@@ -7,10 +7,11 @@ import Base from "../components/base.astro"
 
 export interface Props {
   title: string
-  description: string,
+  description: string
   date: number
+  isnews: boolean
 }
-const {title, description, date} = Astro.props;
+const {title, description, date, isnews} = Astro.props;
 ---
 
 <Base>
@@ -25,7 +26,7 @@ const {title, description, date} = Astro.props;
       <Text initialTime={0} animationType={AnimationType.random} hover={HoverType.reanimate}>
         <p class="text-gray text-2xl md:text-3xl">{dayjs.unix(date).toString().replace('GMT', 'UTC')}</p>
       </Text>
-      <p class="text-gray text-xl md:text-2xl">GPT-4o-mini 기반 Jessica로 요약됨</p>
+      {isnews && <p class="text-gray text-xl md:text-2xl">GPT-4o-mini 기반 Jessica로 요약됨</p>}
     </div>
     <slot />
   </div>
@@ -39,7 +40,7 @@ const {title, description, date} = Astro.props;
     h3 {
       @apply text-xl md:text-2xl;
     }
-    p {
+    * {
       @apply md:text-xl;
     }
     a {
@@ -50,6 +51,12 @@ const {title, description, date} = Astro.props;
     }
     ol {
       @apply list-decimal pl-6 md:pl-0;
+    }
+    li > ul {
+      @apply pl-4;
+    }
+    li > ol {
+      @apply pl-4;
     }
     blockquote {
       @apply border-l-4 pl-2 border-solid border-gray;
