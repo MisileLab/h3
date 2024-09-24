@@ -12,8 +12,8 @@ requires_python = "==3.12.5"
 
 [[package]]
 name = "anyio"
-version = "4.4.0"
-requires_python = ">=3.8"
+version = "4.6.0"
+requires_python = ">=3.9"
 summary = "High level compatibility layer for multiple asynchronous event loop implementations"
 groups = ["default"]
 dependencies = [
@@ -23,8 +23,8 @@ dependencies = [
     "typing-extensions>=4.1; python_version < \"3.11\"",
 ]
 files = [
-    {file = "anyio-4.4.0-py3-none-any.whl", hash = "sha256:c1b2d8f46a8a812513012e1107cb0e68c17159a7a594208005a57dc776e1bdc7"},
-    {file = "anyio-4.4.0.tar.gz", hash = "sha256:5aadc6a1bbb7cdb0bede386cac5e2940f5e2ff3aa20277e991cf028e0585ce94"},
+    {file = "anyio-4.6.0-py3-none-any.whl", hash = "sha256:c7d2e9d63e31599eeb636c8c5c03a7e108d73b345f064f1c19fdc87b79036a9a"},
+    {file = "anyio-4.6.0.tar.gz", hash = "sha256:137b4559cbb034c477165047febb6ff83f390fc3b20bf181c1fc0a728cb8beeb"},
 ]
 
 [[package]]
@@ -897,19 +897,20 @@ files = [
 
 [[package]]
 name = "unicorn"
-version = "2.0.1.post1"
+version = "2.1.0"
 summary = "Unicorn CPU emulator engine"
 groups = ["default"]
 files = [
-    {file = "unicorn-2.0.1.post1-py2.py3-none-macosx_10_15_x86_64.whl", hash = "sha256:2d3eb3ec7eabbc4e66b4d853e11b27c426ce03072860c756139ed2191588751c"},
-    {file = "unicorn-2.0.1.post1-py2.py3-none-manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:2b3eba8848f3cfd43ed5f3128f01880ecc4e73e6b36c1e5e951177db0fb9c03b"},
-    {file = "unicorn-2.0.1.post1-py2.py3-none-manylinux1_i686.whl", hash = "sha256:4cf11d4883160dd3c4967bb3187dd886cdca4422884b315ace436af6047aae0d"},
-    {file = "unicorn-2.0.1.post1-py2.py3-none-manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:45be711d2bc8b82d07f2e0bdde128f3e9408c42978a3ed5edf709bce5350fcdf"},
-    {file = "unicorn-2.0.1.post1-py2.py3-none-manylinux1_x86_64.whl", hash = "sha256:5ed85a0b7bbfa47dd029272e071c814f21e9dacc2eefd63521f4d638ff1d6db9"},
-    {file = "unicorn-2.0.1.post1-py2.py3-none-manylinux2014_aarch64.whl", hash = "sha256:0bd05f9ae6b86b1326e6c3c1d1f3e51264b479cd1961388fd0da0ae674ec0195"},
-    {file = "unicorn-2.0.1.post1-py2.py3-none-win32.whl", hash = "sha256:9f0e3bbe207a6d2ddd3dff528bf3b2251c8e11d0fb4bab2338dff01475f6f41b"},
-    {file = "unicorn-2.0.1.post1-py2.py3-none-win_amd64.whl", hash = "sha256:7145fe448d17b2377b18e08e0521749cf0f94b9d3fe8b67c032bb4c932a21c29"},
-    {file = "unicorn-2.0.1.post1.tar.gz", hash = "sha256:7fc69523eb83b4c8abc7cb4410ca21875e066c34b7afe998f59481e830d28e56"},
+    {file = "unicorn-2.1.0-py2.py3-none-macosx_10_9_universal2.whl", hash = "sha256:a7c8abbf617cfa8d91d66a644f9aa093da0ce535afd9fb725a325ddd91902856"},
+    {file = "unicorn-2.1.0-py2.py3-none-macosx_12_7_x86_64.whl", hash = "sha256:5dbdbc06d44d93f70ddee2b8dd3ec7accb77cb08794aeaad9386c29b43812c1a"},
+    {file = "unicorn-2.1.0-py2.py3-none-manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:c6ae49483edae11b8f1a5c47e3b15905249f52dedcd7daf178c438d9deef1eb6"},
+    {file = "unicorn-2.1.0-py2.py3-none-manylinux1_i686.whl", hash = "sha256:a153dcd9fed4c3096d84fc5473c147527457e1e3a0dac9408a347b1099f6f0ed"},
+    {file = "unicorn-2.1.0-py2.py3-none-manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:fc1fa93d0c26352c06a306933f9f9302671ca504eafa75e0c1911fcd7f20b37d"},
+    {file = "unicorn-2.1.0-py2.py3-none-manylinux1_x86_64.whl", hash = "sha256:27884e0e45e13fef4aabf1d7c99b2ee86407b88883d9563a158ea76cc280a799"},
+    {file = "unicorn-2.1.0-py2.py3-none-manylinux2014_aarch64.whl", hash = "sha256:f860d97f5b70a047b78bf042dbd545bb8e674445fdf2f750ba836f251cc163bb"},
+    {file = "unicorn-2.1.0-py2.py3-none-win32.whl", hash = "sha256:6a32dad9720c1798fc8dc3d703d64398a1dbcd6f58a96ad17a8addc981ff3e3a"},
+    {file = "unicorn-2.1.0-py2.py3-none-win_amd64.whl", hash = "sha256:3ed28682a80af74165e7536dc1407fb4cd21250ccea41c1930f66a91b5b0683c"},
+    {file = "unicorn-2.1.0.tar.gz", hash = "sha256:f4203180be9b9c579b26db6364359d9dd33de8f6534aa8579b66e66dcdb91907"},
 ]
 
 [[package]]
