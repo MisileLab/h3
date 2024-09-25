@@ -26,10 +26,6 @@ in
         url="https://github.com/catppuccin/prismlauncher";
         rev="2edbdf5295bc3c12c3dd53b203ab91028fce2c54";
       }}/themes/Mocha/Catppuccin-Mocha.zip";
-      ".config/obs-studio/themes/Catppuccin Mocha.qss".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
-        url="https://github.com/catppuccin/obs";
-        rev="d90002a5315db3a43c39dc52c2a91a99c9330e1f";
-      }}";
     };
     pointerCursor = {
       name = "Adwaita";
@@ -40,6 +36,7 @@ in
   programs = {
     obs-studio = {
       enable = true;
+      catppuccin.enable = true;
     };
     alacritty = {
       enable = true;

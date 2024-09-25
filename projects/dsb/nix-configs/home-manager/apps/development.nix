@@ -8,7 +8,7 @@
       # Development
       edgedb d2 pre-commit pijul just dive (dvc.override{enableAWS=true;}) solana-validator
       snyk pwndbg radicle-node infisical pnpm_9 jetbrains-toolbox ghidra poop
-      (pkgs.writeShellScriptBin "gdb" "${pkgs.pwndbg}/bin/pwndbg")
+      (pkgs.writeShellScriptBin "gdb" "${pkgs.pwndbg}/bin/pwndbg") process-compose
 
       # Language tools
       ghc cabal-install
@@ -34,6 +34,10 @@
         url="https://github.com/StanlsSlav/ghidra";
         rev="c7e5781c3485912f49c7e4ebf469bb474ffd7d62";
       }}";
+      ".config/process-compose/theme.yaml".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
+        url="https://github.com/catppuccin/process-compose";
+        rev="b0c48aa07244a8ed6a7d339a9b9265a3b561464d";
+      }}/themes/catppuccin-mocha.yaml";
     };
   };
   programs = {
