@@ -19,6 +19,11 @@
     };
   };
 
+  zramSwap = {
+    enable = true;
+    memoryPercent = 100;
+  };
+
   hardware = {
     graphics = {
       enable = true;

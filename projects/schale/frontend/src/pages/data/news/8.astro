@@ -1,0 +1,44 @@
+---
+import Content from "../../../components/content.astro"
+---
+
+<Content title="캐싱 전략의 이해 및 최적화" description="" date={1727159451} isnews={false}>
+  <ul>
+    <li>캐싱은 어렵지만, 적절한 접근 방식을 통해 쉽게 만들 수 있음</li>
+    <li>모든 콘텐츠를 'Push와 Pull' 및 '소유자와 사용자'로 나눌 것을 권장</li>
+  </ul>
+
+  <h1>캐싱 패턴</h1>
+  <h2>Push + Owned</h2>
+  <ul>
+    <li>중앙 서버에 컨텐츠가 Push되고 소유되는 방식</li>
+    <li>만료 시간이 무한할 수 있으며, 클라이언트에서 명시적으로 만료시켜야 함</li>
+  </ul>
+
+  <h2>Push + User & Pull + Owned</h2>
+  <ul>
+    <li>해시된 URL을 사용하여 처리함</li>
+    <li>사용자 생성 컨텐츠는 푸시되어 참조됨</li>
+    <li>빈번한 갱신 요구로 인해 트래픽이 많고 캐싱에 실패하기 쉬움</li>
+  </ul>
+
+  <h2>Pull + User</h2>
+  <ul>
+    <li>사용자 생성 콘텐츠가 서버에 보유되지 않는 경우</li>
+    <li>짧은 TTL(Time-to-live)를 제공함</li>
+    <li>빈번한 갱신 요구로 인해 트래픽이 많고 캐싱에 실패하기 쉬움</li>
+  </ul>
+
+  <h1>댓글 요약</h1>
+  <ul>
+    <li><bold>주제</bold>: 캐싱에 대한 논의 - 주로 "정적 vs 동적" 컨텐츠에 초점을 맞춤</li>
+    <li><bold>의견 차이</bold>: 캐싱에 대한 설명과 표현 방식에 대한 비판</li>
+    <li><bold>요점</bold>
+      <ul>
+        <li>캐싱 용어의 불분명함 지적</li>
+        <li>정적 콘텐츠는 코드베이스에, 동적 콘텐츠는 데이터베이스에 있을 때 정의됨</li>
+      </ul>
+    </li>
+  </ul>
+</Content>
+
