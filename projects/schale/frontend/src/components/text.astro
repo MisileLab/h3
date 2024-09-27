@@ -28,11 +28,16 @@ const { initialTime = 1, hover = HoverType.reanimate, completeTime = 0.8, animat
     constructor() {
       super();
       let tmp = this;
+      const observerplus = new IntersectionObserver(function(a) {
+        a.forEach((i)=>{
+          tmp.observer_function.get()[parseInt(nullVerify(i.target.getAttribute('data-id')))](i.target as HTMLElement)
+        })
+      });
       const observer = new MutationObserver(function(mutations) {
         for (let i=0;i<mutations.length;i++) {
           if (mutations[i].addedNodes.length) {
-            mutations[i].addedNodes.forEach(function(_) {
-              tmp.connectedCallback();
+            mutations[i].addedNodes.forEach(function(i) {
+              observerplus.observe((i as Element));
             });
           }
         }
@@ -54,7 +59,7 @@ const { initialTime = 1, hover = HoverType.reanimate, completeTime = 0.8, animat
         if (this.hover == "reanimate") {
           if (this.animationType == "normal" || this.animationType == 'rewind') {
             realv.addEventListener('mouseover', ()=>{
-              if (getLength(this.animations[i].show) > 0 || getLength(this.animations[i].hide) > 0) {return;}
+              if (getLength(this.animations[i].show) + getLength(this.animations[i].hide) > 0) {return;}
               normalHide(realv, i, this.animationType == 'rewind', aps/2, 0, this.animations);
               normalShow(realv, i, org, this.animationType == 'rewind', aps/2, aps*(realv.innerText.length/2), this.animations);
             })
@@ -64,7 +69,7 @@ const { initialTime = 1, hover = HoverType.reanimate, completeTime = 0.8, animat
             });
           } else {
             realv.addEventListener('mouseover', ()=>{
-              if (getLength(this.animations[i].show) > 0 || getLength(this.animations[i].hide) > 0) {return;}
+              if (getLength(this.animations[i].show) + getLength(this.animations[i].hide) > 0) {return;}
               randomHide(realv, i, aps/2, 0, this.animations);
               randomShow(realv, i, org, aps/2, aps*(realv.innerText.length/2), this.animations);
             })
@@ -75,51 +80,52 @@ const { initialTime = 1, hover = HoverType.reanimate, completeTime = 0.8, animat
           }
         } else if (this.hover == "hide") {
           if (this.animationType == "normal" || this.animationType == 'rewind') {
-            realv.addEventListener('mouseover', ()=>{
+            this.addEventListener('mouseover', ()=>{
               if (getLength(this.animations[i].hide) > 0) {return;}
               normalHide(realv, i, this.animationType == 'rewind', aps, 0, this.animations);
             })
-            realv.addEventListener('mouseout', ()=>{
+            this.addEventListener('mouseout', ()=>{
               if (getLength(this.animations[i].show) > 0) {return;}
-              normalShow(realv, i, org, this.animationType == 'rewind', aps, 0, this.animations);
+              normalShow(realv, i, org, this.animationType == 'rewind', aps, aps*realv.innerText.length, this.animations);
             })
           } else {
-            realv.addEventListener('mouseover', ()=>{
+            this.addEventListener('mouseover', ()=>{
               if (getLength(this.animations[i].hide) > 0) {return;}
               randomHide(realv, i, aps, 0, this.animations);
             })
-            realv.addEventListener('mouseout', ()=>{
+            this.addEventListener('mouseout', ()=>{
               if (getLength(this.animations[i].show) > 0) {return;}
-              randomShow(realv, i, org, aps, 0, this.animations);
+              randomShow(realv, i, org, aps, aps*realv.innerText.length, this.animations);
             })
           }
         } else if (this.hover == "show") {
           if (this.animationType == "normal" || this.animationType == 'rewind') {
-            realv.addEventListener('mouseover', ()=>{
+            this.addEventListener('mouseover', ()=>{
               if (getLength(this.animations[i].show) > 0) {return;}
               normalShow(realv, i, org, this.animationType == 'rewind', aps, 0, this.animations);
             })
             this.observer_function.setKey(i, () => {
               normalHide(realv, i, this.animationType == 'rewind', aps, this.initialTime, this.animations);
             });
-            realv.addEventListener('mouseout', ()=>{
+            this.addEventListener('mouseout', ()=>{
               if (getLength(this.animations[i].hide) > 0) {return;}
-              normalHide(realv, i, this.animationType == 'rewind', aps, 0, this.animations);
+              normalHide(realv, i, this.animationType == 'rewind', aps, aps*(realv.innerText.length), this.animations);
             })
           } else {
-            realv.addEventListener('mouseover', ()=>{
+            this.addEventListener('mouseover', ()=>{
               if (getLength(this.animations[i].show) > 0) {return;}
               randomShow(realv, i, org, aps, 0, this.animations);
             })
             this.observer_function.setKey(i, () => {
               randomHide(realv, i, aps, this.initialTime, this.animations);
             });
-            realv.addEventListener('mouseout', ()=>{
+            this.addEventListener('mouseout', ()=>{
               if (getLength(this.animations[i].hide) > 0) {return;}
-              randomHide(realv, i, aps, 0, this.animations);
+              randomHide(realv, i, aps, aps*(realv.innerText.length), this.animations);
             })
           }
         }
+        realv.setAttribute('data-id', i.toString());
         this.observer_function.get()[i](realv);
       }
     }
