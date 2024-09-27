@@ -1,0 +1,21 @@
+---
+import Base from "../../../components/base.astro"
+import { DataType } from "../../../components/lib"
+import Post from "../../../components/post.astro"
+
+import { isMobileOnly } from "mobile-device-detect"
+---
+
+<Base>
+  <Fragment name="head">
+    <title>Blog</title>
+  </Fragment>
+  <div class="flex flex-col justify-center items-center w-full h-screen gap-y-4">
+    <div class="border-solid border-2 border-black">
+      <h1 class="font-bold sm:font-normal sm:text-4xl xl:text-5xl">{isMobileOnly?"클릭해서":"마우스를 위로 올려서"} 제목을 보세요</h1>
+      <h1 class="font-bold sm:font-normal sm:text-4xl xl:text-5xl">en version is <a href="/en/blog" class="text-blue">here</a></h1>
+      <h2 class="sm:text-3xl">마우스를 위로 올려서 되지 않는다면, 클릭을 해보세요.</h2>
+    </div>
+    <Post title="'비밀번호 제한'은 실패했습니다." description="NIST(미국 국립표준기술연구소)가 인정했습니다." path={1} type={DataType.blog} lang='ko'/>
+  </div>
+</Base>

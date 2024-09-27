@@ -1,0 +1,20 @@
+---
+import Base from "../../../components/base.astro"
+import { DataType } from "../../../components/lib"
+import Post from "../../../components/post.astro"
+
+import { isMobileOnly } from "mobile-device-detect"
+---
+
+<Base>
+  <Fragment name="head">
+    <title>Blog</title>
+  </Fragment>
+  <div class="flex flex-col justify-center items-center w-full h-screen gap-y-4">
+    <div class="border-solid border-2 border-black">
+      <h1 class="font-bold sm:font-normal sm:text-5xl">{isMobileOnly?"click":"hover"} to view, kr version is <a href="/ko/blog" class="text-blue">here</a></h1>
+      <h2 class="sm:text-3xl">If hover does not work, try click</h2>
+    </div>
+    <Post title="The 'Password Restriction' failed" description="NIST confirmed" path={1} type={DataType.blog} lang='en'/>
+  </div>
+</Base>

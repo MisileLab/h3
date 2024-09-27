@@ -140,3 +140,14 @@ export function normalShow(
     }, init+complete*i);
   }
 }
+
+export function isRealInside(element: HTMLElement, event: MouseEvent) {
+  const rect = element.getBoundingClientRect();
+  const isInside = (
+    event.clientX >= rect.left &&
+    event.clientX <= rect.right &&
+    event.clientY >= rect.top &&
+    event.clientY <= rect.bottom
+  );
+  return isInside;
+}

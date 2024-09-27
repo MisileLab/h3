@@ -11,6 +11,11 @@ export enum AnimationType {
   random = "random"
 }
 
+export enum DataType {
+  blog = "blog",
+  news = "news"
+}
+
 function replaceCharacterAtIndex(string: string, index: number, replacement: string) {
   // Check if the index is within bounds
   if (index < 0 || index >= string.length) {
@@ -65,6 +70,7 @@ export function randomHide(
   const end = a.innerText.length;
   const ended = range(start, end);
   for (let i=start;i<end;i++) {
+    // @ts-ignore this does not use on NodeJS
     animations[index].hide[i] = setTimeout(()=>{
       const _rand = Math.floor(Math.random() * ended.length);
       const rand = ended[_rand];
@@ -85,6 +91,7 @@ export function normalHide(
 ) {
   const l = a.innerText.length-1;
   for (let i=0;i<a.innerText.length;i++) {
+    // @ts-ignore this does not use on NodeJS
     animations[index].hide[i] = setTimeout(()=>{
       a.innerText=replaceCharacterAtIndex(a.innerText, rewind?l-i:i, '_')
       delete animations[index].hide[i];
@@ -104,6 +111,7 @@ export function randomShow(
   const end = a.innerText.length;
   const ended = range(start, end);
   for (let i=start;i<end;i++) {
+    // @ts-ignore this does not use on NodeJS
     animations[index].show[i] = setTimeout(()=>{
       const _rand = Math.floor(Math.random() * ended.length);
       const rand = ended[_rand];
@@ -125,9 +133,21 @@ export function normalShow(
 ) {
   const l = a.innerText.length-1;
   for (let i=0;i<a.innerText.length;i++) {
+    // @ts-ignore this does not use on NodeJS
     animations[index].show[i] = setTimeout(()=>{
       a.innerText=replaceCharacterAtIndex(a.innerText, rewind?l-i:i, original[rewind?l-i:i]);
       delete animations[index].show[i];
     }, init+complete*i);
   }
+}
+
+export function isRealInside(element: HTMLElement, event: MouseEvent) {
+  const rect = element.getBoundingClientRect();
+  const isInside = (
+    event.clientX >= rect.left &&
+    event.clientX <= rect.right &&
+    event.clientY >= rect.top &&
+    event.clientY <= rect.bottom
+  );
+  return isInside;
 }

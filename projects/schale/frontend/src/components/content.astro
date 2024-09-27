@@ -17,10 +17,10 @@ const {title, description, date, isnews} = Astro.props;
 <Base>
   <div class="md:mx-[20%]">
     <div class="flex flex-col text-black border-b-2 border-solid border-black">
-      <Text initialTime={0} animationType={AnimationType.random} hover={HoverType.reanimate}>
+      <Text initialTime={0} animationType={AnimationType.random} hover={HoverType.show}>
         <h1 class="text-4xl md:text-5xl">{title}</h1>
       </Text>
-      <Text initialTime={0} animationType={AnimationType.random} hover={HoverType.reanimate}>
+      <Text initialTime={0} animationType={AnimationType.random} hover={HoverType.show}>
         <p class="text-gray text-3xl md:text-4xl">{description}</p>
       </Text>
       <Text initialTime={0} animationType={AnimationType.random} hover={HoverType.reanimate}>
@@ -61,7 +61,6 @@ const {title, description, date, isnews} = Astro.props;
     blockquote {
       @apply border-l-4 pl-2 border-solid border-gray;
     }
-
     bold {
       @apply font-bold;
     }

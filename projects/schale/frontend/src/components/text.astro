@@ -14,7 +14,7 @@ const { initialTime = 1, hover = HoverType.reanimate, completeTime = 0.8, animat
 <astro-animation data-initialTime={initialTime} data-hover={hover} data-completeTime={completeTime} data-animationType={animationType} id={id}><slot /></astro-animation>
 <script>
   import { parseFloat, nullVerify } from "@misile/satellite"
-  import { normalHide, normalShow, randomHide, randomShow, getLength } from "./lib"
+  import { normalHide, normalShow, randomHide, randomShow, getLength, isRealInside } from "./lib"
   import { map } from "nanostores"
 
   class AstroAnimation extends HTMLElement {
@@ -24,25 +24,24 @@ const { initialTime = 1, hover = HoverType.reanimate, completeTime = 0.8, animat
     private animationType: string = "";
     animations: Record<number, {show: Record<number, number>, hide: Record<number, number>}> = {};
     private observer_function = map<Record<number, ((x: HTMLElement) => void)>>({});
+    private hovered = map<Record<number, boolean>>();
+    private functions: Record<number, {over: (()=>void), out: (()=>void)}> = {}
 
     constructor() {
       super();
       let tmp = this;
-      const observerplus = new IntersectionObserver(function(a) {
-        a.forEach((i)=>{
-          tmp.observer_function.get()[parseInt(nullVerify(i.target.getAttribute('data-id')))](i.target as HTMLElement)
-        })
-      });
       const observer = new MutationObserver(function(mutations) {
         for (let i=0;i<mutations.length;i++) {
           if (mutations[i].addedNodes.length) {
-            mutations[i].addedNodes.forEach(function(i) {
-              observerplus.observe((i as Element));
-            });
+            tmp.connectedCallback();
           }
         }
       });
       observer.observe(this, {childList: true});
+      this.hovered.subscribe((x, _, changed)=>{
+        if (changed === undefined) {return}
+        if (x[changed]) {this.functions[changed].over()} else {this.functions[changed].out()}
+      })
     }
 
     connectedCallback() {
@@ -56,23 +55,29 @@ const { initialTime = 1, hover = HoverType.reanimate, completeTime = 0.8, animat
         const org = realv.innerText;
         const aps = this.completeTime / realv.innerText.length;
         this.animations[i] = {show: [], hide: []};
+        this.functions[i] = {over: ()=>{}, out: ()=>{}};
+        document.addEventListener('mousemove', (e)=>{
+          this.hovered.setKey(i, isRealInside(realv, e))
+        })
         if (this.hover == "reanimate") {
           if (this.animationType == "normal" || this.animationType == 'rewind') {
-            realv.addEventListener('mouseover', ()=>{
-              if (getLength(this.animations[i].show) + getLength(this.animations[i].hide) > 0) {return;}
+            this.functions[i].over = ()=>{
+              this.animations[i].show = []
+              this.animations[i].hide = []
               normalHide(realv, i, this.animationType == 'rewind', aps/2, 0, this.animations);
               normalShow(realv, i, org, this.animationType == 'rewind', aps/2, aps*(realv.innerText.length/2), this.animations);
-            })
+            };
             this.observer_function.setKey(i, () => {
               normalHide(realv, i, this.animationType == 'rewind', aps/2, this.initialTime, this.animations);
               normalShow(realv, i, org, this.animationType == 'rewind', aps/2, this.initialTime+aps*(realv.innerText.length/2), this.animations);
             });
           } else {
-            realv.addEventListener('mouseover', ()=>{
-              if (getLength(this.animations[i].show) + getLength(this.animations[i].hide) > 0) {return;}
+            this.functions[i].over = ()=>{
+              this.animations[i].show = []
+              this.animations[i].hide = []
               randomHide(realv, i, aps/2, 0, this.animations);
               randomShow(realv, i, org, aps/2, aps*(realv.innerText.length/2), this.animations);
-            })
+            }
             this.observer_function.setKey(i, () => {
               randomHide(realv, i, aps/2, this.initialTime, this.animations);
               randomShow(realv, i, org, aps/2, this.initialTime+aps*(realv.innerText.length/2), this.animations);
@@ -80,49 +85,49 @@ const { initialTime = 1, hover = HoverType.reanimate, completeTime = 0.8, animat
           }
         } else if (this.hover == "hide") {
           if (this.animationType == "normal" || this.animationType == 'rewind') {
-            this.addEventListener('mouseover', ()=>{
-              if (getLength(this.animations[i].hide) > 0) {return;}
+            this.functions[i].over = ()=>{
+              this.animations[i].hide = []
               normalHide(realv, i, this.animationType == 'rewind', aps, 0, this.animations);
-            })
-            this.addEventListener('mouseout', ()=>{
-              if (getLength(this.animations[i].show) > 0) {return;}
+            }
+            this.functions[i].out = ()=>{
+              this.animations[i].show = []
               normalShow(realv, i, org, this.animationType == 'rewind', aps, aps*realv.innerText.length, this.animations);
-            })
+            }
           } else {
-            this.addEventListener('mouseover', ()=>{
-              if (getLength(this.animations[i].hide) > 0) {return;}
+            this.functions[i].over = ()=>{
+              this.animations[i].hide = []
               randomHide(realv, i, aps, 0, this.animations);
-            })
-            this.addEventListener('mouseout', ()=>{
-              if (getLength(this.animations[i].show) > 0) {return;}
+            }
+            this.functions[i].out = ()=>{
+              this.animations[i].show = []
               randomShow(realv, i, org, aps, aps*realv.innerText.length, this.animations);
-            })
+            }
           }
         } else if (this.hover == "show") {
           if (this.animationType == "normal" || this.animationType == 'rewind') {
-            this.addEventListener('mouseover', ()=>{
-              if (getLength(this.animations[i].show) > 0) {return;}
+            this.functions[i].over = ()=>{
+              this.animations[i].show = []
               normalShow(realv, i, org, this.animationType == 'rewind', aps, 0, this.animations);
-            })
+            }
             this.observer_function.setKey(i, () => {
               normalHide(realv, i, this.animationType == 'rewind', aps, this.initialTime, this.animations);
             });
-            this.addEventListener('mouseout', ()=>{
-              if (getLength(this.animations[i].hide) > 0) {return;}
+            this.functions[i].out = ()=>{
+              this.animations[i].hide = []
               normalHide(realv, i, this.animationType == 'rewind', aps, aps*(realv.innerText.length), this.animations);
-            })
+            }
           } else {
-            this.addEventListener('mouseover', ()=>{
-              if (getLength(this.animations[i].show) > 0) {return;}
+            this.functions[i].over = ()=>{
+              this.animations[i].show = []
               randomShow(realv, i, org, aps, 0, this.animations);
-            })
+            }
             this.observer_function.setKey(i, () => {
               randomHide(realv, i, aps, this.initialTime, this.animations);
             });
-            this.addEventListener('mouseout', ()=>{
-              if (getLength(this.animations[i].hide) > 0) {return;}
+            this.functions[i].out = ()=>{
+              this.animations[i].hide = []
               randomHide(realv, i, aps, aps*(realv.innerText.length), this.animations);
-            })
+            }
           }
         }
         realv.setAttribute('data-id', i.toString());
