@@ -2,38 +2,38 @@
 import Content from "../../../components/content.astro";
 ---
 
-<Content title="The 'Password Restriction' failed" description="NIST confirmed" date={1727317837} isnews={false}>
-  <a href="https://mastodon.social/@LukaszOlejnik/113193089731407165">Read this first, please</a>
-  <h2>Miscallenous thing before say about important thing</h2>
+<Content title="'비밀번호 제한'은 실패했다." description="그리고 그것을 미국이 인정했다." date={1727317837} isnews={false}>
+  <a href="https://news.hada.io/topic?id=16939">필요한 배경 지식</a>
+  <h2>비교적 '중요'하지 않은 것들</h2>
   <ul>
-    <li>The minimum password requirement is great. <span class="text-gray">- Rule 1</span>
+    <li>최소 비밀번호 제한은 좋음 <span class="text-gray">- 1번 규칙</span>
       <ul>
-        <li>I personally uses 14 in bitwarden and greater than 100 in xkeepass on qubes os.</li>
+        <li>개인적으로는 Qubes OS 안의 Xkeepass에서는 100자 이상, Bitwarden에서는 14자 이상 사용중</li>
       </ul>
     </li>
-    <li>Verifier shouldn't requires change password every month or year <span class="text-gray">- Rule 6</span>
+    <li>만약 해킹된 것처럼 보인다면, 비밀번호 변경을 요청함 <span class="text-gray">- 6번 규칙</span>
       <ul>
-        <li>Verifier should opt-out protection because It might invade privacy</li>
-        <li>Verifier should make public what data that use, how use.</li>
+        <li>보호를 위해 가져가는 정보는 프라이버시를 침해할 수 있기에, 무조건 그것을 '선택할 수 있게' 만들어야함</li>
+        <li>또한, 무슨 정보를 가져가는지 투명하게 공개해야함</li>
       </ul>
     </li>
-    <li>No hint for anonymous, really good. <span class="text-gray">- Rule 7</span></li>
-    <li>I thinks Verifier <bold>should</bold> verify the entire password instead <span class="text-gray">- Rule 9</span></li>
+    <li>아무에게나 주는 힌트가 없어지는 것은 매우 좋음 <span class="text-gray">- 7번 규칙</span></li>
+    <li>운영자는 <bold>무조건</bold> 비밀번호 전체를 검사해야 한다고 생각함 <span class="text-gray">- 9번 규칙</span></li>
   </ul>
 
-  <h2>The <bold><span class="text-2xl md:text-3xl">Limit the password</span></bold> Rule Removed <span class="text-gray text-2xl md:text-3xl">- Rule 2~5,8</span></h2>
+  <h2><bold><span class="text-2xl md:text-3xl">비밀번호 제한</span></bold>규칙이 사라짐 <span class="text-gray text-2xl md:text-3xl">- 2~5, 8번 규칙</span></h2>
   <ul>
-    <li>The Korean company keeps make complexity on password (Please fix, please)
+    <li>한국 회사는 비밀번호에 많은 복잡성을 요구함
       <ul>
-        <li>ex) The company that can trade stocks, Password must be <bold>less than 10</bold></li>
+        <li>한국 주식 거래 회사 중 한 곳은 <bold>10글자 이하</bold>의 비밀번호를 요구함</li>
       </ul>
     </li>
-    <li>Everyone supports ASCII, but please, please support unicode
+    <li>모두는 아스키 코드를 지원하지만, 제발 유니코드도 지원해줬으면 좋겠음
       <ul>
-        <li>I tired of disable unicode for invidual site on xkeepass password generator</li>
+        <li>xkeepass에서 Extended ASCII를 끄고 키는 것을 반복하는 게 너무나 귀찮음</li>
       </ul>
     </li>
-    <li>Don't limit special character, don't use or use it, that's user's <bold>choice</bold></li>
-    <li>Microsoft, I have all same answers on random question, please stop nonsense question</li>
+    <li>특수 문자를 강요하지 말았으면 좋겠음, 그것을 넣든가, 말든가, 그것은 <bold>유저의 선택</bold>임</li>
+    <li>마이크로소프트에게 하고 싶은 말: 제발 보안 질문을 없애주면 좋겠음, 나는 질문도 안 읽고 답변을 적기를 몇십번 반복함</li>
   </ul>
 </Content>

@@ -16,6 +16,6 @@ const {title, description, path, type, lang = "en"} = Astro.props;
   <Text initialTime={0} animationType={AnimationType.random} hover={HoverType.show}><p class="text-3xl sm:text-4xl md:text-5xl">{title}</p></Text>
   <div class="flex flex-row justify-between w-full h-fit">
     <Text initialTime={0} animationType={AnimationType.random} hover={HoverType.show}><p class="text-gray text-2xl sm:text-3xl md:text-4xl">{description}</p></Text>
-    <a href={type==DataType.news?`/data/${type}/${path}`:`/${lang}/${type}/${path}`}><p class="text-2xl sm:text-3xl xl:text-4xl text-blue">[클릭해서 보세요]</p></a>
+    <a href={type==DataType.news?`/data/${type}/${path}`:`/${lang}/${type}/${path}`}><p class="text-2xl sm:text-3xl xl:text-4xl text-blue">[글 보기]</p></a>
   </div>
 </div>
