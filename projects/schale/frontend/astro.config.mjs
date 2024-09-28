@@ -10,7 +10,7 @@ export default defineConfig({
   site: "https://misile.xyz",
   integrations: [tailwind(), sitemap({
     filter: (route) => {
-      const vs = ["/news"]
+      const vs = ["/data/news"]
       for (const v of vs) {
         if (route.startsWith(v)) {
           return false;
