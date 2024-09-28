@@ -10,9 +10,10 @@ export default defineConfig({
   site: "https://misile.xyz",
   integrations: [tailwind(), sitemap({
     filter: (route) => {
+      let r = route.replace('https://misile.xyz', '')
       const vs = ["/data/news"]
       for (const v of vs) {
-        if (route.startsWith(v)) {
+        if (r.startsWith(v)) {
           return false;
         }
       }
