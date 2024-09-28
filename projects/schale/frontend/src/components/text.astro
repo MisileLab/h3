@@ -14,7 +14,7 @@ const { initialTime = 1, hover = HoverType.reanimate, completeTime = 0.8, animat
 <astro-animation data-initialTime={initialTime} data-hover={hover} data-completeTime={completeTime} data-animationType={animationType} id={id}><slot /></astro-animation>
 <script>
   import { parseFloat, nullVerify } from "@misile/satellite"
-  import { normalHide, normalShow, randomHide, randomShow, getLength, isRealInside } from "./lib"
+  import { normalHide, normalShow, randomHide, randomShow, isRealInside } from "./lib"
   import { map } from "nanostores"
 
   class AstroAnimation extends HTMLElement {
