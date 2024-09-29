@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:4b293144027a5aae98595ec1ac9b37c238d107db9d318613d1b620c92c7d5cdf"
+content_hash = "sha256:8ff254247e247fdf3f3fecd7acaf4e6cc4c501461f43eb2a53e70af98aa83abd"
 
 [[metadata.targets]]
 requires_python = "==3.12.5"
@@ -203,7 +203,7 @@ version = "0.4.6"
 requires_python = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*,>=2.7"
 summary = "Cross-platform colored terminal text."
 groups = ["default", "dev"]
-marker = "sys_platform == \"win32\" or platform_system == \"Windows\" or os_name == \"nt\" and python_version >= \"3\""
+marker = "os_name == \"nt\" and python_version >= \"3\" or sys_platform == \"win32\" or platform_system == \"Windows\""
 files = [
     {file = "colorama-0.4.6-py2.py3-none-any.whl", hash = "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6"},
     {file = "colorama-0.4.6.tar.gz", hash = "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44"},
@@ -564,7 +564,7 @@ files = [
 
 [[package]]
 name = "pwntools"
-version = "4.13.0"
+version = "4.13.1"
 requires_python = ">=2.7"
 summary = "Pwntools CTF framework and exploit development library."
 groups = ["default"]
@@ -595,8 +595,8 @@ dependencies = [
     "zstandard",
 ]
 files = [
-    {file = "pwntools-4.13.0-py2.py3-none-any.whl", hash = "sha256:34805dd433bd20a0f46a15b51ee8668793b61e85d783c0e0838d687653cbf34e"},
-    {file = "pwntools-4.13.0.tar.gz", hash = "sha256:1d5ca25383ec10fb64e28d142c1d868f91ea1c53a93d3531d3015d830828d3c3"},
+    {file = "pwntools-4.13.1-py2.py3-none-any.whl", hash = "sha256:2f910a15204bfbc05f62948e796a15dae3e8c386447536947638b5dd028de23f"},
+    {file = "pwntools-4.13.1.tar.gz", hash = "sha256:b3322725fb5031dc30965e3855073608d9abf74d2abf97a72c67d44aadfce37c"},
 ]
 
 [[package]]
@@ -733,16 +733,16 @@ files = [
 
 [[package]]
 name = "rpyc"
-version = "6.0.0"
-requires_python = ">=3.7"
+version = "6.0.1"
+requires_python = ">=3.8"
 summary = "Remote Python Call (RPyC) is a transparent and symmetric distributed computing library"
 groups = ["default"]
 dependencies = [
     "plumbum",
 ]
 files = [
-    {file = "rpyc-6.0.0-py3-none-any.whl", hash = "sha256:e86b5831378f794c623db46e8ade6fff766c56cf9dbe96886e614025b4647339"},
-    {file = "rpyc-6.0.0.tar.gz", hash = "sha256:a7e12b31f40978cbd6b74e0b713da389d4b2565cef612adcb0f4b41aeb188230"},
+    {file = "rpyc-6.0.1-py3-none-any.whl", hash = "sha256:e4124c81e65efc4e498842624394b86305eeee64d9647e0808a2862212bac803"},
+    {file = "rpyc-6.0.1.tar.gz", hash = "sha256:8a60f3c4401f309c0eb6e754fb6c4e0442231203907cebf61ae74615b52cd38a"},
 ]
 
 [[package]]
@@ -897,20 +897,21 @@ files = [
 
 [[package]]
 name = "unicorn"
-version = "2.1.0"
+version = "2.1.1"
 summary = "Unicorn CPU emulator engine"
 groups = ["default"]
 files = [
-    {file = "unicorn-2.1.0-py2.py3-none-macosx_10_9_universal2.whl", hash = "sha256:a7c8abbf617cfa8d91d66a644f9aa093da0ce535afd9fb725a325ddd91902856"},
-    {file = "unicorn-2.1.0-py2.py3-none-macosx_12_7_x86_64.whl", hash = "sha256:5dbdbc06d44d93f70ddee2b8dd3ec7accb77cb08794aeaad9386c29b43812c1a"},
-    {file = "unicorn-2.1.0-py2.py3-none-manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:c6ae49483edae11b8f1a5c47e3b15905249f52dedcd7daf178c438d9deef1eb6"},
-    {file = "unicorn-2.1.0-py2.py3-none-manylinux1_i686.whl", hash = "sha256:a153dcd9fed4c3096d84fc5473c147527457e1e3a0dac9408a347b1099f6f0ed"},
-    {file = "unicorn-2.1.0-py2.py3-none-manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:fc1fa93d0c26352c06a306933f9f9302671ca504eafa75e0c1911fcd7f20b37d"},
-    {file = "unicorn-2.1.0-py2.py3-none-manylinux1_x86_64.whl", hash = "sha256:27884e0e45e13fef4aabf1d7c99b2ee86407b88883d9563a158ea76cc280a799"},
-    {file = "unicorn-2.1.0-py2.py3-none-manylinux2014_aarch64.whl", hash = "sha256:f860d97f5b70a047b78bf042dbd545bb8e674445fdf2f750ba836f251cc163bb"},
-    {file = "unicorn-2.1.0-py2.py3-none-win32.whl", hash = "sha256:6a32dad9720c1798fc8dc3d703d64398a1dbcd6f58a96ad17a8addc981ff3e3a"},
-    {file = "unicorn-2.1.0-py2.py3-none-win_amd64.whl", hash = "sha256:3ed28682a80af74165e7536dc1407fb4cd21250ccea41c1930f66a91b5b0683c"},
-    {file = "unicorn-2.1.0.tar.gz", hash = "sha256:f4203180be9b9c579b26db6364359d9dd33de8f6534aa8579b66e66dcdb91907"},
+    {file = "unicorn-2.1.1-py2.py3-none-macosx_11_0_arm64.whl", hash = "sha256:8839c02de1914acb9decb291f89eefb2944148460cf5f09a9a1cde920e32e509"},
+    {file = "unicorn-2.1.1-py2.py3-none-macosx_12_7_x86_64.whl", hash = "sha256:a52470664a6fe76f735943de5c90865ef049e23522dd1751306fefe2384e5dba"},
+    {file = "unicorn-2.1.1-py2.py3-none-manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:13e7fb410a4258522dbc5482d24949f1a89d4f113bc7fd30d523cdad1e543c3f"},
+    {file = "unicorn-2.1.1-py2.py3-none-manylinux1_i686.whl", hash = "sha256:8b890ad01ec49bae78b6419dbd11caae18c5398a26086c4b0800943efb15963c"},
+    {file = "unicorn-2.1.1-py2.py3-none-manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b0f139adb1c9406f57d25cab96ad7a6d3cbb9119f5480ebecedd4f5d7cb024fb"},
+    {file = "unicorn-2.1.1-py2.py3-none-manylinux1_x86_64.musllinux_1_2_x86_64.whl", hash = "sha256:d4a08dbf222c5481bc909a9aa404b79874f6e67f5ba7c47036d03c68ab7371a7"},
+    {file = "unicorn-2.1.1-py2.py3-none-manylinux1_x86_64.whl", hash = "sha256:2163d6b2803fbb2f4df79e845ecccc2803c712c200cf8910548d60fd0cbbb18e"},
+    {file = "unicorn-2.1.1-py2.py3-none-manylinux2014_aarch64.whl", hash = "sha256:06df71752e147107680df7f841360a70cc1ae1f69438dbdc3a87e642fd21eb49"},
+    {file = "unicorn-2.1.1-py2.py3-none-win32.whl", hash = "sha256:8e995ed3abd508258e8864ec1b002c3e4992ae5dc98c6ac2420935b7c04a0c6b"},
+    {file = "unicorn-2.1.1-py2.py3-none-win_amd64.whl", hash = "sha256:f0ebcfaba67ef0ebcd05ee3560268f1c6f683bdd08ff496888741a163d29735d"},
+    {file = "unicorn-2.1.1.tar.gz", hash = "sha256:904f4146b09cd708fdf6b90ebb48d30eaa0ba339382964d4d08c0b9399cf4ba3"},
 ]
 
 [[package]]
