@@ -1,4 +1,4 @@
-{pkgs, config, ...}:
+{pkgs, stablep, config, ...}:
 {
   home = {
     sessionVariables = {
@@ -17,7 +17,7 @@
       nasm
       tailwindcss-language-server /*volta*/ deno astro-language-server
       hvm kind2
-      clang-tools lldb pkg-config
+      (stablep.clang-tools) (stablep.lldb) pkg-config
       niv nixpkgs-fmt nix-tree hub fh
       marksman
       packwiz
@@ -26,13 +26,13 @@
       # custom file
       (pkgs.writeShellScriptBin "bs" "infisical run --project-config-dir=/home/misile/repos/h3/projects/dsb/utils -- pdm run -p ~/repos/h3/projects/dsb/utils ~/repos/h3/projects/dsb/utils/butter-shell.py")
     ]
-    ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
+    ++ (with stablep.llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
     ++ (with nodePackages_latest; [nodejs typescript-language-server svelte-language-server]) # nodejs
     ++ (with python312Packages; [pip virtualenv python-lsp-server mitmproxy]); # python thing
     file = {
       "non-nixos-things/catppuccin-ghidra".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit{
-        url="https://github.com/StanlsSlav/ghidra";
-        rev="c7e5781c3485912f49c7e4ebf469bb474ffd7d62";
+        url="https://github.com/catppuccin/ghidra";
+        rev="bed0999f96ee9869ed25e0f1439bef5eff341e22";
       }}";
       ".config/process-compose/theme.yaml".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
         url="https://github.com/catppuccin/process-compose";
