@@ -6,8 +6,7 @@
     };
     packages = with pkgs; [
       # Development
-      # https://github.com/NixOS/nixpkgs/issues/345806
-      /* edgedb */ d2 pre-commit pijul just dive (dvc.override{enableAWS=true;}) solana-validator
+      edgedb d2 pre-commit pijul just dive (dvc.override{enableAWS=true;}) solana-validator
       snyk pwndbg radicle-node infisical pnpm_9 jetbrains-toolbox ghidra poop
       (pkgs.writeShellScriptBin "gdb" "${pkgs.pwndbg}/bin/pwndbg") process-compose
 
