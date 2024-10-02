@@ -1,4 +1,4 @@
-{pkgs, config, ...}:
+{pkgs, stablep, config, ...}:
 {
   home = {
     sessionVariables = {
@@ -6,7 +6,7 @@
     };
     packages = with pkgs; [
       # Development
-      # https://github.com/NixOS/nixpkgs/issues/345649
+      # https://github.com/NixOS/nixpkgs/issues/345806
       /* edgedb */ d2 pre-commit pijul just dive (dvc.override{enableAWS=true;}) solana-validator
       snyk pwndbg radicle-node infisical pnpm_9 jetbrains-toolbox ghidra poop
       (pkgs.writeShellScriptBin "gdb" "${pkgs.pwndbg}/bin/pwndbg") process-compose
@@ -18,7 +18,7 @@
       nasm
       tailwindcss-language-server /*volta*/ deno astro-language-server
       hvm kind2
-      clang-tools lldb pkg-config
+      (stablep.clang-tools) (stablep.lldb) pkg-config
       niv nixpkgs-fmt nix-tree hub fh
       marksman
       packwiz
@@ -27,7 +27,7 @@
       # custom file
       (pkgs.writeShellScriptBin "bs" "infisical run --project-config-dir=/home/misile/repos/h3/projects/dsb/utils -- pdm run -p ~/repos/h3/projects/dsb/utils ~/repos/h3/projects/dsb/utils/butter-shell.py")
     ]
-    ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
+    ++ (with stablep.llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
     ++ (with nodePackages_latest; [nodejs typescript-language-server svelte-language-server]) # nodejs
     ++ (with python312Packages; [pip virtualenv python-lsp-server mitmproxy]); # python thing
     file = {
