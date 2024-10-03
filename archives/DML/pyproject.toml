@@ -7,7 +7,7 @@ license = "MisileLab License"
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "3.12.6"
+python = "3.12.7"
 disnake = "2.9.2"
 tomli = "2.0.2"
 requests = "2.32.3"
