@@ -6,7 +6,7 @@ authors = [
   {name = "MisileLaboratory", email = "misileminecord@gmail.com"},
 ]
 dependencies = [
-  "tomli==2.0.1",
+  "tomli==2.0.2",
   "requests==2.32.3",
   "baekjoonapi @ git+https://github.com/MisileLab/baekjoonapi",
 ]
