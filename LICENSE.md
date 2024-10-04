@@ -1,7 +1,11 @@
-# Misilelab license v2.0
+# Misilelab license v3.0
 
-Default author information: h3 by MisileLaboratory, Klosie  
-You can override author in subproject like `Override author information: Base repository by Misile`
+Default author information: base-repository by MisileLaboratory  
+You can override author in subproject like `Override author information: Base repository by Misile`  
+
+## Basic rules
+You can use this source and make fork and compete with this project.  
+but If I explictly request you take down repository, you need to.
 
 ## library usage condition
 
