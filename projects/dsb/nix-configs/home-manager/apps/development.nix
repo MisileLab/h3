@@ -1,4 +1,4 @@
-{pkgs, stablep, config, ...}:
+{pkgs, config, ...}:
 {
   home = {
     sessionVariables = {
@@ -17,7 +17,7 @@
       nasm
       tailwindcss-language-server /*volta*/ deno astro-language-server
       hvm kind2
-      (stablep.clang-tools) (stablep.lldb) pkg-config
+      clang-tools lldb pkg-config
       niv nixpkgs-fmt nix-tree hub fh
       marksman
       packwiz
@@ -26,7 +26,7 @@
       # custom file
       (pkgs.writeShellScriptBin "bs" "infisical run --project-config-dir=/home/misile/repos/h3/projects/dsb/utils -- pdm run -p ~/repos/h3/projects/dsb/utils ~/repos/h3/projects/dsb/utils/butter-shell.py")
     ]
-    ++ (with stablep.llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
+    ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
     ++ (with nodePackages_latest; [nodejs typescript-language-server svelte-language-server]) # nodejs
     ++ (with python312Packages; [pip virtualenv python-lsp-server mitmproxy]); # python thing
     file = {

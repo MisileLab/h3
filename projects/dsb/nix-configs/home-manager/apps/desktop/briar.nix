@@ -13,20 +13,18 @@
 , libGL
 }:
 let
-
   briar-tor = writeScript "briar-tor" ''
     #! ${bash}/bin/bash
     exec ${tor}/bin/tor "$@"
   '';
-
 in
 stdenv.mkDerivation rec {
   pname = "briar-desktop";
-  version = "0.6.1-beta";
+  version = "0.6.2-beta";
 
   src = fetchurl {
     url = "https://desktop.briarproject.org/jars/linux/${version}/briar-desktop-linux-${version}.jar";
-    hash = "sha256-Np5yf9z+jtmQ8x0OgB7y6mpR/Rdb6ogd17fFRY7h/bM=";
+    hash = "sha256-O++5MDLKUiZQFBI7RkYXcBNFpVsodwcTI/xb/akB2vE=";
   };
 
   dontUnpack = true;
