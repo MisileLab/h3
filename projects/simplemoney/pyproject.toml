@@ -1,0 +1,18 @@
+[project]
+name = "simplemoney"
+version = "0.1.0"
+description = "simple money system"
+authors = [
+  {name = "misile", email = "misile@duck.com"},
+]
+dependencies = [
+  "fastapi==0.115.0",
+  "websockets==13.1",
+  "edgedb==2.1.0"
+]
+requires-python = ">=3.12.5"
+readme = "README.md"
+license = {text = "MisileLab License"}
+
+[tool.pdm]
+distribution = false
