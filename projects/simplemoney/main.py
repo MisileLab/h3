@@ -1,24 +1,37 @@
-from fastapi import FastAPI, Header, status, HTTPException
-from edgedb import create_async_client
+from fastapi import FastAPI, Header, status, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi.responses import PlainTextResponse
+from edgedb import Object, create_async_client
+
+from typing import Optional
+from dataclasses import dataclass, asdict, field
+from hashlib import sha3_512
+from pathlib import Path
+from secrets import token_bytes
 
 db = create_async_client()
 app = FastAPI()
+if not Path('./salt').is_file():
+  Path('./salt').write_bytes(token_bytes(128))
+salt = Path('./salt').read_bytes()
+wss: dict[str, list[WebSocket]] = {}
 
-class Transaction:
-  amount: int
-  date: str
-  description: str
-
+@dataclass
 class Account[T]:
   money: int
   name: str
-  password: str
-  transactions: list[T]
+  password: Optional[str]
+  transactions: list[T] = field(default_factory=lambda: [])
 
-class AccountPublic:
-  money: int
-  name: str
-  transactions: list[str]
+@dataclass
+class Transaction:
+  amount: int
+  sent: str
+  received: str
+
+def conv_to_dict(v: Object | None, status_code: int = 400) -> dict:
+  if v is None:
+    raise HTTPException(status_code=status_code, detail="result of query is None (probably name or password is invalid)")
+  return asdict(v)
 
 @app.get("/")
 async def ping():
@@ -27,13 +40,13 @@ async def ping():
 @app.get("/user")
 async def get_user(
   name: str | None = Header()
-) -> AccountPublic:
+) -> Account:
   if not isinstance(name, str):
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
-  user: Account[str] | None = await db.query_single("select Account {name, money, password, transactions: {id}} filter .name = <str>$name limit 1", name=name)
-  if user is None:
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-  del user.password
+  _user = conv_to_dict(await db.query_single("select Account {name, money, transactions: {id}} filter .name = <str>$name limit 1", name=name))
+  _user['transactions'] = [str(i['id']) for i in _user['transactions']]
+  del _user['id']
+  user: Account[str | Object] = Account(password=None, **_user)
   return user
 
 @app.get("/transaction")
@@ -42,23 +55,54 @@ async def get_transaction(
 ) -> Transaction:
   if not isinstance(id, str):
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
-  transaction: Transaction | None = await db.query_single("select Transaction {amount, date, description} filter .id = <str>$id limit 1", id=id)
-  if transaction is None:
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-  return transaction
+  transaction: dict = conv_to_dict(await db.query_single("select Transaction {amount, sent, received} filter .id = <std::uuid>$id limit 1", id=id))
+  del transaction['id']
+  return Transaction(**transaction)
 
 @app.post("/account/send")
 async def send_money(
-  id: str | None = Header(),
+  name: str | None = Header(),
   password: str | None = Header(),
+  to: str | None = Header(),
   amount: int | None = Header()
-):
-  # check headers
-  # just hash password
-  # if not just gives error
-  # check if money - amount > 0 and amount > 0
-  # if not just gives error
-  # query create transaction
-  # return transaction id
-  # profit
-  pass
+) -> PlainTextResponse:
+  if not (isinstance(name, str) and isinstance(password, str) and isinstance(amount, int) and isinstance(to, str)):
+    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+  if name == to:
+    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="can't send to same account")
+  sha_hash = sha3_512(password.encode('utf8') + salt).hexdigest()
+  print(sha_hash)
+  _account: dict = conv_to_dict(await db.query_single("select account {name, money} filter .name = <str>$name and .password = <str>$password limit 1", name=name, password=sha_hash))
+  _account_to: dict = conv_to_dict(await db.query_single("select account {name, money} filter .name = <str>$name limit 1", name=to))
+  del _account['id']
+  del _account_to['id']
+  account = Account(**_account, password=None)
+  account_to = Account(**_account_to, password=None)
+  if account.money - amount < 0 or amount <= 0:
+    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="money amount is less than 0 or your money is not sufficient")
+  t = (await db.query_single('insert Transaction {sent := <str>$sent, received := <str>$received, amount := <int64>$amount}', sent=account.name, received=account_to.name, amount=amount)).id
+  await db.query_single('update Account filter .name = <str>$name set {money := <int64>$amount, transactions += (select detached Transaction filter .id = <std::uuid>$id)}', name=account.name, id=t, amount=account.money-amount)
+  await db.query_single('update Account filter .name = <str>$name set {money := <int64>$amount, transactions += (select detached Transaction filter .id = <std::uuid>$id)}', name=account_to.name, id=t, amount=account_to.money+amount)
+  for i in wss[to]:
+    await i.send_json({"type": "receive", "id": str(t)})
+  return PlainTextResponse(str(t))
+
+@app.websocket("/event")
+async def event(ws: WebSocket):
+  await ws.accept()
+  data = await ws.receive_json()
+  try:
+    conv_to_dict(await db.query_single("select account {name, money} filter .name = <str>$name and .password = <str>$password limit 1", name=data['name'], password=data['password']))
+  except HTTPException:
+    await ws.send_json({"status_code": 400, "detail": "Login failed"})
+  if wss.get(data['name']) is None:
+    wss[data['name']] = []
+  wss[data['name']].append(ws)
+  try:
+    while True:
+      data = await ws.receive_json()
+      await ws.send_json({'ping': 'pong'})
+  except WebSocketDisconnect:
+    wss[data['name']].remove(ws)
+    if len(wss[data['name']]) == 0:
+      del wss[data['name']]
