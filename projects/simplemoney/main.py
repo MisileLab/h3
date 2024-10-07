@@ -7,6 +7,7 @@ from dataclasses import dataclass, asdict, field
 from hashlib import sha3_512
 from pathlib import Path
 from secrets import token_bytes
+from json.decoder import JSONDecodeError
 
 db = create_async_client()
 app = FastAPI()
@@ -25,7 +26,7 @@ class Account[T]:
 @dataclass
 class Transaction:
   amount: int
-  sent: str
+  to: str
   received: str
 
 def conv_to_dict(v: Object | None, status_code: int = 400) -> dict:
@@ -55,7 +56,7 @@ async def get_transaction(
 ) -> Transaction:
   if not isinstance(id, str):
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
-  transaction: dict = conv_to_dict(await db.query_single("select Transaction {amount, sent, received} filter .id = <std::uuid>$id limit 1", id=id))
+  transaction: dict = conv_to_dict(await db.query_single("select Transaction {amount, to, received} filter .id = <std::uuid>$id limit 1", id=id))
   del transaction['id']
   return Transaction(**transaction)
 
@@ -71,36 +72,45 @@ async def send_money(
   if name == to:
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="can't send to same account")
   sha_hash = sha3_512(password.encode('utf8') + salt).hexdigest()
-  print(sha_hash)
-  _account: dict = conv_to_dict(await db.query_single("select account {name, money} filter .name = <str>$name and .password = <str>$password limit 1", name=name, password=sha_hash))
-  _account_to: dict = conv_to_dict(await db.query_single("select account {name, money} filter .name = <str>$name limit 1", name=to))
+  _account: dict = conv_to_dict(await db.query_single("select Account {name, money} filter .name = <str>$name and .password = <str>$password limit 1", name=name, password=sha_hash))
+  _account_to: dict = conv_to_dict(await db.query_single("select Account {name, money} filter .name = <str>$name limit 1", name=to))
   del _account['id']
   del _account_to['id']
   account = Account(**_account, password=None)
   account_to = Account(**_account_to, password=None)
   if account.money - amount < 0 or amount <= 0:
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="money amount is less than 0 or your money is not sufficient")
-  t = (await db.query_single('insert Transaction {sent := <str>$sent, received := <str>$received, amount := <int64>$amount}', sent=account.name, received=account_to.name, amount=amount)).id
+  t = (await db.query_single('insert Transaction {to := <str>$to, received := <str>$received, amount := <int64>$amount}', to=account.name, received=account_to.name, amount=amount)).id
   await db.query_single('update Account filter .name = <str>$name set {money := <int64>$amount, transactions += (select detached Transaction filter .id = <std::uuid>$id)}', name=account.name, id=t, amount=account.money-amount)
   await db.query_single('update Account filter .name = <str>$name set {money := <int64>$amount, transactions += (select detached Transaction filter .id = <std::uuid>$id)}', name=account_to.name, id=t, amount=account_to.money+amount)
-  for i in wss[to]:
+  for i in wss.get(to, []):
     await i.send_json({"type": "receive", "id": str(t)})
+  for i in wss.get(name, []):
+    await i.send_json({"type": "send", "id": str(t)})
   return PlainTextResponse(str(t))
 
 @app.websocket("/event")
 async def event(ws: WebSocket):
   await ws.accept()
-  data = await ws.receive_json()
   try:
-    conv_to_dict(await db.query_single("select account {name, money} filter .name = <str>$name and .password = <str>$password limit 1", name=data['name'], password=data['password']))
+    data = await ws.receive_json()
+  except JSONDecodeError:
+    await ws.send_json({"status_code": 400, "detail": "Data is invalid"})
+    await ws.close()
+    return
+  try:
+    sha_hash = sha3_512(data['password'].encode('utf8') + salt).hexdigest()
+    conv_to_dict(await db.query_single("select Account {name, money} filter .name = <str>$name and .password = <str>$password limit 1", name=data['name'], password=sha_hash))
   except HTTPException:
     await ws.send_json({"status_code": 400, "detail": "Login failed"})
+    await ws.close()
+    return
   if wss.get(data['name']) is None:
     wss[data['name']] = []
   wss[data['name']].append(ws)
   try:
     while True:
-      data = await ws.receive_json()
+      data = await ws.receive_text()
       await ws.send_json({'ping': 'pong'})
   except WebSocketDisconnect:
     wss[data['name']].remove(ws)

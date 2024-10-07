@@ -7,7 +7,7 @@ module default {
   }
 
   type Transaction {
-    sent: str;
+    to: str;
     received: str;
     required amount: int64;
   }
