@@ -1,5 +1,5 @@
-from fastapi import FastAPI, Header, status, HTTPException, WebSocket, WebSocketDisconnect, Request, JSONResponse
-from fastapi.responses import PlainTextResponse
+from fastapi import FastAPI, Header, status, HTTPException, WebSocket, WebSocketDisconnect, Request
+from fastapi.responses import PlainTextResponse, JSONResponse
 from edgedb import Object, create_async_client
 from loguru import logger
 
