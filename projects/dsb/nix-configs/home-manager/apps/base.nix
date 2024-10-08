@@ -17,7 +17,7 @@ in
       (writeScript "manual" ''
         ${pkgs.glow}/bin/glow -p ~/.config/home-manager/manual.md
       '')
-      (writeScript "nix-clean" "nix store optimise && sudo nix store optimise && nix-collect-garbage -d && sudo nix-collect-garbage -d")
+      (writeScript "nix-clean" "nix-collect-garbage -d && sudo nix-collect-garbage -d && sudo nix store optimise && nix store optimise && nix-collect-garbage -d && sudo nix-collect-garbage -d")
       (writeScript "cat" "${pkgs.bat}/bin/bat")
       (writeScript "ocat" "${pkgs.coreutils}/bin/cat")
       (writeScript "lzg" "${pkgs.lazygit}/bin/lazygit")
