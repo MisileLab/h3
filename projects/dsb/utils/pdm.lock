@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:112535f9ebaad10e6afa5b802da4bac0d47ab8c96348bc9099f9ce5eda4c7d3e"
+content_hash = "sha256:53c192936014a426450d6a70a002b8c7f07b1b95c53c0f6edc36de599847727c"
 
 [[metadata.targets]]
 requires_python = "==3.12.5"
@@ -497,13 +497,13 @@ files = [
 
 [[package]]
 name = "tomli-w"
-version = "1.0.0"
-requires_python = ">=3.7"
+version = "1.1.0"
+requires_python = ">=3.9"
 summary = "A lil' TOML writer"
 groups = ["default"]
 files = [
-    {file = "tomli_w-1.0.0-py3-none-any.whl", hash = "sha256:9f2a07e8be30a0729e533ec968016807069991ae2fd921a78d42f429ae5f4463"},
-    {file = "tomli_w-1.0.0.tar.gz", hash = "sha256:f463434305e0336248cac9c2dc8076b707d8a12d019dd349f5c1e382dd1ae1b9"},
+    {file = "tomli_w-1.1.0-py3-none-any.whl", hash = "sha256:1403179c78193e3184bfaade390ddbd071cba48a32a2e62ba11aae47490c63f7"},
+    {file = "tomli_w-1.1.0.tar.gz", hash = "sha256:49e847a3a304d516a169a601184932ef0f6b61623fe680f836a2aa7128ed0d33"},
 ]
 
 [[package]]
