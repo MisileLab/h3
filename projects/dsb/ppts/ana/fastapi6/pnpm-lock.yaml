@@ -37,8 +37,8 @@ importers:
         specifier: 20.16.11
         version: 20.16.11
       '@types/reveal.js':
-        specifier: 5.0.3
-        version: 5.0.3
+        specifier: 5.0.4
+        version: 5.0.4
       autoprefixer:
         specifier: 10.4.20
         version: 10.4.20(postcss@8.4.47)
@@ -393,8 +393,8 @@ packages:
   '@types/qs@6.9.16':
     resolution: {integrity: sha512-7i+zxXdPD0T4cKDuxCUXJ4wHcsJLwENa6Z3dCu8cfCK743OGy5Nu1RmAGqDPsoTDINVEcdXKRvR/zre+P2Ku1A==}
 
-  '@types/reveal.js@5.0.3':
-    resolution: {integrity: sha512-gwnK8TR38IOBIORWFrV5/z9lRX4iLke2FBqNgRhXxehaWJFkrzVY2TVzfdX/SX94eugt+OI5l++zDBBSfdzruQ==}
+  '@types/reveal.js@5.0.4':
+    resolution: {integrity: sha512-70Qua903NRU736r8Z94okthf6hXKm+brta/KdHFrK6GD16eTmGhPrDYGCUP7eNifEA2mvJGlNq1IR41ycIX0Yw==}
 
   acorn@8.12.1:
     resolution: {integrity: sha512-tcpGyI9zbizT9JbV6oYE477V6mTlXvvi0T0G3SNIYE2apm/G5huBa1+K89VGeovbg+jycCrfhl3ADxErOuO6Jg==}
@@ -1428,7 +1428,7 @@ snapshots:
 
   '@types/qs@6.9.16': {}
 
-  '@types/reveal.js@5.0.3': {}
+  '@types/reveal.js@5.0.4': {}
 
   acorn@8.12.1: {}
 

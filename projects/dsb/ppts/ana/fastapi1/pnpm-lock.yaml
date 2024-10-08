@@ -32,8 +32,8 @@ devDependencies:
     specifier: 20.16.11
     version: 20.16.11
   '@types/reveal.js':
-    specifier: 5.0.3
-    version: 5.0.3
+    specifier: 5.0.4
+    version: 5.0.4
   autoprefixer:
     specifier: 10.4.20
     version: 10.4.20(postcss@8.4.47)
@@ -559,8 +559,8 @@ packages:
       undici-types: 6.19.8
     dev: true
 
-  /@types/reveal.js@5.0.3:
-    resolution: {integrity: sha512-gwnK8TR38IOBIORWFrV5/z9lRX4iLke2FBqNgRhXxehaWJFkrzVY2TVzfdX/SX94eugt+OI5l++zDBBSfdzruQ==}
+  /@types/reveal.js@5.0.4:
+    resolution: {integrity: sha512-70Qua903NRU736r8Z94okthf6hXKm+brta/KdHFrK6GD16eTmGhPrDYGCUP7eNifEA2mvJGlNq1IR41ycIX0Yw==}
     dev: true
 
   /acorn@8.12.1:
