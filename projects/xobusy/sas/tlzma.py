@@ -9,49 +9,63 @@ class SlidingWindowedByte:
   def to_tuple(self) -> tuple[int, int, int]:
     return (self.distance, self.length, self.value)
 
-  def to_str_tuple(self) -> tuple[int, int, int]:
+  def to_str_tuple(self) -> tuple[int, int, str]:
     return (self.distance, self.length, chr(self.value))
 
+# [0, 1]
 class ArithmeticCoding:
-  # [0, 1]로 가정하여 인코딩
-  def encode(self, data: list[SlidingWindowedByte], freq_table: dict): # 나중에 dict 세부 타입 작성 예정
+  def encode(
+    self,
+    data: list[SlidingWindowedByte],
+    freq_table: dict[
+      SlidingWindowedByte,
+      tuple[float, float]
+  ]) -> float:
     # 일정 비율로 나눈 뒤에 뒷 부분에서 작업 진행
-    for char in data:
-      self.high = freq_table[char][1]
-      self.low = freq_table[char][0]
-    # 마지막에 2로 나눔 (아직 이해하지 못함)
-    return (self.low + self.high) / 2
+    high, low = 0, 0
+    for window in data:
+      high = freq_table[window][1]
+      low = freq_table[window][0]
+    # 압축은 결과로 하나의 값을 줘야 하기 때문에 평균값을 리턴
+    return (low + high) / 2
 
-#   def decode(self, encoded_value, freq_table, length):
-#     decoded_data = []
-#     for _ in range(length):
-#       for char, (low_range, high_range) in freq_table.items():
-#         if low_range <= encoded_value < high_range:
-#           decoded_data.append(char)
-#           char_range = high_range - low_range
-#           encoded_value = (encoded_value - low_range) / char_range
-#           break
-#     return ''.join(decoded_data)
+  def decode(
+    self,
+    data: float,
+    freq_table: dict[
+      SlidingWindowedByte,
+      tuple[float, float]
+    ],
+    length: int
+  ) -> list[SlidingWindowedByte]:
+    value = []
+    for _ in range(length):
+      for window, (low, high) in freq_table.items():
+        # 만약 범위 사이에 값이 있다면 값을 얻은 후에 다시 시도
+        if low <= data < high:
+          value.append(window)
+          # 수식 최적화 가능할 것 같음
+          data = (data - low) / (high - low)
+          break
+    return value
 
-# def build_frequency_table(data):
-#   freq_table = {}
-#   total_chars = len(data)
+# idk
+def build_frequency_table(data: list[SlidingWindowedByte]):
+  freqs: dict[SlidingWindowedByte, float] = {}
+  char_length = len(data)
   
-#   for char in data:
-#     if char in freq_table:
-#       freq_table[char] += 1
-#     else:
-#       freq_table[char] = 1
+  for char in data:
+    freqs[char] = freqs[char] + 1 if char in freqs else 1
+  print(freqs)
 
-#   # 빈도 테이블을 (low_range, high_range)의 범위로 변환
-#   freq_table_ranges = {}
-#   low_range = 0.0
-#   for char, freq in sorted(freq_table.items()):
-#     high_range = low_range + (freq / total_chars)
-#     freq_table_ranges[char] = (low_range, high_range)
-#     low_range = high_range
+  freq_ranges = {}
+  low = 0.0
+  for char, freq in freqs.items():
+    high = low + freq / char_length
+    freq_ranges[char] = (low, high)
+    low = high
   
-#   return freq_table_ranges
+  return freq_ranges
 
 def find_distance(data: bytes, compare: bytes) -> int:
   queue = []
@@ -66,6 +80,7 @@ def find_distance(data: bytes, compare: bytes) -> int:
       queue.clear()
     if len(queue) == len(compare):
       return i-first_char+1
+  raise ValueError("unreachable")
 
 # https://dalinaum.github.io/algorithm/2020/12/14/zip-compression.html
 def sliding_window(data: bytes) -> list[SlidingWindowedByte]:
@@ -86,17 +101,17 @@ def sliding_window(data: bytes) -> list[SlidingWindowedByte]:
     i += 1
   return result
 
-def compress_bytes(data: bytes) -> bytes:
-  raise NotImplementedError()
-
-def decompress_bytes(data: bytes) -> bytes:
-  raise NotImplementedError()
+def decode_sliding_window(data: list[SlidingWindowedByte]) -> bytes:
+  raise NotImplementedError
 
 def compress(file_path: str, output_path: str):
-  Path(output_path).write_bytes(compress_bytes(Path(file_path).read_bytes()))
+  raise NotImplementedError
 
 def decompress(file_path: str, output_path: str):
-  Path(output_path).write_bytes(decompress_bytes(Path(file_path).read_bytes()))
+  raise NotImplementedError
 
 if __name__ == '__main__':
   print('HellABHello', [i.to_str_tuple() for i in sliding_window(b'HellABHello')])
+  sld = sliding_window(b'HellABHello')
+  frq = build_frequency_table(sld)
+  print(ArithmeticCoding().encode(sld, frq))
