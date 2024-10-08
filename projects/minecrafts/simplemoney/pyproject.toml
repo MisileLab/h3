@@ -8,9 +8,12 @@ authors = [
 dependencies = [
   "fastapi[standard]==0.115.0",
   "websockets==13.1",
-  "edgedb==2.1.0"
+  "edgedb==2.1.0",
+  "loguru==0.7.2"
 ]
-requires-python = ">=3.12.5"
+# https://github.com/edgedb/edgedb-python/issues/525
+# https://github.com/MagicStack/httptools/issues/104
+requires-python = ">=3.12.5,<3.13"
 readme = "README.md"
 license = {text = "MisileLab License"}
 

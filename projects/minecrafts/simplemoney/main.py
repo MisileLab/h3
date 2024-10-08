@@ -1,6 +1,7 @@
-from fastapi import FastAPI, Header, status, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, Header, status, HTTPException, WebSocket, WebSocketDisconnect, Request, JSONResponse
 from fastapi.responses import PlainTextResponse
 from edgedb import Object, create_async_client
+from loguru import logger
 
 from typing import Optional
 from dataclasses import dataclass, asdict, field
@@ -15,13 +16,30 @@ if not Path('./salt').is_file():
   Path('./salt').write_bytes(token_bytes(128))
 salt = Path('./salt').read_bytes()
 wss: dict[str, list[WebSocket]] = {}
+whitelisted_ip = Path('./whitelisted_ip').read_text().split('\n') if Path('./whitelisted_ip').is_file() else ['127.0.0.1']
+
+@app.middleware('http')
+async def validate_ip(request: Request, call_next):
+  # Get client IP
+  ip = request.headers.get('X-Forwarded-For', '').split(',')[0] or request.client.host
+  logger.debug(ip)
+  
+  # Check if IP is allowed
+  if ip not in whitelisted_ip:
+    data = {
+      'message': f'IP {ip} is not allowed to access this resource.'
+    }
+    return JSONResponse(status_code=status.HTTP_403_FORBIDDEN, content=data)
+
+  # Proceed if IP is allowed
+  return await call_next(request)
 
 @dataclass
-class Account[T]:
+class Account:
   money: int
   name: str
   password: Optional[str]
-  transactions: list[T] = field(default_factory=lambda: [])
+  transactions: list[str] = field(default_factory=lambda: [])
 
 @dataclass
 class Transaction:
@@ -47,7 +65,7 @@ async def get_user(
   _user = conv_to_dict(await db.query_single("select Account {name, money, transactions: {id}} filter .name = <str>$name limit 1", name=name))
   _user['transactions'] = [str(i['id']) for i in _user['transactions']]
   del _user['id']
-  user: Account[str | Object] = Account(password=None, **_user)
+  user: Account = Account(password=None, **_user)
   return user
 
 @app.get("/transaction")
