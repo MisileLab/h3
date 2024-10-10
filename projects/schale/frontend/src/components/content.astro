@@ -10,11 +10,13 @@ export interface Props {
   description: string
   date: number
   isnews: boolean
+  rewind?: boolean
 }
-const {title, description, date, isnews} = Astro.props;
+const {title, description, date, isnews, rewind = true} = Astro.props;
+if (date === 0) {throw Error("It is just draft.")}
 ---
 
-<Base>
+<Base rewind={rewind}>
   <div class="md:mx-[20%]">
     <div class="flex flex-col text-black border-b-2 border-solid border-black">
       <Text initialTime={0} animationType={AnimationType.random} hover={HoverType.show}>
@@ -63,6 +65,9 @@ const {title, description, date, isnews} = Astro.props;
     }
     bold {
       @apply font-bold;
+    }
+    code {
+      @apply bg-gray text-white;
     }
   </style>
 </Base>

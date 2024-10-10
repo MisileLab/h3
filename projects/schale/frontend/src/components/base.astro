@@ -1,3 +1,9 @@
+---
+export interface Props {
+  rewind?: boolean
+}
+let {rewind = false} = Astro.props;
+---
 
 <html lang="en">
   <head>
@@ -17,7 +23,6 @@
       src: url('/fonts/SarasaMono/SarasaMonoK-Regular.ttf') format('truetype');
     }
     * {
-      font-family: 'Iosevka', 'SarasaMono';
       word-break: break-all;
     }
     p, span, h1, h2, h3, h4, h5, h6 {
@@ -25,6 +30,8 @@
       height: fit-content;
     }
     </style>
+    {!rewind && <style is:global>* {font-family: 'Iosevka', 'SarasaMono';}</style>}
+    {rewind && <style is:global> * {font-family: 'SarasaMono', 'Iosevka';}</style>}
   </head>
   <body class="bg-white">
     <slot />
