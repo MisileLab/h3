@@ -13,7 +13,7 @@
       # Language tools
       ghc cabal-install
       rustup cargo-update
-      python312Full pdm mypy ruff-lsp pipx
+      python313Full pdm mypy ruff-lsp pipx
       nasm
       tailwindcss-language-server /*volta*/ deno astro-language-server
       hvm kind2
@@ -29,6 +29,7 @@
     ]
     ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
     ++ (with nodePackages_latest; [nodejs typescript-language-server svelte-language-server]) # nodejs
+    # https://github.com/python/mypy/issues/17264
     ++ (with python312Packages; [pip virtualenv python-lsp-server mitmproxy]); # python thing
     file = {
       "non-nixos-things/catppuccin-ghidra".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit{

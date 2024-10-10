@@ -80,6 +80,21 @@ in
               end
             end
           end
+          function git-bulk-status
+            if not set -q argv[1]
+              set args
+            else
+              set args $argv
+            end
+            for j in $args
+              for i in $j/*
+                cd $i
+                echo $i
+                ${git}/bin/git status
+                cd -
+              end
+            end
+          end
         '';
       };
       neovim = {

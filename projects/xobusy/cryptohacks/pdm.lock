@@ -5,10 +5,10 @@
 groups = ["default"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:2b09649be40d8de6cc738e57b6a2516840af2f77b23755959292c1fd4e60e806"
+content_hash = "sha256:d544a43d3ce7313ffe51b04810add7569d55a93ba32558d3df44c62821da4673"
 
 [[metadata.targets]]
-requires_python = "==3.12.5"
+requires_python = "==3.13.0"
 
 [[package]]
 name = "pycryptodome"

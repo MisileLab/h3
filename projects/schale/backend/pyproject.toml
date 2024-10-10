@@ -6,7 +6,7 @@ authors = [
   {name = "MisileLab", email = "misileminecord@gmail.com"},
 ]
 dependencies = []
-requires-python = "~=3.12.6"
+requires-python = "==3.13.0"
 readme = "README.md"
 license = {text = "MisileLab License"}
 
