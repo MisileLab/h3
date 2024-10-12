@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:09f3897bb539645b73745c29ce5c7e773a5e8d20931be805955e82ebf757d294"
+content_hash = "sha256:8e6cd0dd8dbb8080de0d21f2605ab07dfde562e5d8acefe4696120fb8183175e"
 
 [[metadata.targets]]
 requires_python = "==3.12.5"
@@ -70,18 +70,18 @@ files = [
 
 [[package]]
 name = "fastapi"
-version = "0.115.1"
+version = "0.115.2"
 requires_python = ">=3.8"
 summary = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
 groups = ["default"]
 dependencies = [
     "pydantic!=1.8,!=1.8.1,!=2.0.0,!=2.0.1,!=2.1.0,<3.0.0,>=1.7.4",
-    "starlette<0.39.0,>=0.37.2",
+    "starlette<0.41.0,>=0.37.2",
     "typing-extensions>=4.8.0",
 ]
 files = [
-    {file = "fastapi-0.115.1-py3-none-any.whl", hash = "sha256:db6cd37e554a5dc178ed9b1392c1180f389d3d58ffac838e3789f4d38585b5ba"},
-    {file = "fastapi-0.115.1.tar.gz", hash = "sha256:2dcef61a249c7e7d7ad98a3b2af6abcfd5f61712595e7eb5e84ebbf193ba0172"},
+    {file = "fastapi-0.115.2-py3-none-any.whl", hash = "sha256:61704c71286579cc5a598763905928f24ee98bfcc07aabe84cfefb98812bbc86"},
+    {file = "fastapi-0.115.2.tar.gz", hash = "sha256:3995739e0b09fa12f984bce8fa9ae197b35d433750d3d312422d846e283697ee"},
 ]
 
 [[package]]
@@ -231,7 +231,7 @@ files = [
 
 [[package]]
 name = "starlette"
-version = "0.38.6"
+version = "0.39.2"
 requires_python = ">=3.8"
 summary = "The little ASGI library that shines."
 groups = ["default"]
@@ -240,8 +240,8 @@ dependencies = [
     "typing-extensions>=3.10.0; python_version < \"3.10\"",
 ]
 files = [
-    {file = "starlette-0.38.6-py3-none-any.whl", hash = "sha256:4517a1409e2e73ee4951214ba012052b9e16f60e90d73cfb06192c19203bbb05"},
-    {file = "starlette-0.38.6.tar.gz", hash = "sha256:863a1588f5574e70a821dadefb41e4881ea451a47a3cd1b4df359d4ffefe5ead"},
+    {file = "starlette-0.39.2-py3-none-any.whl", hash = "sha256:134dd6deb655a9775991d352312d53f1879775e5cc8a481f966e83416a2c3f71"},
+    {file = "starlette-0.39.2.tar.gz", hash = "sha256:caaa3b87ef8518ef913dac4f073dea44e85f73343ad2bdc17941931835b2a26a"},
 ]
 
 [[package]]
