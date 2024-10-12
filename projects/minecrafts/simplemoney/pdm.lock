@@ -5,7 +5,7 @@
 groups = ["default"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:506611b15a3b7efb1279e5b9b48f55130c0a19ff71d146999be34a976751bc6c"
+content_hash = "sha256:adfcfc823476b7cf201dba4b1427b42df4df2107f6b3a24d8b12df47e772758f"
 
 [[metadata.targets]]
 requires_python = "~=3.12.5"
@@ -125,7 +125,7 @@ files = [
 
 [[package]]
 name = "fastapi"
-version = "0.115.0"
+version = "0.115.1"
 requires_python = ">=3.8"
 summary = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
 groups = ["default"]
@@ -135,8 +135,8 @@ dependencies = [
     "typing-extensions>=4.8.0",
 ]
 files = [
-    {file = "fastapi-0.115.0-py3-none-any.whl", hash = "sha256:17ea427674467486e997206a5ab25760f6b09e069f099b96f5b55a32fb6f1631"},
-    {file = "fastapi-0.115.0.tar.gz", hash = "sha256:f93b4ca3529a8ebc6fc3fcf710e5efa8de3df9b41570958abf1d97d843138004"},
+    {file = "fastapi-0.115.1-py3-none-any.whl", hash = "sha256:db6cd37e554a5dc178ed9b1392c1180f389d3d58ffac838e3789f4d38585b5ba"},
+    {file = "fastapi-0.115.1.tar.gz", hash = "sha256:2dcef61a249c7e7d7ad98a3b2af6abcfd5f61712595e7eb5e84ebbf193ba0172"},
 ]
 
 [[package]]
@@ -172,7 +172,7 @@ files = [
 
 [[package]]
 name = "fastapi"
-version = "0.115.0"
+version = "0.115.1"
 extras = ["standard"]
 requires_python = ">=3.8"
 summary = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
@@ -180,15 +180,15 @@ groups = ["default"]
 dependencies = [
     "email-validator>=2.0.0",
     "fastapi-cli[standard]>=0.0.5",
-    "fastapi==0.115.0",
+    "fastapi==0.115.1",
     "httpx>=0.23.0",
     "jinja2>=2.11.2",
     "python-multipart>=0.0.7",
     "uvicorn[standard]>=0.12.0",
 ]
 files = [
-    {file = "fastapi-0.115.0-py3-none-any.whl", hash = "sha256:17ea427674467486e997206a5ab25760f6b09e069f099b96f5b55a32fb6f1631"},
-    {file = "fastapi-0.115.0.tar.gz", hash = "sha256:f93b4ca3529a8ebc6fc3fcf710e5efa8de3df9b41570958abf1d97d843138004"},
+    {file = "fastapi-0.115.1-py3-none-any.whl", hash = "sha256:db6cd37e554a5dc178ed9b1392c1180f389d3d58ffac838e3789f4d38585b5ba"},
+    {file = "fastapi-0.115.1.tar.gz", hash = "sha256:2dcef61a249c7e7d7ad98a3b2af6abcfd5f61712595e7eb5e84ebbf193ba0172"},
 ]
 
 [[package]]
