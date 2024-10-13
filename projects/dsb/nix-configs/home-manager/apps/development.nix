@@ -16,7 +16,7 @@
       python313Full pdm mypy ruff-lsp pipx
       nasm
       tailwindcss-language-server /*volta*/ deno astro-language-server
-      hvm kind2
+      hvm bend
       clang-tools lldb pkg-config
       niv nixpkgs-fmt nix-tree hub fh
       marksman
