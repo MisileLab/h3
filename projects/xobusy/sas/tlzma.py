@@ -12,7 +12,7 @@ class SlidingWindowedByte:
   def to_str_tuple(self) -> tuple[int, int, str]:
     return (self.distance, self.length, chr(self.value))
 
-# [0, 1]
+# (0, 1)
 class ArithmeticCoding:
   def encode(
     self,
@@ -49,19 +49,22 @@ class ArithmeticCoding:
           break
     return value
 
-# idk
+# 확률 테이블 생성
 def build_frequency_table(data: list[SlidingWindowedByte]):
   freqs: dict[SlidingWindowedByte, float] = {}
-  char_length = len(data)
-  
+  length = len(data)
+
+  # 확률(빈도 수) 계산
   for char in data:
     freqs[char] = freqs[char] + 1 if char in freqs else 1
   print(freqs)
 
   freq_ranges = {}
+  # (0, 1)
   low = 0.0
+  # 범위 생성
   for char, freq in freqs.items():
-    high = low + freq / char_length
+    high = low + freq / length
     freq_ranges[char] = (low, high)
     low = high
   
