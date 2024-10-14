@@ -5,8 +5,13 @@ description = "The monolith API"
 authors = [
   {name = "MisileLab", email = "misileminecord@gmail.com"},
 ]
-dependencies = []
-requires-python = "==3.13.0"
+dependencies = [
+  "fastapi[standard]==0.115.2",
+  "edgedb==2.1.0",
+  "altcha==0.1.4",
+  "tomli==2.0.2",
+]
+requires-python = ">=3.12.5,<3.13"
 readme = "README.md"
 license = {text = "MisileLab License"}
 

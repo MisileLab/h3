@@ -6,7 +6,7 @@
     };
     packages = with pkgs; [
       # Development
-      edgedb d2 pre-commit pijul just dive (dvc.override{enableAWS=true;}) solana-validator
+      edgedb d2 pre-commit pijul darcs just dive (dvc.override{enableAWS=true;}) solana-validator
       snyk pwndbg radicle-node infisical pnpm_9 jetbrains-toolbox ghidra poop binsider
       (pkgs.writeShellScriptBin "gdb" "${pkgs.pwndbg}/bin/pwndbg") process-compose
 
@@ -16,7 +16,7 @@
       python313Full pdm mypy ruff-lsp pipx
       nasm
       tailwindcss-language-server /*volta*/ deno astro-language-server
-      hvm kind2
+      hvm bend
       clang-tools lldb pkg-config
       niv nixpkgs-fmt nix-tree hub fh
       marksman
