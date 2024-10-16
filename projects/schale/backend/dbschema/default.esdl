@@ -7,7 +7,9 @@ module default {
 
   type User {
     required name: str;
-    required email: str {constraint exclusive};
+    required email: str;
     required message: str;
+    required hash: str = {constraint exclusive};
+    signature: bytes;
   }
 }
