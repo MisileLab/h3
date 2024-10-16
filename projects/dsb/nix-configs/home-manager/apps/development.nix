@@ -1,4 +1,4 @@
-{pkgs, config, ...}:
+{pkgs, stablep, config, ...}:
 {
   home = {
     sessionVariables = {
@@ -6,7 +6,7 @@
     };
     packages = with pkgs; [
       # Development
-      edgedb d2 pre-commit pijul darcs just dive (dvc.override{enableAWS=true;}) solana-validator
+      (stablep.edgedb) d2 pre-commit pijul darcs just dive (dvc.override{enableAWS=true;}) solana-validator
       snyk pwndbg radicle-node infisical pnpm_9 jetbrains-toolbox ghidra poop binsider
       (pkgs.writeShellScriptBin "gdb" "${pkgs.pwndbg}/bin/pwndbg") process-compose
 
