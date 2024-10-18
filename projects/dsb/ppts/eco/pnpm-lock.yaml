@@ -27,8 +27,8 @@ importers:
         specifier: 5.1.0
         version: 5.1.0
       tailwindcss:
-        specifier: 4.0.0-alpha.27
-        version: 4.0.0-alpha.27
+        specifier: 4.0.0-alpha.28
+        version: 4.0.0-alpha.28
     devDependencies:
       '@sveltejs/adapter-netlify':
         specifier: 4.3.5
@@ -964,9 +964,6 @@ packages:
   tailwindcss@4.0.0-alpha.15:
     resolution: {integrity: sha512-hlL3dKkgKTNz6dXe4OWJMngI9DdcJncGXvhhjdPkMc/Pqc81NCYaV/8Z11DZ4Djy5RSFfLf41HI6+DGeKtvJ2g==}
 
-  tailwindcss@4.0.0-alpha.27:
-    resolution: {integrity: sha512-QG9CBaibjgSufKCUCd54Ni6S3Ni3RZAu11g6HtK/TgNpqL8XdsZzuHQ3RbuJmnOJZfzDm2QCpPeDtQUn0k6wEw==}
-
   tailwindcss@4.0.0-alpha.28:
     resolution: {integrity: sha512-q8TwTL67Csg5p+VWsVdzWyQPlMTd5F5nDerUAo1i+05Pf6QZ3bzL7M92QUxiPc1MwW02dd6spSs9F20/daZozg==}
 
@@ -1778,8 +1775,6 @@ snapshots:
       zimmerframe: 1.1.2
 
   tailwindcss@4.0.0-alpha.15: {}
-
-  tailwindcss@4.0.0-alpha.27: {}
 
   tailwindcss@4.0.0-alpha.28: {}
 
