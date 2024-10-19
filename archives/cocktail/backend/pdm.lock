@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:30274a17ed22307730e5f6c6f28370b1d1917f9535435e515e069b4b4a3004e0"
+content_hash = "sha256:43d4b046468c8b1a4865cb8e470904a8c35741c3c471361371a7dd71294ab4bb"
 
 [[metadata.targets]]
 requires_python = "==3.12.5"
@@ -111,22 +111,22 @@ files = [
 
 [[package]]
 name = "orjson"
-version = "3.10.8"
+version = "3.10.9"
 requires_python = ">=3.8"
 summary = "Fast, correct Python JSON library supporting dataclasses, datetimes, and numpy"
 groups = ["default"]
 files = [
-    {file = "orjson-3.10.8-cp312-cp312-macosx_10_15_x86_64.macosx_11_0_arm64.macosx_10_15_universal2.whl", hash = "sha256:7d2c91b0b15808c3d4d6e56b1f0193ffa2d8ad19be0147d9dad2ffd19f896b89"},
-    {file = "orjson-3.10.8-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:de2e92d0065399f09cab78d09947909fd6a1d0d05d50ffd78a0d491b07be081a"},
-    {file = "orjson-3.10.8-cp312-cp312-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:77fa090b3a67d9a860b34449414987537840b07ed14ab7b0222c7298ed2e45ee"},
-    {file = "orjson-3.10.8-cp312-cp312-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:3cfc75a620b678b17dc8c99c7da09bef287a6d40134e90aa05a4d668da178a17"},
-    {file = "orjson-3.10.8-cp312-cp312-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:51248a821cdc878fc36f813566979ab224fb447ef323409c9117e654429266d1"},
-    {file = "orjson-3.10.8-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b6e2b67bc58a0fb6a5f663b0218548ade7e7468b162427a581cf5a1a95db1d72"},
-    {file = "orjson-3.10.8-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:67ce9bc315e2bfef1aa8ca0aec5a7f4dc84b827aa70210ac84f570196c42b85e"},
-    {file = "orjson-3.10.8-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:7c143b8be508cbfed9f75d5e324de824912e07c62a255c05fdaa88203a40f2a8"},
-    {file = "orjson-3.10.8-cp312-none-win32.whl", hash = "sha256:2183408f9a021885eb0115a5835287191897ea72b0f926d18e446dcdacff005d"},
-    {file = "orjson-3.10.8-cp312-none-win_amd64.whl", hash = "sha256:f288572b17bf2f63625e1c4e6004b29bc5d5d3a214ce7be18073c792b9b035ff"},
-    {file = "orjson-3.10.8.tar.gz", hash = "sha256:c3c80f7876aeba125af816f29cfa67f92e699f0b796dbaaf61b0a995c1f38303"},
+    {file = "orjson-3.10.9-cp312-cp312-macosx_10_15_x86_64.macosx_11_0_arm64.macosx_10_15_universal2.whl", hash = "sha256:43ad5560db54331c007dc38be5ba7706cb72974a29ae8227019d89305d750a6f"},
+    {file = "orjson-3.10.9-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:1471c3274b1a4a9b8f4b9ed6effaea9ad885796373797515c44b365b375c256d"},
+    {file = "orjson-3.10.9-cp312-cp312-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:41d8cac575acd15918903d74cfaabb5dbe57b357b93341332f647d1013928dcc"},
+    {file = "orjson-3.10.9-cp312-cp312-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "sha256:2920c8754f1aedc98bd357ec172af18ce48f5f1017a92244c85fe41d16d3c6e0"},
+    {file = "orjson-3.10.9-cp312-cp312-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "sha256:c7fa3ff6a0d9d15a0d0d2254cca16cd919156a18423654ce5574591392fe9914"},
+    {file = "orjson-3.10.9-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:e1e91b90c0c26bd79593967c1adef421bcff88c9e723d49c93bb7ad8af80bc6b"},
+    {file = "orjson-3.10.9-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:f11949024f785ace1a516db32fa6255f6227226b2c988abf66f5aee61d43d8f7"},
+    {file = "orjson-3.10.9-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:060e020d85d0ec145bc1b536b1fd9c10a0519c91991ead9724d6f759ebe26b9a"},
+    {file = "orjson-3.10.9-cp312-none-win32.whl", hash = "sha256:71f73439999fe662843da3607cdf6e75b1551c330f487e5801d463d969091c63"},
+    {file = "orjson-3.10.9-cp312-none-win_amd64.whl", hash = "sha256:12e2efe81356b8448f1cd130f8d75d3718de583112d71f2e2f8baa81bd835bb9"},
+    {file = "orjson-3.10.9.tar.gz", hash = "sha256:c378074e0c46035dc66e57006993233ec66bf8487d501bab41649b4b7289ed4d"},
 ]
 
 [[package]]
