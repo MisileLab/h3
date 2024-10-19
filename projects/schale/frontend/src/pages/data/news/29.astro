@@ -1,0 +1,37 @@
+---
+import Content from "../../../components/content.astro"
+---
+
+<Content title="크롬 샌드박스 탈출" description="CVE-2024-6778과 CVE-2024-5836" date={1729329475} isnews={true}>
+  <ul>
+    <li>악성 크롬 확장이 쉘 명령을 실행할 수 있었음</li>
+    <li>Google로부터 2만 달러의 보상을 받음</li>
+  </ul>
+
+  <h1>WebUI와 크롬 샌드박스</h1>
+  <ul>
+    <li>크롬 내의 모든 비신뢰 코드가 샌드박스에서 실행됨</li>
+    <li>WebUI는 비밀 API에 접근할 수 있어 샌드박스를 우회할 수 있음</li>
+  </ul>
+
+  <h1>기업 정책</h1>
+  <ul>
+    <li>크롬의 기업 정책은 <code>chrome://policy/test</code>를 통해 테스트할 수 있음</li>
+    <li>문서화되지 않은 JavaScript를 통해 정책을 설정함</li>
+  </ul>
+
+  <h1>샌드박스 탈출</h1>
+  <ul>
+    <li>Legacy Browser Support를 통해 쉘 명령을 실행 가능함</li>
+    <li>특정 URL로 /bin/bash를 호출함</li>
+  </ul>
+
+  <h1>댓글 요약</h1>
+  <ul>
+    <li>사용자들은 글쓴이의 기술적 재능을 높이 평가하며 취약점 체인을 흥미롭게 본 것에 대해 이야기함</li>
+    <li>일부는 Chrome OS의 "crosh" 셸을 사용한 과거 경험을 회상함</li>
+    <li>취약점 보상이 적절한지에 대한 논의가 있었으며, 고백의 원칙도 언급됨</li>
+    <li>블랙 마켓에서의 판매 위험에 대한 우려가 많고, 합법적인 채널을 통해 보상을 추구할 것이라는 의견도 있음</li>
+    <li>글쓴이가 자랑스럽게 기술적 재능과 노력을 인정받고 앞으로 밝은 전망이 있다고 응원함</li>
+  </ul>
+</Content>
