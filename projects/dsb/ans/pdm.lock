@@ -227,7 +227,7 @@ files = [
 
 [[package]]
 name = "moderngl"
-version = "5.11.1"
+version = "5.12.0"
 requires_python = ">=3.7"
 summary = "ModernGL: High performance rendering for Python 3"
 groups = ["default"]
@@ -235,15 +235,15 @@ dependencies = [
     "glcontext>=3.0.0",
 ]
 files = [
-    {file = "moderngl-5.11.1-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:b6590f2252c3d96774664c3c300f5448185c6ec7d059bf86c9ec185c78633aa9"},
-    {file = "moderngl-5.11.1-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:350ff72d2bc758c47147bea327ca4da34d0b5855c5de622abe0aa4a9b91b5dce"},
-    {file = "moderngl-5.11.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:7d37da28ed9c186984051fe909dbfc8a8e79ef8227bcbb2cf460f59ee876eb6c"},
-    {file = "moderngl-5.11.1-cp312-cp312-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:f1fb74d8a4f20482934cd179c3bfe16693bb8af7f34d52e125f7eb2d568d7fc6"},
-    {file = "moderngl-5.11.1-cp312-cp312-musllinux_1_2_i686.whl", hash = "sha256:5b72ec39d0f300588f60b49621c3ae64efd4853189c364427d042797e101ce6f"},
-    {file = "moderngl-5.11.1-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:fd7c445599becbf3802156f9dfa49b85677bf15b7ff54187c4e4765bb7b1f972"},
-    {file = "moderngl-5.11.1-cp312-cp312-win32.whl", hash = "sha256:1b863dcc77d3214f96632bd2263f465c2969a9f28f31c97b098116bacb4cb12f"},
-    {file = "moderngl-5.11.1-cp312-cp312-win_amd64.whl", hash = "sha256:bdaffc17e36e49be866fe8f2890645019b216c3dc4cea1a927f26d150b3e560b"},
-    {file = "moderngl-5.11.1.tar.gz", hash = "sha256:ac454d5ea8431f2f7f0c95e28da2043dbd303538c2847fee057039e407dd1911"},
+    {file = "moderngl-5.12.0-cp312-cp312-macosx_10_13_x86_64.whl", hash = "sha256:2750547707c1ec3790dfbeb9c90fb808672ff13f61cac392c706ba09fda10db0"},
+    {file = "moderngl-5.12.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:c5c2a5fe06c7021183d9274df798f25516409c8d55898c324dae8a0b2de10144"},
+    {file = "moderngl-5.12.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b6c4972f3ddd10a3de6c30311da2c25bc493d023796e16c5d4e0f8bd6d5770be"},
+    {file = "moderngl-5.12.0-cp312-cp312-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:a4d497ec6a3f6afa9ebd0be816d9bfe2fe20fec2105acfb88d956619c3ed8eb4"},
+    {file = "moderngl-5.12.0-cp312-cp312-musllinux_1_2_i686.whl", hash = "sha256:2f3d240e9bc5d83257378bae59f8f35638b89d22bb003cf674b88fd7932161ce"},
+    {file = "moderngl-5.12.0-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:6fa667d560d842e778e2a5968305fb78f9781616a11b1b93acd2562f97262ccf"},
+    {file = "moderngl-5.12.0-cp312-cp312-win32.whl", hash = "sha256:0a02fddd54dccee1ca6060bfed75a2e6a17dd3ee06920fac418506d8a8233849"},
+    {file = "moderngl-5.12.0-cp312-cp312-win_amd64.whl", hash = "sha256:8698a59ad03539a2982125b7998efc1c107ba31d5d03437b6fcd72cb2c226922"},
+    {file = "moderngl-5.12.0.tar.gz", hash = "sha256:52936a98ccb2f2e1d6e3cb18528b2919f6831e7e3f924e788b5873badce5129b"},
 ]
 
 [[package]]
@@ -276,13 +276,13 @@ files = [
 
 [[package]]
 name = "networkx"
-version = "3.3"
+version = "3.4.1"
 requires_python = ">=3.10"
 summary = "Python package for creating and manipulating graphs and networks"
 groups = ["default"]
 files = [
-    {file = "networkx-3.3-py3-none-any.whl", hash = "sha256:28575580c6ebdaf4505b22c6256a2b9de86b316dc63ba9e93abde3d78dfdbcf2"},
-    {file = "networkx-3.3.tar.gz", hash = "sha256:0c127d8b2f4865f59ae9cb8aafcd60b5c70f3241ebd66f7defad7c4ab90126c9"},
+    {file = "networkx-3.4.1-py3-none-any.whl", hash = "sha256:e30a87b48c9a6a7cc220e732bffefaee585bdb166d13377734446ce1a0620eed"},
+    {file = "networkx-3.4.1.tar.gz", hash = "sha256:f9df45e85b78f5bd010993e897b4f1fdb242c11e015b101bd951e5c0e29982d8"},
 ]
 
 [[package]]
@@ -305,23 +305,23 @@ files = [
 
 [[package]]
 name = "pillow"
-version = "10.4.0"
-requires_python = ">=3.8"
+version = "11.0.0"
+requires_python = ">=3.9"
 summary = "Python Imaging Library (Fork)"
 groups = ["default"]
 files = [
-    {file = "pillow-10.4.0-cp312-cp312-macosx_10_10_x86_64.whl", hash = "sha256:673655af3eadf4df6b5457033f086e90299fdd7a47983a13827acf7459c15d94"},
-    {file = "pillow-10.4.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:866b6942a92f56300012f5fbac71f2d610312ee65e22f1aa2609e491284e5597"},
-    {file = "pillow-10.4.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:29dbdc4207642ea6aad70fbde1a9338753d33fb23ed6956e706936706f52dd80"},
-    {file = "pillow-10.4.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:bf2342ac639c4cf38799a44950bbc2dfcb685f052b9e262f446482afaf4bffca"},
-    {file = "pillow-10.4.0-cp312-cp312-manylinux_2_28_aarch64.whl", hash = "sha256:f5b92f4d70791b4a67157321c4e8225d60b119c5cc9aee8ecf153aace4aad4ef"},
-    {file = "pillow-10.4.0-cp312-cp312-manylinux_2_28_x86_64.whl", hash = "sha256:86dcb5a1eb778d8b25659d5e4341269e8590ad6b4e8b44d9f4b07f8d136c414a"},
-    {file = "pillow-10.4.0-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:780c072c2e11c9b2c7ca37f9a2ee8ba66f44367ac3e5c7832afcfe5104fd6d1b"},
-    {file = "pillow-10.4.0-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:37fb69d905be665f68f28a8bba3c6d3223c8efe1edf14cc4cfa06c241f8c81d9"},
-    {file = "pillow-10.4.0-cp312-cp312-win32.whl", hash = "sha256:7dfecdbad5c301d7b5bde160150b4db4c659cee2b69589705b6f8a0c509d9f42"},
-    {file = "pillow-10.4.0-cp312-cp312-win_amd64.whl", hash = "sha256:1d846aea995ad352d4bdcc847535bd56e0fd88d36829d2c90be880ef1ee4668a"},
-    {file = "pillow-10.4.0-cp312-cp312-win_arm64.whl", hash = "sha256:e553cad5179a66ba15bb18b353a19020e73a7921296a7979c4a2b7f6a5cd57f9"},
-    {file = "pillow-10.4.0.tar.gz", hash = "sha256:166c1cd4d24309b30d61f79f4a9114b7b2313d7450912277855ff5dfd7cd4a06"},
+    {file = "pillow-11.0.0-cp312-cp312-macosx_10_13_x86_64.whl", hash = "sha256:d2c0a187a92a1cb5ef2c8ed5412dd8d4334272617f532d4ad4de31e0495bd923"},
+    {file = "pillow-11.0.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:084a07ef0821cfe4858fe86652fffac8e187b6ae677e9906e192aafcc1b69903"},
+    {file = "pillow-11.0.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:8069c5179902dcdce0be9bfc8235347fdbac249d23bd90514b7a47a72d9fecf4"},
+    {file = "pillow-11.0.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:f02541ef64077f22bf4924f225c0fd1248c168f86e4b7abdedd87d6ebaceab0f"},
+    {file = "pillow-11.0.0-cp312-cp312-manylinux_2_28_aarch64.whl", hash = "sha256:fcb4621042ac4b7865c179bb972ed0da0218a076dc1820ffc48b1d74c1e37fe9"},
+    {file = "pillow-11.0.0-cp312-cp312-manylinux_2_28_x86_64.whl", hash = "sha256:00177a63030d612148e659b55ba99527803288cea7c75fb05766ab7981a8c1b7"},
+    {file = "pillow-11.0.0-cp312-cp312-musllinux_1_2_aarch64.whl", hash = "sha256:8853a3bf12afddfdf15f57c4b02d7ded92c7a75a5d7331d19f4f9572a89c17e6"},
+    {file = "pillow-11.0.0-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:3107c66e43bda25359d5ef446f59c497de2b5ed4c7fdba0894f8d6cf3822dafc"},
+    {file = "pillow-11.0.0-cp312-cp312-win32.whl", hash = "sha256:86510e3f5eca0ab87429dd77fafc04693195eec7fd6a137c389c3eeb4cfb77c6"},
+    {file = "pillow-11.0.0-cp312-cp312-win_amd64.whl", hash = "sha256:8ec4a89295cd6cd4d1058a5e6aec6bf51e0eaaf9714774e1bfac7cfc9051db47"},
+    {file = "pillow-11.0.0-cp312-cp312-win_arm64.whl", hash = "sha256:27a7860107500d813fcd203b4ea19b04babe79448268403172782754870dac25"},
+    {file = "pillow-11.0.0.tar.gz", hash = "sha256:72bacbaf24ac003fea9bff9837d1eedb6088758d41e100c1552930151f677739"},
 ]
 
 [[package]]
@@ -348,13 +348,13 @@ files = [
 
 [[package]]
 name = "pyglet"
-version = "2.0.17"
+version = "2.0.18"
 requires_python = ">=3.8"
 summary = "pyglet is a cross-platform games and multimedia package."
 groups = ["default"]
 files = [
-    {file = "pyglet-2.0.17-py3-none-any.whl", hash = "sha256:c881615a5bf14455af36a0915fd9dad0069da904ab5e0ec19b4d6cdfcf1e84c2"},
-    {file = "pyglet-2.0.17.tar.gz", hash = "sha256:50c533c1a7cafdccccf43041338ad921ae26866e9871b4f12bf608500632900a"},
+    {file = "pyglet-2.0.18-py3-none-any.whl", hash = "sha256:e592952ae0297e456c587b6486ed8c3e5f9d0c3519d517bb92dde5fdf4c26b41"},
+    {file = "pyglet-2.0.18.tar.gz", hash = "sha256:7cf9238d70082a2da282759679f8a011cc979753a32224a8ead8ed80e48f99dc"},
 ]
 
 [[package]]
@@ -464,19 +464,19 @@ files = [
 
 [[package]]
 name = "skia-pathops"
-version = "0.8.0.post1"
+version = "0.8.0.post2"
 requires_python = ">=3.8"
 summary = "Python access to operations on paths using the Skia library"
 groups = ["default"]
 files = [
-    {file = "skia-pathops-0.8.0.post1.zip", hash = "sha256:a056249de2f61fa55116b9ee55513c6a36b878aee00c91450e404d1606485cbb"},
-    {file = "skia_pathops-0.8.0.post1-cp312-cp312-macosx_10_9_universal2.whl", hash = "sha256:3dc8febcb792c2542f05e12a3cee409ae421cdf865878c19d7b525291fa93348"},
-    {file = "skia_pathops-0.8.0.post1-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:25fd0e8a18bc021f5b0b9cab37d607ea5c61f503b9e860d223906954b0c53c43"},
-    {file = "skia_pathops-0.8.0.post1-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:9005f5dc5b162cac0d782e9adb5ecb304ab7ae5c873d2ed2a9895e89bf660ee2"},
-    {file = "skia_pathops-0.8.0.post1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b7b6873b65b682f8cf94a3baf8fccf98219f689e09a08967075bda36da128d57"},
-    {file = "skia_pathops-0.8.0.post1-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:3a4f111f55811ab9f8cb4ee057823db95355c8a424a2c2272ccda56ec0c48ba4"},
-    {file = "skia_pathops-0.8.0.post1-cp312-cp312-win32.whl", hash = "sha256:69ff7abe4ba02b0c7159ae04d8173b4186336f3809d512e660f5569f39e08572"},
-    {file = "skia_pathops-0.8.0.post1-cp312-cp312-win_amd64.whl", hash = "sha256:bc8792c342795c8d90a71d7df641513372954562b3a851b21c501400dba60dcc"},
+    {file = "skia_pathops-0.8.0.post2-cp312-cp312-macosx_10_13_universal2.whl", hash = "sha256:aa11950fda8d390fe074cb0a83ac0d8a95f72087b0a38add30b9f22c3591554e"},
+    {file = "skia_pathops-0.8.0.post2-cp312-cp312-macosx_10_13_x86_64.whl", hash = "sha256:496def3492582161ce95a43b2c539af8b219c60fba223b25e8eef1ac8f9ee3d7"},
+    {file = "skia_pathops-0.8.0.post2-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:d4f3da50b749141caf6f17f032d2e3aae5faec96e39ed9c94e6b55e6e3a3a1c7"},
+    {file = "skia_pathops-0.8.0.post2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:89f82f2273208f72403da8dc7457d64fbd3f7d8f1f7f54cb8483eeda00747933"},
+    {file = "skia_pathops-0.8.0.post2-cp312-cp312-musllinux_1_2_x86_64.whl", hash = "sha256:153055698053539b439720643a045ec3a50c35ea66bca7d89977e66a0d68282a"},
+    {file = "skia_pathops-0.8.0.post2-cp312-cp312-win32.whl", hash = "sha256:575061162264edd3c707e375c0fca85e7f72f5fada2e42c26853a6551c47e076"},
+    {file = "skia_pathops-0.8.0.post2-cp312-cp312-win_amd64.whl", hash = "sha256:6f2f60feceb7213a80ab7824f0c7e41de3c26a29a3a1ab8a1f60ec750292b444"},
+    {file = "skia_pathops-0.8.0.post2.zip", hash = "sha256:9e252cdeb6c4d162e82986d31dbd89c675d1677cb8019c2e13e6295d4a557269"},
 ]
 
 [[package]]
