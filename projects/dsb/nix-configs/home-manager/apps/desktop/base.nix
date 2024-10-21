@@ -1,4 +1,4 @@
-{c, config, pkgs, stablep, ...}:
+{c, config, pkgs, ...}:
 let
   briar-desktop = pkgs.callPackage ./briar.nix {};
   exodus = pkgs.callPackage ./exodus.nix {};
