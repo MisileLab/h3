@@ -5,7 +5,7 @@
 groups = ["default", "dev"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:942633991533a2442e6c1760a7c3effd103179667c7acaca1e1d8c100a6ebe0f"
+content_hash = "sha256:102bf3b13476ca8492809b761babf31905f829c6c60ceba350d2b86e806e7c14"
 
 [[metadata.targets]]
 requires_python = "==3.13.0"
@@ -169,7 +169,7 @@ files = [
 
 [[package]]
 name = "gradio-client"
-version = "1.4.0"
+version = "1.4.2"
 requires_python = ">=3.10"
 summary = "Python library for easily interacting with trained machine learning models"
 groups = ["default"]
@@ -182,8 +182,8 @@ dependencies = [
     "websockets<13.0,>=10.0",
 ]
 files = [
-    {file = "gradio_client-1.4.0-py3-none-any.whl", hash = "sha256:6cd0f2c7b83fbab1db904e577c19bccc518dc7a2e8ea02cf3e13f8a9510d83f7"},
-    {file = "gradio_client-1.4.0.tar.gz", hash = "sha256:bb24af01176774122f0c35e9a18f51047a22b457e6d667ba3cd7c7dfae17cd8d"},
+    {file = "gradio_client-1.4.2-py3-none-any.whl", hash = "sha256:76a34996b4580939a3fbd10144fde04eced586c033b6cdcb315d69b1459136d1"},
+    {file = "gradio_client-1.4.2.tar.gz", hash = "sha256:07c5184ad6385f50f9e6eae3a262ad6afcf9380b6a400d070652f76e14222dbd"},
 ]
 
 [[package]]
@@ -235,7 +235,7 @@ files = [
 
 [[package]]
 name = "huggingface-hub"
-version = "0.26.0"
+version = "0.26.1"
 requires_python = ">=3.8.0"
 summary = "Client library to download and publish models, datasets and other repos on the huggingface.co hub"
 groups = ["default"]
@@ -249,8 +249,8 @@ dependencies = [
     "typing-extensions>=3.7.4.3",
 ]
 files = [
-    {file = "huggingface_hub-0.26.0-py3-none-any.whl", hash = "sha256:e43b8f36042b2103b48dea822535e08f5f089c4aa7013a067fca7b4ebf7f85a3"},
-    {file = "huggingface_hub-0.26.0.tar.gz", hash = "sha256:524fe9281b015b76aa73ff1a83bf1cbe8cab851c9ac5ae5fcd2a25d5173ce629"},
+    {file = "huggingface_hub-0.26.1-py3-none-any.whl", hash = "sha256:5927a8fc64ae68859cd954b7cc29d1c8390a5e15caba6d3d349c973be8fdacf3"},
+    {file = "huggingface_hub-0.26.1.tar.gz", hash = "sha256:414c0d9b769eecc86c70f9d939d0f48bb28e8461dd1130021542eff0212db890"},
 ]
 
 [[package]]
