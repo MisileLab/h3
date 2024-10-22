@@ -6,7 +6,7 @@ authors = [
   {name = "misilelab", email = "misileminecord@gmail.com"},
 ]
 dependencies = [
-  "fastapi==0.115.2",
+  "fastapi==0.115.3",
 ]
 requires-python = "==3.12.5"
 readme = "README.md"
