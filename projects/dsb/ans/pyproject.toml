@@ -10,7 +10,7 @@ dependencies = [
   "loguru==0.7.2"
 ]
 # no python 3.13 on manim
-requires-python = "==3.12.5"
+requires-python = "==3.12.6"
 readme = "README.md"
 license = {text = "MisileLab License"}
 

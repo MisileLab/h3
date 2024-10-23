@@ -90,7 +90,10 @@ in
               for i in $j/*
                 cd $i
                 echo $i
-                ${git}/bin/git status
+                set output (command git status --porcelain=v2)
+                if not test -z "$output"
+                  ${git}/bin/git status
+                end
                 cd -
               end
             end

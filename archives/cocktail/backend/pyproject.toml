@@ -12,14 +12,10 @@ dependencies = [
   "orjson==3.10.10",
   "pycryptodome==3.21.0",
 ]
-requires-python = "==3.12.5"
+requires-python = "==3.12.6"
 readme = "README.md"
 license = {text = "MisileLab License"}
 
 [tool.pdm]
 distribution = false
 
-[tool.pdm.dev-dependencies]
-dev = [
-  "ruff==0.7.0",
-]

@@ -13,7 +13,7 @@
       # Language tools
       ghc cabal-install
       rustup cargo-update
-      python313Full pdm mypy ruff-lsp pipx
+      python313Full (pkgs.writeShellScriptBin "python312" "${pkgs.python312Full}/bin/python") pdm mypy ruff-lsp pipx
       nasm
       tailwindcss-language-server /*volta*/ deno astro-language-server
       hvm bend
