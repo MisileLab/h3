@@ -9,6 +9,16 @@
 @import 'tailwindcss/theme';
 @import 'tailwindcss/utilities';
 
+@font-face {
+  font-family: 'NanumSquareNeo';
+  font-style: normal;
+  font-weight: 400;
+  src: url('/NanumSquareNeo-Variable.woff2') format('woff2');
+}
+
+* {
+  font-family: 'NanumSquareNeo', sans-serif;
+}
 
 /* reset */
 *,
