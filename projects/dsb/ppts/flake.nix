@@ -8,7 +8,7 @@
       overlays = [
         (final: prev: rec {
           nodejs = prev.nodejs_latest;
-          pnpm = prev.pnpm_9;
+          pnpm = prev.pnpm;
         })
       ];
       supportedSystems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
