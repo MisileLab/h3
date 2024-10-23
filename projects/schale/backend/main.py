@@ -46,7 +46,7 @@ class openLetter(BaseModel):
 async def theresa_info(
   name: str = Header(description="name of letter")
 ) -> openLetter:
-  raw = await c.query_single('select Letter {tldr, signers} filter name=<str>$name limit 1', name=name)
+  raw = await c.query_single('select theresa::Letter {tldr, signers} filter name=<str>$name limit 1', name=name)
   if raw is None:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
   return openLetter(**raw)
@@ -76,7 +76,7 @@ async def theresa_confirm(
   name_signer = name_signer.split("\n")[0]
   if signature is None:
     _id = (await c.query_single('''
-      insert User {
+      insert theresa::User {
         name := <str>$name,
         email := <str>$email,
         message := <str>$message,
@@ -85,7 +85,7 @@ async def theresa_confirm(
     ''', name=name_signer, email=email, message=message)).id
   else:
     _id = (await c.query_single('''
-      insert User {
+      insert theresa::User {
         name := <str>$name,
         email := <str>$email,
         message := <str>$message,
@@ -93,4 +93,4 @@ async def theresa_confirm(
         signature := <bytes>$signature
       }
     ''', name=name_signer, email=email, message=message, signature=signature.file.read())).id
-  await c.execute("update Sign filter .name = <str>$name set {signers += (select detached Letter filter .id = <std::uuid>$id)}", name=name, id=_id)
+  await c.execute("update theresa::Sign filter .name = <str>$name set {signers += (select detached theresa::Letter filter .id = <std::uuid>$id)}", name=name, id=_id)
