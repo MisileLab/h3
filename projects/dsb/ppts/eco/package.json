@@ -29,7 +29,7 @@
 		"@animotion/motion": "1.0.1",
 		"@fontsource-variable/jetbrains-mono": "5.1.1",
 		"@fontsource-variable/manrope": "5.1.0",
-		"@tailwindcss/vite": "4.0.0-alpha.28",
+		"@tailwindcss/vite": "4.0.0-alpha.29",
 		"reveal.js": "5.1.0",
 		"tailwindcss": "4.0.0-alpha.28"
 	}
