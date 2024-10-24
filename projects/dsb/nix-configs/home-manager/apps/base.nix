@@ -26,6 +26,7 @@ in
       (writeScript "git-c" "pdm run -p ~/repos/h3/projects/dsb/utils ~/repos/h3/projects/dsb/utils/gen-commit-message.py")
     ];
     programs = {
+      nushell.enable = true;
       # nix-index.enable = true;
       glamour.catppuccin.enable = true;
       gpg = {

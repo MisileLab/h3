@@ -42,7 +42,7 @@ in
       enable = true;
       catppuccin.enable = true;
       settings = {
-        shell = "${pkgs.fish}/bin/fish";
+        terminal.shell = "${pkgs.fish}/bin/fish";
         keyboard.bindings = [
           {key = "Plus";mods = "Control";action = "IncreaseFontSize";}
           {key = "Minus";mods = "Control";action = "DecreaseFontSize";}

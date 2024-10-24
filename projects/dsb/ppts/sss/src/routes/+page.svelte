@@ -1,19 +1,12 @@
 <script lang="ts">
-	import { Presentation, Slide, Code, Action } from '@animotion/core'
+	import { Presentation, Slide, Action } from '@animotion/core'
 
 	let shamir: HTMLElement
   let secretKeySharing: HTMLElement
-	let code: ReturnType<typeof Code>
+  let image: HTMLImageElement
 </script>
 
-<!--
-https://www.geeksforgeeks.org/shamirs-secret-sharing-algorithm-cryptography/
-https://medium.com/@keylesstech/a-beginners-guide-to-shamir-s-secret-sharing-e864efbf3648
-https://ehdvudee.tistory.com/27
--->
-
 <Presentation options={{history: true}}>
-  <div class="text-green-400 text-blue-400 underline" style="display: none;" />
 	<Slide class="h-full place-content-center place-items-center">
     <h1 class="text-8xl">
       <span bind:this={shamir}>Shamir</span>
@@ -24,7 +17,18 @@ https://ehdvudee.tistory.com/27
   </Slide>
   <Slide class="place-content-center place-items-center">
     <div class="h-screen w-full py-20">
-      <img src="/shamirSimple.png" class="h-full" />
+      <img bind:this={image} src="/shamirSimple.png" class="h-full" alt="shamir" />
     </div>
+    <Action do={()=>image.src="/shamirComplex.png"} undo={()=>image.src="/shamirSimple.png"}/>
+  </Slide>
+  <Slide class="h-full place-content-center place-items-center">
+    <p class="text-7xl">{`\\[f(x)=a_{0}+a_{1}x+a_{2}x_{2}+...+a_{k-1}x_{k-1}\\]`}
+    <p class="text-7xl">{`\\[(a_{0}=S|a_{1},...,a_{k-1}>=1)\\]`}
+  </Slide>
+  <Slide class="h-full">
+    <p class="text-6xl">{`\\[(a_{0}=1234,a_{1}=166,a_{2}=94,n=6,k=3)\\]`}</p>
+  </Slide>
+  <Slide class="h-full place-content-center place-items-center">
+    <h1 class="text-8xl">만약에 <span class="text-green-400">100</span>명에게 점을 준다면?</h1>
   </Slide>
 </Presentation>
