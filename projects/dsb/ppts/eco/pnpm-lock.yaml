@@ -31,8 +31,8 @@ importers:
         version: 4.0.0-alpha.30
     devDependencies:
       '@sveltejs/adapter-netlify':
-        specifier: 4.3.5
-        version: 4.3.5(@sveltejs/kit@2.7.2(@sveltejs/vite-plugin-svelte@4.0.0(svelte@5.1.2)(vite@5.4.10(lightningcss@1.27.0)))(svelte@5.1.2)(vite@5.4.10(lightningcss@1.27.0)))
+        specifier: 4.3.6
+        version: 4.3.6(@sveltejs/kit@2.7.2(@sveltejs/vite-plugin-svelte@4.0.0(svelte@5.1.2)(vite@5.4.10(lightningcss@1.27.0)))(svelte@5.1.2)(vite@5.4.10(lightningcss@1.27.0)))
       '@sveltejs/kit':
         specifier: 2.7.2
         version: 2.7.2(@sveltejs/vite-plugin-svelte@4.0.0(svelte@5.1.2)(vite@5.4.10(lightningcss@1.27.0)))(svelte@5.1.2)(vite@5.4.10(lightningcss@1.27.0))
@@ -352,8 +352,8 @@ packages:
   '@shikijs/vscode-textmate@9.3.0':
     resolution: {integrity: sha512-jn7/7ky30idSkd/O5yDBfAnVt+JJpepofP/POZ1iMOxK59cOfqIgg/Dj0eFsjOTMw+4ycJN0uhZH/Eb0bs/EUA==}
 
-  '@sveltejs/adapter-netlify@4.3.5':
-    resolution: {integrity: sha512-3Gvk8WumDXw35xurzkUHw3fWoKlDXzcSpP76gNeHNx2AFuTtaOcv/utVLAtdmC1FyfpHk4YwAGzyEvFmmaJhwg==}
+  '@sveltejs/adapter-netlify@4.3.6':
+    resolution: {integrity: sha512-o1M8SlNeXiTD4X9T/q+WZaeStEzRlGZeMc/NHrgK5dhnrJhN3UFzMqFV4mnNAVyxqyvsQ87FYyjPlkDualSwRA==}
     peerDependencies:
       '@sveltejs/kit': ^2.4.0
 
@@ -1246,7 +1246,7 @@ snapshots:
 
   '@shikijs/vscode-textmate@9.3.0': {}
 
-  '@sveltejs/adapter-netlify@4.3.5(@sveltejs/kit@2.7.2(@sveltejs/vite-plugin-svelte@4.0.0(svelte@5.1.2)(vite@5.4.10(lightningcss@1.27.0)))(svelte@5.1.2)(vite@5.4.10(lightningcss@1.27.0)))':
+  '@sveltejs/adapter-netlify@4.3.6(@sveltejs/kit@2.7.2(@sveltejs/vite-plugin-svelte@4.0.0(svelte@5.1.2)(vite@5.4.10(lightningcss@1.27.0)))(svelte@5.1.2)(vite@5.4.10(lightningcss@1.27.0)))':
     dependencies:
       '@iarna/toml': 2.2.5
       '@sveltejs/kit': 2.7.2(@sveltejs/vite-plugin-svelte@4.0.0(svelte@5.1.2)(vite@5.4.10(lightningcss@1.27.0)))(svelte@5.1.2)(vite@5.4.10(lightningcss@1.27.0))
