@@ -9,7 +9,7 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
 	},
 	"devDependencies": {
-		"@sveltejs/adapter-netlify": "4.3.5",
+		"@sveltejs/adapter-netlify": "4.3.6",
 		"@sveltejs/kit": "2.7.2",
 		"@sveltejs/vite-plugin-svelte": "4.0.0",
 		"@types/reveal.js": "5.0.4",
