@@ -15,6 +15,10 @@
     <Action do={()=>shamir.classList.add('text-green-400')} undo={()=>shamir.classList.remove('text-green-400')} />
     <Action do={()=>secretKeySharing.classList.add('text-blue-400')} undo={()=>secretKeySharing.classList.remove('text-blue-400')} />
   </Slide>
+  <Slide class="h-full place-content-center place-items-center">
+    <p class="text-7xl">{`\\[f(x)=a_{0}+a_{1}x+a_{2}x_{2}+...+a_{k-1}x_{k-1}\\]`}
+    <p class="text-7xl">{`\\[(a_{0}=S|a_{1},...,a_{k-1}>=1)\\]`}
+  </Slide>
   <Slide class="place-content-center place-items-center">
     <div class="h-screen w-full py-20">
       <img bind:this={image} src="/shamirSimple.png" class="h-full" alt="shamir" />
@@ -30,5 +34,8 @@
   </Slide>
   <Slide class="h-full place-content-center place-items-center">
     <h1 class="text-8xl">만약에 <span class="text-green-400">100</span>명에게 점을 준다면?</h1>
+  </Slide>
+  <Slide>
+
   </Slide>
 </Presentation>
