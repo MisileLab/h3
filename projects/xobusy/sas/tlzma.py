@@ -1,16 +1,19 @@
-from pathlib import Path
-
 class SlidingWindowedByte:
-  def __init__(self, distance: int, length: int, value: int):
+  def __init__(self, distance: int, length: int, value: bytes):
+    if isinstance(value, int):
+      raise ValueError("value must be bytes")
     self.distance = distance # 중복되는 문자와의 거리
     self.length = length # 중복되는 문자의 길이
     self.value = value # 문자의 값
 
-  def to_tuple(self) -> tuple[int, int, int]:
+  def to_tuple(self) -> tuple[int, int, bytes]:
     return (self.distance, self.length, self.value)
 
   def to_str_tuple(self) -> tuple[int, int, str]:
-    return (self.distance, self.length, chr(self.value))
+    return (self.distance, self.length, self.value.decode())
+
+  def __repr__(self) -> tuple[int, int, str]:
+    return self.to_str_tuple().__str__()
 
 # (0, 1)
 class ArithmeticCoding:
@@ -18,14 +21,14 @@ class ArithmeticCoding:
     self,
     data: list[SlidingWindowedByte],
     freq_table: dict[
-      SlidingWindowedByte,
+      tuple[int, int, bytes],
       tuple[float, float]
   ]) -> float:
     # 일정 비율로 나눈 뒤에 뒷 부분에서 작업 진행
     high, low = 0, 0
     for window in data:
-      high = freq_table[window][1]
-      low = freq_table[window][0]
+      high = freq_table[window.to_tuple()][1]
+      low = freq_table[window.to_tuple()][0]
     # 압축은 결과로 하나의 값을 줘야 하기 때문에 평균값을 리턴
     return (low + high) / 2
 
@@ -33,7 +36,7 @@ class ArithmeticCoding:
     self,
     data: float,
     freq_table: dict[
-      SlidingWindowedByte,
+      tuple[int, int, bytes],
       tuple[float, float]
     ],
     length: int
@@ -47,16 +50,16 @@ class ArithmeticCoding:
           # 수식 최적화 가능할 것 같음
           data = (data - low) / (high - low)
           break
-    return value
+    return [SlidingWindowedByte(*i) for i in value]
 
 # 확률 테이블 생성
 def build_frequency_table(data: list[SlidingWindowedByte]):
-  freqs: dict[SlidingWindowedByte, float] = {}
+  freqs: dict[tuple[int, int, bytes], float] = {}
   length = len(data)
 
   # 확률(빈도 수) 계산
-  for char in data:
-    freqs[char] = freqs[char] + 1 if char in freqs else 1
+  for i in data:
+    freqs[i.to_tuple()] = freqs[i.to_tuple()] + 1 if i in freqs else 1
   print(freqs)
 
   freq_ranges = {}
@@ -70,7 +73,7 @@ def build_frequency_table(data: list[SlidingWindowedByte]):
   
   return freq_ranges
 
-def find_distance(data: bytes, compare: bytes) -> int:
+def find_distance(data: bytes, compare: bytes, org_index: int) -> int:
   queue = []
   first_char = -1
   for i in range(len(data)):
@@ -81,22 +84,31 @@ def find_distance(data: bytes, compare: bytes) -> int:
     else:
       first_char = -1
       queue.clear()
-    if len(queue) == len(compare):
-      return i-first_char+1
+    if bytes(queue) == compare:
+      print(org_index, queue)
+      return org_index-len(queue)*2 if len(queue) == 1 else (org_index-len(queue)*2+1)-2-len(queue)
   raise ValueError("unreachable")
 
 # https://dalinaum.github.io/algorithm/2020/12/14/zip-compression.html
 def sliding_window(data: bytes) -> list[SlidingWindowedByte]:
-  result = [SlidingWindowedByte(0, 0, data[0])]
+  result = [SlidingWindowedByte(0, 0, data[0].to_bytes())]
   duplicated = 0
   ld = len(data)
   i = 0
   while i < ld-1:
     value = data[i+1]
-    print(data[:i+1], chr(value))
     if value not in data[:i+1]:
       # [i-duplicated:i]로 하면 (i-duplicated+1: i]가 되기 때문에 한 글자 땡겨줘야 함
-      result.append(SlidingWindowedByte(0 if duplicated == 0 else find_distance(data[:i], data[i-duplicated+1:i+1]), duplicated, value))
+      result.append(SlidingWindowedByte(
+        0 if duplicated == 0 else find_distance(data[:i],data[i-duplicated+1:i+1],i),
+        duplicated,
+        b'' if duplicated != 0 else value.to_bytes()
+      ))
+      if duplicated != 0:
+        result.append(SlidingWindowedByte(
+          0, 0,
+          value.to_bytes()
+        ))
       duplicated = 0
       i += 1
       continue
@@ -105,7 +117,19 @@ def sliding_window(data: bytes) -> list[SlidingWindowedByte]:
   return result
 
 def decode_sliding_window(data: list[SlidingWindowedByte]) -> bytes:
-  raise NotImplementedError
+  result = b""
+  for i, j in enumerate(data):
+    if j.distance == 0:
+      result += j.value
+    else:
+      print(result, i-j.distance-j.length+1, i-j.distance+1)
+      start = len(result)-j.distance-j.length if j.distance != j.length else len(result)-j.distance
+      print(result[start].to_bytes())
+      i = 0
+      while i < j.length:
+        result += result[start+i].to_bytes()
+        i += 1
+  return result
 
 def compress(file_path: str, output_path: str):
   raise NotImplementedError
@@ -114,7 +138,10 @@ def decompress(file_path: str, output_path: str):
   raise NotImplementedError
 
 if __name__ == '__main__':
-  print('HellABHello', [i.to_str_tuple() for i in sliding_window(b'HellABHello')])
-  sld = sliding_window(b'HellABHello')
+  sld = sliding_window(b'HelloABCimABCD')
+  print(sld)
+  print(decode_sliding_window(sld))
   frq = build_frequency_table(sld)
-  print(ArithmeticCoding().encode(sld, frq))
+  enc = ArithmeticCoding().encode(sld, frq)
+  dec = ArithmeticCoding().decode(enc, frq, len(sld))
+  print(enc, decode_sliding_window(dec))
