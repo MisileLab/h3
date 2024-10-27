@@ -6,7 +6,7 @@ authors = [
   {name = "misilelab", email = "misileminecord@gmail.com"},
 ]
 dependencies = [
-  "fastapi==0.115.3",
+  "fastapi==0.115.4",
   "websockets==13.1",
   "uvicorn==0.32.0",
   "orjson==3.10.10",

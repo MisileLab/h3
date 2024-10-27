@@ -6,7 +6,7 @@ authors = [
   {name = "misile", email = "misile@duck.com"},
 ]
 dependencies = [
-  "fastapi[standard]==0.115.3",
+  "fastapi[standard]==0.115.4",
   "websockets==13.1",
   "edgedb==2.1.0",
   "loguru==0.7.2"
