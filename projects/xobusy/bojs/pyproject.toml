@@ -1,23 +1,14 @@
 [project]
 name = "bojs"
 version = "0.1.0"
-description = "Default template for PDM package"
-authors = [
-  {name = "MisileLaboratory", email = "misileminecord@gmail.com"},
-]
-dependencies = [
-  "tomli==2.0.2",
-  "requests==2.32.3",
-  "baekjoonapi @ git+https://github.com/MisileLab/baekjoonapi",
-]
-requires-python = "==3.13.0"
+description = "A Baekjoon test utility"
 readme = "README.md"
-license = {text = "MisileLab License"}
-
-[tool.pdm]
-distribution = false
-
-[tool.pdm.dev-dependencies]
-dev = [
-  "tqdm==4.66.5"
+requires-python = "==3.13.0"
+dependencies = [
+  "baekjoonapi",
+  "requests==2.32.3",
+  "tomli==2.0.2"
 ]
+
+[tool.uv.sources]
+baekjoonapi = { git = "https://github.com/MisileLab/baekjoonapi" }

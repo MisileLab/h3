@@ -1,20 +1,12 @@
 [project]
 name = "simplemoney"
 version = "0.1.0"
-description = "simple money system"
-authors = [
-  {name = "misile", email = "misile@duck.com"},
-]
-dependencies = [
-  "fastapi[standard]==0.115.4",
-  "websockets==13.1",
-  "edgedb==2.1.0",
-  "loguru==0.7.2"
-]
+description = "A simple money system for Minecraft"
 # https://github.com/edgedb/edgedb-python/issues/525
 requires-python = "==3.12.6"
-readme = "README.md"
-license = {text = "MisileLab License"}
-
-[tool.pdm]
-distribution = false
+dependencies = [
+  "altcha==0.1.4",
+  "edgedb==2.1.0",
+  "fastapi[standard]==0.115.4",
+  "tomli==2.0.2"
+]

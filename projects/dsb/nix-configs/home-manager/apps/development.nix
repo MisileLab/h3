@@ -13,7 +13,7 @@
       # Language tools
       ghc cabal-install
       rustup cargo-update
-      python313Full (pkgs.writeShellScriptBin "python312" "${pkgs.python312Full}/bin/python") uv mypy ruff-lsp pipx
+      python313Full uv mypy ruff-lsp pipx
       nasm
       tailwindcss-language-server /*volta*/ deno astro-language-server
       hvm bend
@@ -25,7 +25,7 @@
       ccemux lua-language-server lua (pkgs.writeShellScriptBin "luajit" "${pkgs.luajit}/bin/lua")
 
       # custom file
-      (pkgs.writeShellScriptBin "bs" "infisical run --project-config-dir=/home/misile/repos/h3/projects/dsb/utils -- pdm run -p ~/repos/h3/projects/dsb/utils ~/repos/h3/projects/dsb/utils/butter-shell.py")
+      (pkgs.writeShellScriptBin "bs" "infisical run --project-config-dir=/home/misile/repos/h3/projects/dsb/utils -- ${pkgs.uv}/bin/uv run -p ~/repos/h3/projects/dsb/utils ~/repos/h3/projects/dsb/utils/butter-shell.py")
     ]
     ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
     ++ (with nodePackages_latest; [nodejs typescript-language-server svelte-language-server]) # nodejs

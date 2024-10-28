@@ -1,20 +1,12 @@
 [project]
-name = "Schale"
+name = "schale"
 version = "0.1.0"
-description = "The monolith API"
-authors = [
-  {name = "MisileLab", email = "misileminecord@gmail.com"},
-]
-dependencies = [
-  "fastapi[standard]==0.115.4",
-  "edgedb==2.1.0",
-  "altcha==0.1.4",
-  "tomli==2.0.2",
-]
+description = "Backend of schale"
 # https://github.com/edgedb/edgedb-python/issues/525
 requires-python = "==3.12.6"
-readme = "README.md"
-license = {text = "MisileLab License"}
-
-[tool.pdm]
-distribution = false
+dependencies = [
+  "altcha==0.1.4",
+  "edgedb==2.1.0",
+  "fastapi[standard]==0.115.4",
+  "tomli==2.0.2"
+]

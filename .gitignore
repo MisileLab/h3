@@ -3,3 +3,4 @@
 .direnv
 .pdm-python
 .infisical.json
+.python-version

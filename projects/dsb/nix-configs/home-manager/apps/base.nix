@@ -23,7 +23,7 @@ in
       (writeScript "lzg" "${pkgs.lazygit}/bin/lazygit")
       (writeScript "nv" "${pkgs.lunarvim}/bin/lvim")
       (writeScript "lv" "${pkgs.lunarvim}/bin/lvim")
-      (writeScript "git-c" "pdm run -p ~/repos/h3/projects/dsb/utils ~/repos/h3/projects/dsb/utils/gen-commit-message.py")
+      (writeScript "git-c" "~/repos/h3/projects/dsb/utils/.venv/bin/python ~/repos/h3/projects/dsb/utils/gen-commit-message.py")
     ];
     programs = {
       aerc = {

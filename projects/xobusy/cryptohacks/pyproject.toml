@@ -1,16 +1,8 @@
 [project]
 name = "cryptohacks"
 version = "0.1.0"
-description = "Environment for cryptohacks"
-authors = [
-  {name = "misilelab", email = "misileminecord@gmail.com"},
-]
+description = "The environment for cryptohacks"
+requires-python = "==3.13.0"
 dependencies = [
   "pycryptodome==3.21.0"
 ]
-requires-python = "==3.13.0"
-readme = "README.md"
-license = {text = "MisileLab License"}
-
-[tool.pdm]
-distribution = false
