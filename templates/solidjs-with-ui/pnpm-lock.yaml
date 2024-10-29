@@ -698,8 +698,8 @@ packages:
   eastasianwidth@0.2.0:
     resolution: {integrity: sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==}
 
-  electron-to-chromium@1.5.47:
-    resolution: {integrity: sha512-zS5Yer0MOYw4rtK2iq43cJagHZ8sXN0jDHDKzB+86gSBSAI4v07S97mcq+Gs2vclAxSh1j7vOAHxSVgduiiuVQ==}
+  electron-to-chromium@1.5.48:
+    resolution: {integrity: sha512-FXULnNK7ACNI9MTMOVAzUGiz/YrK9Kcb0s/JT4aJgsam7Eh6XYe7Y6q95lPq+VdBe1DpT2eTnfXFtnuPGCks4w==}
 
   emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -900,8 +900,8 @@ packages:
   package-json-from-dist@1.0.1:
     resolution: {integrity: sha512-UEZIS3/by4OC8vL3P2dTXRETpebLI2NiI5vIrjaD/5UtrkFX/tNbwjTSRAGC/+7CAo2pIcBaRgWmcBBHcsaCIw==}
 
-  parse5@7.2.0:
-    resolution: {integrity: sha512-ZkDsAOcxsUMZ4Lz5fVciOehNcJ+Gb8gTzcA4yl3wnc273BAybYWrQ+Ks/OjCjSEpjvQkDSeZbybK9qj2VHHdGA==}
+  parse5@7.2.1:
+    resolution: {integrity: sha512-BuBYQYlv1ckiPdQi/ohiivi9Sagc9JG+Ozs0r7b/0iK3sKmrb0b9FdWdBbOdx6hBCM/F9Ir82ofnBhtZOjCRPQ==}
 
   path-key@3.1.1:
     resolution: {integrity: sha512-ojmeN0qd+y0jszEtoY48r0Peq5dwMEkIlCOu6Q5f41lfkswXuKtYrhgoTpLnyIcHm24Uhqx+5Tqm2InSwLhE6Q==}
@@ -1747,7 +1747,7 @@ snapshots:
       '@babel/plugin-syntax-jsx': 7.25.9(@babel/core@7.26.0)
       '@babel/types': 7.26.0
       html-entities: 2.3.3
-      parse5: 7.2.0
+      parse5: 7.2.1
       validate-html-nesting: 1.2.2
 
   babel-preset-solid@1.9.3(@babel/core@7.26.0):
@@ -1770,7 +1770,7 @@ snapshots:
   browserslist@4.24.2:
     dependencies:
       caniuse-lite: 1.0.30001673
-      electron-to-chromium: 1.5.47
+      electron-to-chromium: 1.5.48
       node-releases: 2.0.18
       update-browserslist-db: 1.1.1(browserslist@4.24.2)
 
@@ -1828,7 +1828,7 @@ snapshots:
 
   eastasianwidth@0.2.0: {}
 
-  electron-to-chromium@1.5.47: {}
+  electron-to-chromium@1.5.48: {}
 
   emoji-regex@8.0.0: {}
 
@@ -2010,7 +2010,7 @@ snapshots:
 
   package-json-from-dist@1.0.1: {}
 
-  parse5@7.2.0:
+  parse5@7.2.1:
     dependencies:
       entities: 4.5.0
 
