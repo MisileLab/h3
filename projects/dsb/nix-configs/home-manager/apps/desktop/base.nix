@@ -12,7 +12,7 @@ in
     ./sway.nix
   ];
   home = {
-    # https://github.com/NixOS/nixpkgs/issues/313548
+    # https://github.com/NixOS/nixpkgs/pull/349124
     # https://github.com/NixOS/nixpkgs/issues/306670
     packages = with pkgs; [
       brightnessctl clipman wl-clipboard pavucontrol
