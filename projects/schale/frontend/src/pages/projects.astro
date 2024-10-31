@@ -66,9 +66,10 @@ import Text from "../components/text.astro"
           stacks: ["python"]
         }
       }
+      const keys = Object.keys(projects).toReversed()
 
       let first = true
-      for (const i of Object.keys(projects)) {
+      for (const i of keys) {
         const o = document.createElement('option')
         o.value = i
         o.innerText = i
@@ -92,7 +93,7 @@ import Text from "../components/text.astro"
           displayProject((nullVerify(e.target) as HTMLOptionElement).value);
         })
       }
-      displayProject(Object.keys(projects)[0])
+      displayProject(keys[0])
     </script>
   </Fragment>
   <div class="w-full h-full flex flex-row">
