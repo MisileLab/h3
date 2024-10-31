@@ -71,7 +71,7 @@
     <h1 class="text-8xl">만약에 <span class="text-green-400">100</span>명에게 점을 준다면?</h1>
   </Slide>
   <Slide class="h-full place-content-center place-items-center">
-    <p class="text-8xl">{`\\[(x, f(x)\\space mod \\space p)\\]`}</p>
+    <p class="text-8xl">{`\\[D_x=(x+1, f(x+1)\\space mod \\space p)\\]`}</p>
     <p class="text-6xl text-gray-500">{`\\[(p=prime,p>S,p>n)\\]`}</p>
   </Slide>
   <Slide class="place-content-center place-items-center">
