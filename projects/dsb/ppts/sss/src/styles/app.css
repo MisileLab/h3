@@ -12,7 +12,7 @@
   font-family: 'NanumSquareNeo';
   font-style: normal;
   font-weight: 400;
-  src: url('/NanumSquareNeo-Variable.woff2') format('woff2-variations');
+  src: url('/NanumSquareNeo-Variable.ttf') format('truetype');
 }
 
 * {
