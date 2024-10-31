@@ -16,6 +16,14 @@ import Text from "../components/text.astro"
         stacks: string[];
       }
 
+      function displayProject(project: string) {
+        const p = projects[project];
+        queryId("description").innerText = `description: ${p.description}`;
+        queryId("stacks").innerText = `stacks: ${p.stacks.join(", ")}`;
+        (queryId("clicktogo") as HTMLAnchorElement).innerText = "click to go to source";
+        (queryId("clicktogo") as HTMLAnchorElement).href = p.url;
+      }
+
       const projects: Record<string, Project> = {
         "ignofier+": {
           description: "Fast gitignore generator",
@@ -59,10 +67,15 @@ import Text from "../components/text.astro"
         }
       }
 
+      let first = true
       for (const i of Object.keys(projects)) {
         const o = document.createElement('option')
         o.value = i
         o.innerText = i
+        if (first) {
+          o.selected = true
+          first = !first
+        }
         queryId("select").appendChild(o)
       }
 
@@ -76,19 +89,15 @@ import Text from "../components/text.astro"
       } else {
         queryId("select").addEventListener("change", (e)=>{
           if ((nullVerify(e.target) as HTMLSelectElement).value === "") {return;}
-          const p = projects[(nullVerify(e.target) as HTMLOptionElement).value];
-          queryId("description").innerText = `description: ${p.description}`;
-          queryId("stacks").innerText = `stacks: ${p.stacks.join(", ")}`;
-          (queryId("clicktogo") as HTMLAnchorElement).innerText = "click to go to source";
-          (queryId("clicktogo") as HTMLAnchorElement).href = p.url;
+          displayProject((nullVerify(e.target) as HTMLOptionElement).value);
         })
       }
+      displayProject(Object.keys(projects)[0])
     </script>
   </Fragment>
   <div class="w-full h-full flex flex-row">
     <div class="w-full h-screen justify-center items-center flex flex-col text-black text-xl lg:text-2xl md:text-4xl gap-y-2" id="mobile-div">
       <select id="select" class="bg-white">
-        <option value="" />
       </select>
       <Text id="description" />
       <Text id="stacks" />
