@@ -245,7 +245,7 @@ requires-dist = [
     { name = "numpy", specifier = "==2.1.2" },
     { name = "promise", specifier = "==2.3" },
     { name = "pwntools", marker = "extra == 'legacy'", specifier = "==4.13.1" },
-    { name = "selenium", specifier = "==4.26.0" },
+    { name = "selenium", specifier = "==4.26.1" },
 ]
 
 [package.metadata.requires-dev]
@@ -688,7 +688,7 @@ wheels = [
 
 [[package]]
 name = "selenium"
-version = "4.26.0"
+version = "4.26.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "certifi" },
@@ -698,9 +698,9 @@ dependencies = [
     { name = "urllib3", extra = ["socks"] },
     { name = "websocket-client" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/76/07/af573b7f33ab41e6e20a229b6d5597c4d4314e186262dac1fb854068dd38/selenium-4.26.0.tar.gz", hash = "sha256:f0780f85f10310aa5d085b81e79d73d3c93b83d8de121d0400d543a50ee963e8", size = 967159 }
+sdist = { url = "https://files.pythonhosted.org/packages/3f/b1/e9efcb88d5682e802cf03bdee4886f854d75bdb2859d1e72cb74041b4ef6/selenium-4.26.1.tar.gz", hash = "sha256:7640f3f08ae7f4e450f895678e8a10a55eb4e4ca18311ed675ecc4684b96b683", size = 967543 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f6/d1/6d33fd59ca733347d51e115447f2ccad999040bf7644da54aa11092e0a52/selenium-4.26.0-py3-none-any.whl", hash = "sha256:48013f36e812de5b3948ef53d04e73f77bc923ee3e1d7d99eaf0618179081b99", size = 9695956 },
+    { url = "https://files.pythonhosted.org/packages/91/08/10cff8463b3510b78f9e3dcef6b37c542b06d71ed1240a8940ba0c75d3bc/selenium-4.26.1-py3-none-any.whl", hash = "sha256:1db3f3a0cd5bb07624fa8a3905a6fdde1595a42185a0617077c361dc53d104fb", size = 9696270 },
 ]
 
 [[package]]
