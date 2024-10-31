@@ -1,4 +1,4 @@
-{pkgs, config, ...}:
+{pkgs, config, stablep, ...}:
 {
   home = {
     sessionVariables = {
@@ -7,15 +7,15 @@
     packages = with pkgs; [
       # Development
       edgedb d2 pre-commit pijul darcs just dive (dvc.override{enableAWS=true;}) solana-validator
-      snyk pwndbg radicle-node infisical pnpm_9 jetbrains-toolbox ghidra poop binsider
+      snyk pwndbg (stablep.radicle-node) infisical pnpm_9 jetbrains-toolbox ghidra poop binsider
       (pkgs.writeShellScriptBin "gdb" "${pkgs.pwndbg}/bin/pwndbg") process-compose
 
       # Language tools
       ghc cabal-install
       rustup cargo-update
-      python313Full uv mypy ruff-lsp
+      python313Full (stablep.uv) mypy (stablep.ruff-lsp)
       nasm
-      tailwindcss-language-server /*volta*/ deno astro-language-server
+      tailwindcss-language-server (stablep.deno) astro-language-server
       hvm bend
       clang-tools lldb pkg-config
       niv nixpkgs-fmt nix-tree hub fh
@@ -25,10 +25,10 @@
       ccemux lua-language-server lua (pkgs.writeShellScriptBin "luajit" "${pkgs.luajit}/bin/lua")
 
       # custom file
-      (pkgs.writeShellScriptBin "bs" "infisical run --project-config-dir=/home/misile/repos/h3/projects/dsb/utils -- ${pkgs.uv}/bin/uv run -p ~/repos/h3/projects/dsb/utils ~/repos/h3/projects/dsb/utils/butter-shell.py")
+      (pkgs.writeShellScriptBin "bs" "infisical run --project-config-dir=/home/misile/repos/h3/projects/dsb/utils -- ${stablep.uv}/bin/uv run -p ~/repos/h3/projects/dsb/utils ~/repos/h3/projects/dsb/utils/butter-shell.py")
     ]
     ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
-    ++ (with nodePackages_latest; [nodejs typescript-language-server svelte-language-server]) # nodejs
+    ++ (with stablep.nodePackages_latest; [nodejs typescript-language-server svelte-language-server]) # nodejs
     # https://github.com/python/mypy/issues/17264
     ++ (with python312Packages; [pip virtualenv python-lsp-server mitmproxy]); # python thing
     file = {

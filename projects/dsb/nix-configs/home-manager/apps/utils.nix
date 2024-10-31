@@ -1,7 +1,7 @@
-{pkgs, ...}: {
+{pkgs, stablep, ...}: {
   home.packages = with pkgs; [
     # file
-    axel wget file wgetpaste convmv termscp ouch rhash duperemove
+    axel wget file wgetpaste convmv (stablep.termscp) ouch rhash duperemove
 
     # some fancy cli tools
     fastfetch onefetch delta genact glow dasel navi
