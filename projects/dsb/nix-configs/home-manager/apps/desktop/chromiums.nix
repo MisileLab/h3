@@ -14,28 +14,26 @@ in
       }}/src/mocha/userstyle.css";
     };
     packages = [
-      (ewl "figma" "${stablep.figma-linux}/bin/figma-linux")
-      (ewl "discord" "${stablep.vesktop}/bin/vesktop")
-      (ewl "vscode" "${stablep.vscodium}/bin/codium")
+      (ewl "figma" "${pkgs.figma-linux}/bin/figma-linux")
+      (ewl "discord" "${pkgs.vesktop}/bin/vesktop")
+      (ewl "vscode" "${pkgs.vscodium}/bin/codium")
+      # https://github.com/NixOS/nixpkgs/issues/352885
       (ewl "tetrio" "${stablep.tetrio-desktop.override{withTetrioPlus=true;}}/bin/tetrio")
-      (ewl "bruno" "${stablep.bruno}/bin/bruno")
-      (ewl "joplin" "${stablep.joplin-desktop}/bin/joplin-desktop")
-      (ewl "signal" "${stablep.signal-desktop}/bin/signal-desktop")
-      (ewl "element" "${stablep.element-desktop}/bin/element-desktop")
-      (ewl "simplex" "${stablep.simplex-chat-desktop}/bin/simplex-chat-desktop")
-      (ewl "slack" "${stablep.slack}/bin/slack")
-      (ewl "chrome" "${stablep.ungoogled-chromium}/bin/chromium")
-      stablep.ungoogled-chromium
+      (ewl "bruno" "${pkgs.bruno}/bin/bruno")
+      (ewl "joplin" "${pkgs.joplin-desktop}/bin/joplin-desktop")
+      (ewl "signal" "${pkgs.signal-desktop}/bin/signal-desktop")
+      (ewl "element" "${pkgs.element-desktop}/bin/element-desktop")
+      (ewl "simplex" "${pkgs.simplex-chat-desktop}/bin/simplex-chat-desktop")
+      (ewl "slack" "${pkgs.slack}/bin/slack")
+      (ewl "chrome" "${pkgs.ungoogled-chromium}/bin/chromium")
+      pkgs.ungoogled-chromium
     ];
   };
   programs = {
-    joplin-desktop = {
-      enable = true;
-      package = stablep.joplin-desktop;
-    };
+    joplin-desktop.enable = true;
     vscode = {
       enable = true;
-      package = stablep.vscode-with-extensions.override { vscodeExtensions = with stablep.vscode-extensions; [ ms-vsliveshare.vsliveshare ]; };
+      package = pkgs.vscode-with-extensions.override { vscodeExtensions = with pkgs.vscode-extensions; [ ms-vsliveshare.vsliveshare ]; };
     };
   };
 }

@@ -1,4 +1,6 @@
 {pkgs, stablep, ...}: {
+  # https://github.com/NixOS/nixpkgs/pull/349034
+  # https://hydra.nixos.org/build/276412944
   home.packages = with pkgs; [
     # file
     axel wget file wgetpaste convmv (stablep.termscp) ouch rhash duperemove
