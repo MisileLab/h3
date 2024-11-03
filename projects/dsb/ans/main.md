@@ -279,4 +279,8 @@ n은 보통 트리의 높이임
 
 - 쿼드 트리에 축을 하나 더해서 분할함
 - Quad Tree for 3D
-- 너무 많이 사용하면 프레임 저하가 가능함
+- 너무 많이 사용하면 프레임 저하가 발생 가능
+
+## Shamir's Secret Sharing
+
+Shamir's Secret Sharing 발표함
