@@ -74,20 +74,23 @@ def build_frequency_table(data: list[SlidingWindowedByte]):
   return freq_ranges
 
 def find_distance(data: bytes, compare: bytes, org_index: int) -> int:
-  queue = []
-  first_char = -1
-  for i in range(len(data)):
-    if data[i] == compare[len(queue)]:
-      if first_char == -1:
-        first_char = i
-      queue.append(data[i])
+  print(f"cd: {data}", compare, org_index)
+  q = b""
+  distance = 0
+  first_char = 0
+  for index, d in enumerate(data):
+    q += d.to_bytes()
+    if q in compare:
+      if len(q) == 1:
+        first_char = index
+      if q == compare:
+        print(f"a: {org_index-1}")
+        distance = org_index-first_char-1
+        break
     else:
-      first_char = -1
-      queue.clear()
-    if bytes(queue) == compare:
-      print(org_index, queue)
-      return org_index-len(queue)*2 if len(queue) == 1 else (org_index-len(queue)*2+1)-2-len(queue)
-  raise ValueError("unreachable")
+      q = b""
+  print(distance)
+  return distance
 
 # https://dalinaum.github.io/algorithm/2020/12/14/zip-compression.html
 def sliding_window(data: bytes) -> list[SlidingWindowedByte]:
@@ -100,7 +103,7 @@ def sliding_window(data: bytes) -> list[SlidingWindowedByte]:
     if value not in data[:i+1]:
       # [i-duplicated:i]로 하면 (i-duplicated+1: i]가 되기 때문에 한 글자 땡겨줘야 함
       result.append(SlidingWindowedByte(
-        0 if duplicated == 0 else find_distance(data[:i],data[i-duplicated+1:i+1],i),
+        0 if duplicated == 0 else find_distance(data[:i],data[i-duplicated+1:i],i),
         duplicated,
         b'' if duplicated != 0 else value.to_bytes()
       ))
@@ -109,9 +112,7 @@ def sliding_window(data: bytes) -> list[SlidingWindowedByte]:
           0, 0,
           value.to_bytes()
         ))
-      duplicated = 0
-      i += 1
-      continue
+      duplicated = -1
     duplicated += 1
     i += 1
   return result
@@ -138,10 +139,11 @@ def decompress(file_path: str, output_path: str):
   raise NotImplementedError
 
 if __name__ == '__main__':
-  sld = sliding_window(b'HelloABCimABCD')
+  sld = sliding_window(b'thisistestfortestsliding')
   print(sld)
   print(decode_sliding_window(sld))
-  frq = build_frequency_table(sld)
-  enc = ArithmeticCoding().encode(sld, frq)
-  dec = ArithmeticCoding().decode(enc, frq, len(sld))
-  print(enc, decode_sliding_window(dec))
+  assert b'thisistestfortestsliding' == decode_sliding_window(sld)
+  # frq = build_frequency_table(sld)
+  # enc = ArithmeticCoding().encode(sld, frq)
+  # dec = ArithmeticCoding().decode(enc, frq, len(sld))
+  # print(enc, decode_sliding_window(dec))
