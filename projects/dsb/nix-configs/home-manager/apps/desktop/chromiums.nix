@@ -1,4 +1,4 @@
-{config, pkgs, stablep, ...}:
+{config, pkgs, ...}:
 let
   # electron-waylandify
   ewl = name: binaryPath: (pkgs.writeShellScriptBin "${name}" ''
@@ -25,8 +25,8 @@ in
       (ewl "element" "${pkgs.element-desktop}/bin/element-desktop")
       (ewl "simplex" "${pkgs.simplex-chat-desktop}/bin/simplex-chat-desktop")
       (ewl "slack" "${pkgs.slack}/bin/slack")
-      (ewl "chrome" "${stablep.ungoogled-chromium}/bin/chromium")
-      stablep.ungoogled-chromium
+      (ewl "chrome" "${pkgs.ungoogled-chromium}/bin/chromium")
+      pkgs.ungoogled-chromium
     ];
   };
   programs = {

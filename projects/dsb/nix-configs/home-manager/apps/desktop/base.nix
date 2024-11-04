@@ -1,7 +1,6 @@
 {c, config, pkgs, stablep, ...}:
 let
   briar-desktop = pkgs.callPackage ./briar.nix {};
-  exodus = pkgs.callPackage ./exodus.nix {};
 in
 {
   imports = [
@@ -12,13 +11,12 @@ in
     ./sway.nix
   ];
   home = {
-    # https://github.com/NixOS/nixpkgs/pull/349124
     # https://github.com/NixOS/nixpkgs/issues/306670
     packages = with pkgs; [
       brightnessctl clipman wl-clipboard pavucontrol
       imagemagick virt-manager appflowy xfce.thunar
       /* galaxy-buds-client */ ferium prismlauncher
-      seahorse kdePackages.filelight qemu firefoxpwa gparted
+      seahorse kdePackages.filelight qemu firefoxpwa gparted exodus
       onionshare jetbrains.idea-community-bin gimp zed-editor (stablep.telegram-desktop)
     ] ++ ([briar-desktop exodus]);
     file = {
