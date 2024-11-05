@@ -13,6 +13,8 @@ in
   wayland.windowManager.sway = {
     enable = true;
     extraConfigEarly = ''
+seat * shortcuts_inhibitor disable
+
 input type:touchpad {
   tap enabled
   natural_scroll enabled
