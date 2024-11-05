@@ -13,7 +13,7 @@ export interface Props {
   rewind?: boolean
 }
 const {title, description, date, isnews, rewind = true} = Astro.props;
-if (date === 0) {throw Error("It is just draft.")}
+if (import.meta.env.PROD && date === 0) {throw Error("It is just draft.")}
 ---
 
 <Base rewind={rewind}>
