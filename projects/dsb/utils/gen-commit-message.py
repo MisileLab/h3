@@ -4,7 +4,9 @@ from subprocess import run
 from sys import argv
 from json import loads, dumps
 
-if len(argv) < 2:
+j = input("Enter previous commit json(if you don't have, just enter): ")
+
+if j == "":
   convtypes = ["feat","fix","docs","style","refactor","perf","test","build","ci","chore","revert"]
 
   questions = [
@@ -24,7 +26,7 @@ if len(argv) < 2:
 
   print(dumps(answers))
 else:
-  answers = loads(' '.join(argv[1:]))
+  answers = loads(j)
 
 output = answers["type"]
 
