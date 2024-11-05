@@ -28,7 +28,7 @@ if (date === 0) {throw Error("It is just draft.")}
       <Text initialTime={0} animationType={AnimationType.random} hover={HoverType.reanimate}>
         <p class="text-gray text-2xl md:text-3xl">{dayjs.unix(date).toString().replace('GMT', 'UTC')}</p>
       </Text>
-      {isnews && <p class="text-gray text-xl md:text-2xl">GPT-4o-mini 기반 Jessica로 요약됨</p>}
+      {isnews && <p class="text-gray text-xl md:text-2xl">Summarized with Jessica, based on gpt4o-mini</p>}
     </div>
     <slot />
   </div>
