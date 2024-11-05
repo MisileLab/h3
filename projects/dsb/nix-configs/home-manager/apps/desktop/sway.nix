@@ -9,7 +9,7 @@ let
   '';
 in
 {
-  home.packages = with pkgs; [swaysome swayimg];
+  home.packages = with pkgs; [swaysome swayimg jq libnotify];
   wayland.windowManager.sway = {
     enable = true;
     extraConfigEarly = ''
@@ -29,8 +29,6 @@ shadows enable
 
 for_window [class=".*"] opacity 0.9
 for_window [app_id=".*"] opacity 0.9
-for_window [class=".*"] inhibit_idle fullscreen
-for_window [app_id=".*"] inhibit_idle fullscreen
 for_window [instance="GalaxyBudsClient"] floating enable
 
 bindsym Print exec ${pkgs.sway-contrib.grimshot}/bin/grimshot --notify copy area
@@ -110,7 +108,12 @@ bindsym Mod4+shift+y exec ${pkgs.swayfx}/bin/swaynag --type warning -m 'You want
       settings = [{
         modules-left = [ "sway/workspaces" ];
         modules-center = [ "sway/window" ];
-        modules-right = ["pulseaudio" "network" "battery" "cpu" "memory" "custom/gpu-usage" "temperature" "clock"];
+        modules-right = ["idle_inhibitor" "pulseaudio" "battery" "cpu" "memory" "custom/gpu-usage" "temperature" "clock"];
+        "idle_inhibitor" = {
+          "format" = "{icon}";
+          "format-icons" = {activated = "󰅶"; deactivated = "󰾪";};
+          "on-click" = "$HOME/.config/home-manager/idle-handler.sh";
+        };
         "custom/gpu-usage" = {
           exec = "cat /sys/class/hwmon/hwmon0/device/gpu_busy_percent";
           format = " {}%";
