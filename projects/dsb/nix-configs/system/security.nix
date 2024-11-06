@@ -18,7 +18,10 @@
       enable = true;
       useRoutingFeatures = "client";
     };
-    mullvad-vpn.enable = true;
+    mullvad-vpn = {
+      enable = true;
+      package = pkgs.mullvad-vpn;
+    };
   };
 
   networking = {
