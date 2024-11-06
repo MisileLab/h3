@@ -12,5 +12,5 @@ dependencies = [
   "tomli==2.0.2",
   "tomli-w==1.1.0",
   "tqdm==4.67.0",
-  "pygithub==2.4.0"
+  "pygithub==2.5.0"
 ]
