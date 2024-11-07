@@ -281,6 +281,41 @@ n은 보통 트리의 높이임
 - Quad Tree for 3D
 - 너무 많이 사용하면 프레임 저하 발생 가능
 
-## Shamir's Secret Sharing
+# Shamir's Secret Sharing
 
-Shamir's Secret Sharing 발표함
+Shamir's Secret Sharing 발표함  
+[발표 자료](https://ppt.misile.xyz)
+
+# 토큰화
+
+텍스트를 토큰으로 분리하는 NLP(Natural Language Processing)의 일종
+
+## 자연어 처리 과정
+
+텍스트 -> 코퍼스(데이터) -> Features -> 분석/모델
+
+## 쓰는 이유
+
+언어의 구조와 의미를 알게 해 맥락을 파악할 수 있게 해줌
+
+## 쓰는 곳
+
+- RNN(Recurrent Neural Network), GRU(Gated Recurrent Unit), LSTM(Long Short Term Memory)등과 같은 모델
+- 모델 학습을 위한 단어 사전 구축
+- 프로그래밍 언어
+
+## 토큰화 종류
+
+- 문장 토큰화: 문장의 전체 구조를 토큰화함
+- 단어 토큰화: 한 문장의 단어들을 토큰화함
+
+## 고려 사항
+
+- 특수 문자를 단순 제외하면 안됨
+  - 특수 문자도 하나의 토큰이 되거나 토큰을 구분하는 부분이 될 수 있음
+- 줄임말과 단어에 띄어쓰기가 있는 경우
+  - 하나의 단어 사이에 띄어쓰기가 있는 경우에도 하나의 토큰으로 봐야하는 경우가 존재함
+- 한국어 토큰화의 어려움
+  - 영어와는 달리 띄어쓰기만으로 구분할 수 없음
+  - 조사가 존재하기 때문에 형태소를 이해해야 함
+
