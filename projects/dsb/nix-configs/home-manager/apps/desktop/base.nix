@@ -54,6 +54,7 @@ in
   };
   xdg = {
     enable = true;
+    # https://github.com/NixOS/nixpkgs/issues/354510
     portal = {
       enable = true;
       extraPortals = with pkgs; [xdg-desktop-portal-gtk xdg-desktop-portal-wlr];
