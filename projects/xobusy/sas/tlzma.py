@@ -124,10 +124,10 @@ def decode_sliding_window(data: list[SlidingWindowedByte]) -> bytes:
       result += j.value
     else:
       print(result, i-j.distance-j.length+1, i-j.distance+1)
-      start = len(result)-j.distance-j.length if j.distance != j.length else len(result)-j.distance
+      start = len(result)-j.distance-j.length if j.distance != j.length else len(result)-j.distance+1
       print(result[start].to_bytes())
       i = 0
-      while i < j.length:
+      while i <= j.length:
         result += result[start+i].to_bytes()
         i += 1
   return result
@@ -141,7 +141,7 @@ def decompress(file_path: str, output_path: str):
 if __name__ == '__main__':
   sld = sliding_window(b'thisistestfortestsliding')
   print(sld)
-  print(decode_sliding_window(sld))
+  print(f"res: {decode_sliding_window(sld)}")
   assert b'thisistestfortestsliding' == decode_sliding_window(sld)
   # frq = build_frequency_table(sld)
   # enc = ArithmeticCoding().encode(sld, frq)
