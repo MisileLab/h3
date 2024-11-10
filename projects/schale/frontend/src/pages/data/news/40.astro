@@ -2,7 +2,7 @@
 import Content from "../../../components/content.astro"
 ---
 
-<Content title="리눅스 도구를 사용한 데이터베이스 구축" description="" isnews={true} date={1731154750}>
+<Content title="Linux CLI만을 사용한 데이터베이스 구축" description="" isnews={true} date={1731154750}>
   <ul>
     <li>리눅스와 macOS는 텍스트 파일을 사용하여 간단한 데이터베이스를 만들기 위한 강력한 도구를 제공합니다.</li>
     <li>텍스트 파일은 데이터의 생성, 검사 및 버전 관리를 쉽게 합니다.</li>
@@ -22,36 +22,35 @@ import Content from "../../../components/content.astro"
   <ol>
     <li><strong>테이블 생성</strong>: 구분자-구분 값(DSV) 형식의 평면 파일을 사용합니다.
       <ul>
-        <li>예제 형식: <blockquote>task:date:priority:status</blockquote>.</li>
+        <li>예제 형식: <code>task:date:priority:status</code></li>
         <li>텍스트 편집기나 명령줄을 사용하여 데이터를 수정합니다.</li>
       </ul>
     </li>
 
     <li><strong>데이터 가져오기</strong>:
       <ul>
-        <li><blockquote>cat tasks</blockquote>로 모든 데이터를 선택합니다.</li>
-        <li><blockquote>cut</blockquote>을 사용하여 특정 열(예: 작업 이름)을 가져옵니다.</li>
+        <li><code>cat tasks</code>로 모든 데이터를 선택합니다.</li>
+        <li><code>cut</code>을 사용하여 특정 열(예: 작업 이름)을 가져옵니다.</li>
       </ul>
     </li>
 
     <li><strong>데이터 필터링</strong>:
       <ul>
-        <li>간단한 패턴 매칭에는 <blockquote>grep</blockquote>을 사용합니다.</li>
-        <li>보다 복잡한 쿼리에는 <blockquote>awk</blockquote>를 사용합니다.</li>
+        <li>간단한 패턴 매칭에는 <code>grep</code>을 사용합니다.</li>
+        <li>보다 복잡한 쿼리에는 <code>awk</code>를 사용합니다.</li>
       </ul>
     </li>
 
-    <li><strong>결과 페이징</strong>: <blockquote>head</blockquote>와 <blockquote>tail</blockquote>을 사용하여 결과 수를 제한합니다.</li>
-    <li><strong>데이터 정렬</strong>: <blockquote>sort</blockquote>를 활용하여 레코드를 정리합니다.</li>
-    <li><strong>테이블 결합</strong>: <blockquote>join</blockquote> 명령어를 사용하여 서로 다른 소스의 데이터를 결합합니다.</li>
+    <li><strong>결과 페이징</strong>: <code>head</code>와 <code>tail</code>을 사용하여 결과 수를 제한합니다.</li>
+    <li><strong>데이터 정렬</strong>: <code>sort</code>를 활용하여 레코드를 정리합니다.</li>
+    <li><strong>테이블 결합</strong>: <code>join</code> 명령어를 사용하여 서로 다른 소스의 데이터를 결합합니다.</li>
   </ol>
     
   <h1>댓글 요약</h1>
   <ul>
-    <li>사용자들은 리눅스 내장 도구를 사용한 데이터베이스 생성이 가능하다고 인정하지만, 종종 진지한 솔루션보다는 재미있는 연습으로 간주됩니다.</li>
-    <li>많은 사람들이 간단한 텍스트 파일 사용이 아이러니하지만 실행 가능한 방법이라고 강조합니다.</li>
-    <li>일부 커뮤니티 회원들은 해킹식 솔루션보다 SQLite와 같은 전문화된 도구가 데이터베이스 관리에 더 적합하다고 표현합니다.</li>
-    <li>몇몇 사용자는 과거의 컴퓨팅 관행을 회상하며, 셸 명령을 사용하여 데이터베이스를 만든 경험을 언급합니다.</li>
-    <li>논의된 방법의 실용성에 대해 엇갈린 의견이 있으며, 중요한 애플리케이션 사용에 대해 조심하라는 경고가 나옵니다.</li>
+    <li>사용자들은 진지한 솔루션보다는 재미있는 연습으로 간주합니다.</li>
+    <li>많은 사람들이 간단한 텍스트 파일 사용이 아이러니하지만 실행 가능한 방법이라고 합니다.</li>
+    <li>일부 사람들은 해킹식 솔루션보다 SQLite와 같은 전문화된 도구가 데이터베이스 관리에 더 적합하다고 표현합니다.</li>
+    <li>몇몇 사람들은 과거의 컴퓨팅 관행을 회상하며, 셸 명령을 사용하여 데이터베이스를 만든 경험을 언급합니다.</li>
   </ul>
 </Content>
