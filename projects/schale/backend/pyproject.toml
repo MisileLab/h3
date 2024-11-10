@@ -3,7 +3,7 @@ name = "schale"
 version = "0.1.0"
 description = "Backend of schale"
 # https://github.com/edgedb/edgedb-python/issues/525
-requires-python = "==3.12.6"
+requires-python = "==3.12.7"
 dependencies = [
   "altcha==0.1.4",
   "edgedb==2.2.0",
