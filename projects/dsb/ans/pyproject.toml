@@ -1,19 +1,9 @@
 [project]
 name = "ans"
 version = "0.1.0"
-description = "Default template for PDM package"
-authors = [
-  {name = "misilelab", email = "misileminecord@gmail.com"},
-]
-dependencies = [
-  "manim==0.18.1",
-  "loguru==0.7.2"
-]
+readme = "README.md"
 # https://github.com/ManimCommunity/manim/issues/3968
 # https://github.com/ManimCommunity/manim/pull/3967
 requires-python = "==3.12.7"
-readme = "README.md"
-license = {text = "MisileLab License"}
+dependencies = ["manim==0.18.1", "loguru==0.7.2"]
 
-[tool.pdm]
-distribution = false
