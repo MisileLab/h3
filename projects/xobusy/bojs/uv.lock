@@ -4,7 +4,7 @@ requires-python = "==3.13.0"
 [[package]]
 name = "baekjoonapi"
 version = "0.2.5"
-source = { git = "https://github.com/MisileLab/baekjoonapi#57e6691eb8d06e12907db7c4be4d01245ba2a6e1" }
+source = { git = "https://github.com/MisileLab/baekjoonapi#a0df032a781538a88d60f0f36bfc4927eb9c9b89" }
 dependencies = [
     { name = "bs4" },
     { name = "lxml" },
