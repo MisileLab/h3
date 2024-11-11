@@ -14,7 +14,7 @@
 		"@sveltejs/vite-plugin-svelte": "4.0.0",
 		"@types/reveal.js": "5.0.4",
 		"prettier": "3.3.3",
-		"prettier-plugin-svelte": "3.2.7",
+		"prettier-plugin-svelte": "3.2.8",
 		"prettier-plugin-tailwindcss": "0.6.8",
 		"shiki": "1.22.2",
 		"shiki-magic-move": "0.5.0",
