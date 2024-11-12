@@ -8,5 +8,5 @@ dependencies = [
   "altcha==0.1.4",
   "edgedb==2.2.0",
   "fastapi[standard]==0.115.4",
-  "tomli==2.0.2"
+  "tomli==2.1.0"
 ]

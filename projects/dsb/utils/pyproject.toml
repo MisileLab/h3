@@ -9,7 +9,7 @@ dependencies = [
   "gradio-client==1.4.2",
   "httpx==0.27.2",
   "inquirer==3.4.0",
-  "tomli==2.0.2",
+  "tomli==2.1.0",
   "tomli-w==1.1.0",
   "tqdm==4.67.0",
   "pygithub==2.5.0"

@@ -9,7 +9,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "3.13.0"
 disnake = "2.9.2"
-tomli = "2.0.2"
+tomli = "2.1.0"
 requests = "2.32.3"
 
 [build-system]
