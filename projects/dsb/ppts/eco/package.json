@@ -31,6 +31,6 @@
 		"@fontsource-variable/manrope": "5.1.0",
 		"@tailwindcss/vite": "4.0.0-alpha.33",
 		"reveal.js": "5.1.0",
-		"tailwindcss": "4.0.0-alpha.32"
+		"tailwindcss": "4.0.0-alpha.33"
 	}
 }
