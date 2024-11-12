@@ -2,137 +2,132 @@
 import {HoverType, AnimationType} from "./lib"
 
 export interface Props {
-  initialTime?: number,
   hover?: HoverType,
   completeTime?: number,
   animationType?: AnimationType,
   id?: string
 }
-const { initialTime = 1, hover = HoverType.reanimate, completeTime = 0.8, animationType = AnimationType.normal, id = "" } = Astro.props;
+const { hover = HoverType.reanimate, completeTime = 0.8, animationType = AnimationType.normal, id = "" } = Astro.props;
 ---
 
-<astro-animation data-initialTime={initialTime} data-hover={hover} data-completeTime={completeTime} data-animationType={animationType} id={id}><slot /></astro-animation>
+<astro-animation data-hover={hover} data-completeTime={completeTime} data-animationType={animationType} id={id}>
+  <slot />
+</astro-animation>
 <script>
   import { parseFloat, nullVerify } from "@misile/satellite"
-  import { normalHide, normalShow, randomHide, randomShow, isRealInside } from "./lib"
-  import { map } from "nanostores"
+  import { normalHide, normalShow, randomHide, randomShow, isRealInside, AnimationValue, indexError } from "./lib"
+  import { atom } from "nanostores"
 
   class AstroAnimation extends HTMLElement {
-    private initialTime: number = 0;
-    private hover: string = "";
-    private completeTime: number = 0;
-    private animationType: string = "";
-    animations: Record<number, {show: Record<number, number>, hide: Record<number, number>}> = {};
-    private observer_function = map<Record<number, ((x: HTMLElement) => void)>>({});
-    private hovered = map<Record<number, boolean>>();
-    private functions: Record<number, {over: (()=>void), out: (()=>void)}> = {}
+    private hovered = atom<boolean>(false);
+    private animationProgress = atom<AnimationValue>(AnimationValue.done);
+    private functions: {over: (()=>void), out: (()=>void)} = {over: ()=>{}, out: ()=>{}};
+    private first = true;
+    private org = "";
 
     constructor() {
       super();
       let tmp = this;
+      let realv = tmp.childNodes[0] as HTMLElement;
+      while (realv != null && realv.nodeType == Node.TEXT_NODE) {
+        realv = realv.nextSibling as HTMLElement;
+      }
+      this.org = realv.innerText ?? realv.textContent;
       const observer = new MutationObserver(function(mutations) {
         for (let i=0;i<mutations.length;i++) {
           if (mutations[i].addedNodes.length) {
-            tmp.connectedCallback();
+            if (tmp.animationProgress.get() == AnimationValue.done) {
+              tmp.connectedCallback();
+            }
+            break;
           }
         }
       });
-      observer.observe(this, {childList: true});
-      this.hovered.subscribe((x, _, changed)=>{
-        if (changed === undefined) {return}
-        if (x[changed]) {this.functions[changed].over()} else {this.functions[changed].out()}
+      observer.observe(tmp, {childList: true, subtree: true});
+      tmp.hovered.subscribe((hovered)=>{
+        if (tmp.animationProgress.get() == AnimationValue.done) {
+          if (hovered) {tmp.functions.over()} else {tmp.functions.out()}
+        }
       })
     }
 
     connectedCallback() {
-      this.initialTime = parseFloat(nullVerify(this.dataset.initialtime)) * 1000;
-      this.hover = nullVerify(this.dataset.hover);
-      this.completeTime = parseFloat(nullVerify(this.dataset.completetime)) * 1000;
-      this.animationType = nullVerify(this.dataset.animationtype);
-      for (let i=0;i<this.childNodes.length;i++) {
-        if (this.childNodes.length != 1 && this.childNodes[i].nodeType == Node.TEXT_NODE) {continue;}
-        const realv = this.childNodes[i] as HTMLElement;
-        const org = realv.innerText;
-        const aps = this.completeTime / realv.innerText.length;
-        this.animations[i] = {show: [], hide: []};
-        this.functions[i] = {over: ()=>{}, out: ()=>{}};
-        document.addEventListener('mousemove', (e)=>{
-          this.hovered.setKey(i, isRealInside(realv, e))
-        })
-        if (this.hover == "reanimate") {
-          if (this.animationType == "normal" || this.animationType == 'rewind') {
-            this.functions[i].over = ()=>{
-              this.animations[i].show = []
-              this.animations[i].hide = []
-              normalHide(realv, i, this.animationType == 'rewind', aps/2, 0, this.animations);
-              normalShow(realv, i, org, this.animationType == 'rewind', aps/2, aps*(realv.innerText.length/2), this.animations);
-            };
-            this.observer_function.setKey(i, () => {
-              normalHide(realv, i, this.animationType == 'rewind', aps/2, this.initialTime, this.animations);
-              normalShow(realv, i, org, this.animationType == 'rewind', aps/2, this.initialTime+aps*(realv.innerText.length/2), this.animations);
-            });
-          } else {
-            this.functions[i].over = ()=>{
-              this.animations[i].show = []
-              this.animations[i].hide = []
-              randomHide(realv, i, aps/2, 0, this.animations);
-              randomShow(realv, i, org, aps/2, aps*(realv.innerText.length/2), this.animations);
-            }
-            this.observer_function.setKey(i, () => {
-              randomHide(realv, i, aps/2, this.initialTime, this.animations);
-              randomShow(realv, i, org, aps/2, this.initialTime+aps*(realv.innerText.length/2), this.animations);
-            });
-          }
-        } else if (this.hover == "hide") {
-          if (this.animationType == "normal" || this.animationType == 'rewind') {
-            this.functions[i].over = ()=>{
-              this.animations[i].hide = []
-              normalHide(realv, i, this.animationType == 'rewind', aps, 0, this.animations);
-            }
-            this.functions[i].out = ()=>{
-              this.animations[i].show = []
-              normalShow(realv, i, org, this.animationType == 'rewind', aps, aps*realv.innerText.length, this.animations);
-            }
-          } else {
-            this.functions[i].over = ()=>{
-              this.animations[i].hide = []
-              randomHide(realv, i, aps, 0, this.animations);
-            }
-            this.functions[i].out = ()=>{
-              this.animations[i].show = []
-              randomShow(realv, i, org, aps, aps*realv.innerText.length, this.animations);
-            }
-          }
-        } else if (this.hover == "show") {
-          if (this.animationType == "normal" || this.animationType == 'rewind') {
-            this.functions[i].over = ()=>{
-              this.animations[i].show = []
-              normalShow(realv, i, org, this.animationType == 'rewind', aps, 0, this.animations);
-            }
-            this.observer_function.setKey(i, () => {
-              normalHide(realv, i, this.animationType == 'rewind', aps, this.initialTime, this.animations);
-            });
-            this.functions[i].out = ()=>{
-              this.animations[i].hide = []
-              normalHide(realv, i, this.animationType == 'rewind', aps, aps*(realv.innerText.length), this.animations);
-            }
-          } else {
-            this.functions[i].over = ()=>{
-              this.animations[i].show = []
-              randomShow(realv, i, org, aps, 0, this.animations);
-            }
-            this.observer_function.setKey(i, () => {
-              randomHide(realv, i, aps, this.initialTime, this.animations);
-            });
-            this.functions[i].out = ()=>{
-              this.animations[i].hide = []
-              randomHide(realv, i, aps, aps*(realv.innerText.length), this.animations);
-            }
+      const d = this.dataset;
+      const childNodes = this.childNodes;
+      const hover = nullVerify(d.hover);
+      const completeTime = parseFloat(nullVerify(d.completetime)) * 1000;
+      const animationType = nullVerify(d.animationtype);
+      const connectedCallback = this.connectedCallback;
+      let realv = childNodes[0] as HTMLElement;
+      while (realv != null && realv.nodeType == Node.TEXT_NODE) {
+        realv = realv.nextSibling as HTMLElement;
+      }
+      let org = realv.innerText ?? realv.textContent;
+      if (Array(org).filter(v => v == "_").length == 0) {
+        org = this.org;
+      }
+      const aps = completeTime / org.length;
+      const functions = {over: ()=>{}, out: ()=>{}};
+      document.addEventListener('mousemove', (e)=>{
+        this.hovered.set(isRealInside(realv, e))
+      });
+      if (hover == "reanimate") {
+        if (animationType == "normal" || animationType == 'rewind') {
+          functions.over = ()=>{
+            this.animationProgress.set(AnimationValue.doing);
+            normalHide(connectedCallback, realv, animationType == 'rewind', aps/2, 0, this.animationProgress, true);
+            normalShow(connectedCallback, realv, org, animationType == 'rewind', aps/2, aps*(realv.innerText.length/2), this.animationProgress);
+          };
+        } else {
+          functions.over = ()=>{
+            this.animationProgress.set(AnimationValue.doing);
+            randomHide(connectedCallback, realv, aps/2, 0, this.animationProgress, true);
+            randomShow(connectedCallback, realv, org, aps/2, aps*(realv.innerText.length/2), this.animationProgress);
           }
         }
-        realv.setAttribute('data-id', i.toString());
-        this.observer_function.get()[i](realv);
+      } else if (hover == "hide") {
+        if (animationType == "normal" || animationType == 'rewind') {
+          functions.over = ()=>{
+            this.animationProgress.set(AnimationValue.doing);
+            normalHide(connectedCallback, realv, animationType == 'rewind', aps, 0, this.animationProgress);
+          }
+          functions.out = ()=>{
+            this.animationProgress.set(AnimationValue.doing);
+            normalShow(connectedCallback, realv, org, animationType == 'rewind', aps, 0, this.animationProgress);
+          }
+        } else {
+          functions.over = ()=>{
+            this.animationProgress.set(AnimationValue.doing);
+            randomHide(connectedCallback, realv, aps, 0, this.animationProgress);
+          }
+          functions.out = ()=>{
+            this.animationProgress.set(AnimationValue.doing);
+            randomShow(connectedCallback, realv, org, aps, 0, this.animationProgress);
+          }
+        }
+      } else if (hover == "show") {
+        if (animationType == "normal" || animationType == 'rewind') {
+          functions.over = ()=>{
+            this.animationProgress.set(AnimationValue.doing);
+            normalShow(connectedCallback, realv, org, animationType == 'rewind', aps, 0, this.animationProgress);
+          }
+          functions.out = ()=>{
+            this.animationProgress.set(AnimationValue.doing);
+            normalHide(connectedCallback, realv, animationType == 'rewind', aps, 0, this.animationProgress);
+          }
+        } else {
+          functions.over = ()=>{
+            this.animationProgress.set(AnimationValue.doing);
+            randomShow(connectedCallback, realv, org, aps, 0, this.animationProgress);
+          }
+          functions.out = ()=>{
+            this.animationProgress.set(AnimationValue.doing);
+            randomHide(connectedCallback, realv, aps, 0, this.animationProgress);
+          }
+        }
       }
+      this.functions = functions;
+      if (this.first) {this.first = false;this.functions.out()}
     }
   }
 

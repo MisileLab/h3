@@ -19,13 +19,13 @@ if (import.meta.env.PROD && date === 0) {throw Error("It is just draft.")}
 <Base rewind={rewind}>
   <div class="md:mx-[20%]">
     <div class="flex flex-col text-black border-b-2 border-solid border-black">
-      <Text initialTime={0} animationType={AnimationType.random} hover={HoverType.show}>
+      <Text animationType={AnimationType.random} hover={HoverType.show}>
         <h1 class="text-4xl md:text-5xl">{title}</h1>
       </Text>
-      <Text initialTime={0} animationType={AnimationType.random} hover={HoverType.show}>
+      <Text animationType={AnimationType.random} hover={HoverType.show}>
         <p class="text-gray text-3xl md:text-4xl">{description}</p>
       </Text>
-      <Text initialTime={0} animationType={AnimationType.random} hover={HoverType.reanimate}>
+      <Text animationType={AnimationType.random} hover={HoverType.reanimate}>
         <p class="text-gray text-2xl md:text-3xl">{dayjs.unix(date).toString().replace('GMT', 'UTC')}</p>
       </Text>
       {isnews && <p class="text-gray text-xl md:text-2xl">Summarized with Jessica, based on gpt4o-mini</p>}
