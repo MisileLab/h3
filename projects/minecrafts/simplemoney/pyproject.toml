@@ -6,7 +6,7 @@ description = "A simple money system for Minecraft"
 requires-python = "==3.12.7"
 dependencies = [
   "edgedb==2.2.0",
-  "fastapi[standard]==0.115.4",
+  "fastapi[standard]==0.115.5",
   "loguru==0.7.2",
   "websockets==14.0",
 ]

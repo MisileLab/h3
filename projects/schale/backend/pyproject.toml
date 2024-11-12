@@ -7,6 +7,6 @@ requires-python = "==3.12.7"
 dependencies = [
   "altcha==0.1.4",
   "edgedb==2.2.0",
-  "fastapi[standard]==0.115.4",
+  "fastapi[standard]==0.115.5",
   "tomli==2.1.0"
 ]
