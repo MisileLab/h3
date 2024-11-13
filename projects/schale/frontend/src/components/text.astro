@@ -16,7 +16,7 @@ const { hover = HoverType.reanimate, completeTime = 0.8, animationType = Animati
 </astro-animation>
 <script>
   import { parseFloat, nullVerify } from "@misile/satellite"
-  import { normalHide, normalShow, randomHide, randomShow, isRealInside, AnimationValue } from "./lib"
+  import { normalHide, normalShow, randomHide, randomShow, isRealInside, AnimationValue, getTextContent } from "./lib"
   import { atom } from "nanostores"
 
   class AstroAnimation extends HTMLElement {
@@ -33,7 +33,12 @@ const { hover = HoverType.reanimate, completeTime = 0.8, animationType = Animati
       while (realv != null && realv.nodeType == Node.TEXT_NODE) {
         realv = realv.nextSibling as HTMLElement;
       }
-      this.org = realv.innerText ?? realv.textContent;
+      document.addEventListener("DOMContentLoaded", function() {
+        console.log("DOM loaded")
+        tmp.org = getTextContent(realv);
+        tmp.connectedCallback();
+      })
+      tmp.org = getTextContent(realv);
       const observer = new MutationObserver(function(mutations) {
         for (let i=0;i<mutations.length;i++) {
           if (mutations[i].addedNodes.length) {
@@ -63,9 +68,12 @@ const { hover = HoverType.reanimate, completeTime = 0.8, animationType = Animati
       while (realv != null && realv.nodeType == Node.TEXT_NODE) {
         realv = realv.nextSibling as HTMLElement;
       }
-      let org = realv.innerText ?? realv.textContent;
-      if (Array(org).filter(v => v == "_").length == 0) {
-        org = this.org;
+      let org = getTextContent(this);
+      if (org == "") {
+        org = getTextContent(realv);
+        if (Array(org).filter(v => v == "_").length == 0) {
+          org = this.org;
+        }
       }
       const aps = completeTime / org.length;
       const functions = {over: ()=>{}, out: ()=>{}};
@@ -77,13 +85,13 @@ const { hover = HoverType.reanimate, completeTime = 0.8, animationType = Animati
           functions.over = ()=>{
             this.animationProgress.set(AnimationValue.doing);
             normalHide(connectedCallback, realv, animationType == 'rewind', aps/2, 0, this.animationProgress, true);
-            normalShow(connectedCallback, realv, org, animationType == 'rewind', aps/2, aps*(realv.innerText.length/2), this.animationProgress);
+            normalShow(connectedCallback, realv, org, animationType == 'rewind', aps/2, aps*(getTextContent(realv).length/2), this.animationProgress);
           };
         } else {
           functions.over = ()=>{
             this.animationProgress.set(AnimationValue.doing);
             randomHide(connectedCallback, realv, aps/2, 0, this.animationProgress, true);
-            randomShow(connectedCallback, realv, org, aps/2, aps*(realv.innerText.length/2), this.animationProgress);
+            randomShow(connectedCallback, realv, org, aps/2, aps*(getTextContent(realv).length/2), this.animationProgress);
           }
         }
       } else if (hover == "hide") {

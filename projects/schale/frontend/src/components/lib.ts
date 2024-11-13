@@ -23,6 +23,10 @@ export enum AnimationValue {
   doing = "doing"
 }
 
+export function getTextContent(h: HTMLElement) {
+  return h.innerText == "" && h.textContent !== null ? h.textContent : h.innerText;
+}
+
 function wrapFunction(f: any, connectedCallback: ()=>void) {
   return () => {try {
     f();
@@ -107,14 +111,14 @@ export function randomHide(
   dontChange: boolean = false
 ) {
   const start = 0;
-  const end = a.innerText.length;
+  const end = getTextContent(a).length;
   const ended = range(start, end);
   for (let i=start;i<end;i++) {
     setTimeout(wrapFunction(()=>{
       const _rand = Math.floor(Math.random() * ended.length);
       const rand = ended[_rand];
       ended.splice(_rand, 1)
-      a.innerText=replaceCharacterAtIndex(a.innerText, rand, '_')
+      a.innerText=replaceCharacterAtIndex(getTextContent(a), rand, '_')
       if (!dontChange && i===end-1) {progress.set(AnimationValue.done);}
     }, connectedCallback), init+complete*i);
   }
@@ -129,10 +133,10 @@ export function normalHide(
   progress: PreinitializedWritableAtom<AnimationValue>,
   dontChange: boolean = false
 ) {
-  const l = a.innerText.length-1;
+  const l = getTextContent(a).length-1;
   for (let i=0;i<=l;i++) {
     setTimeout(wrapFunction(()=>{
-      a.innerText=replaceCharacterAtIndex(a.innerText, rewind?l-i:i, '_')
+      a.innerText=replaceCharacterAtIndex(getTextContent(a), rewind?l-i:i, '_')
       if (!dontChange && i===l) {progress.set(AnimationValue.done);}
     }, connectedCallback), init+complete*i);
   }
@@ -148,14 +152,14 @@ export function randomShow(
   dontChange: boolean = false
 ) {
   const start = 0;
-  const end = a.innerText.length;
+  const end = getTextContent(a).length;
   const ended = range(start, end);
   for (let i=start;i<end;i++) {
     setTimeout(wrapFunction(()=>{
       const _rand = Math.floor(Math.random() * ended.length);
       const rand = ended[_rand];
       ended.splice(_rand, 1)
-      a.innerText=replaceCharacterAtIndex(a.innerText, rand, original[rand])
+      a.innerText=replaceCharacterAtIndex(getTextContent(a), rand, original[rand])
       if (!dontChange && i===end-1) {progress.set(AnimationValue.done);}
     }, connectedCallback), init+complete*i);
   }
@@ -171,10 +175,10 @@ export function normalShow(
   progress: PreinitializedWritableAtom<AnimationValue>,
   dontChange: boolean = false
 ) {
-  const l = a.innerText.length-1;
+  const l = getTextContent(a).length-1;
   for (let i=0;i<=l;i++) {
     setTimeout(wrapFunction(()=>{
-      a.innerText=replaceCharacterAtIndex(a.innerText, rewind?l-i:i, original[rewind?l-i:i]);
+      a.innerText=replaceCharacterAtIndex(getTextContent(a), rewind?l-i:i, original[rewind?l-i:i]);
       if (!dontChange && i===l) {progress.set(AnimationValue.done);}
     }, connectedCallback), init+complete*i);
   }
