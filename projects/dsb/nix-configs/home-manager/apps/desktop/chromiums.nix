@@ -21,12 +21,12 @@ in
       # (ewl "tetrio" "${pkgs.tetrio-desktop.override{withTetrioPlus=true;}}/bin/tetrio")
       (ewl "bruno" "${pkgs.bruno}/bin/bruno")
       (ewl "joplin" "${pkgs.joplin-desktop}/bin/joplin-desktop")
-      (ewl "signal" "${pkgs.signal-desktop}/bin/signal-desktop")
-      (ewl "element" "${pkgs.element-desktop}/bin/element-desktop")
+      (ewl "signal" "${stablep.signal-desktop}/bin/signal-desktop")
+      (ewl "element" "${stablep.element-desktop}/bin/element-desktop")
       (ewl "simplex" "${pkgs.simplex-chat-desktop}/bin/simplex-chat-desktop")
       (ewl "slack" "${pkgs.slack}/bin/slack")
-      (ewl "chrome" "${stablep.ungoogled-chromium}/bin/chromium")
-      stablep.ungoogled-chromium
+      (ewl "chrome" "${pkgs.ungoogled-chromium}/bin/chromium")
+      pkgs.ungoogled-chromium
     ];
   };
   programs = {

@@ -1,4 +1,4 @@
-{pkgs, config, ...}:
+{pkgs, stablep, config, ...}:
 {
   home = {
     sessionVariables = {
@@ -15,7 +15,7 @@
       rustup cargo-update
       python313Full uv mypy ruff-lsp
       nasm
-      tailwindcss-language-server deno astro-language-server
+      tailwindcss-language-server (stablep.deno) astro-language-server
       hvm bend
       clang-tools lldb pkg-config
       niv nixpkgs-fmt nix-tree hub fh
