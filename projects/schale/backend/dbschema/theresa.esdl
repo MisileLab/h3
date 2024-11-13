@@ -7,7 +7,7 @@ module theresa {
 
   type User {
     required name: str;
-    required email: str;
+    required email: str {constraint exclusive};
     required message: str;
     required hash: str {constraint exclusive};
     signature: bytes;
