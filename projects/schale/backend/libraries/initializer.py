@@ -1,4 +1,3 @@
-from fastapi import FastAPI
 from edgedb import create_async_client
 from tomli import loads
 from boto3 import client

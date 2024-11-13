@@ -1,16 +1,15 @@
-from fastapi import HTTPException, status, Header, UploadFile, APIRouter, Depends
+from fastapi import HTTPException, status, Header, UploadFile, APIRouter, Form
 from pydantic import BaseModel, Field
 
 from hashlib import sha3_256
 from dataclasses import asdict
 from base64 import b64encode
+from httpx import AsyncClient
 
 from ..libraries.initializer import initializer
 from ..libraries.email import send_email
 
-router = APIRouter(
-# dependencies=Depends(verify_hash)
-)
+router = APIRouter()
 
 class Signer(BaseModel):
   name: str = Field(description="name of signer")
@@ -45,9 +44,19 @@ async def theresa_info(
 
 @router.post("/sign")
 async def theresa_sign(
-  name: str = Header(description="name of letter"),
-  email: str = Header(description="email of signer")
+  name: str = Form(description="name of letter"),
+  email: str = Form(description="email of signer"),
+  h_captcha_response: str = Form(description="h-captcha response")
 ):
+  async with AsyncClient() as client:
+    if not (await client.post(
+      "https://hcaptcha.com/siteverify",
+      data={
+        "secret": initializer.config["security"]["h_captcha"],
+        "response": h_captcha_response
+      }
+    )).json()["success"]:
+      raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
   send_email(
     name,
     f"<a href='https://misile.xyz/theresa/confirm?name={name}&email={email}&hash={sha3_256(f'{name}{email}{initializer.key}'.encode()).hexdigest()}'>click here to confirm</a>",
