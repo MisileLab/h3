@@ -5,7 +5,7 @@ description = "Backend of schale"
 # https://github.com/edgedb/edgedb-python/issues/525
 requires-python = "==3.12.7"
 dependencies = [
-  "boto3==1.35.59",
+  "boto3==1.35.60",
   "edgedb==2.2.0",
   "fastapi[standard]==0.115.5",
   "tomli==2.1.0"
