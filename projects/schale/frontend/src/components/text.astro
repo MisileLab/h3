@@ -58,6 +58,11 @@ const { hover = HoverType.reanimate, completeTime = 0.8, animationType = Animati
     }
 
     connectedCallback() {
+      // idk why this happening really
+      if (this == null || this.dataset == null) {
+        setTimeout(this.connectedCallback, 100);
+        return
+      }
       const d = this.dataset;
       const childNodes = this.childNodes;
       const hover = nullVerify(d.hover);
