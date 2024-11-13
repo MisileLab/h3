@@ -5,17 +5,18 @@ export interface Props {
   hover?: HoverType,
   completeTime?: number,
   animationType?: AnimationType,
-  id?: string
+  id?: string,
+  initialTime?: number
 }
-const { hover = HoverType.reanimate, completeTime = 0.8, animationType = AnimationType.normal, id = "" } = Astro.props;
+const { hover = HoverType.reanimate, completeTime = 0.8, animationType = AnimationType.normal, id = "", initialTime = 0 } = Astro.props;
 ---
 
-<astro-animation data-hover={hover} data-completeTime={completeTime} data-animationType={animationType} id={id}>
+<astro-animation data-hover={hover} data-completeTime={completeTime} data-animationType={animationType} data-initialTime={initialTime} id={id}>
   <slot />
 </astro-animation>
 <script>
   import { parseFloat, nullVerify } from "@misile/satellite"
-  import { normalHide, normalShow, randomHide, randomShow, isRealInside, AnimationValue, indexError } from "./lib"
+  import { normalHide, normalShow, randomHide, randomShow, isRealInside, AnimationValue } from "./lib"
   import { atom } from "nanostores"
 
   class AstroAnimation extends HTMLElement {
@@ -127,7 +128,7 @@ const { hover = HoverType.reanimate, completeTime = 0.8, animationType = Animati
         }
       }
       this.functions = functions;
-      if (this.first) {this.first = false;this.functions.out()}
+      if (this.first) {this.first = false;setTimeout(functions.out, parseFloat(nullVerify(d.initialTime)) * 1000)}
     }
   }
 
