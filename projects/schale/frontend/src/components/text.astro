@@ -8,7 +8,7 @@ export interface Props {
   id?: string,
   initialTime?: number
 }
-const { hover = HoverType.reanimate, completeTime = 0.8, animationType = AnimationType.normal, id = "", initialTime = 0 } = Astro.props;
+const { hover = HoverType.reanimate, completeTime = 0.8, animationType = AnimationType.normal, id = "", initialTime = 0.4 } = Astro.props;
 ---
 
 <astro-animation data-hover={hover} data-completeTime={completeTime} data-animationType={animationType} data-initialTime={initialTime} id={id}>
@@ -16,7 +16,7 @@ const { hover = HoverType.reanimate, completeTime = 0.8, animationType = Animati
 </astro-animation>
 <script>
   import { parseFloat, nullVerify } from "@misile/satellite"
-  import { normalHide, normalShow, randomHide, randomShow, isRealInside, AnimationValue, getTextContent } from "./lib"
+  import { normalHide, normalShow, randomHide, randomShow, AnimationValue, getTextContent } from "./lib"
   import { atom } from "nanostores"
 
   class AstroAnimation extends HTMLElement {
@@ -30,9 +30,11 @@ const { hover = HoverType.reanimate, completeTime = 0.8, animationType = Animati
       super();
       let tmp = this;
       let realv = tmp.childNodes[0] as HTMLElement;
+      const completeTime = parseFloat(nullVerify(tmp.dataset.completetime)) * 1000;
       while (realv != null && realv.nodeType == Node.TEXT_NODE) {
         realv = realv.nextSibling as HTMLElement;
       }
+      let isSubscribing = false;
       document.addEventListener("DOMContentLoaded", function() {
         console.log("DOM loaded")
         tmp.org = getTextContent(realv);
@@ -51,15 +53,22 @@ const { hover = HoverType.reanimate, completeTime = 0.8, animationType = Animati
       });
       observer.observe(tmp, {childList: true, subtree: true});
       tmp.hovered.subscribe((hovered)=>{
+        const f = ()=>{if (hovered) {tmp.functions.over()} else {tmp.functions.out()};}
         if (tmp.animationProgress.get() == AnimationValue.done) {
-          if (hovered) {tmp.functions.over()} else {tmp.functions.out()}
+          f();
+        } else if (!isSubscribing) {
+          isSubscribing = true;
+          setTimeout(()=>{isSubscribing=false;f()}, completeTime);
         }
       })
     }
 
     connectedCallback() {
       // idk why this happening really
-      if (this == null || this.dataset == null) {
+      if (this == null) {
+        return
+      }
+      if (this.dataset == null) {
         setTimeout(this.connectedCallback, 100);
         return
       }
@@ -74,17 +83,20 @@ const { hover = HoverType.reanimate, completeTime = 0.8, animationType = Animati
         realv = realv.nextSibling as HTMLElement;
       }
       let org = getTextContent(this);
-      if (org == "") {
+      if (Array.from(org).filter(v => v !== "_").length == 0) {
         org = getTextContent(realv);
-        if (Array(org).filter(v => v == "_").length == 0) {
-          org = this.org;
-        }
+      }
+      if (Array.from(org).filter(v => v !== "_").length == 0) {
+        org = this.org;
       }
       const aps = completeTime / org.length;
       const functions = {over: ()=>{}, out: ()=>{}};
-      document.addEventListener('mousemove', (e)=>{
-        this.hovered.set(isRealInside(realv, e))
-      });
+      realv.addEventListener('mouseover', ()=>{
+        this.hovered.set(true)
+      })
+      realv.addEventListener('mouseout', ()=>{
+        this.hovered.set(false)
+      })
       if (hover == "reanimate") {
         if (animationType == "normal" || animationType == 'rewind') {
           functions.over = ()=>{
@@ -141,7 +153,8 @@ const { hover = HoverType.reanimate, completeTime = 0.8, animationType = Animati
         }
       }
       this.functions = functions;
-      if (this.first) {this.first = false;setTimeout(functions.out, parseFloat(nullVerify(d.initialtime)) * 1000)}
+      const init = hover == "reanimate"?functions.over:functions.out;
+      if (this.first) {this.first = false;setTimeout(init, parseFloat(nullVerify(d.initialtime)) * 1000)}
     }
   }
 

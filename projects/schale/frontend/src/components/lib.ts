@@ -113,14 +113,23 @@ export function randomHide(
   const start = 0;
   const end = getTextContent(a).length;
   const ended = range(start, end);
+  let timeoutlist = [];
   for (let i=start;i<end;i++) {
-    setTimeout(wrapFunction(()=>{
+    timeoutlist.push(setTimeout(wrapFunction(()=>{
+      timeoutlist.shift()
+      if (Array.from(getTextContent(a)).filter((x)=>x!=='_').length===0) {
+        if (!dontChange) {progress.set(AnimationValue.done);}
+        while (timeoutlist.length > 0) {
+          clearTimeout(timeoutlist.shift());
+        }
+        return
+      }
       const _rand = Math.floor(Math.random() * ended.length);
       const rand = ended[_rand];
       ended.splice(_rand, 1)
       a.innerText=replaceCharacterAtIndex(getTextContent(a), rand, '_')
       if (!dontChange && i===end-1) {progress.set(AnimationValue.done);}
-    }, connectedCallback), init+complete*i);
+    }, connectedCallback), init+complete*i));
   }
 }
 
@@ -133,12 +142,21 @@ export function normalHide(
   progress: PreinitializedWritableAtom<AnimationValue>,
   dontChange: boolean = false
 ) {
+  let timeoutlist = [];
   const l = getTextContent(a).length-1;
   for (let i=0;i<=l;i++) {
-    setTimeout(wrapFunction(()=>{
+    timeoutlist.push(setTimeout(wrapFunction(()=>{
+      timeoutlist.shift()
+      if (Array.from(getTextContent(a)).filter((x)=>x!=='_').length===0) {
+        if (!dontChange) {progress.set(AnimationValue.done);}
+        while (timeoutlist.length > 0) {
+          clearTimeout(timeoutlist.shift());
+        }
+        return
+      }
       a.innerText=replaceCharacterAtIndex(getTextContent(a), rewind?l-i:i, '_')
       if (!dontChange && i===l) {progress.set(AnimationValue.done);}
-    }, connectedCallback), init+complete*i);
+    }, connectedCallback), init+complete*i));
   }
 }
 
@@ -151,17 +169,26 @@ export function randomShow(
   progress: PreinitializedWritableAtom<AnimationValue>,
   dontChange: boolean = false
 ) {
+  let timeoutlist = [];
   const start = 0;
   const end = getTextContent(a).length;
   const ended = range(start, end);
   for (let i=start;i<end;i++) {
-    setTimeout(wrapFunction(()=>{
+    timeoutlist.push(setTimeout(wrapFunction(()=>{
+      timeoutlist.shift()
+      if (getTextContent(a) === original) {
+        if (!dontChange) {progress.set(AnimationValue.done);}
+        while (timeoutlist.length > 0) {
+          clearTimeout(timeoutlist.shift());
+        }
+        return
+      }
       const _rand = Math.floor(Math.random() * ended.length);
       const rand = ended[_rand];
       ended.splice(_rand, 1)
       a.innerText=replaceCharacterAtIndex(getTextContent(a), rand, original[rand])
       if (!dontChange && i===end-1) {progress.set(AnimationValue.done);}
-    }, connectedCallback), init+complete*i);
+    }, connectedCallback), init+complete*i));
   }
 }
 
@@ -175,12 +202,21 @@ export function normalShow(
   progress: PreinitializedWritableAtom<AnimationValue>,
   dontChange: boolean = false
 ) {
+  let timeoutlist = [];
   const l = getTextContent(a).length-1;
   for (let i=0;i<=l;i++) {
-    setTimeout(wrapFunction(()=>{
+    timeoutlist.push(setTimeout(wrapFunction(()=>{
+      timeoutlist.shift()
+      if (getTextContent(a) === original) {
+        if (!dontChange) {progress.set(AnimationValue.done);}
+        while (timeoutlist.length > 0) {
+          clearTimeout(timeoutlist.shift());
+        }
+        return
+      }
       a.innerText=replaceCharacterAtIndex(getTextContent(a), rewind?l-i:i, original[rewind?l-i:i]);
       if (!dontChange && i===l) {progress.set(AnimationValue.done);}
-    }, connectedCallback), init+complete*i);
+    }, connectedCallback), init+complete*i));
   }
 }
 
