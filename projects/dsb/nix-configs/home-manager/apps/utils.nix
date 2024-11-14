@@ -1,4 +1,4 @@
-{pkgs, stablep, ...}: {
+{pkgs, ...}: {
   # https://github.com/NixOS/nixpkgs/pull/349034
   # https://hydra.nixos.org/build/276805685
   home.packages = with pkgs; [
@@ -6,7 +6,7 @@
     axel wget file wgetpaste convmv /* termscp */ ouch rhash duperemove
 
     # some fancy cli tools
-    fastfetch onefetch delta genact glow dasel (stablep.navi)
+    fastfetch onefetch delta genact glow dasel navi
 
     # process utils
     killall screen
@@ -18,7 +18,6 @@
     };
     zoxide = {
       enable = true;
-      package = stablep.zoxide;
       options = ["--cmd cd"];
     };
     fzf.enable = true;

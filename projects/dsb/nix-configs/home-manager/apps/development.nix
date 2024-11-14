@@ -15,7 +15,7 @@
       rustup cargo-update
       python313Full uv mypy ruff-lsp
       nasm
-      tailwindcss-language-server (stablep.deno) astro-language-server
+      tailwindcss-language-server deno astro-language-server
       hvm bend
       clang-tools lldb pkg-config
       niv nixpkgs-fmt nix-tree hub fh
@@ -28,9 +28,10 @@
       (pkgs.writeShellScriptBin "bs" "infisical run --project-config-dir=/home/misile/repos/h3/projects/dsb/utils -- ${pkgs.uv}/bin/uv run -p ~/repos/h3/projects/dsb/utils ~/repos/h3/projects/dsb/utils/butter-shell.py")
     ]
     ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
-    ++ (with nodePackages_latest; [nodejs typescript-language-server svelte-language-server]) # nodejs
-    # https://github.com/python/mypy/issues/17264
-    ++ (with python312Packages; [pip virtualenv python-lsp-server mitmproxy]); # python thing
+    ++ (with nodePackages_latest; [(stablep.nodePackages_latest.nodejs) typescript-language-server svelte-language-server]) # nodejs
+    # https://github.com/NixOS/nixpkgs/issues/355902
+    # https://nixpk.gs/pr-tracker.html?pr=355071
+    ++ (with python312Packages; [pip virtualenv python-lsp-server (stablep.python312Packages.mitmproxy)]); # python thing
     file = {
       "non-nixos-things/catppuccin-ghidra".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit{
         url="https://github.com/catppuccin/ghidra";

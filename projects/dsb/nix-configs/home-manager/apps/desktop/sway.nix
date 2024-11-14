@@ -1,4 +1,4 @@
-{c, pkgs, stablep, ...}:
+{c, pkgs, ...}:
 let
   returnColorCSS = {r, g, b, a, addi ? ""}: ''
     ${(if c.gtk4 then "backdrop-filter: blur(5px)" else "")}
@@ -58,7 +58,7 @@ bindsym Mod4+shift+y exec ${pkgs.swayfx}/bin/swaynag --type warning -m 'You want
               before-sleep '${pkgs.swaylock}/bin/swaylock -f' \
               lock '${pkgs.swaylock}/bin/swaylock -f'
           '';}
-        {command = "${stablep.waybar}/bin/waybar";}
+        {command = "${pkgs.waybar}/bin/waybar";}
         {command = "${pkgs.swaybg}/bin/swaybg --image ~/.config/home-manager/bg.png";}
         {command = "${pkgs.wl-clipboard}/bin/wl-paste -t text --watch ${pkgs.clipman}/bin/clipman store --no-persist";}
         {command = "${pkgs.avizo}/bin/avizo-service";}
@@ -104,7 +104,6 @@ bindsym Mod4+shift+y exec ${pkgs.swayfx}/bin/swaynag --type warning -m 'You want
     };
     waybar = {
       enable = true;
-      package = stablep.waybar;
       catppuccin.enable = true;
       settings = [{
         modules-left = [ "sway/workspaces" ];
