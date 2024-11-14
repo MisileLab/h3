@@ -1,9 +1,7 @@
 {pkgs, ...}: {
-  # https://github.com/NixOS/nixpkgs/pull/349034
-  # https://hydra.nixos.org/build/276805685
   home.packages = with pkgs; [
     # file
-    axel wget file wgetpaste convmv /* termscp */ ouch rhash duperemove
+    axel wget file wgetpaste convmv termscp ouch rhash duperemove
 
     # some fancy cli tools
     fastfetch onefetch delta genact glow dasel navi
