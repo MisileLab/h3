@@ -61,8 +61,8 @@ importers:
         specifier: 5.2.0
         version: 5.2.0
       svelte-check:
-        specifier: 4.0.7
-        version: 4.0.7(svelte@5.2.0)(typescript@5.6.3)
+        specifier: 4.0.8
+        version: 4.0.8(svelte@5.2.0)(typescript@5.6.3)
       tslib:
         specifier: 2.8.1
         version: 2.8.1
@@ -968,8 +968,8 @@ packages:
   stringify-entities@4.0.4:
     resolution: {integrity: sha512-IwfBptatlO+QCJUo19AqvrPNqlVMpW9YEL2LIVY+Rpv2qsjCGxaDLNRgeGsQWJhfItebuJhsGSLjaBbNSQ+ieg==}
 
-  svelte-check@4.0.7:
-    resolution: {integrity: sha512-24hwo+D5L35HOXsh3Z2sU4WhdDLavlHquYaJhrEqAt+mV1xOVzoMVYThW80n99osDJxyuH+vxjNFkNRL4EvwTg==}
+  svelte-check@4.0.8:
+    resolution: {integrity: sha512-nYxbPa0GJySVLhrplvpdGGdwst/7r/H9N991PVYk3BtSIuWBw5ihItHCDJu7hE1S0bPSRJ6IJ2yTCQeDUk0ZDg==}
     engines: {node: '>= 18.0.0'}
     hasBin: true
     peerDependencies:
@@ -1832,7 +1832,7 @@ snapshots:
       character-entities-html4: 2.1.0
       character-entities-legacy: 3.0.0
 
-  svelte-check@4.0.7(svelte@5.2.0)(typescript@5.6.3):
+  svelte-check@4.0.8(svelte@5.2.0)(typescript@5.6.3):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
       chokidar: 4.0.1
