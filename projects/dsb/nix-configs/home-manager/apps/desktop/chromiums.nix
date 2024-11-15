@@ -1,4 +1,4 @@
-{config, pkgs, stablep, ...}:
+{config, pkgs, ...}:
 let
   # electron-waylandify
   ewl = name: binaryPath: (pkgs.writeShellScriptBin "${name}" ''
@@ -13,20 +13,20 @@ in
         rev="b0a886ce7ba71b48fdbf72ad27f3446400ebcdb9";
       }}/src/mocha/userstyle.css";
     };
-    packages = [
-      (ewl "figma" "${pkgs.figma-linux}/bin/figma-linux")
-      (ewl "discord" "${pkgs.vesktop}/bin/vesktop")
-      (ewl "vscode" "${pkgs.vscodium}/bin/codium")
+    packages = with pkgs; [
+      (ewl "figma" "${figma-linux}/bin/figma-linux")
+      (ewl "discord" "${vesktop}/bin/vesktop")
+      (ewl "vscode" "${vscodium}/bin/codium")
       # https://github.com/NixOS/nixpkgs/issues/352897
       # (ewl "tetrio" "${pkgs.tetrio-desktop.override{withTetrioPlus=true;}}/bin/tetrio")
-      (ewl "bruno" "${pkgs.bruno}/bin/bruno")
-      (ewl "joplin" "${pkgs.joplin-desktop}/bin/joplin-desktop")
-      (ewl "signal" "${stablep.signal-desktop}/bin/signal-desktop")
-      (ewl "element" "${stablep.element-desktop}/bin/element-desktop")
-      (ewl "simplex" "${pkgs.simplex-chat-desktop}/bin/simplex-chat-desktop")
-      (ewl "slack" "${pkgs.slack}/bin/slack")
-      (ewl "chrome" "${pkgs.ungoogled-chromium}/bin/chromium")
-      pkgs.ungoogled-chromium
+      (ewl "bruno" "${bruno}/bin/bruno")
+      (ewl "joplin" "${joplin-desktop}/bin/joplin-desktop")
+      (ewl "signal" "${signal-desktop}/bin/signal-desktop")
+      (ewl "element" "${element-desktop}/bin/element-desktop")
+      (ewl "simplex" "${simplex-chat-desktop}/bin/simplex-chat-desktop")
+      (ewl "slack" "${slack}/bin/slack")
+      (ewl "chrome" "${ungoogled-chromium}/bin/chromium")
+      ungoogled-chromium
     ];
   };
   programs = {
