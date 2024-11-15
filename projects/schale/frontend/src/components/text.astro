@@ -92,7 +92,7 @@ const { hover = HoverType.reanimate, completeTime = 0.8, animationType = Animati
       this.org.set(getTextContent(this));
       this.org.set(getTextContent(realv));
       const org = this.org.get;
-      const aps = completeTime / org().length;
+      const aps = ()=>completeTime / org().length;
       const functions = {over: ()=>{}, out: ()=>{}};
       realv.addEventListener('mouseover', ()=>{
         this.hovered.set(true)
@@ -104,54 +104,54 @@ const { hover = HoverType.reanimate, completeTime = 0.8, animationType = Animati
         if (animationType == "normal" || animationType == 'rewind') {
           functions.over = ()=>{
             this.animationProgress.set(AnimationValue.doing);
-            normalHide(connectedCallback, realv, animationType == 'rewind', aps/2, 0, this.animationProgress, true);
-            normalShow(connectedCallback, realv, org(), animationType == 'rewind', aps/2, aps*(getTextContent(realv).length/2), this.animationProgress);
+            normalHide(connectedCallback, realv, animationType == 'rewind', aps()/2, 0, this.animationProgress, true);
+            normalShow(connectedCallback, realv, org(), animationType == 'rewind', aps()/2, aps()*(getTextContent(realv).length/2), this.animationProgress);
           };
         } else {
           functions.over = ()=>{
             this.animationProgress.set(AnimationValue.doing);
-            randomHide(connectedCallback, realv, aps/2, 0, this.animationProgress, true);
-            randomShow(connectedCallback, realv, org(), aps/2, aps*(getTextContent(realv).length/2), this.animationProgress);
+            randomHide(connectedCallback, realv, aps()/2, 0, this.animationProgress, true);
+            randomShow(connectedCallback, realv, org(), aps()/2, aps()*(getTextContent(realv).length/2), this.animationProgress);
           }
         }
       } else if (hover == "hide") {
         if (animationType == "normal" || animationType == 'rewind') {
           functions.over = ()=>{
             this.animationProgress.set(AnimationValue.doing);
-            normalHide(connectedCallback, realv, animationType == 'rewind', aps, 0, this.animationProgress);
+            normalHide(connectedCallback, realv, animationType == 'rewind', aps(), 0, this.animationProgress);
           }
           functions.out = ()=>{
             this.animationProgress.set(AnimationValue.doing);
-            normalShow(connectedCallback, realv, org(), animationType == 'rewind', aps, 0, this.animationProgress);
+            normalShow(connectedCallback, realv, org(), animationType == 'rewind', aps(), 0, this.animationProgress);
           }
         } else {
           functions.over = ()=>{
             this.animationProgress.set(AnimationValue.doing);
-            randomHide(connectedCallback, realv, aps, 0, this.animationProgress);
+            randomHide(connectedCallback, realv, aps(), 0, this.animationProgress);
           }
           functions.out = ()=>{
             this.animationProgress.set(AnimationValue.doing);
-            randomShow(connectedCallback, realv, org(), aps, 0, this.animationProgress);
+            randomShow(connectedCallback, realv, org(), aps(), 0, this.animationProgress);
           }
         }
       } else if (hover == "show") {
         if (animationType == "normal" || animationType == 'rewind') {
           functions.over = ()=>{
             this.animationProgress.set(AnimationValue.doing);
-            normalShow(connectedCallback, realv, org(), animationType == 'rewind', aps, 0, this.animationProgress);
+            normalShow(connectedCallback, realv, org(), animationType == 'rewind', aps(), 0, this.animationProgress);
           }
           functions.out = ()=>{
             this.animationProgress.set(AnimationValue.doing);
-            normalHide(connectedCallback, realv, animationType == 'rewind', aps, 0, this.animationProgress);
+            normalHide(connectedCallback, realv, animationType == 'rewind', aps(), 0, this.animationProgress);
           }
         } else {
           functions.over = ()=>{
             this.animationProgress.set(AnimationValue.doing);
-            randomShow(connectedCallback, realv, org(), aps, 0, this.animationProgress);
+            randomShow(connectedCallback, realv, org(), aps(), 0, this.animationProgress);
           }
           functions.out = ()=>{
             this.animationProgress.set(AnimationValue.doing);
-            randomHide(connectedCallback, realv, aps, 0, this.animationProgress);
+            randomHide(connectedCallback, realv, aps(), 0, this.animationProgress);
           }
         }
       }
