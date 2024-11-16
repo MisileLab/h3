@@ -15,11 +15,12 @@ class Signer(BaseModel):
   name: str = Field(description="name of signer")
   email: str = Field(description="email of signer")
   message: str = Field(description="message of signer", default = "")
-  signature: bytes | None = Field(description="signature of signer", default=None)
+  signature: str | None = Field(description="signature of signer", default=None)
 
 class openLetter(BaseModel):
   name: str = Field(description="name of letter")
   tldr: str = Field(description="one line of letter")
+  file: str = Field(description="link of file")
   signers: list[Signer] = Field(description="list of signers", default=[])
 
 @router.get("/info")
