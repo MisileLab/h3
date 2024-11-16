@@ -17,6 +17,9 @@ if (import.meta.env.PROD && date === 0) {throw Error("It is just draft.")}
 ---
 
 <Base rewind={rewind}>
+  <Fragment name="head">
+    <title>{title}</title>
+  </Fragment>
   <div class="mx-2 md:mx-[20%] my-4">
     <div class="flex flex-col text-black border-b-2 border-solid border-black">
       <Text animationType={AnimationType.random} hover={HoverType.show}>

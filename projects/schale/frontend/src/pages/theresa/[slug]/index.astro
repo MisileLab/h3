@@ -1,0 +1,43 @@
+---
+import Base from "../../../components/base.astro"
+import Text from "../../../components/text.astro"
+import { type Post, f } from "./example"
+
+import { nullValue } from "@misile/satellite/errors"
+import { nullVerify } from "@misile/satellite"
+
+let post: Post | null = null;
+
+try {
+  const slug = nullVerify(Astro.params.slug)
+  post = nullVerify(f[slug])
+}
+catch (e) {
+  if (e instanceof nullValue) {
+    return new Response("Not found", { status: 404 })
+  } else {
+    throw e
+  }
+}
+---
+
+<Base>
+  <Fragment name="head">
+    <title>{post.title}</title>
+  </Fragment>
+	<div class="w-full h-full flex flex-row">
+    <div class="w-full h-screen justify-center items-center flex flex-col">
+      <div class="flex flex-col">
+        <Text><p class="text-black text-4xl sm:text-6xl font-bold">{post.title}</p></Text>
+        <Text><p class="text-2xl sm:text-4xl font-normal text-gray">{post.tldr}</p></Text>
+        <div class="flex flex-row w-fit h-fit text-xl sm:text-3xl font-normal text-blue gap-2">
+          <Text><a href={post.file}>File</a></Text>
+          <p class="text-black">|</p>
+          <Text><a href=`${Astro.url.pathname}/sign`>Sign</a></Text>
+          <p class="text-black">|</p>
+          <Text><a href=`${Astro.url.pathname}/signers`>Signers</a></Text>
+        </div>
+      </div>
+    </div>
+	</div>
+</Base>
