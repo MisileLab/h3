@@ -184,7 +184,7 @@ wheels = [
 
 [[package]]
 name = "gradio-client"
-version = "1.4.2"
+version = "1.4.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "fsspec" },
@@ -194,9 +194,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "websockets" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/8c/32/f6ccafd2e5536fd8b4402110aeab8ee70639045b650a7389825e2861ac8a/gradio_client-1.4.2.tar.gz", hash = "sha256:07c5184ad6385f50f9e6eae3a262ad6afcf9380b6a400d070652f76e14222dbd", size = 317939 }
+sdist = { url = "https://files.pythonhosted.org/packages/f6/6a/1cea32337a15894c97ffd46ab67ffb474d7459cc62b5e548b01ab54d2061/gradio_client-1.4.3.tar.gz", hash = "sha256:55fd446ae80a5320f164b6913e8862b398fca9097d33b76bd98efb61cbd449c3", size = 318161 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e0/6f/9eb14d4e9ef366be2020063d91c4f608294969fcd7b9fcc48153c64b9776/gradio_client-1.4.2-py3-none-any.whl", hash = "sha256:76a34996b4580939a3fbd10144fde04eced586c033b6cdcb315d69b1459136d1", size = 319840 },
+    { url = "https://files.pythonhosted.org/packages/bc/eb/e4875e6803531059026d82fe96d0cbddae0d4d6a8826b926e02d5399b816/gradio_client-1.4.3-py3-none-any.whl", hash = "sha256:a76990277cab011f1c49391bdf33670bbbbb32b3503971ae5d91281e7946bdc1", size = 320062 },
 ]
 
 [[package]]
@@ -496,7 +496,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "fake-useragent", specifier = "==1.5.1" },
-    { name = "gradio-client", specifier = "==1.4.2" },
+    { name = "gradio-client", specifier = "==1.4.3" },
     { name = "httpx", specifier = "==0.27.2" },
     { name = "inquirer", specifier = "==3.4.0" },
     { name = "pygithub", specifier = "==2.5.0" },
