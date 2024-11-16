@@ -27,7 +27,7 @@ async def theresa_info(
   name: str = Header(description="name of letter")
 ) -> openLetter:
   raw = asdict(
-    await initializer.c.query_single('select theresa::Letter {name, tldr, signers} filter .name=<str>$name limit 1', name=name)
+    await initializer.c.query_single('select theresa::Letter {name, tldr, file, signers} filter .name=<str>$name limit 1', name=name)
   )
   if raw is None:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
