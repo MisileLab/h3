@@ -1,6 +1,8 @@
 {c, config, pkgs, stablep, ...}:
 let
   briar-desktop = pkgs.callPackage ./briar.nix {};
+  # https://github.com/NixOS/nixpkgs/pull/356344
+  firefoxpwa = pkgs.callPackage ./firefoxpwa.nix {};
 in
 {
   imports = [
@@ -15,7 +17,7 @@ in
       brightnessctl clipman wl-clipboard pavucontrol
       imagemagick virt-manager appflowy xfce.thunar
       galaxy-buds-client ferium prismlauncher
-      seahorse kdePackages.filelight qemu (stablep.firefoxpwa) gparted exodus
+      seahorse kdePackages.filelight qemu firefoxpwa gparted exodus
       (stablep.onionshare) jetbrains.idea-community-bin gimp (stablep.zed-editor) telegram-desktop
     ] ++ ([briar-desktop exodus]);
     file = {
@@ -48,8 +50,7 @@ in
     };
     firefox = {
       enable = true;
-      package = stablep.firefox;
-      nativeMessagingHosts = with stablep; [firefoxpwa];
+      nativeMessagingHosts = [firefoxpwa];
     };
   };
   xdg = {
