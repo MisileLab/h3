@@ -21,11 +21,11 @@ export const f: Record<string, Post> = {
     tldr: "Pointer that pointing to ideal",
     file: "https://github.com/MisileLab/h3/tree/main/projects/schale",
     signers: [{
-      name: "a",
+      name: "Longnames",
       email: "misile@duck.com",
       message: ""
     }, {
-      name: "b",
+      name: "Misile",
       email: "misile@duck.com",
       message: "",
       signature: signature
