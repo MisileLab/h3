@@ -1,4 +1,4 @@
-{pkgs, config, stablep, ...}:
+{pkgs, config, ...}:
 {
   home = {
     sessionVariables = {
@@ -28,7 +28,8 @@
       (pkgs.writeShellScriptBin "bs" "infisical run --project-config-dir=/home/misile/repos/h3/projects/dsb/utils -- ${pkgs.uv}/bin/uv run -p ~/repos/h3/projects/dsb/utils ~/repos/h3/projects/dsb/utils/butter-shell.py")
     ]
     ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
-    ++ (with nodePackages_latest; [(stablep.nodePackages_latest.nodejs) typescript-language-server svelte-language-server]) # nodejs
+    # https://github.com/NixOS/nixpkgs/pull/356257
+    ++ (with nodePackages_latest; [(pkgs.nodejs_22) typescript-language-server svelte-language-server]) # nodejs
     # https://nixpk.gs/pr-tracker.html?pr=355071
     ++ (with python312Packages; [pip virtualenv python-lsp-server mitmproxy]); # python thing
     file = {
