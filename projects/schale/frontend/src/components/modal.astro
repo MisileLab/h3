@@ -1,0 +1,11 @@
+---
+export interface Props {
+  id: string
+}
+const {id} = Astro.props;
+---
+
+<dialog id={id}>
+  <slot />
+</dialog>
+
