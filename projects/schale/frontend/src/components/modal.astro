@@ -1,11 +1,12 @@
 ---
 export interface Props {
-  id: string
+  id: string,
+  classv?: string
 }
-const {id} = Astro.props;
+const {id, classv = ""} = Astro.props;
 ---
 
-<dialog id={id}>
+<dialog id={id} class={classv}>
   <slot />
 </dialog>
 

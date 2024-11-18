@@ -22,7 +22,7 @@ export const f: Record<string, Post> = {
     file: "https://github.com/MisileLab/h3/tree/main/projects/schale",
     signers: [{
       name: "Longnames",
-      email: "misile@duck.com",
+      email: "longnames@duck.com",
       message: ""
     }, {
       name: "Misile",

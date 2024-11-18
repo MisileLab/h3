@@ -28,27 +28,25 @@ catch (e) {
       import { queryAll, queryId, nullVerify } from "@misile/satellite"
       import { atom } from "nanostores"
 
+      const m = queryId("modal") as HTMLDialogElement;
+      const n = queryId("modal-email")
+      const data: any[] = JSON.parse(nullVerify(n.dataset.data))
       const opened = atom(false)
       const email = atom("")
 
-      console.log(queryAll("#name"))
-
       for (let i of queryAll("#name")) {
         i.addEventListener('click', ()=>{
-          email.set(nullVerify(i.dataset.email))
+          email.set(nullVerify(data.find((x: any)=>x['name']===i.dataset.name)['email']))
           opened.set(true)
         })
       }
       for (let i of queryAll("#signature")) {
         i.addEventListener('click', ()=>{
-          email.set(nullVerify(i.dataset.email))
+          email.set(nullVerify(data.find((x: any)=>x['name']===i.dataset.name)['email']))
           opened.set(true)
         })
       }
 
-      const m = queryId("modal") as HTMLDialogElement;
-      const n = queryId("modal-name")
-      const data: any[] = JSON.parse(nullVerify(n.dataset.data))
       const cl = m.classList
       opened.subscribe((x)=>{
         if (x) {
@@ -63,15 +61,10 @@ catch (e) {
       })
       email.subscribe((x)=>{
         let d: Object | undefined = undefined;
-        for (let i of data) {
-          if (x === i['email']) {
-            d = i
-            return
-          }
-        }
+        n.innerText = x
         if (d === undefined) {return;}
         console.log(d)
-       })
+      })
 
       queryId("close").addEventListener('click', ()=>{
         opened.set(false)
@@ -80,11 +73,15 @@ catch (e) {
   </Fragment>
   <div class="w-full h-full flex flex-col items-center justify-center">
     <div class="w-full h-full flex flex-row font-bold text-7xl justify-center py-[6%]">
-      <Modal id="modal" class:list={["w-1/2", "h-1/2", "fixed", "bg-white"]}>
-        <div id="modal-name" data-data={JSON.stringify(post.signers)}>
-          Java
+      <Modal id="modal" classv="w-1/2 h-1/2 fixed bg-white">
+        <div class="w-full flex flex-col justify-between bg-white h-full">
+          <div class="flex flex-col justify-start w-full">
+            <div id="modal-email" data-data={JSON.stringify(post.signers)} />
+          </div>
+          <div class="flex flex-row justify-center">
+            <button id="close" class="w-fit h-fit border-2 border-solid px-2 outline-none">Close</button>
+          </div>
         </div>
-        <button id="close">Close</button>
       </Modal>
       <div class="flex flex-col">
         {post.signers.map((signer) => {
