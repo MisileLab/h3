@@ -2,8 +2,9 @@
   description = "Home Manager configuration of misile";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs";
-    # stable.url = "github:nixos/nixpkgs/nixos-unstable";
+    # https://github.com/NixOS/nixpkgs/pull/357119
+    nixpkgs.url = "github:misilelab/nixpkgs/lunarvim";
+    stable.url = "github:nixos/nixpkgs/nixos-unstable";
     catppuccin.url = "github:catppuccin/nix";
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -14,12 +15,12 @@
       flake = false;
     };
   };
-  outputs = { nixpkgs, /* stable, */ home-manager, catppuccin, c, ... }:
+  outputs = { nixpkgs, stable, home-manager, catppuccin, c, ... }:
     let
       system = "x86_64-linux"; # replace with your system
       pkgs = import nixpkgs {inherit system;};
       c = import ./config.nix;
-      # stablep = import stable {inherit system;config = {allowUnfree = true;};};
+      stablep = import stable {inherit system;config = {allowUnfree = true;};};
     in {
       homeConfigurations."misile" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
@@ -29,7 +30,7 @@
         ];
         extraSpecialArgs = {
           inherit c;
-          # inherit stablep;
+          inherit stablep;
         };
       };
     };
