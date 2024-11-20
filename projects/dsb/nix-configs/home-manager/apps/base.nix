@@ -1,6 +1,8 @@
 {pkgs, ...}:
 let
   writeScript = name: content: pkgs.writeShellScriptBin name "#!${pkgs.fish}/bin/fish\n${content} $@";
+  # https://github.com/NixOS/nixpkgs/pull/357119
+  lunarvimp = pkgs.callPackage ./lunarvim.nix {};
 in
   {
     imports = [
@@ -12,17 +14,17 @@ in
     ];
     home.packages = with pkgs; [
       sbctl bluez cryptsetup smartmontools borgbackup rclone pulsemixer
-      portablemc miniserve openssl transmission glances lunarvim pandoc wkhtmltopdf
+      portablemc miniserve openssl transmission glances (lunarvimp) pandoc wkhtmltopdf
       yt-dlp age magic-wormhole ansifilter b3sum
       (writeScript "manual" ''
         ${pkgs.glow}/bin/glow -p ~/.config/home-manager/manual.md
       '')
       (writeScript "nix-clean" "nix-collect-garbage -d && sudo nix-collect-garbage -d && sudo nix store optimise && nix store optimise && nix-collect-garbage -d && sudo nix-collect-garbage -d")
-      (writeScript "cat" "${pkgs.bat}/bin/bat")
-      (writeScript "ocat" "${pkgs.coreutils}/bin/cat")
-      (writeScript "lzg" "${pkgs.lazygit}/bin/lazygit")
-      (writeScript "nv" "${pkgs.lunarvim}/bin/lvim")
-      (writeScript "lv" "${pkgs.lunarvim}/bin/lvim")
+      (writeScript "cat" "${bat}/bin/bat")
+      (writeScript "ocat" "${coreutils}/bin/cat")
+      (writeScript "lzg" "${lazygit}/bin/lazygit")
+      (writeScript "nv" "${lunarvimp}/bin/lvim")
+      (writeScript "lv" "${lunarvimp}/bin/lvim")
       (writeScript "git-c" "~/repos/h3/projects/dsb/utils/.venv/bin/python ~/repos/h3/projects/dsb/utils/gen-commit-message.py")
     ];
     programs = {

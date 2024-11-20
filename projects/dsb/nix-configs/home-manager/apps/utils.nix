@@ -4,7 +4,7 @@
     axel wget file wgetpaste convmv termscp ouch rhash duperemove
 
     # some fancy cli tools
-    fastfetch onefetch delta genact glow dasel navi
+    fastfetch onefetch delta genact glow dasel navi nix-output-monitor
 
     # process utils
     killall screen
