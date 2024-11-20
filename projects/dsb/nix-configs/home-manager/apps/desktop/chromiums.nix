@@ -17,8 +17,7 @@ in
       (ewl "figma" "${figma-linux}/bin/figma-linux")
       (ewl "discord" "${vesktop}/bin/vesktop")
       (ewl "vscode" "${vscodium}/bin/codium")
-      # https://github.com/NixOS/nixpkgs/issues/352897
-      # (ewl "tetrio" "${pkgs.tetrio-desktop.override{withTetrioPlus=true;}}/bin/tetrio")
+      (ewl "tetrio" "${pkgs.tetrio-desktop.override{withTetrioPlus=true;}}/bin/tetrio")
       (ewl "bruno" "${bruno}/bin/bruno")
       (ewl "joplin" "${joplin-desktop}/bin/joplin-desktop")
       (ewl "signal" "${signal-desktop}/bin/signal-desktop")
