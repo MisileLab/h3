@@ -25,6 +25,7 @@ in
       (writeScript "lzg" "${lazygit}/bin/lazygit")
       (writeScript "nv" "${lunarvimp}/bin/lvim")
       (writeScript "lv" "${lunarvimp}/bin/lvim")
+      (writeScript "es" "${emacs30-nox}/bin/emacs")
       (writeScript "git-c" "~/repos/h3/projects/dsb/utils/.venv/bin/python ~/repos/h3/projects/dsb/utils/gen-commit-message.py")
     ];
     programs = {
