@@ -31,7 +31,7 @@
     # https://github.com/NixOS/nixpkgs/pull/356257
     ++ (with nodePackages_latest; [(pkgs.nodejs_22) typescript-language-server svelte-language-server]) # nodejs
     # https://nixpk.gs/pr-tracker.html?pr=355071
-    ++ (with python312Packages; [pip virtualenv python-lsp-server mitmproxy]); # python thing
+    ++ (with python312Packages; [pip virtualenv python-lsp-server mitmproxy pyright]); # python thing
     file = {
       "non-nixos-things/catppuccin-ghidra".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit{
         url="https://github.com/catppuccin/ghidra";
