@@ -58,6 +58,11 @@ async def theresa_sign(
       }
     )).json()["success"]:
       raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
+  raw = asdict(
+    await initializer.c.query_single('select theresa::Letter {id} filter .name=<str>$name limit 1', name=name)
+  )
+  if raw is None:
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
   send_email(
     name,
     f"<a href='https://misile.xyz/theresa/confirm?name={name}&email={email}&hash={sha3_256(f'{name}{email}{initializer.key}'.encode()).hexdigest()}'>click here to confirm</a>",
