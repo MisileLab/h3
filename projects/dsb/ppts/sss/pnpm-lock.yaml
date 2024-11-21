@@ -27,8 +27,8 @@ importers:
         specifier: 5.1.0
         version: 5.1.0
       tailwindcss:
-        specifier: 4.0.0-alpha.36
-        version: 4.0.0-alpha.36
+        specifier: 4.0.0-beta.1
+        version: 4.0.0-beta.1
     devDependencies:
       '@sveltejs/adapter-node':
         specifier: 5.2.9
@@ -1094,9 +1094,6 @@ packages:
   tailwindcss@4.0.0-alpha.15:
     resolution: {integrity: sha512-hlL3dKkgKTNz6dXe4OWJMngI9DdcJncGXvhhjdPkMc/Pqc81NCYaV/8Z11DZ4Djy5RSFfLf41HI6+DGeKtvJ2g==}
 
-  tailwindcss@4.0.0-alpha.36:
-    resolution: {integrity: sha512-dbI1o+KJ+anCe/RI7/RuaG8IReQromxF2DLgPQCIQALzfXrosfX9UovahoNRXvyCaAqRP5KWQGagvvTmW44irQ==}
-
   tailwindcss@4.0.0-beta.1:
     resolution: {integrity: sha512-Pnj2oLtAiNgnd+eHfW4RFuG8EIklYF1FModYFtr6bXrgLoZndePW5jX17Zwyo7Oeq+0dXTekjjMr5IRnQHgCXg==}
 
@@ -2019,8 +2016,6 @@ snapshots:
       zimmerframe: 1.1.2
 
   tailwindcss@4.0.0-alpha.15: {}
-
-  tailwindcss@4.0.0-alpha.36: {}
 
   tailwindcss@4.0.0-beta.1: {}
 
