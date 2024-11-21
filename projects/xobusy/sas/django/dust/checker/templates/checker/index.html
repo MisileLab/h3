@@ -1,0 +1,62 @@
+{% extends 'main.html' %}
+{% block content %}
+<!-- ---------------------- [edit] ------------------------ -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+<div class="row justify-content-center mb-2">
+    <div class="col-md-12">
+        <table class="table">
+            <thead>
+                <tr>
+                    {% for key in dust.keys %}
+                        <th scope="col">{{key}}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    {% for value in dust.values %}
+                        <td>{{value}}</td>
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="d-flex justify-content-center mb-2">
+    <div class="col-md-6">
+        <canvas id="myChart"></canvas>
+    </div>
+</div>
+
+<script>
+var label = new Array();
+var data = new Array();
+{% for key, value in dust.items %}
+    label.push('{{key}}');
+    data.push('{{value}}');
+{% endfor %}
+
+
+var ctx = document.getElementById('myChart').getContext('2d');
+var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'bar',
+
+    // The data for our dataset
+    data: {
+        labels: label,
+        datasets: [{
+            label: '미세먼지 수치',
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: data
+        }]
+    },
+
+    // Configuration options go here
+    options: {}
+});
+</script>
+<!-- -------------------------------------------------------- -->
+{% endblock %}
