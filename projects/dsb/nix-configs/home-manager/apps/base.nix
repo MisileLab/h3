@@ -3,6 +3,12 @@ let
   writeScript = name: content: pkgs.writeShellScriptBin name "#!${pkgs.fish}/bin/fish\n${content} $@";
   # https://github.com/NixOS/nixpkgs/pull/357119
   lunarvimp = pkgs.callPackage ./lunarvim.nix {};
+  emacsp = (pkgs.emacsPackagesFor pkgs.emacs-nox).emacsWithPackages (
+    epkgs: with epkgs; [
+      (treesit-grammars.with-grammars (p: builtins.attrValues p))
+      treesit-auto
+    ]
+  );
 in
   {
     imports = [
@@ -15,7 +21,7 @@ in
     home.packages = with pkgs; [
       sbctl bluez cryptsetup smartmontools borgbackup rclone pulsemixer
       portablemc miniserve openssl transmission glances (lunarvimp) pandoc wkhtmltopdf
-      yt-dlp age magic-wormhole ansifilter b3sum emacs30-nox
+      yt-dlp age magic-wormhole ansifilter b3sum (emacsp)
       (writeScript "manual" ''
         ${pkgs.glow}/bin/glow -p ~/.config/home-manager/manual.md
       '')
@@ -25,7 +31,8 @@ in
       (writeScript "lzg" "${lazygit}/bin/lazygit")
       (writeScript "nv" "${lunarvimp}/bin/lvim")
       (writeScript "lv" "${lunarvimp}/bin/lvim")
-      (writeScript "es" "${emacs30-nox}/bin/emacs")
+      (writeScript "doom" "~/.config/emacs/bin/doom")
+      (writeScript "es" "${emacsp}/bin/emacs")
       (writeScript "git-c" "~/repos/h3/projects/dsb/utils/.venv/bin/python ~/repos/h3/projects/dsb/utils/gen-commit-message.py")
     ];
     programs = {

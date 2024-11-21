@@ -23,6 +23,7 @@
       packwiz
       unityhub dotnet-sdk_8
       ccemux lua-language-server lua (pkgs.writeShellScriptBin "luajit" "${pkgs.luajit}/bin/lua")
+      shellcheck
 
       # custom file
       (pkgs.writeShellScriptBin "bs" "infisical run --project-config-dir=/home/misile/repos/h3/projects/dsb/utils -- ${pkgs.uv}/bin/uv run -p ~/repos/h3/projects/dsb/utils ~/repos/h3/projects/dsb/utils/butter-shell.py")
