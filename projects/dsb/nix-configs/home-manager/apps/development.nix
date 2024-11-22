@@ -13,7 +13,7 @@
       # Language tools
       ghc cabal-install
       (stablep.rustup) cargo-update
-      python313Full uv mypy ruff-lsp
+      python313Full uv mypy (stablep.ruff-lsp)
       nasm
       tailwindcss-language-server deno astro-language-server
       hvm bend
@@ -23,7 +23,9 @@
       packwiz
       unityhub dotnet-sdk_8
       ccemux lua-language-server lua (pkgs.writeShellScriptBin "luajit" "${pkgs.luajit}/bin/lua")
-      shellcheck
+
+      # lsp
+      shellcheck basedpyright
 
       # custom file
       (pkgs.writeShellScriptBin "bs" "infisical run --project-config-dir=/home/misile/repos/h3/projects/dsb/utils -- ${pkgs.uv}/bin/uv run -p ~/repos/h3/projects/dsb/utils ~/repos/h3/projects/dsb/utils/butter-shell.py")
@@ -32,7 +34,7 @@
     # https://github.com/NixOS/nixpkgs/pull/356257
     ++ (with nodePackages_latest; [(pkgs.nodejs_22) typescript-language-server svelte-language-server]) # nodejs
     # https://nixpk.gs/pr-tracker.html?pr=355071
-    ++ (with python312Packages; [pip virtualenv python-lsp-server mitmproxy pyright]); # python thing
+    ++ (with python312Packages; [pip virtualenv python-lsp-server mitmproxy]); # python thing
     file = {
       "non-nixos-things/catppuccin-ghidra".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit{
         url="https://github.com/catppuccin/ghidra";
