@@ -34,7 +34,6 @@ in
   programs = {
     obs-studio = {
       enable = true;
-      package = stablep.obs-studio;
       catppuccin.enable = true;
     };
     alacritty = {
