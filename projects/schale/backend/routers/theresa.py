@@ -1,12 +1,12 @@
+from libraries.initializer import initializer
+from libraries.email import send_email
+
 from fastapi import HTTPException, status, Header, UploadFile, APIRouter, Form
 from pydantic import BaseModel, Field
+from httpx import AsyncClient
 
 from hashlib import sha3_256
 from dataclasses import asdict
-from httpx import AsyncClient
-
-from ..libraries.initializer import initializer
-from ..libraries.email import send_email
 
 router = APIRouter()
 
@@ -27,7 +27,7 @@ class openLetter(openLetterBase):
   signers: list[Signer] = Field(description="list of signers", default=[])
 
 class openLetterPublic(openLetterBase):
-  signer: int = Field(description="count of signers", default=[])
+  signer: int = Field(description="count of signers", default=0)
 
 @router.get("/info")
 async def info(
