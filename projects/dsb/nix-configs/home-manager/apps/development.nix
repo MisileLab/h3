@@ -32,7 +32,7 @@
     ]
     ++ (with stablep.llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
     # https://github.com/NixOS/nixpkgs/pull/356257
-    ++ (with nodePackages_latest; [(pkgs.nodejs_22) typescript-language-server svelte-language-server]) # nodejs
+    ++ (with nodePackages_latest; [(pkgs.nodejs_22) typescript typescript-language-server svelte-language-server]) # nodejs
     # https://nixpk.gs/pr-tracker.html?pr=355071
     ++ (with python312Packages; [pip virtualenv python-lsp-server mitmproxy]); # python thing
     file = {
