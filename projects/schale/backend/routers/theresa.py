@@ -57,13 +57,13 @@ async def info_signers(
 @router.get("/info/signer")
 async def info_signer(
   name: str = Header(description="name of letter"),
-  signer_name: str = Header(description="name of signer")
+  name_signer: str = Header(description="name of signer")
 ) -> Signer:
   raw = asdict(
     await initializer.c.query_single(
-      'select theresa::Letter {signers filter .name=<str>$signer_name limit 1} filter .name=<str>$name limit 1',
+      'select theresa::Letter {signers filter .name=<str>$name_signer limit 1} filter .name=<str>$name limit 1',
       name=name,
-      signer_name=signer_name
+      name_signer=name_signer
     )
   )
   if raw is None:
@@ -74,14 +74,14 @@ async def info_signer(
 async def sign(
   name: str = Form(description="name of letter"),
   email: str = Form(description="email of signer"),
-  h_captcha_response: str = Form(description="h-captcha response")
+  hcaptcha_response: str = Form(description="h-captcha response")
 ):
   async with AsyncClient() as client:
     if not (await client.post(
       "https://hcaptcha.com/siteverify",
       data={
         "secret": initializer.config["security"]["h_captcha"],
-        "response": h_captcha_response
+        "response": hcaptcha_response
       }
     )).json()["success"]:
       raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
