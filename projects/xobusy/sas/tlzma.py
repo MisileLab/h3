@@ -107,7 +107,7 @@ def sliding_window(data: bytes) -> list[SlidingWindowedByte]:
     max_length = 0
     distance = 0
 
-    # 자신의 전의 부분들과 비교 (range(i)는 자동으로 i-1까지 반복되기 때문에 자기와 비교하지 않음)
+    # 자신의 전 부분들과 비교 (range(i)는 자동으로 i-1까지 반복되기 때문에 자기와 비교하지 않음)
     for j in range(i):
       current_pos = i
       look_pos = j
