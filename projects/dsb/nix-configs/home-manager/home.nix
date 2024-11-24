@@ -1,7 +1,4 @@
-{ config, pkgs, catppuccin, c, ... }:
-let
-  nurpkgs = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") { inherit pkgs; };
-in
+{ ... }:
 {
   imports = [
     ./apps/base.nix
@@ -15,6 +12,7 @@ in
       QT_QPA_PLATFORM = "wayland";
       EDITOR = "lvim";
       XDG_SCREENSHOTS_DIR = "/home/misile/screenshots";
+      COLORTERM = "truecolor";
     };
   };
 

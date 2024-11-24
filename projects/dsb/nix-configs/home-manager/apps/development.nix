@@ -1,4 +1,4 @@
-{pkgs, stablep, config, ...}:
+{pkgs, config, ...}:
 {
   home = {
     sessionVariables = {
@@ -25,14 +25,13 @@
       ccemux lua-language-server lua (pkgs.writeShellScriptBin "luajit" "${pkgs.luajit}/bin/lua")
 
       # lsp
-      shellcheck basedpyright
+      shellcheck basedpyright nil
 
       # custom file
       (pkgs.writeShellScriptBin "bs" "infisical run --project-config-dir=/home/misile/repos/h3/projects/dsb/utils -- ${pkgs.uv}/bin/uv run -p ~/repos/h3/projects/dsb/utils ~/repos/h3/projects/dsb/utils/butter-shell.py")
     ]
-    ++ (with stablep.llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
-    # https://github.com/NixOS/nixpkgs/pull/356257
-    ++ (with nodePackages_latest; [(pkgs.nodejs_22) typescript typescript-language-server svelte-language-server]) # nodejs
+    ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
+    ++ (with nodePackages_latest; [nodejs_22 typescript typescript-language-server svelte-language-server]) # nodejs
     # https://nixpk.gs/pr-tracker.html?pr=355071
     ++ (with python312Packages; [pip virtualenv python-lsp-server mitmproxy]); # python thing
     file = {

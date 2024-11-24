@@ -32,7 +32,8 @@ in
       (writeScript "nv" "${lunarvimp}/bin/lvim")
       (writeScript "lv" "${lunarvimp}/bin/lvim")
       (writeScript "doom" "~/.config/emacs/bin/doom")
-      (writeScript "es" "${emacsp}/bin/emacs")
+      (writeScript "es" "${emacsp}/bin/emacsclient")
+      (writeScript "esd" "${emacsp}/bin/emacs")
       (writeScript "git-c" "~/repos/h3/projects/dsb/utils/.venv/bin/python ~/repos/h3/projects/dsb/utils/gen-commit-message.py")
     ];
     programs = {
@@ -50,7 +51,7 @@ in
       bash = {
         enable = true;
         initExtra = ''
-          if [[ $(tty) == "/dev/tty1" ]] then
+          if [[ $(tty) == "/dev/tty1" ]]; then
             sway
           fi
         '';
@@ -123,6 +124,10 @@ in
       };
     };
     services = {
+      emacs = {
+        enable = true;
+        package = emacsp;
+      };
       gpg-agent = {
         enable = true;
         enableSshSupport = true;

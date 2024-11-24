@@ -4,17 +4,14 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs";
     stable.url = "github:nixos/nixpkgs/nixos-unstable";
+    # nur.url = "github:nix-community/NUR";
     catppuccin.url = "github:catppuccin/nix";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    c = {
-      url = "path:./config.nix";
-      flake = false;
-    };
   };
-  outputs = { nixpkgs, stable, home-manager, catppuccin, c, ... }:
+  outputs = { nixpkgs, stable, home-manager, catppuccin, ... }:
     let
       system = "x86_64-linux"; # replace with your system
       pkgs = import nixpkgs {inherit system;};
