@@ -12,7 +12,7 @@ in
   home.packages = with pkgs; [swaysome swayimg jq libnotify];
   wayland.windowManager.sway = {
     enable = true;
-    extraConfigEarly = ''
+    extraConfig = ''
 seat * shortcuts_inhibitor disable
 
 input type:touchpad {
@@ -23,13 +23,17 @@ input type:touchpad {
 blur enable
 blur_xray enable
 blur_radius 10
-corner_radius 8
 blur_passes 4
 shadows enable
 
 for_window [class=".*"] opacity 0.9
 for_window [app_id=".*"] opacity 0.9
 for_window [instance="GalaxyBudsClient"] floating enable
+titlebar_separator disable
+hide_edge_borders --i3 smart_no_gaps
+font pango:monospace 0.001
+titlebar_border_thickness 0
+titlebar_padding 1
 
 bindsym Print exec ${pkgs.sway-contrib.grimshot}/bin/grimshot --notify copy area
 bindsym Shift+Print	exec ${pkgs.sway-contrib.grimshot}/bin/grimshot --notify copy screen
