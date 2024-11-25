@@ -1,4 +1,5 @@
 from collections import Counter
+from copy import deepcopy
 import struct
 
 class SlidingWindowedByte:
@@ -15,7 +16,7 @@ class SlidingWindowedByte:
   def to_str_tuple(self) -> tuple[int, int, str]:
     return (self.distance, self.length, self.value.decode())
 
-  def __repr__(self) -> tuple[int, int, str]:
+  def __repr__(self) -> str:
     return self.to_str_tuple().__str__()
 
 def convert_to_bytes(data: list[SlidingWindowedByte]):
@@ -28,11 +29,26 @@ def convert_to_bytes(data: list[SlidingWindowedByte]):
     result.append(0)  # Null byte separator (optional, for clarity)
   return bytes(result)
 
-def build_possibility(sliding: list[SlidingWindowedByte]):
+def build_possibility(sliding: list[SlidingWindowedByte]) -> dict[int, float]:
   c = Counter(convert_to_bytes(sliding))
   kv = {k: c[k] / c.total() for k in c}
   assert sum(kv.values()) == 1
   return kv
+
+def encode_range(possibility: dict[int, float], values: bytes) -> float:
+  ranges = {0: possibility[0]}
+  del possibility[0]
+  for k, v in possibility.items():
+    val = max(ranges.values())+v
+    print(val)
+    ranges[k] = val
+  print(ranges)
+  for i in values:
+    freq_min = min(ranges.values())
+    freq_val = ranges[i]
+    for k, v in ranges.items():
+      ranges[k] = v*freq_val+freq_min
+  return min(ranges.values())
 
 # https://dalinaum.github.io/algorithm/2020/12/14/zip-compression.html
 def sliding_window(data: bytes) -> list[SlidingWindowedByte]:
@@ -104,5 +120,9 @@ if __name__ == '__main__':
   print(sld)
   print(f"res: {decode_sliding_window(sld)}")
   frq = build_possibility(sld)
-  s = convert_to_bytes(sld)
+  by = convert_to_bytes(sld)
   print(frq)
+  enc = encode_range(frq, by)
+  print(enc)
+  # dec = decode_range(frq, by)
+  # print(dec)
