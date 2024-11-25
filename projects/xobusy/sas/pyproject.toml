@@ -1,0 +1,8 @@
+[project]
+name = "sas"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = "==3.13.0"
+dependencies = [
+  "kaitaistruct==0.10",
+]

@@ -1,0 +1,22 @@
+version = 1
+requires-python = "==3.13.0"
+
+[[package]]
+name = "kaitaistruct"
+version = "0.10"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/54/04/dd60b9cb65d580ef6cb6eaee975ad1bdd22d46a3f51b07a1e0606710ea88/kaitaistruct-0.10.tar.gz", hash = "sha256:a044dee29173d6afbacf27bcac39daf89b654dd418cfa009ab82d9178a9ae52a", size = 7061 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/4e/bf/88ad23efc08708bda9a2647169828e3553bb2093a473801db61f75356395/kaitaistruct-0.10-py2.py3-none-any.whl", hash = "sha256:a97350919adbf37fda881f75e9365e2fb88d04832b7a4e57106ec70119efb235", size = 7013 },
+]
+
+[[package]]
+name = "sas"
+version = "0.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "kaitaistruct" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "kaitaistruct", specifier = "==0.10" }]
