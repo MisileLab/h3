@@ -12,7 +12,7 @@ in
   home.packages = with pkgs; [swaysome swayimg jq libnotify];
   wayland.windowManager.sway = {
     enable = true;
-    extraConfig = ''
+    extraConfigEarly = ''
 seat * shortcuts_inhibitor disable
 
 input type:touchpad {
@@ -70,7 +70,7 @@ bindsym Mod4+shift+y exec ${pkgs.swayfx}/bin/swaynag --type warning -m 'You want
       menu = "${pkgs.rofi-wayland}/bin/rofi -show drun";
       terminal = "${pkgs.alacritty}/bin/alacritty";
       fonts = {
-        names = ["Fira Code NF" "Fira Code" "NanumSquare"];
+        names = ["FiraCode Nerd Font Mono" "NanumSquare"];
         style = "Regular";
         size = 12.0;
       };
@@ -176,7 +176,7 @@ bindsym Mod4+shift+y exec ${pkgs.swayfx}/bin/swaynag --type warning -m 'You want
     }];
     style = ''
       * {
-        font-family: 'Fira Code', monospace;
+        font-family: 'FiraCode Nerd Font Mono', monospace;
       }
       window#waybar {${returnColorCSS({r=108;g=112;b=134;a=0.4;})}}
       #workspaces button {

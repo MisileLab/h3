@@ -1,8 +1,6 @@
 {pkgs, ...}:
 let
   writeScript = name: content: pkgs.writeShellScriptBin name "#!${pkgs.fish}/bin/fish\n${content} $@";
-  # https://github.com/NixOS/nixpkgs/pull/357119
-  lunarvimp = pkgs.callPackage ./lunarvim.nix {};
   emacsp = (pkgs.emacsPackagesFor pkgs.emacs-nox).emacsWithPackages (
     epkgs: with epkgs; [
       (treesit-grammars.with-grammars (p: builtins.attrValues p))
@@ -20,7 +18,7 @@ in
     ];
     home.packages = with pkgs; [
       sbctl bluez cryptsetup smartmontools borgbackup rclone pulsemixer
-      portablemc miniserve openssl transmission glances (lunarvimp) pandoc wkhtmltopdf
+      portablemc miniserve openssl transmission glances lunarvim pandoc wkhtmltopdf
       yt-dlp age magic-wormhole ansifilter b3sum (emacsp)
       (writeScript "manual" ''
         ${pkgs.glow}/bin/glow -p ~/.config/home-manager/manual.md
@@ -29,8 +27,8 @@ in
       (writeScript "cat" "${bat}/bin/bat")
       (writeScript "ocat" "${coreutils}/bin/cat")
       (writeScript "lzg" "${lazygit}/bin/lazygit")
-      (writeScript "nv" "${lunarvimp}/bin/lvim")
-      (writeScript "lv" "${lunarvimp}/bin/lvim")
+      (writeScript "nv" "${lunarvim}/bin/lvim")
+      (writeScript "lv" "${lunarvim}/bin/lvim")
       (writeScript "doom" "~/.config/emacs/bin/doom")
       (writeScript "es" "${emacsp}/bin/emacsclient")
       (writeScript "esd" "${emacsp}/bin/emacs")
