@@ -103,7 +103,7 @@ async def confirm(
   email: str = Header(description="email of signer"),
   hash: str = Header(description="hash of signer"),
   message: str = Header(description="message of signer"),
-  signature: UploadFile | None = None
+  signature: str | None = Header(description="signature of signer", default=None)
 ):
   if hash != sha3_256(f"{name_signer}{email}{initializer.key}".encode()).hexdigest():
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
@@ -126,9 +126,9 @@ async def confirm(
           email := <str>$email,
           message := <str>$message,
           hash := <str>$hash,
-          signature := <bytes>$signature
+          signature := <str>$signature
         }
-      ''', name=name_signer, email=email, message=message, signature=signature.file.read(), hash=hash)).id
+      ''', name=name_signer, email=email, message=message, signature=signature, hash=hash)).id
   elif signature is None:
     _id = (await initializer.c.query_single('''update theresa::User filter .id = <uuid>$id set {
       name := <str>$name,
@@ -142,8 +142,8 @@ async def confirm(
       email := <str>$email,
       message := <str>$message,
       hash := <str>$hash,
-      signature := <bytes>$signature
-    }''', name=name_signer, email=email, message=message, hash=hash, signature=signature.file.read(), id=dupe_id.id)).id
+      signature := <str>$signature
+    }''', name=name_signer, email=email, message=message, hash=hash, signature=signature, id=dupe_id.id)).id
   await initializer.c.execute(
     "update theresa::Letter filter .name = <str>$name set {signers += (select detached theresa::User filter .id = <std::uuid>$id)}",
     name=name,

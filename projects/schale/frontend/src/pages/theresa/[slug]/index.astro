@@ -1,16 +1,16 @@
 ---
 import Base from "../../../components/base.astro"
 import Text from "../../../components/text.astro"
-import { type Post, f } from "./example"
+import { type Post, getPost } from "./lib.ts"
 
 import { nullValue } from "@misile/satellite/errors"
 import { nullVerify } from "@misile/satellite"
 
-let post: Post | null = null;
+const { slug } = Astro.props;
+let post: Post | undefined = await getPost(slug);
 
 try {
-  const slug = nullVerify(Astro.params.slug)
-  post = nullVerify(f[slug])
+  post = nullVerify(post);
 }
 catch (e) {
   if (e instanceof nullValue) {
@@ -35,7 +35,7 @@ catch (e) {
           <p class="text-black">|</p>
           <Text><a href=`${Astro.url.pathname}/sign`>Sign</a></Text>
           <p class="text-black">|</p>
-          <Text><a href=`${Astro.url.pathname}/signers`>Signers</a></Text>
+          <Text><a href=`${Astro.url.pathname}/signers`>Signers ({post.signer})</a></Text>
         </div>
       </div>
     </div>

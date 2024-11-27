@@ -1,15 +1,14 @@
 ---
 import Base from "../../../components/base.astro"
-import { type Post, f } from "./example"
 
 import { nullValue } from "@misile/satellite/errors"
 import { nullVerify } from "@misile/satellite"
+import { type Post, getPost } from "./lib";
 
 let post: Post | null = null;
 
 try {
-  const slug = nullVerify(Astro.params.slug)
-  post = nullVerify(f[slug])
+  post = nullVerify(await getPost(nullVerify(Astro.params.slug)))
 }
 catch (e) {
   if (e instanceof nullValue) {
@@ -23,41 +22,23 @@ catch (e) {
 <Base>
   <Fragment slot="head">
     <title>{post.title}</title>
-    <script>
-      import { queryId } from "@misile/satellite"
-      import { atom } from "nanostores"
-
-      const email = atom<string>("");
-
-      queryId("email").addEventListener("input", (e) => {
-        email.set((e.target as HTMLInputElement).value)
-      })
-      email.subscribe((v)=>{
-        queryId("email").innerText = v
-      })
-      queryId("confirm").addEventListener("click", () => {
-        const emailValue = email.get()
-        if (emailValue === "") {
-          alert("Please enter your email")
-          return
-        }
-        // I'll integrate with backend
-      })
-    </script>
+    <script src="https://js.hcaptcha.com/1/api.js" async defer />
   </Fragment>
   <div class="w-full h-full flex flex-row">
     <div class="w-full h-screen justify-center items-center flex flex-col px-2 sm:px-0">
       <div class="flex flex-col gap-y-2">
         <p class="text-black text-4xl sm:text-6xl font-bold">sign {post.title}</p>
         <div class="flex flex-row w-full gap-x-6 font-semibold text-2xl sm:text-4xl">
-          <span class="whitespace-nowrap">email: </span>
-          <input title="email" type="email" class="bg-white font-normal border-b-2 border-solid w-full break-words" id="email"/>
-          <button class="whitespace-nowrap border-2 border-solid px-2" id="confirm">Confirm</button>
+          <form action="" method="post">
+            <span class="whitespace-nowrap">email: </span>
+            <input title="email" type="email" class="bg-white font-normal border-b-2 border-solid w-full break-words" id="email" />
+            <input type="submit" class="whitespace-nowrap border-2 border-solid px-2" id="confirm">Confirm</input>
+            <div class="h-captcha" data-sitekey="1ef03836-7fd6-4c70-9ebe-106e5098fe54" /> {/*gitleaks:allow*/}
+          </form>
         </div>
         <p class="text-gray text-xl sm:text-3xl font-normal">
           If you want to sign without email, please <a href="/contact" class="text-blue">contact me with simplex</a>
         </p>
-        {/* hcaptcha */}
       </div>
     </div>
 	</div>

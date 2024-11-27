@@ -1,16 +1,17 @@
 ---
 import Base from "../../../components/base.astro"
 import Modal from "../../../components/modal.astro"
-import { type Post, f } from "./example"
+import { type Post, getPost, type Signer, getSigners } from "./lib.ts"
 
 import { nullValue } from "@misile/satellite/errors"
 import { nullVerify } from "@misile/satellite"
 
 let post: Post | null = null;
+let signers: Signer[] | null = null;
 
 try {
-  const slug = nullVerify(Astro.params.slug)
-  post = nullVerify(f[slug])
+  post = nullVerify(await getPost(nullVerify(Astro.params.slug)))
+  signers = nullVerify(await getSigners(nullVerify(Astro.params.slug)))
 }
 catch (e) {
   if (e instanceof nullValue) {
@@ -28,19 +29,37 @@ catch (e) {
       import { queryAll, queryId } from "@misile/satellite"
       import { atom } from "nanostores"
       import { isMobileOnly } from "mobile-device-detect";
+      import { nullVerify } from "@misile/satellite";
+      import { getSigner } from "./lib.ts";
 
       const m = queryId("modal") as HTMLDialogElement;
       const opened = atom(false)
+      const modal_name = queryId("modal-title")
+      const modal_email = queryId("modal-email")
+      const modal_message = queryId("modal-message")
+      const modal_signature = queryId("modal-signature") as HTMLImageElement
+
+      async function clickHandle(e: MouseEvent) {
+        const name = nullVerify(nullVerify(e.target as HTMLElement | null).dataset.name)
+        const signer = nullVerify(await getSigner(document.title, name))
+        modal_name.innerText = signer.name
+        modal_email.innerText = `email: ${signer.email}`
+        modal_message.innerText = `message: ${signer.message}}`
+        if (signer.signature === undefined) {
+          modal_signature.src = ""
+          modal_signature.classList.add('w-0')
+        } else {
+          modal_signature.src = signer.signature
+          modal_signature.classList.remove('w-0')
+        }
+        opened.set(true)
+      }
 
       for (let i of queryAll("#name")) {
-        i.addEventListener('click', ()=>{
-          opened.set(true)
-        })
+        i.addEventListener('click', clickHandle)
       }
       for (let i of queryAll("#signature")) {
-        i.addEventListener('click', ()=>{
-          opened.set(true)
-        })
+        i.addEventListener('click', clickHandle)
       }
 
       const cl = m.classList
@@ -68,12 +87,15 @@ catch (e) {
         <div class="w-full flex flex-col justify-between bg-white h-full px-8 py-8">
           <div class="flex flex-col justify-start w-full font-normal text-xl lg:text-4xl gap-y-2 flex-1 overflow-hidden">
             <div class="flex flex-col justify-center">
-              <h1 class="text-4xl lg:text-6xl font-bold">A Long name</h1>
+              <h1 class="text-4xl lg:text-6xl font-bold" id="modal-title">A Long name</h1>
             </div>
-            <p>email: longnames@duck.com</p>
-            <p>message: the signature moment</p>
+            <p id="modal-email">email: longnames@duck.com</p>
+            <p id="modal-message">message: the signature moment</p>
             <div class="flex-1 relative">
-              <img src={post.signers[1].signature} class={`absolute inset-0 w-full h-full object-contain ${post.signers[1].signature!==undefined?"":"w-0"}`} />
+              <img
+                id="modal-signature"
+                class="absolute inset-0 w-full h-full object-contain"
+              />
             </div>
           </div>
           <div class="flex flex-row justify-center mt-4">
@@ -82,14 +104,16 @@ catch (e) {
         </div>
       </Modal>
       <div class="flex flex-col gap-y-2">
-        {post.signers.map((signer) => {
-          return <span class="font-bold inline-block cursor-pointer" id="name" data-name={signer.name}>{signer.name}</span>
-        })}
+        {signers.map((signer)=><span class="font-bold inline-block cursor-pointer" id="name" data-name={signer.name}>{signer.name}</span>)}
       </div>
       <div class="flex flex-col gap-y-2">
-        {post.signers.map((signer) => {
-          return <img src={signer.signature} data-name={signer.name} id="signature" alt="" class={`h-[1em] cursor-pointer ${signer.signature!==undefined?"":"w-0"}`} />
-        })}
+        {signers.map((signer)=><img
+          src={signer.signature}
+          data-name={signer.name}
+          id="signature"
+          alt=""
+          class={`h-[1em] cursor-pointer ${signer.signature!==undefined?"":"w-0"}`} />)
+        }
       </div>
     </div>
 	</div>

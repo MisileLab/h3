@@ -1,0 +1,24 @@
+---
+import Base from "../../../components/base.astro"
+
+import { nullVerify } from "@misile/satellite"
+import { nullValue } from "@misile/satellite/errors"
+
+let slug = Astro.params.slug
+
+try {
+  slug = nullVerify(slug)
+} catch (e) {
+  if (e instanceof nullValue) {
+    return new Response("not found", { status: 404 })
+  } else {
+    throw e
+  }
+}
+---
+
+<Base>
+  <Fragment slot="head">
+    <title>{slug}</title>
+  </Fragment>
+</Base>

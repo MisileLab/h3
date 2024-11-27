@@ -11,6 +11,6 @@ module theresa {
     required email: str;
     required message: str;
     required hash: str {constraint exclusive};
-    signature: bytes;
+    signature: str;
   }
 }
