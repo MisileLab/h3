@@ -29,11 +29,6 @@ shadows enable
 for_window [class=".*"] opacity 0.9
 for_window [app_id=".*"] opacity 0.9
 for_window [instance="GalaxyBudsClient"] floating enable
-titlebar_separator disable
-hide_edge_borders --i3 smart_no_gaps
-font pango:monospace 0.001
-titlebar_border_thickness 0
-titlebar_padding 1
 
 bindsym Print exec ${pkgs.sway-contrib.grimshot}/bin/grimshot --notify copy area
 bindsym Shift+Print	exec ${pkgs.sway-contrib.grimshot}/bin/grimshot --notify copy screen
@@ -49,6 +44,13 @@ bindsym XF86MonBrightnessDown exec ${pkgs.avizo}/bin/lightctl down
 
 bindsym Mod4+y exec ${pkgs.clipman}/bin/clipman pick --tool="rofi" --max-items=30
 bindsym Mod4+shift+y exec ${pkgs.swayfx}/bin/swaynag --type warning -m 'You want to clear clipboard?' -b 'Yes' 'exec ${pkgs.clipman}/bin/clipman clear --all'
+    '';
+    extraConfig = ''
+titlebar_separator disable
+hide_edge_borders --i3 smart_no_gaps
+font pango:monospace 0.001
+titlebar_border_thickness 0
+titlebar_padding 1
     '';
     config = {
       bars = [];
@@ -74,7 +76,10 @@ bindsym Mod4+shift+y exec ${pkgs.swayfx}/bin/swaynag --type warning -m 'You want
         style = "Regular";
         size = 12.0;
       };
-      window.titlebar = false;
+      window = {
+        titlebar = false;
+        border = 0;
+      };
       modifier = "Mod4";
     };
     checkConfig = false;
