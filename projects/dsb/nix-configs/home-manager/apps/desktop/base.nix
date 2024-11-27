@@ -1,4 +1,4 @@
-{config, pkgs, ...}:
+{config, pkgs, stablep, ...}:
 let
   briar-desktop = pkgs.callPackage ./briar.nix {};
 in
@@ -16,7 +16,7 @@ in
       brightnessctl clipman wl-clipboard pavucontrol
       imagemagick virt-manager appflowy xfce.thunar
       galaxy-buds-client ferium prismlauncher
-      seahorse kdePackages.filelight qemu firefoxpwa gparted exodus
+      seahorse kdePackages.filelight qemu (stablep.firefoxpwa) gparted exodus
       onionshare jetbrains.idea-community-bin gimp /*zed-editor*/ telegram-desktop
     ] ++ ([briar-desktop exodus]);
     file = {
@@ -49,7 +49,8 @@ in
     };
     firefox = {
       enable = true;
-      nativeMessagingHosts = [pkgs.firefoxpwa];
+      package = stablep.firefox;
+      nativeMessagingHosts = [stablep.firefoxpwa];
     };
   };
   xdg = {
