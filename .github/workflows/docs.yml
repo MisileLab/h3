@@ -22,7 +22,7 @@ jobs:
           fi
 
       - name: Deploy
-        uses: JamesIves/github-pages-deploy-action@v4.7.0
+        uses: JamesIves/github-pages-deploy-action@v4.7.1
         if: ${{ hashFiles('not-exist-really') != '' }}
         with:
           branch: gh-pages
