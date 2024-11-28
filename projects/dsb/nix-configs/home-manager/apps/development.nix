@@ -23,6 +23,7 @@
       packwiz
       unityhub dotnet-sdk_8
       ccemux lua-language-server lua (pkgs.writeShellScriptBin "luajit" "${pkgs.luajit}/bin/lua")
+      vala
 
       # lsp
       shellcheck basedpyright nil
