@@ -9,5 +9,5 @@ dependencies = [
   "edgedb==2.2.0",
   "fastapi[standard]==0.115.5",
   "tomli==2.2.1",
-  "python-multipart==0.0.17"
+  "python-multipart==0.0.18"
 ]
