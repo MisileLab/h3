@@ -1,7 +1,7 @@
 from libraries.initializer import initializer
 from libraries.email import send_email
 
-from fastapi import HTTPException, status, Header, UploadFile, APIRouter, Form
+from fastapi import HTTPException, status, Header, APIRouter, Form
 from pydantic import BaseModel, Field
 from httpx import AsyncClient
 
@@ -33,11 +33,10 @@ class openLetterPublic(openLetterBase):
 async def info(
   name: str = Header(description="name of letter")
 ) -> openLetterPublic:
-  raw = asdict(
-    await initializer.c.query_single('select theresa::Letter {name, tldr, file, signers: {id}} filter .name=<str>$name limit 1', name=name)
-  )
+  raw = await initializer.c.query_single('select theresa::Letter {name, tldr, file, signers: {id}} filter .name=<str>$name limit 1', name=name)
   if raw is None:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+  raw = asdict(raw)
   raw["signer"] = len(raw["signers"])
   del raw["signers"]
   return openLetterPublic(**raw)
@@ -46,11 +45,10 @@ async def info(
 async def info_signers(
   name: str = Header(description="name of letter")
 ) -> list[SignerBase]:
-  raw = asdict(
-    await initializer.c.query_single('select theresa::Letter {signers: {name, signature}} filter .name=<str>$name limit 1', name=name)
-  )
+  raw = await initializer.c.query_single('select theresa::Letter {signers: {name, signature}} filter .name=<str>$name limit 1', name=name)
   if raw is None:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+  raw = asdict(raw)
   signers = raw["signers"]
   return [SignerBase(**i) for i in signers]
 
@@ -59,22 +57,21 @@ async def info_signer(
   name: str = Header(description="name of letter"),
   name_signer: str = Header(description="name of signer")
 ) -> Signer:
-  raw = asdict(
-    await initializer.c.query_single(
-      'select theresa::Letter {signers filter .name=<str>$name_signer limit 1} filter .name=<str>$name limit 1',
-      name=name,
-      name_signer=name_signer
-    )
+  raw = await initializer.c.query_single(
+    'select theresa::Letter {signers: {name, signature, email, message} filter .name=<str>$name_signer limit 1} filter .name=<str>$name limit 1',
+    name=name,
+    name_signer=name_signer
   )
   if raw is None:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+  raw = asdict(raw)
   return Signer(**raw["signers"][0])
 
 @router.post("/sign")
 async def sign(
   name: str = Form(description="name of letter"),
   email: str = Form(description="email of signer"),
-  hcaptcha_response: str = Form(description="h-captcha response")
+  hcaptcha_response: str = Form(description="h-captcha response", convert_underline=False, alias="h-captcha-response")
 ):
   async with AsyncClient() as client:
     if not (await client.post(
@@ -85,11 +82,10 @@ async def sign(
       }
     )).json()["success"]:
       raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
-  raw = asdict(
-    await initializer.c.query_single('select theresa::Letter {id} filter .name=<str>$name limit 1', name=name)
-  )
+  raw = await initializer.c.query_single('select theresa::Letter {id} filter .name=<str>$name limit 1', name=name)
   if raw is None:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+  raw = asdict(raw)
   send_email(
     name,
     f"<a href='https://misile.xyz/theresa/confirm?name={name}&email={email}&hash={sha3_256(f'{name}{email}{initializer.key}'.encode()).hexdigest()}'>click here to confirm</a>",
@@ -105,7 +101,7 @@ async def confirm(
   message: str = Header(description="message of signer"),
   signature: str | None = Header(description="signature of signer", default=None)
 ):
-  if hash != sha3_256(f"{name_signer}{email}{initializer.key}".encode()).hexdigest():
+  if hash != sha3_256(f"{name}{email}{initializer.key}".encode()).hexdigest():
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
   name_signer = name_signer.split("\n")[0]
   dupe_id = await initializer.c.query_single('select theresa::User {id} filter .name=<str>$name limit 1', name=name_signer)

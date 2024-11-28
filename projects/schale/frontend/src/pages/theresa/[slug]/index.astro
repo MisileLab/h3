@@ -5,15 +5,16 @@ import { type Post, getPost } from "./lib.ts"
 
 import { nullValue } from "@misile/satellite/errors"
 import { nullVerify } from "@misile/satellite"
+import { statusError } from "../../../components/request"
 
-const { slug } = Astro.props;
-let post: Post | undefined = await getPost(slug);
+const { slug } = Astro.params;
+let post: Post;
 
 try {
-  post = nullVerify(post);
+  post = await getPost(nullVerify(slug));
 }
 catch (e) {
-  if (e instanceof nullValue) {
+  if (e instanceof nullValue || e instanceof statusError) {
     return new Response("Not found", { status: 404 })
   } else {
     throw e
@@ -23,12 +24,12 @@ catch (e) {
 
 <Base>
   <Fragment slot="head">
-    <title>{post.title}</title>
+    <title>{post.name}</title>
   </Fragment>
 	<div class="w-full h-full flex flex-row">
     <div class="w-full h-screen justify-center items-center flex flex-col">
       <div class="flex flex-col">
-        <Text><p class="text-black text-4xl sm:text-6xl font-bold">{post.title}</p></Text>
+        <Text><p class="text-black text-4xl sm:text-6xl font-bold">{post.name}</p></Text>
         <Text><p class="text-2xl sm:text-4xl font-normal text-gray">{post.tldr}</p></Text>
         <div class="flex flex-row w-fit h-fit text-xl sm:text-3xl font-normal text-blue gap-2">
           <Text><a href={post.file}>File</a></Text>

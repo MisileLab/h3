@@ -409,6 +409,7 @@ dependencies = [
     { name = "boto3" },
     { name = "edgedb" },
     { name = "fastapi", extra = ["standard"] },
+    { name = "python-multipart" },
     { name = "tomli" },
 ]
 
@@ -417,6 +418,7 @@ requires-dist = [
     { name = "boto3", specifier = "==1.35.71" },
     { name = "edgedb", specifier = "==2.2.0" },
     { name = "fastapi", extras = ["standard"], specifier = "==0.115.5" },
+    { name = "python-multipart", specifier = "==0.0.17" },
     { name = "tomli", specifier = "==2.2.1" },
 ]
 

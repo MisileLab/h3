@@ -3,13 +3,14 @@ import Base from "../../../components/base.astro"
 
 import { nullVerify } from "@misile/satellite"
 import { nullValue } from "@misile/satellite/errors"
+import { statusError } from "../../../components/request"
 
 let slug = Astro.params.slug
 
 try {
   slug = nullVerify(slug)
 } catch (e) {
-  if (e instanceof nullValue) {
+  if (e instanceof nullValue || e instanceof statusError) {
     return new Response("not found", { status: 404 })
   } else {
     throw e
@@ -62,8 +63,8 @@ try {
           name,
           name_signer_value,
           email,
-          message_value,
           hash,
+          message_value,
           signature_value
         )
       })

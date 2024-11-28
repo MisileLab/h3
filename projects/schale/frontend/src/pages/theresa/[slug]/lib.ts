@@ -1,3 +1,5 @@
+import { fetchAPILow } from "../../../components/request"
+
 export interface Signer {
   name: string
   email: string
@@ -6,13 +8,13 @@ export interface Signer {
 }
 
 export interface Post {
-  title: string
+  name: string
   tldr: string
   file: string
   signer: number
 }
 
-export const url = "https://misile.xyz/api"
+export const url = import.meta.env.PROD?"https://misile.xyz/api/theresa":"http://127.0.0.1:8000/api/theresa"
 
 async function fetchAPI<T>(
   path: string,
@@ -20,27 +22,12 @@ async function fetchAPI<T>(
   method: string = "GET",
   formdata: Record<string, string> | undefined = undefined
 ): Promise<T> {
-  let fd = undefined;
-  if (formdata !== undefined) {
-    fd = new FormData();
-    for (const i of Object.keys(formdata)) {
-      fd.append(i, formdata[i])
-    }
-  }
-  const header = new Headers()
-  for (const i of Object.keys(headers)) {
-    header.append(i, headers[i])
-  }
   if (!path.startsWith("/")) {path = "/" + path;}
-  return JSON.parse(await (await fetch(`${url}${path}`, {
-    method: method,
-    headers: headers,
-    body: fd
-  })).text()) as T
+  return fetchAPILow(`${url}${path}`, headers, method, formdata)
 }
 
 export async function getPost(name: string): Promise<Post> {
-  return fetchAPI("info", {name: name})
+  return fetchAPI("/info", {name: name})
 }
 
 export async function getSigner(
@@ -69,5 +56,5 @@ export async function confirm(
     hash: hash,
     message: message,
     signature: signature
-  })
+  }, "POST")
 }

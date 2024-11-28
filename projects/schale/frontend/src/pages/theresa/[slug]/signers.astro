@@ -5,6 +5,7 @@ import { type Post, getPost, type Signer, getSigners } from "./lib.ts"
 
 import { nullValue } from "@misile/satellite/errors"
 import { nullVerify } from "@misile/satellite"
+import { statusError } from "../../../components/request"
 
 let post: Post | null = null;
 let signers: Signer[] | null = null;
@@ -14,7 +15,7 @@ try {
   signers = nullVerify(await getSigners(nullVerify(Astro.params.slug)))
 }
 catch (e) {
-  if (e instanceof nullValue) {
+  if (e instanceof nullValue || e instanceof statusError) {
     return new Response("Not found", { status: 404 })
   } else {
     throw e
@@ -24,7 +25,7 @@ catch (e) {
 
 <Base>
   <Fragment slot="head">
-    <title>{post.title}</title>
+    <title>{post.name}</title>
     <script>
       import { queryAll, queryId } from "@misile/satellite"
       import { atom } from "nanostores"
@@ -44,7 +45,7 @@ catch (e) {
         const signer = nullVerify(await getSigner(document.title, name))
         modal_name.innerText = signer.name
         modal_email.innerText = `email: ${signer.email}`
-        modal_message.innerText = `message: ${signer.message}}`
+        modal_message.innerText = `message: ${signer.message}`
         if (signer.signature === undefined) {
           modal_signature.src = ""
           modal_signature.classList.add('w-0')
@@ -83,8 +84,8 @@ catch (e) {
   </Fragment>
   <div class="w-full h-full flex flex-col items-center justify-center">
     <div class="w-full h-full flex flex-row font-bold text-4xl md:text-7xl justify-center py-[6%]">
-      <Modal id="modal" classv="w-1/2 h-1/2 bg-white overflow-hidden">
-        <div class="w-full flex flex-col justify-between bg-white h-full px-8 py-8">
+      <Modal id="modal" classv="w-full h-full mx-8 px-8 bg-white overflow-hidden">
+        <div class="w-full flex flex-col justify-between bg-white h-full py-8 px-8">
           <div class="flex flex-col justify-start w-full font-normal text-xl lg:text-4xl gap-y-2 flex-1 overflow-hidden">
             <div class="flex flex-col justify-center">
               <h1 class="text-4xl lg:text-6xl font-bold" id="modal-title">A Long name</h1>

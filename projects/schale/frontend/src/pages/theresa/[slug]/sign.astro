@@ -3,7 +3,8 @@ import Base from "../../../components/base.astro"
 
 import { nullValue } from "@misile/satellite/errors"
 import { nullVerify } from "@misile/satellite"
-import { type Post, getPost } from "./lib";
+import { type Post, getPost, url } from "./lib";
+import { statusError } from "../../../components/request";
 
 let post: Post | null = null;
 
@@ -11,7 +12,7 @@ try {
   post = nullVerify(await getPost(nullVerify(Astro.params.slug)))
 }
 catch (e) {
-  if (e instanceof nullValue) {
+  if (e instanceof nullValue || e instanceof statusError) {
     return new Response("Not found", { status: 404 })
   } else {
     throw e
@@ -21,21 +22,20 @@ catch (e) {
 
 <Base>
   <Fragment slot="head">
-    <title>{post.title}</title>
+    <title>{post.name}</title>
     <script src="https://js.hcaptcha.com/1/api.js" async defer />
   </Fragment>
   <div class="w-full h-full flex flex-row">
     <div class="w-full h-screen justify-center items-center flex flex-col px-2 sm:px-0">
       <div class="flex flex-col gap-y-2">
-        <p class="text-black text-4xl sm:text-6xl font-bold">sign {post.title}</p>
-        <div class="flex flex-row w-full gap-x-6 font-semibold text-2xl sm:text-4xl">
-          <form action="" method="post">
-            <span class="whitespace-nowrap">email: </span>
-            <input title="email" type="email" class="bg-white font-normal border-b-2 border-solid w-full break-words" id="email" />
-            <input type="submit" class="whitespace-nowrap border-2 border-solid px-2" id="confirm">Confirm</input>
+        <p class="text-black text-4xl sm:text-6xl font-bold">sign {post.name}</p>
+          <form action={`${url}/sign`} method="post" class="text-2xl sm:text-4xl">
+            <input title="name" name="name" type="hidden" value={post.name} />
+            <label for="email" class="whitespace-nowrap inline">email: </label>
+            <input title="email" name="email" type="email" class="bg-white font-normal border-b-2 border-solid break-words" id="email" />
+            <input type="submit" class="whitespace-nowrap border-2 border-solid px-2" id="confirm" />
             <div class="h-captcha" data-sitekey="1ef03836-7fd6-4c70-9ebe-106e5098fe54" /> {/*gitleaks:allow*/}
           </form>
-        </div>
         <p class="text-gray text-xl sm:text-3xl font-normal">
           If you want to sign without email, please <a href="/contact" class="text-blue">contact me with simplex</a>
         </p>
