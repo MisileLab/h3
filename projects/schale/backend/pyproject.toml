@@ -8,5 +8,5 @@ dependencies = [
   "boto3==1.35.71",
   "edgedb==2.2.0",
   "fastapi[standard]==0.115.5",
-  "tomli==2.1.0"
+  "tomli==2.2.1"
 ]
