@@ -23,5 +23,5 @@ Default is [MisileLab License](LICENSE.md), but project can have own license in 
 
 ## for legacy
 
-if `dvc pull` failed, use cache that in [minio](https://minio.misile.xyz/noa/dvc.tar.xz)
+if `dvc pull` failed, use cache that in [minio](https://minio.misile.xyz/noa/dvc.tar.zst)
 
