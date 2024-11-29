@@ -11,13 +11,12 @@ in
     ./sway.nix
   ];
   home = {
-    # zed-editor fixed at master but has rebuild and not fixed at unstable channel (reminder https)
     packages = with pkgs; [
       brightnessctl clipman wl-clipboard pavucontrol
       imagemagick virt-manager appflowy xfce.thunar
       galaxy-buds-client ferium prismlauncher
-      seahorse kdePackages.filelight qemu (stablep.firefoxpwa) gparted exodus
-      onionshare jetbrains.idea-community-bin gimp /*zed-editor*/ telegram-desktop
+      seahorse kdePackages.filelight qemu firefoxpwa gparted exodus
+      onionshare jetbrains.idea-community-bin gimp zed-editor (stablep.telegram-desktop)
     ] ++ ([briar-desktop exodus]);
     file = {
       ".local/share/PrismLauncher/themes/catppuccin-mocha.zip".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
@@ -34,7 +33,6 @@ in
   programs = {
     obs-studio = {
       enable = true;
-      package = stablep.obs-studio;
       catppuccin.enable = true;
     };
     alacritty = {
@@ -50,8 +48,7 @@ in
     };
     firefox = {
       enable = true;
-      package = stablep.firefox;
-      nativeMessagingHosts = [stablep.firefoxpwa];
+      nativeMessagingHosts = [pkgs.firefoxpwa];
     };
   };
   xdg = {
