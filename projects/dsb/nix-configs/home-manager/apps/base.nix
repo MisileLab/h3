@@ -33,6 +33,7 @@ in
       (writeScript "es" "${emacsp}/bin/emacsclient")
       (writeScript "esd" "${emacsp}/bin/emacs")
       (writeScript "git-c" "~/repos/h3/projects/dsb/utils/.venv/bin/python ~/repos/h3/projects/dsb/utils/gen-commit-message.py")
+      (writeScript "utils" "~/repos/h3/projects/dsb/utils/zig-out/bin/utils")
     ];
     programs = {
       aerc = {
