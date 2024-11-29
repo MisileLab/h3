@@ -1,6 +1,7 @@
 const std = @import("std");
 const rand = std.crypto.random;
 const io = std.io;
+const process = std.process;
 const stringl = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
 // shortcut for comparing two string
@@ -9,9 +10,14 @@ pub fn c_s(a: [:0]const u8, b: [:0]const u8) bool {
 }
 
 pub fn main() !void {
-    var args = std.process.args();
-    _ = args.skip();
-    const command = args.next() orelse "random";
+    var alloc = std.heap.GeneralPurposeAllocator(.{}){};
+    defer _ = alloc.deinit();
+    const allocator = alloc.allocator();
+
+    const args = try process.argsAlloc(allocator);
+    defer process.argsFree(allocator, args);
+    const command = if (args.len == 1) "random" else args[1];
+
     var bw = io.bufferedWriter(io.getStdOut().writer());
     const stdout = bw.writer();
     if (c_s(command, "random")) {
