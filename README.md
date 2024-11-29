@@ -20,3 +20,8 @@ using my [josh](https://github.com/josh-project/josh) page: `https://gith.misile
 ## License?
 
 Default is [MisileLab License](LICENSE.md), but project can have own license in folder.
+
+## for legacy
+
+if `dvc pull` failed, use cache that in [minio](https://minio.misile.xyz/noa/dvc.tar.xz)
+

@@ -4,3 +4,5 @@
 .pdm-python
 .infisical.json
 .python-version
+lfs/*
+!lfs/README.md
