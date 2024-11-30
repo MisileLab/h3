@@ -6,7 +6,29 @@ export class statusError extends Error {
   }
 }
 
+const getUrl = ()=>{
+  if (import.meta.env.PROD && document !== undefined) {
+    if (location.hostname.endsWith("onion")) {
+      return "http://b723cfcf6psmade7vqldtbc332nhhrwy52wvka3afy5s5257pzbqswid.onion/api"
+    } else {
+      return "https://misile.xyz/api"
+    }
+  } else {
+    return "http://127.0.0.1:8080/api"
+  }
+}
+
 export async function fetchAPILow<T>(
+  path: string,
+  headers: Record<string, string>,
+  method: string = "GET",
+  formdata: Record<string, string> | undefined = undefined
+): Promise<T> {
+  if (!path.startsWith("/")) {path = "/" + path;}
+  return InternalFetchAPI(`${getUrl()}${path}`, headers, method, formdata)
+}
+
+export async function InternalFetchAPI<T>(
   path: string,
   headers: Record<string, string>,
   method: string = "GET",

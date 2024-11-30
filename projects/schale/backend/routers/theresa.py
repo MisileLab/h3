@@ -86,9 +86,12 @@ async def sign(
   if raw is None:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
   raw = asdict(raw)
+  params = f"?name={name}&email={email}&hash={sha3_256(f'{name}{email}{initializer.key}'.encode()).hexdigest()}"
+  content = f"<a href='https://misile.xyz/theresa/confirm{params}'>click here to confirm (normal)</a>\n"
+  content += f"<a herf='http://b723cfcf6psmade7vqldtbc332nhhrwy52wvka3afy5s5257pzbqswid.onion/theresa/confirm{params}'>click here to confirm (tor)</a>"
   send_email(
     name,
-    f"<a href='https://misile.xyz/theresa/confirm?name={name}&email={email}&hash={sha3_256(f'{name}{email}{initializer.key}'.encode()).hexdigest()}'>click here to confirm</a>",
+    content,
     [email]
   )
 

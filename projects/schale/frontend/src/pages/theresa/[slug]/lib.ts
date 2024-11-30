@@ -14,8 +14,6 @@ export interface Post {
   signer: number
 }
 
-export const url = import.meta.env.PROD?"https://misile.xyz/api/theresa":"http://127.0.0.1:8000/api/theresa"
-
 async function fetchAPI<T>(
   path: string,
   headers: Record<string, string>,
@@ -23,7 +21,7 @@ async function fetchAPI<T>(
   formdata: Record<string, string> | undefined = undefined
 ): Promise<T> {
   if (!path.startsWith("/")) {path = "/" + path;}
-  return fetchAPILow(`${url}${path}`, headers, method, formdata)
+  return fetchAPILow(`/theresa/${path}`, headers, method, formdata)
 }
 
 export async function getPost(name: string): Promise<Post> {
