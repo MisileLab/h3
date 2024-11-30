@@ -2,7 +2,7 @@
   home.packages = with pkgs; [
     # file
     axel wget file wgetpaste convmv termscp ouch rhash duperemove
-    fd
+    fd cloc
 
     # some fancy cli tools
     fastfetch onefetch delta genact glow dasel navi nix-output-monitor
