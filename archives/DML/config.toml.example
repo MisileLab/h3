@@ -1,4 +1,0 @@
-TOKEN=""
-TEST_GUILDS=[01010]
-BLOCK_LIST=["thisisblockedmodule.py"]
-log_channel=0
