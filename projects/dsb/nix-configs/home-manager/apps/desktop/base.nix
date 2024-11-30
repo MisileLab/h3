@@ -1,4 +1,4 @@
-{config, pkgs, stablep, ...}:
+{config, pkgs, ...}:
 let
   briar-desktop = pkgs.callPackage ./briar.nix {};
 in
@@ -16,7 +16,7 @@ in
       imagemagick virt-manager appflowy xfce.thunar
       galaxy-buds-client ferium prismlauncher
       seahorse kdePackages.filelight qemu firefoxpwa gparted exodus
-      onionshare jetbrains.idea-community-bin gimp zed-editor (stablep.telegram-desktop)
+      onionshare jetbrains.idea-community-bin gimp zed-editor telegram-desktop
     ] ++ ([briar-desktop exodus]);
     file = {
       ".local/share/PrismLauncher/themes/catppuccin-mocha.zip".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
