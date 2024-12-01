@@ -29,26 +29,54 @@ def convert_to_bytes(data: list[SlidingWindowedByte]):
     result.append(0)  # Null byte separator (optional, for clarity)
   return bytes(result)
 
-def build_possibility(sliding: list[SlidingWindowedByte]) -> dict[int, float]:
+def build_frequency_table(sliding: list[SlidingWindowedByte]) -> dict[int, int]:
   c = Counter(convert_to_bytes(sliding))
-  kv = {k: c[k] / c.total() for k in c}
-  assert sum(kv.values()) == 1
-  return kv
+  return dict(c)
 
-def encode_range(possibility: dict[int, float], values: bytes) -> float:
-  ranges = {0: possibility[0]}
-  del possibility[0]
-  for k, v in possibility.items():
-    val = max(ranges.values())+v
-    print(val)
-    ranges[k] = val
-  print(ranges)
+def encode_range(frequencies: dict[int, int], values: bytes) -> int:
+  total = sum(frequencies.values())
+  # Build cumulative frequency table
+  cum_freq = {}
+  cum = 0
+  for k in sorted(frequencies.keys()):
+    cum_freq[k] = cum
+    cum += frequencies[k]
+  # Initialize low and high range values
+  low = 0
+  high = (1 << 32) - 1  # Using 32-bit range
   for i in values:
-    freq_min = min(ranges.values())
-    freq_val = ranges[i]
-    for k, v in ranges.items():
-      ranges[k] = v*freq_val+freq_min
-  return min(ranges.values())
+    range_ = high - low + 1
+    high = low + (range_ * (cum_freq[i] + frequencies[i]) // total) - 1
+    low = low + (range_ * cum_freq[i] // total)
+  return low
+
+def decode_range(frequencies: dict[int, int], code: int, length: int) -> bytes:
+  total = sum(frequencies.values())
+  symbols = sorted(frequencies.keys())
+  cum_freq = {}
+  cum = 0
+  for symbol in symbols:
+    cum_freq[symbol] = cum
+    cum += frequencies[symbol]
+
+  low = 0
+  high = (1 << 32) - 1
+  decoded = bytearray()
+
+  for _ in range(length):
+    range_ = high - low + 1
+    value = ((code - low + 1) * total - 1) // range_
+
+    for symbol in symbols:
+      sym_low = cum_freq[symbol]
+      sym_high = sym_low + frequencies[symbol]
+      if sym_low <= value < sym_high:
+        decoded.append(symbol)
+        high = low + (range_ * sym_high // total) - 1
+        low = low + (range_ * sym_low // total)
+        break
+
+  return bytes(decoded)
 
 # https://dalinaum.github.io/algorithm/2020/12/14/zip-compression.html
 def sliding_window(data: bytes) -> list[SlidingWindowedByte]:
@@ -95,7 +123,6 @@ def sliding_window(data: bytes) -> list[SlidingWindowedByte]:
 
 def decode_sliding_window(data: list[SlidingWindowedByte]) -> bytes:
   result = bytearray()
-
   for item in data:
     if item.distance == 0:
       # 아이템 거리가 0이라면 압축되지 않은 것이기 때문에 그냥 추가
@@ -119,10 +146,10 @@ if __name__ == '__main__':
   sld = sliding_window(b'lzmaslidingtestforbytes')
   print(sld)
   print(f"res: {decode_sliding_window(sld)}")
-  frq = build_possibility(sld)
+  frq = build_frequency_table(sld)
   by = convert_to_bytes(sld)
   print(frq)
   enc = encode_range(frq, by)
-  print(enc)
-  # dec = decode_range(frq, by)
-  # print(dec)
+  print(enc, by)
+  dec = decode_range(frq, enc, len(by))
+  print(dec)
