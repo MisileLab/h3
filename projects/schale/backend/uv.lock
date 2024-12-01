@@ -352,11 +352,11 @@ wheels = [
 
 [[package]]
 name = "python-multipart"
-version = "0.0.18"
+version = "0.0.19"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/b4/86/b6b38677dec2e2e7898fc5b6f7e42c2d011919a92d25339451892f27b89c/python_multipart-0.0.18.tar.gz", hash = "sha256:7a68db60c8bfb82e460637fa4750727b45af1d5e2ed215593f917f64694d34fe", size = 36622 }
+sdist = { url = "https://files.pythonhosted.org/packages/c1/19/93bfb43a3c41b1dd0fa1fa66a08286f6467d36d30297a7aaab8c0b176a26/python_multipart-0.0.19.tar.gz", hash = "sha256:905502ef39050557b7a6af411f454bc19526529ca46ae6831508438890ce12cc", size = 36886 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/13/6b/b60f47101ba2cac66b4a83246630e68ae9bbe2e614cbae5f4465f46dee13/python_multipart-0.0.18-py3-none-any.whl", hash = "sha256:efe91480f485f6a361427a541db4796f9e1591afc0fb8e7a4ba06bfbc6708996", size = 24389 },
+    { url = "https://files.pythonhosted.org/packages/e1/f4/ddd0fcdc454cf3870153ae16a818256523d31c3c8136e216bc6836ed4cd1/python_multipart-0.0.19-py3-none-any.whl", hash = "sha256:f8d5b0b9c618575bf9df01c684ded1d94a338839bdd8223838afacfb4bb2082d", size = 24448 },
 ]
 
 [[package]]
@@ -418,7 +418,7 @@ requires-dist = [
     { name = "boto3", specifier = "==1.35.71" },
     { name = "edgedb", specifier = "==2.2.0" },
     { name = "fastapi", extras = ["standard"], specifier = "==0.115.5" },
-    { name = "python-multipart", specifier = "==0.0.18" },
+    { name = "python-multipart", specifier = "==0.0.19" },
     { name = "tomli", specifier = "==2.2.1" },
 ]
 
