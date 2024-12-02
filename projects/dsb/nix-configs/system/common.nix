@@ -2,7 +2,7 @@
 # your system. Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
-{ config, lib, pkgs, ... }:
+{ pkgs, ... }:
 {
   boot = {
     loader = {
@@ -45,10 +45,7 @@
   };
 
   # Set your time zone.
-  time = {
-    timeZone = "Asia/Seoul";
-    hardwareClockInLocalTime = true;
-  };
+  time.timeZone = "Asia/Seoul";
 
   users = {
     users.misile = {

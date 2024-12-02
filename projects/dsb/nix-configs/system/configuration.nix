@@ -10,26 +10,6 @@
     automatic = true;
     options = "--delete-older-than 1d";
   };
-  systemd = {
-    services.chronySync = {
-      description = "Sync timer after chronyd enabled";
-      wantedBy = [ "multi-user.target" ];
-      after = [ "chronyd.service" ];
-      script = ''
-        echo 'sleep 3 seconds because chrony needs time'
-        sleep 3
-        ${pkgs.chrony}/bin/chronyc -N 'sources -v'
-        ${pkgs.chrony}/bin/chronyc makestep
-      '';
-      serviceConfig.Type = "oneshot";
-    };
-    timers.chronySync = {
-      wantedBy = [ "timers.target" ];
-      partOf = [ "chronySync.service" ];
-      timerConfig.OnUnitActiveSec = "1h";
-      timerConfig.Unit = "chronySync.service";
-    };
-  };
   services = {
     gnome.gnome-keyring.enable = true;
     pcscd.enable = true;
