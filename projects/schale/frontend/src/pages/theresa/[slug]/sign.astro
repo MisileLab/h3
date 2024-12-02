@@ -3,7 +3,7 @@ import Base from "../../../components/base.astro"
 
 import { nullValue } from "@misile/satellite/errors"
 import { nullVerify } from "@misile/satellite"
-import { type Post, getPost, url } from "./lib";
+import { type Post, getPost } from "./lib";
 import { statusError } from "../../../components/request";
 
 let post: Post | null = null;
@@ -24,12 +24,18 @@ catch (e) {
   <Fragment slot="head">
     <title>{post.name}</title>
     <script src="https://js.hcaptcha.com/1/api.js" async defer is:inline />
+    <script>
+      import { getUrl } from "../../../components/request.ts"
+      import { query } from "@misile/satellite"
+
+      (query("form") as HTMLFormElement).action = `${getUrl()}/theresa/sign`
+    </script>
   </Fragment>
   <div class="w-full h-full flex flex-row">
     <div class="w-full h-screen justify-center items-center flex flex-col px-2 sm:px-0">
       <div class="flex flex-col gap-y-2">
         <p class="text-black text-4xl sm:text-6xl font-bold">sign {post.name}</p>
-          <form action={`${url}/sign`} method="post" class="text-2xl sm:text-4xl">
+          <form method="post" class="text-2xl sm:text-4xl">
             <input title="name" name="name" type="hidden" value={post.name} />
             <label for="email" class="whitespace-nowrap inline">email: </label>
             <input title="email" name="email" type="email" class="bg-white font-normal border-b-2 border-solid break-words" id="email" />

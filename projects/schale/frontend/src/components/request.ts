@@ -6,7 +6,7 @@ export class statusError extends Error {
   }
 }
 
-const getUrl = ()=>{
+export const getUrl = ()=>{
   if (import.meta.env.PROD && document !== undefined) {
     if (location.hostname.endsWith("onion")) {
       return "http://b723cfcf6psmade7vqldtbc332nhhrwy52wvka3afy5s5257pzbqswid.onion/api"
