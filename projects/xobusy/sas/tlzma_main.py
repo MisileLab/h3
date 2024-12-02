@@ -1,6 +1,7 @@
-from collections import Counter
-from copy import deepcopy
-import struct
+from pathlib import Path
+from tempfile import NamedTemporaryFile
+from RangeEncoder import decompress as t_decompress, compress as t_compress
+from bson import loads, dumps
 
 class SlidingWindowedByte:
   def __init__(self, distance: int, length: int, value: bytes):
@@ -19,64 +20,37 @@ class SlidingWindowedByte:
   def __repr__(self) -> str:
     return self.to_str_tuple().__str__()
 
-def convert_to_bytes(data: list[SlidingWindowedByte]):
-  result = bytearray()
-  for item in data:
-    item = item.to_tuple()
-    # Pack the integers (2 ints) and the string (as bytes) into the result
-    result.extend(struct.pack('ii', item[0], item[1]))  # Pack two integers
-    result.extend(item[2])  # Convert string to bytes
-    result.append(0)  # Null byte separator (optional, for clarity)
-  return bytes(result)
+def to_bson(sliding_windows: list[SlidingWindowedByte]) -> bytes:
+  """
+  Encode list of SlidingWindowedByte objects to BSON format
+  """
 
-def build_frequency_table(sliding: list[SlidingWindowedByte]) -> dict[int, int]:
-  c = Counter(convert_to_bytes(sliding))
-  return dict(c)
+  doc_list = [
+    {
+      'distance': sw.distance,
+      'length': sw.length,
+      'value': sw.value
+    }
+    for sw in sliding_windows
+  ]
 
-def encode_range(frequencies: dict[int, int], values: bytes) -> int:
-  total = sum(frequencies.values())
-  # Build cumulative frequency table
-  cum_freq = {}
-  cum = 0
-  for k in sorted(frequencies.keys()):
-    cum_freq[k] = cum
-    cum += frequencies[k]
-  # Initialize low and high range values
-  low = 0
-  high = (1 << 32) - 1  # Using 32-bit range
-  for i in values:
-    range_ = high - low + 1
-    high = low + (range_ * (cum_freq[i] + frequencies[i]) // total) - 1
-    low = low + (range_ * cum_freq[i] // total)
-  return low
+  doc = {'sliding_windows': doc_list}
+  return dumps(doc)
 
-def decode_range(frequencies: dict[int, int], code: int, length: int) -> bytes:
-  total = sum(frequencies.values())
-  symbols = sorted(frequencies.keys())
-  cum_freq = {}
-  cum = 0
-  for symbol in symbols:
-    cum_freq[symbol] = cum
-    cum += frequencies[symbol]
+def from_bson(bson_data: bytes) -> list[SlidingWindowedByte]:
+  """
+  Decode BSON data to list of SlidingWindowedByte objects
+  """
 
-  low = 0
-  high = (1 << 32) - 1
-  decoded = bytearray()
-
-  for _ in range(length):
-    range_ = high - low + 1
-    value = ((code - low + 1) * total - 1) // range_
-
-    for symbol in symbols:
-      sym_low = cum_freq[symbol]
-      sym_high = sym_low + frequencies[symbol]
-      if sym_low <= value < sym_high:
-        decoded.append(symbol)
-        high = low + (range_ * sym_high // total) - 1
-        low = low + (range_ * sym_low // total)
-        break
-
-  return bytes(decoded)
+  doc = loads(bson_data)
+  return [
+    SlidingWindowedByte(
+      distance=item['distance'],
+      length=item['length'],
+      value=item['value']
+    )
+    for item in doc['sliding_windows'] # type: ignore
+  ]
 
 # https://dalinaum.github.io/algorithm/2020/12/14/zip-compression.html
 def sliding_window(data: bytes) -> list[SlidingWindowedByte]:
@@ -133,23 +107,22 @@ def decode_sliding_window(data: list[SlidingWindowedByte]) -> bytes:
       for i in range(item.length):
         # 길이만큼 추가
         result.append(result[start + i])
-
   return bytes(result)
 
 def compress(file_path: str, output_path: str):
-  raise NotImplementedError
+  with NamedTemporaryFile() as f:
+    d = dumps({'a': [i.to_tuple() for i in sliding_window(Path(file_path).read_bytes())]})
+    Path(f.name).write_bytes(d)
+    t_compress(f.name, output_path)
+    return d
 
-def decompress(file_path: str, output_path: str):
-  raise NotImplementedError
+def decompress(file_path: str, output_path: str, d: bytes):
+  with NamedTemporaryFile() as f:
+    t_decompress(file_path, f.name)
+    assert d == Path(f.name).read_bytes()
+    l: dict[str, list[tuple[int, int, bytes]]] = loads(Path(f.name).read_bytes()) # type: ignore
+    Path(output_path).write_bytes(decode_sliding_window([SlidingWindowedByte(*i) for i in l['a']]))
 
 if __name__ == '__main__':
-  sld = sliding_window(b'lzmaslidingtestforbytes')
-  print(sld)
-  print(f"res: {decode_sliding_window(sld)}")
-  frq = build_frequency_table(sld)
-  by = convert_to_bytes(sld)
-  print(frq)
-  enc = encode_range(frq, by)
-  print(enc, by)
-  dec = decode_range(frq, enc, len(by))
-  print(dec)
+  d = compress("./test", "./test.tlzma")
+  decompress("./test.tlzma", "./test.py.org", d)

@@ -225,33 +225,31 @@ class RangeEncoder(object):
 		self.qlen=qlen
 
 
-if __name__=="__main__":
-	# Example compressor and decompressor using an adaptive order-0 symbol model.
-	import os,sys,struct
+# Example compressor and decompressor using an adaptive order-0 symbol model.
+from pathlib import Path
+import os,sys,struct
 
-	# Parse arguments.
-	if len(sys.argv)!=4:
-		print("3 arguments expected\npython RangeEncoder.py [-c|-d] infile outfile")
-		exit()
-	mode,infile,outfile=sys.argv[1:]
-	if mode!="-c" and mode!="-d":
-		print("mode must be -c or -d")
-		exit()
+# Adaptive order-0 symbol model.
+prob=list(range(0,257*32,32))
+def incprob(sym):
+	# Increment the probability of a given symbol.
+	for i in range(sym+1,257): prob[i]+=32
+	if prob[256]>=65536:
+		# Periodically halve all probabilities to help the model forget old symbols.
+		for i in range(256,0,-1): prob[i]-=prob[i-1]-1
+		for i in range(1,257): prob[i]=prob[i-1]+(prob[i]>>1)
+def findsym(code):
+	# Find the symbol who's cumulative interval encapsulates the given code.
+	for sym in range(1,257):
+		if prob[sym]>code: return sym-1
 
-	# Adaptive order-0 symbol model.
-	prob=list(range(0,257*32,32))
-	def incprob(sym):
-		# Increment the probability of a given symbol.
-		for i in range(sym+1,257): prob[i]+=32
-		if prob[256]>=65536:
-			# Periodically halve all probabilities to help the model forget old symbols.
-			for i in range(256,0,-1): prob[i]-=prob[i-1]-1
-			for i in range(1,257): prob[i]=prob[i-1]+(prob[i]>>1)
-	def findsym(code):
-		# Find the symbol who's cumulative interval encapsulates the given code.
-		for sym in range(1,257):
-			if prob[sym]>code: return sym-1
+def compress(infile: Path | str, outfile: Path | str):
+	run("-c", infile, outfile)
 
+def decompress(infile: Path | str, outfile: Path | str):
+	run("-d", infile, outfile)
+
+def run(mode: str, infile: Path | str, outfile: Path | str):
 	instream=open(infile,"rb")
 	outstream=open(outfile,"wb")
 	insize=os.path.getsize(infile)
@@ -295,4 +293,3 @@ if __name__=="__main__":
 				dec.finish()
 	outstream.close()
 	instream.close()
-
