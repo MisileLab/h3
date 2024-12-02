@@ -20,9 +20,10 @@
             packages = with pkgs; [
               clang-tools
               fish
+              php
             ];
             shellHook = ''
-              ${pkgs.fish}/bin/fish
+              ${pkgs.uv}/bin/uv run ${pkgs.fish}/bin/fish
               exit
             '';
           };
