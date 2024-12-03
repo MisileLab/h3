@@ -1,7 +1,10 @@
+from collections import Counter
+from copy import deepcopy
 from pathlib import Path
 from tempfile import NamedTemporaryFile
-from RangeEncoder import decompress as t_decompress, compress as t_compress
-from bson import loads, dumps
+from RangeEncoder import compress as t_compress, decompress as t_decompress
+from LZ77 import LZ77Compressor
+import struct
 
 class SlidingWindowedByte:
   def __init__(self, distance: int, length: int, value: bytes):
@@ -20,37 +23,99 @@ class SlidingWindowedByte:
   def __repr__(self) -> str:
     return self.to_str_tuple().__str__()
 
-def to_bson(sliding_windows: list[SlidingWindowedByte]) -> bytes:
-  """
-  Encode list of SlidingWindowedByte objects to BSON format
-  """
+def convert_to_bytes(data: list[SlidingWindowedByte]):
+  result = bytearray()
+  for item in data:
+    item = item.to_tuple()
+    # Pack the integers (2 ints) and the string (as bytes) into the result
+    result.extend(struct.pack('ii', item[0], item[1]))  # Pack two integers
+    result.extend(item[2])  # Convert string to bytes
+    result.append(0)  # Null byte separator (optional, for clarity)
+  return bytes(result)
 
-  doc_list = [
-    {
-      'distance': sw.distance,
-      'length': sw.length,
-      'value': sw.value
-    }
-    for sw in sliding_windows
-  ]
+def decode_from_bytes(data: bytes) -> list[SlidingWindowedByte]:
+  result = []
+  offset = 0
+  while offset < len(data):
+    # Unpack two integers for distance and length
+    distance, length = struct.unpack_from('ii', data, offset)
+    offset += struct.calcsize('ii')
 
-  doc = {'sliding_windows': doc_list}
-  return dumps(doc)
+    # Find the null-terminated string
+    value_start = offset
+    value_end = data.find(0, value_start)  # Find the null byte
+    if value_end == -1:
+        raise ValueError("Malformed data: Null byte separator not found")
 
-def from_bson(bson_data: bytes) -> list[SlidingWindowedByte]:
-  """
-  Decode BSON data to list of SlidingWindowedByte objects
-  """
+    # Extract the bytes
+    value = data[value_start:value_end]
+    offset = value_end + 1  # Move past the null byte
 
-  doc = loads(bson_data)
-  return [
-    SlidingWindowedByte(
-      distance=item['distance'],
-      length=item['length'],
-      value=item['value']
-    )
-    for item in doc['sliding_windows'] # type: ignore
-  ]
+    # Create a SlidingWindowedByte instance and add it to the result
+    result.append(SlidingWindowedByte(distance, length, value))
+  return result
+
+SCALE = 10**8
+
+def build_possibility(sliding: bytes) -> dict[int, int]:
+  c = Counter(sliding)
+  total = sum(c.values())
+  kv = {k: (c[k] * SCALE) // total for k in c}
+  print(kv)
+  if sum(kv.values()) == SCALE:
+    kv[list(kv.keys())[-1]] += 1
+  return kv
+
+def encode_range(possibility: dict[int, int], values: bytes) -> int:
+  possibility = deepcopy(possibility)
+  ranges = {0: possibility[0]}
+  del possibility[0]
+  for k, v in possibility.items():
+    val = max(ranges.values()) + v
+    ranges[k] = val
+  ranges[list(ranges.keys())[-1]] = SCALE
+
+  r = SCALE
+  low = 0
+  for i in values:
+    for k, v in ranges.items():
+      ranges[k] = min(v * r // SCALE + low, SCALE)
+    low = ranges[i]
+    lr = list(ranges.keys())
+    if lr.index(i) == len(lr) - 1:
+      r = SCALE - low
+    else:
+      r = ranges[lr[lr.index(i) + 1]] - low
+  return min(ranges.values())
+
+def decode_range(possibility: dict[int, int], value: int, length: int) -> bytes:
+  possibility = deepcopy(possibility)
+  ranges = {0: possibility[0]}
+  del possibility[0]
+  for k, v in possibility.items():
+    val = max(ranges.values()) + v
+    ranges[k] = val
+  ranges[list(ranges.keys())[-1]] = SCALE
+
+  values = bytearray()
+  r = SCALE
+  low = 0
+  for _ in range(length):
+    for k, v in ranges.items():
+      ranges[k] = v * r // SCALE + low
+    for k, v in ranges.items():
+      if value <= v:
+        values.append(k)
+        low = ranges[k]
+        lr = list(ranges.keys())
+        if lr.index(k) == len(lr) - 1:
+          r = SCALE - low
+        else:
+          r = ranges[lr[lr.index(k) + 1]] - low
+        break
+    else:
+      raise ValueError()
+  return bytes(values)
 
 # https://dalinaum.github.io/algorithm/2020/12/14/zip-compression.html
 def sliding_window(data: bytes) -> list[SlidingWindowedByte]:
@@ -110,19 +175,26 @@ def decode_sliding_window(data: list[SlidingWindowedByte]) -> bytes:
   return bytes(result)
 
 def compress(file_path: str, output_path: str):
+  compressor = LZ77Compressor()
   with NamedTemporaryFile() as f:
-    d = dumps({'a': [i.to_tuple() for i in sliding_window(Path(file_path).read_bytes())]})
-    Path(f.name).write_bytes(d)
+    compressor.compress(file_path, f.name)
     t_compress(f.name, output_path)
-    return d
 
-def decompress(file_path: str, output_path: str, d: bytes):
+def decompress(file_path: str, output_path: str):
+  compressor = LZ77Compressor()
   with NamedTemporaryFile() as f:
     t_decompress(file_path, f.name)
-    assert d == Path(f.name).read_bytes()
-    l: dict[str, list[tuple[int, int, bytes]]] = loads(Path(f.name).read_bytes()) # type: ignore
-    Path(output_path).write_bytes(decode_sliding_window([SlidingWindowedByte(*i) for i in l['a']]))
+    compressor.decompress(f.name, output_path)
 
 if __name__ == '__main__':
-  d = compress("./test", "./test.tlzma")
-  decompress("./test.tlzma", "./test.py.org", d)
+  sld = sliding_window(b'bruhbyte')
+  print(sld)
+  print(f"res: {decode_sliding_window(sld)}")
+  by = convert_to_bytes(sld)
+  frq = build_possibility(by)
+  print(frq)
+  enc = encode_range(frq, by)
+  print(enc, by)
+  dec = decode_range(frq, enc, len(by))
+  print(dec)
+  assert by == dec
