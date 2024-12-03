@@ -1,4 +1,4 @@
-{config, pkgs, ...}:
+{config, pkgs, stablep, ...}:
 let
   # electron-waylandify
   ewl = name: binaryPath: (pkgs.writeShellScriptBin "${name}" ''
@@ -13,19 +13,19 @@ in
         rev="b0a886ce7ba71b48fdbf72ad27f3446400ebcdb9";
       }}/src/mocha/userstyle.css";
     };
-    packages = with pkgs; [
+    packages = with stablep; [
       (ewl "figma" "${figma-linux}/bin/figma-linux")
       (ewl "discord" "${vesktop}/bin/vesktop")
       (ewl "vscode" "${vscodium}/bin/codium")
-      (ewl "tetrio" "${pkgs.tetrio-desktop.override{withTetrioPlus=true;}}/bin/tetrio")
+      (ewl "tetrio" "${tetrio-desktop.override{withTetrioPlus=true;}}/bin/tetrio")
       (ewl "bruno" "${bruno}/bin/bruno")
       (ewl "joplin" "${joplin-desktop}/bin/joplin-desktop")
       (ewl "signal" "${signal-desktop}/bin/signal-desktop")
       (ewl "element" "${element-desktop}/bin/element-desktop")
       (ewl "simplex" "${simplex-chat-desktop}/bin/simplex-chat-desktop")
       (ewl "slack" "${slack}/bin/slack")
-      (ewl "chrome" "${ungoogled-chromium}/bin/chromium")
-      ungoogled-chromium
+      (ewl "chrome" "${pkgs.ungoogled-chromium}/bin/chromium")
+      (pkgs.ungoogled-chromium)
     ];
   };
   programs = {
