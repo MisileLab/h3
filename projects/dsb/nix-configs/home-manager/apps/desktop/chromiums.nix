@@ -1,4 +1,4 @@
-{config, pkgs, stablep, ...}:
+{config, pkgs, ...}:
 let
   # electron-waylandify
   ewl = name: binaryPath: (pkgs.writeShellScriptBin "${name}" ''
@@ -13,7 +13,7 @@ in
         rev="b0a886ce7ba71b48fdbf72ad27f3446400ebcdb9";
       }}/src/mocha/userstyle.css";
     };
-    packages = with stablep; [
+    packages = with pkgs; [
       (ewl "figma" "${figma-linux}/bin/figma-linux")
       (ewl "discord" "${vesktop}/bin/vesktop")
       (ewl "vscode" "${vscodium}/bin/codium")
@@ -24,8 +24,8 @@ in
       (ewl "element" "${element-desktop}/bin/element-desktop")
       (ewl "simplex" "${simplex-chat-desktop}/bin/simplex-chat-desktop")
       (ewl "slack" "${slack}/bin/slack")
-      (ewl "chrome" "${pkgs.ungoogled-chromium}/bin/chromium")
-      (pkgs.ungoogled-chromium)
+      (ewl "chrome" "${ungoogled-chromium}/bin/chromium")
+      (ungoogled-chromium)
     ];
   };
   programs = {
