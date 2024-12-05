@@ -1,9 +1,13 @@
 {config, pkgs, ...}:
 let
-  # electron-waylandify
-  ewl = name: binaryPath: (pkgs.writeShellScriptBin "${name}" ''
-    exec ${binaryPath} --enable-features=UseOzonePlatform --ozone-platform=wayland --enable-wayland-ime
+  # base
+  base = name: binaryPath: args: (pkgs.writeShellScriptBin "${name}" ''
+    exec ${binaryPath} ${args}
   '');
+  # electron-waylandify
+  ewl = name: binaryPath: base name binaryPath "--enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform-hint=auto --ozone-platform=wayland --enable-wayland-ime";
+  # java-waylandify
+  jwl = name: binaryPath: base name binaryPath "-Dawt.toolkit.name=WLToolkit";
 in
 {
   home = {
@@ -22,7 +26,7 @@ in
       (ewl "joplin" "${joplin-desktop}/bin/joplin-desktop")
       (ewl "signal" "${signal-desktop}/bin/signal-desktop")
       (ewl "element" "${element-desktop}/bin/element-desktop")
-      (ewl "simplex" "${simplex-chat-desktop}/bin/simplex-chat-desktop")
+      (jwl "simplex" "${simplex-chat-desktop}/bin/simplex-chat-desktop")
       (ewl "slack" "${slack}/bin/slack")
       (ewl "chrome" "${ungoogled-chromium}/bin/chromium")
       (ungoogled-chromium)

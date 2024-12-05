@@ -5,7 +5,7 @@ in
 {
   imports = [
     ./security.nix
-    ./chromiums.nix
+    ./waylandify.nix
     ./fonts.nix
     ./compatibility.nix
     ./sway.nix
