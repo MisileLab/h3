@@ -2,9 +2,11 @@
 name = "djangosite"
 version = "0.1.0"
 description = ""
-requires-python = "==3.13.0"
+requires-python = "==3.13.1"
 dependencies = [
   "django-extensions==3.2.3",
   "django==5.1.4",
-  "requests==2.32.3"
+  "pycryptodome==3.21.0",
+  "requests==2.32.3",
+  "zstandard==0.23.0",
 ]

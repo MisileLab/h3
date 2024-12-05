@@ -7,4 +7,4 @@ class Chat(models.Model):
 
 class User(models.Model):
   name = models.TextField()
-  password = models.TextField()
+  pk = models.TextField()

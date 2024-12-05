@@ -1,0 +1,19 @@
+<!doctype html>
+<html class="no-js" lang="">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Untitled</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  </head>
+  <body>
+    <div>
+      <select id="senders">
+        {% for sender in senders %}
+          <option value='{{ sender }}'>{{ sender }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </body>
+</html>

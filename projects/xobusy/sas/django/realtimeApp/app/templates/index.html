@@ -9,8 +9,9 @@
   </head>
   <body>
     <ul>
-      <li>user: asdf</li>
-      <li>user2: asdf</li>
+      {% for user, content in list %}
+        <li>{{ user }}: {{ content }}</li>
+      {% endfor %}
     </ul>
   </body>
 </html>
