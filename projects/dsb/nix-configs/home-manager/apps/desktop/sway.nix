@@ -115,13 +115,18 @@ titlebar_padding 1
       enable = true;
       catppuccin.enable = true;
       settings = [{
-        modules-left = [ "sway/workspaces" ];
+        modules-left = [ "clock" "custom/utc-clock" "sway/workspaces" ];
         modules-center = [ "sway/window" ];
-        modules-right = ["idle_inhibitor" "pulseaudio" "battery" "cpu" "memory" "custom/gpu-usage" "temperature" "clock"];
+        modules-right = [ "idle_inhibitor" "pulseaudio" "battery" "cpu" "memory" "custom/gpu-usage" "temperature" ];
         "idle_inhibitor" = {
           "format" = "{icon}";
           "format-icons" = {activated = "󰅶"; deactivated = "󰾪";};
           "on-click" = "$HOME/.config/home-manager/idle-handler.sh";
+        };
+        "custom/utc-clock" = {
+          exec = "python $HOME/.config/home-manager/utc-clock.py";
+          return-type = "json";
+          restart-interval = 1;
         };
         "custom/gpu-usage" = {
           exec = "cat /sys/class/hwmon/hwmon0/device/gpu_busy_percent";
@@ -210,7 +215,7 @@ titlebar_padding 1
       .modules-center * {
         color: @text;
       }
-      .modules-right * {
+      .modules-right *, #clock, #custom-utc-clock {
         ${returnColorCSS({r=147;g=153;b=178;a=0.6;addi=''
           padding-left: 6px;
           padding-right: 6px;
