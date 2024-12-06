@@ -5,7 +5,7 @@ description = "Utils for me"
 readme = "README.md"
 requires-python = "==3.13.0"
 dependencies = [
-  "fake-useragent==1.5.1",
+  "fake-useragent==2.0.0",
   "gradio-client==1.5.1",
   "httpx==0.28.0",
   "inquirer==3.4.0",
