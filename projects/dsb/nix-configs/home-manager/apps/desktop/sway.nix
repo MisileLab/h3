@@ -115,7 +115,7 @@ titlebar_padding 1
       enable = true;
       catppuccin.enable = true;
       settings = [{
-        modules-left = [ "clock" "custom/utc-clock" "sway/workspaces" ];
+        modules-left = [ "custom/clock" "custom/utc-clock" "sway/workspaces" ];
         modules-center = [ "sway/window" ];
         modules-right = [ "idle_inhibitor" "pulseaudio" "battery" "cpu" "memory" "custom/gpu-usage" "temperature" ];
         "idle_inhibitor" = {
@@ -123,8 +123,13 @@ titlebar_padding 1
           "format-icons" = {activated = "󰅶"; deactivated = "󰾪";};
           "on-click" = "$HOME/.config/home-manager/idle-handler.sh";
         };
+        "custom/clock" = {
+          exec = "python $HOME/.config/home-manager/clock.py";
+          return-type = "json";
+          restart-interval = 1;
+        };
         "custom/utc-clock" = {
-          exec = "python $HOME/.config/home-manager/utc-clock.py";
+          exec = "python $HOME/.config/home-manager/clock.py UTC";
           return-type = "json";
           restart-interval = 1;
         };
@@ -161,12 +166,6 @@ titlebar_padding 1
           tooltip-format-ethernet = "{ifname} ";
           tooltip-format-disconnected = "Disconnected";
           max-length = 40;
-      };
-      clock = {
-        interval = 1;
-        format = "{:%H:%M:%S}";
-        tooltip-format = "{:%Y-%m-%dT%H:%M:%S}";
-        max-length = 25;
       };
       battery = {
         bat = "BAT1";
@@ -215,7 +214,7 @@ titlebar_padding 1
       .modules-center * {
         color: @text;
       }
-      .modules-right *, #clock, #custom-utc-clock {
+      .modules-right *, #custom-clock, #custom-utc-clock {
         ${returnColorCSS({r=147;g=153;b=178;a=0.6;addi=''
           padding-left: 6px;
           padding-right: 6px;

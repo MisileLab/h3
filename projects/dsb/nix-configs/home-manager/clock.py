@@ -1,10 +1,13 @@
 from json import dumps
 from time import sleep
-from datetime import datetime, UTC, timedelta
-from sys import stdout
+from datetime import datetime, UTC
+from sys import stdout, argv
 
 while True:
-  t = datetime.now(tz=UTC) + timedelta(seconds=1)
+  try:
+    t = datetime.now(tz=UTC if argv[1] == "UTC" else None)
+  except IndexError:
+    t = datetime.now()
   print(dumps({
     "text": t.strftime("%H:%M:%S"),
     "alt": t.strftime("%H:%M:%S"),
