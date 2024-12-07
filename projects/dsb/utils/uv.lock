@@ -161,11 +161,14 @@ wheels = [
 
 [[package]]
 name = "fake-useragent"
-version = "2.0.0"
+version = "2.0.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/81/ce/67eae0a42cc70149db613c1c59893cff3c2cb14b91b939744f770364e261/fake_useragent-2.0.0.tar.gz", hash = "sha256:8b547af788ed7ab018c5f13f67f229d9a4e034afe11fcbb3fa28a380eda68dae", size = 194533 }
+dependencies = [
+    { name = "importlib-resources" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/df/48/449591bb809e875ba7da4a8c71076da00d066602c9efcb2bd57eff6a70b6/fake_useragent-2.0.1.tar.gz", hash = "sha256:b81419bd84300b4f95e294bee625d0655647e51993b16727e6f8d1ff09ce9c5a", size = 194573 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/52/79/a64937a2185b91a96cc5406e3ea58120980c725543d047e112fb3084a972/fake_useragent-2.0.0-py3-none-any.whl", hash = "sha256:1f1920129bb10369a3adf271c3cb99ba676d5d2746fbbed770da6fd8feff8213", size = 201006 },
+    { url = "https://files.pythonhosted.org/packages/ea/2e/284dc2d28fb844ed7bb035382f77a0f71756890dc35d25fafeea26dd711f/fake_useragent-2.0.1-py3-none-any.whl", hash = "sha256:a48448654991326dd3f7024cfc84a3d5fac0ae29d6d6c554712ad2a04ff326df", size = 201053 },
 ]
 
 [[package]]
@@ -265,6 +268,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/f1/70/7703c29685631f5a7590aa73f1f1d3fa9a380e654b86af429e0934a32f7d/idna-3.10.tar.gz", hash = "sha256:12f65c9b470abda6dc35cf8e63cc574b1c52b11df2c86030af0ac09b01b13ea9", size = 190490 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/76/c6/c88e154df9c4e1a2a66ccf0005a88dfb2650c1dffb6f5ce603dfbd452ce3/idna-3.10-py3-none-any.whl", hash = "sha256:946d195a0d259cbba61165e88e65941f16e9b36ea6ddb97f00452bae8b1287d3", size = 70442 },
+]
+
+[[package]]
+name = "importlib-resources"
+version = "6.4.5"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/98/be/f3e8c6081b684f176b761e6a2fef02a0be939740ed6f54109a2951d806f3/importlib_resources-6.4.5.tar.gz", hash = "sha256:980862a1d16c9e147a59603677fa2aa5fd82b87f223b6cb870695bcfce830065", size = 43372 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e1/6a/4604f9ae2fa62ef47b9de2fa5ad599589d28c9fd1d335f32759813dfa91e/importlib_resources-6.4.5-py3-none-any.whl", hash = "sha256:ac29d5f956f01d5e4bb63102a5a19957f1b9175e45649977264a1416783bb717", size = 36115 },
 ]
 
 [[package]]
@@ -508,7 +520,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "fake-useragent", specifier = "==2.0.0" },
+    { name = "fake-useragent", specifier = "==2.0.1" },
     { name = "gradio-client", specifier = "==1.5.1" },
     { name = "httpx", specifier = "==0.28.1" },
     { name = "inquirer", specifier = "==3.4.0" },
