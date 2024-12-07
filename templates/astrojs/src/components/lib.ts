@@ -1,3 +1,5 @@
+import { type PreinitializedWritableAtom } from "nanostores";
+
 export enum HoverType {
   none = "none",
   hide = "hide",
@@ -11,15 +13,51 @@ export enum AnimationType {
   random = "random"
 }
 
-export enum DataType {
-  blog = "blog",
-  news = "news"
+export enum AnimationValue {
+  done = "done",
+  doing = "doing"
+}
+
+export function getTextContent(h: HTMLElement) {
+  return h.innerText == "" && h.textContent !== null ? h.textContent : h.innerText;
+}
+
+function wrapFunction(f: any, connectedCallback: ()=>void) {
+  return () => {try {
+    f();
+  } catch (e) {
+    console.log("fallback")
+    if (e instanceof indexError) {
+      connectedCallback();
+    } else {
+      throw e;
+    }
+  }}
+}
+
+function safeCaptureStackTrace(err: Error, constructorOpt: unknown) {
+  if ('captureStackTrace' in Error) {
+    // @ts-ignore
+    Error.captureStackTrace(err, constructorOpt);
+  } else {
+    // Fallback to manual stack trace construction
+    // @ts-ignore
+    const {stack} = new Error();
+    err.stack = stack || '';
+  }
+}
+
+export class indexError extends Error {
+  constructor() {
+    super("indexError");
+    safeCaptureStackTrace(this, indexError);
+  }
 }
 
 function replaceCharacterAtIndex(string: string, index: number, replacement: string) {
   // Check if the index is within bounds
   if (index < 0 || index >= string.length) {
-    throw new Error('Index out of bounds');
+    throw new indexError();
   }
 
   // Extract the substring before the index
@@ -60,94 +98,129 @@ export function getLength(a: Record<any, any>) {
 }
 
 export function randomHide(
+  connectedCallback: ()=>void,
   a: HTMLElement,
-  index: number,
   complete: number,
   init: number,
-  animations: Record<number, {show: Record<number, number>, hide: Record<number, number>}>
+  progress: PreinitializedWritableAtom<AnimationValue>,
+  dontChange: boolean = false
 ) {
   const start = 0;
-  const end = a.innerText.length;
+  const end = getTextContent(a).length;
   const ended = range(start, end);
+  let timeoutlist = [];
   for (let i=start;i<end;i++) {
-    // @ts-ignore this does not use on NodeJS
-    animations[index].hide[i] = setTimeout(()=>{
+    timeoutlist.push(setTimeout(wrapFunction(()=>{
+      timeoutlist.shift()
+      if (Array.from(getTextContent(a)).filter((x)=>x!=='_').length===0) {
+        if (!dontChange) {progress.set(AnimationValue.done);}
+        while (timeoutlist.length > 0) {
+          clearTimeout(timeoutlist.shift());
+        }
+        return
+      }
       const _rand = Math.floor(Math.random() * ended.length);
       const rand = ended[_rand];
       ended.splice(_rand, 1)
-      a.innerText=replaceCharacterAtIndex(a.innerText, rand, '_')
-      delete animations[index].hide[i];
-    }, init+complete*i);
+      a.innerText=replaceCharacterAtIndex(getTextContent(a), rand, '_')
+      if (!dontChange && i===end-1) {progress.set(AnimationValue.done);}
+    }, connectedCallback), init+complete*i));
   }
 }
 
 export function normalHide(
+  connectedCallback: ()=>void,
   a: HTMLElement,
-  index: number,
   rewind: boolean,
   complete: number,
   init: number,
-  animations: Record<number, {show: Record<number, number>, hide: Record<number, number>}>
+  progress: PreinitializedWritableAtom<AnimationValue>,
+  dontChange: boolean = false
 ) {
-  const l = a.innerText.length-1;
-  for (let i=0;i<a.innerText.length;i++) {
-    // @ts-ignore this does not use on NodeJS
-    animations[index].hide[i] = setTimeout(()=>{
-      a.innerText=replaceCharacterAtIndex(a.innerText, rewind?l-i:i, '_')
-      delete animations[index].hide[i];
-    }, init+complete*i);
+  let timeoutlist = [];
+  const l = getTextContent(a).length-1;
+  for (let i=0;i<=l;i++) {
+    timeoutlist.push(setTimeout(wrapFunction(()=>{
+      timeoutlist.shift()
+      if (Array.from(getTextContent(a)).filter((x)=>x!=='_').length===0) {
+        if (!dontChange) {progress.set(AnimationValue.done);}
+        while (timeoutlist.length > 0) {
+          clearTimeout(timeoutlist.shift());
+        }
+        return
+      }
+      a.innerText=replaceCharacterAtIndex(getTextContent(a), rewind?l-i:i, '_')
+      if (!dontChange && i===l) {progress.set(AnimationValue.done);}
+    }, connectedCallback), init+complete*i));
   }
 }
 
 export function randomShow(
+  connectedCallback: ()=>void,
   a: HTMLElement,
-  index: number,
   original: string,
   complete: number,
   init: number,
-  animations: Record<number, {show: Record<number, number>, hide: Record<number, number>}>
+  progress: PreinitializedWritableAtom<AnimationValue>,
+  dontChange: boolean = false
 ) {
+  let timeoutlist = [];
   const start = 0;
-  const end = a.innerText.length;
+  const end = getTextContent(a).length;
   const ended = range(start, end);
   for (let i=start;i<end;i++) {
-    // @ts-ignore this does not use on NodeJS
-    animations[index].show[i] = setTimeout(()=>{
+    timeoutlist.push(setTimeout(wrapFunction(()=>{
+      timeoutlist.shift()
+      if (getTextContent(a) === original) {
+        if (!dontChange) {progress.set(AnimationValue.done);}
+        while (timeoutlist.length > 0) {
+          clearTimeout(timeoutlist.shift());
+        }
+        return
+      }
       const _rand = Math.floor(Math.random() * ended.length);
       const rand = ended[_rand];
       ended.splice(_rand, 1)
-      a.innerText=replaceCharacterAtIndex(a.innerText, rand, original[rand])
-      delete animations[index].show[i];
-    }, init+complete*i);
+      a.innerText=replaceCharacterAtIndex(getTextContent(a), rand, original[rand])
+      if (!dontChange && i===end-1) {progress.set(AnimationValue.done);}
+    }, connectedCallback), init+complete*i));
   }
 }
 
 export function normalShow(
+  connectedCallback: ()=>void,
   a: HTMLElement,
-  index: number,
   original: string,
   rewind: boolean,
   complete: number,
   init: number,
-  animations: Record<number, {show: Record<number, number>, hide: Record<number, number>}>
+  progress: PreinitializedWritableAtom<AnimationValue>,
+  dontChange: boolean = false
 ) {
-  const l = a.innerText.length-1;
-  for (let i=0;i<a.innerText.length;i++) {
-    // @ts-ignore this does not use on NodeJS
-    animations[index].show[i] = setTimeout(()=>{
-      a.innerText=replaceCharacterAtIndex(a.innerText, rewind?l-i:i, original[rewind?l-i:i]);
-      delete animations[index].show[i];
-    }, init+complete*i);
+  let timeoutlist = [];
+  const l = getTextContent(a).length-1;
+  for (let i=0;i<=l;i++) {
+    timeoutlist.push(setTimeout(wrapFunction(()=>{
+      timeoutlist.shift()
+      if (getTextContent(a) === original) {
+        if (!dontChange) {progress.set(AnimationValue.done);}
+        while (timeoutlist.length > 0) {
+          clearTimeout(timeoutlist.shift());
+        }
+        return
+      }
+      a.innerText=replaceCharacterAtIndex(getTextContent(a), rewind?l-i:i, original[rewind?l-i:i]);
+      if (!dontChange && i===l) {progress.set(AnimationValue.done);}
+    }, connectedCallback), init+complete*i));
   }
 }
 
 export function isRealInside(element: HTMLElement, event: MouseEvent) {
   const rect = element.getBoundingClientRect();
-  const isInside = (
+  return (
     event.clientX >= rect.left &&
     event.clientX <= rect.right &&
     event.clientY >= rect.top &&
     event.clientY <= rect.bottom
   );
-  return isInside;
 }
