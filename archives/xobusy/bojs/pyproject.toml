@@ -3,7 +3,7 @@ name = "bojs"
 version = "0.1.0"
 description = "A Baekjoon test utility"
 readme = "README.md"
-requires-python = "==3.13.0"
+requires-python = "==3.13.1"
 dependencies = [
   "baekjoonapi",
   "requests==2.32.3",
