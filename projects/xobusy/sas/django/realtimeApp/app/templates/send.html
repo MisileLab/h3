@@ -1,16 +1,22 @@
 <!doctype html>
-<html>
+<html class="no-js" lang="">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Untitled</title>
+    <title>{{ room }}</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
-    <div>
-      <p>send request</p>
-      <input type="text" id="name" />
-    </div>
+    <form method="get">
+      <label for="text">send</label>
+      <input type="text" id="text" name="text" />
+      <input type="hidden" name="room" value="{{ room }}">
+    </form>
+    <ul>
+      {% for content in messages %}
+        <li>{{ content }}</li>
+      {% endfor %}
+    </ul>
   </body>
 </html>

@@ -3,15 +3,17 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Untitled</title>
+    <title>{{ name }}</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
-    <ul>
-      {% for user, content in list %}
-        <li>{{ user }}: {{ content }}</li>
-      {% endfor %}
-    </ul>
+    <div>
+      <form method="get" action="send">
+        <label for="room">room</label>
+        <input type="text" id="room" name="room" />
+        <input type="submit" />
+      </form>
+    </div>
   </body>
 </html>
