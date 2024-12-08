@@ -1,4 +1,4 @@
-{config, pkgs, ...}:
+{config, pkgs, stablep, ...}:
 let
   # base
   base = name: binaryPath: args: (pkgs.writeShellScriptBin "${name}" ''
@@ -28,8 +28,8 @@ in
       (ewl "element" "${element-desktop}/bin/element-desktop")
       (jwl "simplex" "${simplex-chat-desktop}/bin/simplex-chat-desktop")
       (ewl "slack" "${slack}/bin/slack")
-      (ewl "chrome" "${ungoogled-chromium}/bin/chromium")
-      (ungoogled-chromium)
+      (ewl "chrome" "${stablep.ungoogled-chromium}/bin/chromium")
+      (stablep.ungoogled-chromium)
     ];
   };
   programs = {
