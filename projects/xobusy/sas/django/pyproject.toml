@@ -5,6 +5,7 @@ description = ""
 requires-python = "==3.13.1"
 dependencies = [
   "channels==4.2.0",
+  "daphne==4.1.2",
   "django-extensions==3.2.3",
   "django==5.1.4",
   "requests==2.32.3",

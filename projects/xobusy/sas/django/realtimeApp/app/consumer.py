@@ -1,6 +1,7 @@
+from collections import defaultdict
 from channels.generic.websocket import WebsocketConsumer
 
-websockets: dict[str, list[WebsocketConsumer]] = {}
+websockets: dict[str, list[WebsocketConsumer]] = defaultdict(list)
 
 class MessageConsumer(WebsocketConsumer):
   def connect(self):
@@ -16,3 +17,4 @@ class MessageConsumer(WebsocketConsumer):
       return
     if self.name == "":
       self.name = text_data
+      websockets[self.name].append(self)
