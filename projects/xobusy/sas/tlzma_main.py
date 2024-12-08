@@ -4,6 +4,7 @@ from pathlib import Path
 from tempfile import NamedTemporaryFile
 from RangeEncoder import compress as t_compress, decompress as t_decompress
 from LZ77 import LZ77Compressor
+from sys import argv
 import struct
 
 class SlidingWindowedByte:
@@ -187,14 +188,10 @@ def decompress(file_path: str, output_path: str):
     compressor.decompress(f.name, output_path)
 
 if __name__ == '__main__':
-  sld = sliding_window(b'bruhbyte')
-  print(sld)
-  print(f"res: {decode_sliding_window(sld)}")
-  by = convert_to_bytes(sld)
-  frq = build_possibility(by)
-  print(frq)
-  enc = encode_range(frq, by)
-  print(enc, by)
-  dec = decode_range(frq, enc, len(by))
-  print(dec)
-  assert by == dec
+  if len(argv) < 4:
+    print("python tlzma_main.py [compress/decompress] [input_path] [output_path]")
+    exit()
+  if argv[1] == "compress":
+    compress(argv[2], argv[3])
+  else:
+    decompress(argv[2], argv[3])
