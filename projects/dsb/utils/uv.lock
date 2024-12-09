@@ -161,14 +161,14 @@ wheels = [
 
 [[package]]
 name = "fake-useragent"
-version = "2.0.1"
+version = "2.0.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "importlib-resources" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/df/48/449591bb809e875ba7da4a8c71076da00d066602c9efcb2bd57eff6a70b6/fake_useragent-2.0.1.tar.gz", hash = "sha256:b81419bd84300b4f95e294bee625d0655647e51993b16727e6f8d1ff09ce9c5a", size = 194573 }
+sdist = { url = "https://files.pythonhosted.org/packages/b4/cd/ee42cad49374285e49e728403c2d386114b7122197a10d87000416f3b644/fake_useragent-2.0.2.tar.gz", hash = "sha256:ddc57ec795b29331eefdbe07e76f64a320ea197660705717dd294d016802197d", size = 194682 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ea/2e/284dc2d28fb844ed7bb035382f77a0f71756890dc35d25fafeea26dd711f/fake_useragent-2.0.1-py3-none-any.whl", hash = "sha256:a48448654991326dd3f7024cfc84a3d5fac0ae29d6d6c554712ad2a04ff326df", size = 201053 },
+    { url = "https://files.pythonhosted.org/packages/c1/e9/28b7b3ce1f34001317f0aa79b27eced124db7055ece8c6bc508d3471a2f0/fake_useragent-2.0.2-py3-none-any.whl", hash = "sha256:949bead2e19726bb2977a0db6424e03a0935650f56f17b0130f48f201762bfd8", size = 201098 },
 ]
 
 [[package]]
@@ -520,7 +520,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "fake-useragent", specifier = "==2.0.1" },
+    { name = "fake-useragent", specifier = "==2.0.2" },
     { name = "gradio-client", specifier = "==1.5.1" },
     { name = "httpx", specifier = "==0.28.1" },
     { name = "inquirer", specifier = "==3.4.0" },
