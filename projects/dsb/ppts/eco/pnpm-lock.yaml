@@ -52,11 +52,11 @@ importers:
         specifier: 0.6.9
         version: 0.6.9(prettier-plugin-svelte@3.3.2(prettier@3.4.2)(svelte@5.9.0))(prettier@3.4.2)
       shiki:
-        specifier: 1.24.0
-        version: 1.24.0
+        specifier: 1.24.1
+        version: 1.24.1
       shiki-magic-move:
         specifier: 0.5.0
-        version: 0.5.0(shiki@1.24.0)(svelte@5.9.0)
+        version: 0.5.0(shiki@1.24.1)(svelte@5.9.0)
       svelte:
         specifier: 5.9.0
         version: 5.9.0
@@ -353,17 +353,17 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@shikijs/core@1.24.0':
-    resolution: {integrity: sha512-6pvdH0KoahMzr6689yh0QJ3rCgF4j1XsXRHNEeEN6M4xJTfQ6QPWrmHzIddotg+xPJUPEPzYzYCKzpYyhTI6Gw==}
+  '@shikijs/core@1.24.1':
+    resolution: {integrity: sha512-3q/9oarMVcLqJ+NQOdKL40dJVq/UKCsiWXz3QRQPBglHqa8dDJ0p6TuMuk2gHphy5FZcvFtg4UHBgpW0JtZ8+A==}
 
-  '@shikijs/engine-javascript@1.24.0':
-    resolution: {integrity: sha512-ZA6sCeSsF3Mnlxxr+4wGEJ9Tto4RHmfIS7ox8KIAbH0MTVUkw3roHPHZN+LlJMOHJJOVupe6tvuAzRpN8qK1vA==}
+  '@shikijs/engine-javascript@1.24.1':
+    resolution: {integrity: sha512-lNgUSHYDYaQ6daj4lJJqcY2Ru9LgHwpFoposJkRVRPh21Yg4kaPFRhzaWoSg3PliwcDOpDuMy3xsmQaJp201Fg==}
 
-  '@shikijs/engine-oniguruma@1.24.0':
-    resolution: {integrity: sha512-Eua0qNOL73Y82lGA4GF5P+G2+VXX9XnuUxkiUuwcxQPH4wom+tE39kZpBFXfUuwNYxHSkrSxpB1p4kyRW0moSg==}
+  '@shikijs/engine-oniguruma@1.24.1':
+    resolution: {integrity: sha512-KdrTIBIONWd+Xs61eh8HdIpfigtrseat9dpARvaOe2x0g/FNTbwbkGr3y92VSOVD1XotzEskh3v/nCzyWjkf7g==}
 
-  '@shikijs/types@1.24.0':
-    resolution: {integrity: sha512-aptbEuq1Pk88DMlCe+FzXNnBZ17LCiLIGWAeCWhoFDzia5Q5Krx3DgnULLiouSdd6+LUM39XwXGppqYE0Ghtug==}
+  '@shikijs/types@1.24.1':
+    resolution: {integrity: sha512-ZwZFbShFY/APfKNt3s9Gv8rhTm29GodSKsOW66X6N+HGsZuaHalE1VUEX4fv93UXHTZTLjb3uxn63F96RhGfXw==}
 
   '@shikijs/vscode-textmate@9.3.0':
     resolution: {integrity: sha512-jn7/7ky30idSkd/O5yDBfAnVt+JJpepofP/POZ1iMOxK59cOfqIgg/Dj0eFsjOTMw+4ycJN0uhZH/Eb0bs/EUA==}
@@ -957,8 +957,8 @@ packages:
       vue:
         optional: true
 
-  shiki@1.24.0:
-    resolution: {integrity: sha512-qIneep7QRwxRd5oiHb8jaRzH15V/S8F3saCXOdjwRLgozZJr5x2yeBhQtqkO3FSzQDwYEFAYuifg4oHjpDghrg==}
+  shiki@1.24.1:
+    resolution: {integrity: sha512-/qByWMg05+POb63c/OvnrU17FcCUa34WU4F6FCrd/mjDPEDPl8YUNRkRMbo8l3iYMLydfCgxi1r37JFoSw8A4A==}
 
   sirv@3.0.0:
     resolution: {integrity: sha512-BPwJGUeDaDCHihkORDchNyyTvWFhcusy1XMmhEVTQTwGeybFbp8YEmB+njbPnth1FibULBSBVwCQni25XlCUDg==}
@@ -1103,8 +1103,8 @@ snapshots:
       '@fontsource-variable/manrope': 5.1.0
       '@tailwindcss/vite': 4.0.0-alpha.15(vite@6.0.3(jiti@2.4.1)(lightningcss@1.28.2))
       reveal.js: 5.1.0
-      shiki: 1.24.0
-      shiki-magic-move: 0.4.5(shiki@1.24.0)(svelte@5.9.0)
+      shiki: 1.24.1
+      shiki-magic-move: 0.4.5(shiki@1.24.1)(svelte@5.9.0)
       svelte: 5.9.0
       tailwindcss: 4.0.0-alpha.15
     transitivePeerDependencies:
@@ -1268,27 +1268,27 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.28.0':
     optional: true
 
-  '@shikijs/core@1.24.0':
+  '@shikijs/core@1.24.1':
     dependencies:
-      '@shikijs/engine-javascript': 1.24.0
-      '@shikijs/engine-oniguruma': 1.24.0
-      '@shikijs/types': 1.24.0
+      '@shikijs/engine-javascript': 1.24.1
+      '@shikijs/engine-oniguruma': 1.24.1
+      '@shikijs/types': 1.24.1
       '@shikijs/vscode-textmate': 9.3.0
       '@types/hast': 3.0.4
       hast-util-to-html: 9.0.3
 
-  '@shikijs/engine-javascript@1.24.0':
+  '@shikijs/engine-javascript@1.24.1':
     dependencies:
-      '@shikijs/types': 1.24.0
+      '@shikijs/types': 1.24.1
       '@shikijs/vscode-textmate': 9.3.0
       oniguruma-to-es: 0.7.0
 
-  '@shikijs/engine-oniguruma@1.24.0':
+  '@shikijs/engine-oniguruma@1.24.1':
     dependencies:
-      '@shikijs/types': 1.24.0
+      '@shikijs/types': 1.24.1
       '@shikijs/vscode-textmate': 9.3.0
 
-  '@shikijs/types@1.24.0':
+  '@shikijs/types@1.24.1':
     dependencies:
       '@shikijs/vscode-textmate': 9.3.0
       '@types/hast': 3.0.4
@@ -1764,28 +1764,28 @@ snapshots:
 
   set-cookie-parser@2.7.1: {}
 
-  shiki-magic-move@0.4.5(shiki@1.24.0)(svelte@5.9.0):
+  shiki-magic-move@0.4.5(shiki@1.24.1)(svelte@5.9.0):
     dependencies:
       diff-match-patch-es: 0.1.1
       ohash: 1.1.4
     optionalDependencies:
-      shiki: 1.24.0
+      shiki: 1.24.1
       svelte: 5.9.0
 
-  shiki-magic-move@0.5.0(shiki@1.24.0)(svelte@5.9.0):
+  shiki-magic-move@0.5.0(shiki@1.24.1)(svelte@5.9.0):
     dependencies:
       diff-match-patch-es: 0.1.1
       ohash: 1.1.4
     optionalDependencies:
-      shiki: 1.24.0
+      shiki: 1.24.1
       svelte: 5.9.0
 
-  shiki@1.24.0:
+  shiki@1.24.1:
     dependencies:
-      '@shikijs/core': 1.24.0
-      '@shikijs/engine-javascript': 1.24.0
-      '@shikijs/engine-oniguruma': 1.24.0
-      '@shikijs/types': 1.24.0
+      '@shikijs/core': 1.24.1
+      '@shikijs/engine-javascript': 1.24.1
+      '@shikijs/engine-oniguruma': 1.24.1
+      '@shikijs/types': 1.24.1
       '@shikijs/vscode-textmate': 9.3.0
       '@types/hast': 3.0.4
 
