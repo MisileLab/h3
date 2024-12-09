@@ -121,15 +121,19 @@ titlebar_padding 1
         "idle_inhibitor" = {
           "format" = "{icon}";
           "format-icons" = {activated = "󰅶"; deactivated = "󰾪";};
-          "on-click" = "$HOME/.config/home-manager/idle-handler.sh";
+          on-click = "$HOME/.config/home-manager/idle-handler.sh";
         };
         "custom/clock" = {
-          exec = "python $HOME/.config/home-manager/clock.py";
+          exec = "$HOME/.config/home-manager/clock.py local";
+          on-click = "$HOME/.config/home-manager/clock.py local copy";
+          on-click-right = "$HOME/.config/home-manager/clock.py local copyf";
           return-type = "json";
           restart-interval = 1;
         };
         "custom/utc-clock" = {
-          exec = "python $HOME/.config/home-manager/clock.py UTC";
+          exec = "$HOME/.config/home-manager/clock.py utc";
+          on-click = "$HOME/.config/home-manager/clock.py utc copy";
+          on-click-right = "$HOME/.config/home-manager/clock.py utc copyf";
           return-type = "json";
           restart-interval = 1;
         };
