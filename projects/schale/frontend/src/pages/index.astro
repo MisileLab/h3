@@ -128,7 +128,7 @@ const addresses: Array<CPair> = [{
             <a href="https://mail.misile.xyz">Subscribe</a>
           </Text>
         </div>
-        <div class="flex flex-row gap-x-2 items-center text-xl lg:text-2xl md:text-4xl">
+        <div class="flex flex-row gap-x-2 items-center text-sm sm:text-xl md:text-2xl lg:text-4xl">
           <span>Donate</span>
           <select class="w-auto max-w-1/2 bg-white" id="crypto-select">
             {addresses.toSorted((a, b)=>a.type.localeCompare(b.type)).map((v)=>{
