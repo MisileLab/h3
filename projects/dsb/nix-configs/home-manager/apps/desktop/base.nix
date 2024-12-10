@@ -1,4 +1,4 @@
-{config, pkgs, stablep, ...}:
+{config, pkgs, ...}:
 let
   briar-desktop = pkgs.callPackage ./briar.nix {};
 in
@@ -33,7 +33,6 @@ in
   programs = {
     obs-studio = {
       enable = true;
-      package = stablep.obs-studio;
       catppuccin.enable = true;
     };
     alacritty = {
