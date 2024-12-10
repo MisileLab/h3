@@ -1,4 +1,3 @@
-#!/usr/bin/env -S uv run
 from json import dumps
 from time import sleep
 from datetime import datetime, UTC

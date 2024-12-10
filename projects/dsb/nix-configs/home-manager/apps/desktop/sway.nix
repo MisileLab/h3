@@ -124,16 +124,16 @@ titlebar_padding 1
           on-click = "$HOME/.config/home-manager/idle-handler.sh";
         };
         "custom/clock" = {
-          exec = "$HOME/.config/home-manager/clock.py local";
-          on-click = "$HOME/.config/home-manager/clock.py local copy";
-          on-click-right = "$HOME/.config/home-manager/clock.py local copyf";
+          exec = "$HOME/.config/home-manager/clock.sh local";
+          on-click = "$HOME/.config/home-manager/clock.sh local copy";
+          on-click-right = "$HOME/.config/home-manager/clock.sh local copyf";
           return-type = "json";
           restart-interval = 1;
         };
         "custom/utc-clock" = {
-          exec = "$HOME/.config/home-manager/clock.py utc";
-          on-click = "$HOME/.config/home-manager/clock.py utc copy";
-          on-click-right = "$HOME/.config/home-manager/clock.py utc copyf";
+          exec = "$HOME/.config/home-manager/clock.sh utc";
+          on-click = "$HOME/.config/home-manager/clock.sh utc copy";
+          on-click-right = "$HOME/.config/home-manager/clock.sh utc copyf";
           return-type = "json";
           restart-interval = 1;
         };
