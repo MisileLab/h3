@@ -5,6 +5,6 @@ download in [folder](https://miniof.misile.xyz/browser/noa/lfs/) and export back
 
 ## current revision
 
-- dmekanically: `sdHyzEmi5gp8m28SjM8QwPGzMdds4ihb2zrxI5O8QatGjDmU8LqVtPa037IVu5OyB4KXPthO4zMgza7nl5JLpWuwxJ4AiYFOTqJH`
+- dmekanically: `WVZktbzDJRJzl28O6qCqL0J5iHK2efKRNYkADYECf7UlySQY1BpxHdomSE0fNtv7JhuRFvFEMS6wI4LMUKBgXLzlHuEgE8P6W3s1`
 - fonts: `jGlgWWKQJFvjDv2fjl4UolvfltGq5ssVsuHAgP6pd8nnaMMb4DwEsh27CtdcyFFl1gs84veIvAGYjzWDUf6jK3fdYBq1wjUQoTY4`
 
