@@ -8,6 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script>
       const name = "{{ room }}";
+      const password = "{{ password }}";
+      console.log(password);
       console.log(name);
       const w = new WebSocket("ws://" + window.location.host + '/ws')
       w.onmessage = function(t) {
@@ -17,7 +19,7 @@
         content.innerText = t["data"];
         d.appendChild(content)
       }
-      w.onopen = function() {w.send(name)}
+      w.onopen = function() {w.send(name);w.send(password)}
     </script>
   </head>
   <body>
@@ -25,6 +27,7 @@
       <label for="text">send</label>
       <input type="text" id="text" name="text" />
       <input type="hidden" name="room" value="{{ room }}">
+      <input type="hidden" name="password" value="{{ password }}">
     </form>
     <ul id="messages">
       {% for content in messages %}
