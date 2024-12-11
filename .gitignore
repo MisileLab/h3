@@ -1,6 +1,5 @@
 .vscode
 .xwin*
-.direnv
 .pdm-python
 .infisical.json
 .python-version
