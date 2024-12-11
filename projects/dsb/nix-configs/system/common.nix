@@ -2,14 +2,14 @@
 # your system. Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
-{ pkgs, ... }:
+{ pkgs, stablep, ... }:
 {
   boot = {
     loader = {
       efi.canTouchEfiVariables = true;
       systemd-boot.enable = true;
     };
-    kernelPackages = with pkgs; linuxPackages_latest;
+    kernelPackages = with stablep; linuxPackages_latest;
     kernelParams = ["amdgpu.sg_display=0" "initcall_blacklist=amd_pstate_init" "amd_pstate.enable=0"];
     initrd.kernelModules = ["amdgpu"];
     supportedFilesystems = ["ntfs" "btrfs" "ext4" "mtpfs"];
