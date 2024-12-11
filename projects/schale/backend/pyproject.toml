@@ -9,5 +9,7 @@ dependencies = [
   "edgedb==2.2.0",
   "fastapi[standard]==0.115.6",
   "tomli==2.2.1",
-  "python-multipart==0.0.19"
+  "python-multipart==0.0.19",
+  "argon2-cffi==23.1.0",
+  "blake3==1.0.0",
 ]

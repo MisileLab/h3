@@ -4,8 +4,8 @@ from libraries.email import send_email
 from fastapi import HTTPException, status, Header, APIRouter, Form
 from pydantic import BaseModel, Field
 from httpx import AsyncClient
+from blake3 import blake3
 
-from hashlib import sha3_256
 from dataclasses import asdict
 
 router = APIRouter()
@@ -86,7 +86,7 @@ async def sign(
   if raw is None:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
   raw = asdict(raw)
-  params = f"?name={name}&email={email}&hash={sha3_256(f'{name}{email}{initializer.key}'.encode()).hexdigest()}"
+  params = f"?name={name}&email={email}&hash={blake3(f'{name}{email}{initializer.key}'.encode()).hexdigest()}"
   content = f"<a href='https://misile.xyz/theresa/confirm{params}'>click here to confirm (normal)</a>\n"
   content += f"<a herf='http://b723cfcf6psmade7vqldtbc332nhhrwy52wvka3afy5s5257pzbqswid.onion/theresa/confirm{params}'>click here to confirm (tor)</a>"
   send_email(
@@ -104,7 +104,7 @@ async def confirm(
   message: str = Header(description="message of signer"),
   signature: str | None = Header(description="signature of signer", default=None)
 ):
-  if hash != sha3_256(f"{name}{email}{initializer.key}".encode()).hexdigest():
+  if hash != blake3(f"{name}{email}{initializer.key}".encode()).hexdigest():
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
   name_signer = name_signer.split("\n")[0]
   dupe_id = await initializer.c.query_single('select theresa::User {id} filter .name=<str>$name limit 1', name=name_signer)
