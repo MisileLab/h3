@@ -4,7 +4,7 @@ let
     name = "abtop";
     desktopName = "abtop";
     icon = "btop";
-    exec = "${pkgs.alacritty}/bin/alacritty -e zellij --layout /home/misile/non-nixos-things/abtop.kdl";
+    exec = "${pkgs.kitty}/bin/kitty -e zellij --layout /home/misile/non-nixos-things/abtop.kdl";
   };
 in
 {

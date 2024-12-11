@@ -35,15 +35,17 @@ in
       enable = true;
       catppuccin.enable = true;
     };
-    alacritty = {
+    kitty = {
       enable = true;
       catppuccin.enable = true;
-      settings = {
-        terminal.shell = "${pkgs.fish}/bin/fish";
-        keyboard.bindings = [
-          {key = "Plus";mods = "Control";action = "IncreaseFontSize";}
-          {key = "Minus";mods = "Control";action = "DecreaseFontSize";}
-        ];
+      settings.shell = "${pkgs.fish}/bin/fish";
+      font = {
+        name = "FiraCode Nerd Font Mono";
+        size = 11.25;
+      };
+      keybindings = {
+        "ctrl+shift+plus" = "change_font_size all +2.0";
+        "ctrl+shift+minus" = "change_font_size all -2.0";
       };
     };
     firefox = {

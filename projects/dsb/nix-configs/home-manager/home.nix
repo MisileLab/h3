@@ -10,9 +10,8 @@
     stateVersion = "24.05";
     sessionVariables = {
       QT_QPA_PLATFORM = "wayland";
-      EDITOR = "lvim";
+      EDITOR = "emacsclient";
       XDG_SCREENSHOTS_DIR = "/home/misile/screenshots";
-      COLORTERM = "truecolor";
     };
   };
 

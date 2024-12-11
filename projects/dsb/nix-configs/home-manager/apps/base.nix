@@ -47,14 +47,7 @@ in
         enable = true;
         mutableTrust = true;
       };
-      bash = {
-        enable = true;
-        initExtra = ''
-          if [[ $(tty) == "/dev/tty1" ]]; then
-            sway
-          fi
-        '';
-      };
+      bash.enable = true;
       fzf = {
         enable = true;
         catppuccin.enable = true;
@@ -114,6 +107,9 @@ in
                 cd -
               end
             end
+          end
+          if test "$TERM" = "linux"
+            sway
           end
         '';
       };
