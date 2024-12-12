@@ -50,7 +50,6 @@ in
     };
     firefox = {
       enable = true;
-      package = stablep.firefox;
       nativeMessagingHosts = [stablep.firefoxpwa];
     };
   };
