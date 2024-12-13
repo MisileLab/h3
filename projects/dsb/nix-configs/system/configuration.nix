@@ -11,6 +11,11 @@
     options = "--delete-older-than 1d";
   };
   services = {
+    locate = {
+      enable = true;
+      package = pkgs.plocate;
+      localuser = null;
+    };
     gnome.gnome-keyring.enable = true;
     pcscd.enable = true;
     chrony = {
