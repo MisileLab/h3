@@ -2,8 +2,7 @@
 name = "simplemoney"
 version = "0.1.0"
 description = "A simple money system for Minecraft"
-# https://github.com/edgedb/edgedb-python/issues/525
-requires-python = "==3.12.7"
+requires-python = "==3.13.1"
 dependencies = [
   "argon2-cffi==23.1.0",
   "edgedb==2.2.0",

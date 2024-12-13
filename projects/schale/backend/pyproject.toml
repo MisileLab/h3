@@ -2,8 +2,7 @@
 name = "schale"
 version = "0.1.0"
 description = "Backend of schale"
-# https://github.com/edgedb/edgedb-python/issues/525
-requires-python = "==3.12.7"
+requires-python = "==3.13.1"
 dependencies = [
   "boto3==1.35.80",
   "edgedb==2.2.0",
