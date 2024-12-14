@@ -15,6 +15,7 @@
       enable = true;
       package = pkgs.plocate;
       localuser = null;
+      interval = "never";
     };
     gnome.gnome-keyring.enable = true;
     pcscd.enable = true;
