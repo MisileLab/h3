@@ -62,6 +62,7 @@ in
           ls = "${pkgs.eza}/bin/eza --icons";
           cat = "${pkgs.bat}/bin/bat";
           ocat = "${pkgs.coreutils}/bin/cat";
+          ssh = "${pkgs.kitty}/bin/kitten ssh";
         };
         plugins = [{name="tide"; src=pkgs.fishPlugins.tide.src;}];
         shellInit = with pkgs; ''
