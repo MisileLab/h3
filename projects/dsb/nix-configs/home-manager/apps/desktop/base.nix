@@ -15,8 +15,8 @@ in
       brightnessctl clipman wl-clipboard pavucontrol
       imagemagick virt-manager appflowy xfce.thunar
       galaxy-buds-client ferium prismlauncher
-      seahorse kdePackages.filelight (stablep.firefoxpwa) gparted
-      onionshare jetbrains.idea-community-bin gimp (stablep.zed-editor) telegram-desktop
+      seahorse kdePackages.filelight firefoxpwa gparted
+      onionshare jetbrains.idea-community-bin gimp zed-editor telegram-desktop
       xournalpp
     ] ++ ([briar-desktop exodus]);
     file = {
@@ -34,6 +34,7 @@ in
   programs = {
     obs-studio = {
       enable = true;
+      package = stablep.obs-studio;
       catppuccin.enable = true;
     };
     kitty = {
@@ -51,8 +52,7 @@ in
     };
     firefox = {
       enable = true;
-      package = stablep.firefox;
-      nativeMessagingHosts = [stablep.firefoxpwa];
+      nativeMessagingHosts = [pkgs.firefoxpwa];
     };
   };
   xdg = {

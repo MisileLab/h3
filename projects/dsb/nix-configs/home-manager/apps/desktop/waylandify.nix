@@ -1,4 +1,4 @@
-{config, pkgs, ...}:
+{config, pkgs, stablep, ...}:
 let
   # base
   base = name: binaryPath: args: (pkgs.writeShellScriptBin "${name}" ''
@@ -8,7 +8,7 @@ let
   ewl = name: binaryPath: base name binaryPath "--enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform-hint=auto --ozone-platform=wayland --enable-wayland-ime";
   # java-waylandify
   jwl = name: binaryPath: base name binaryPath "-Dawt.toolkit.name=WLToolkit";
-  electrons = with pkgs; [
+  electrons = with stablep; [
     (ewl "figma" "${figma-linux}/bin/figma-linux")
     (ewl "discord" "${vesktop}/bin/vesktop")
     (ewl "vscode" "${vscodium}/bin/codium")
@@ -30,9 +30,8 @@ in
     };
     packages = with pkgs; [
       (jwl "simplex" "${simplex-chat-desktop}/bin/simplex-chat-desktop")
-      (ewl "slack" "${slack}/bin/slack")
-      (ewl "chrome" "${ungoogled-chromium}/bin/chromium")
-      ungoogled-chromium
+      (ewl "chrome" "${stablep.ungoogled-chromium}/bin/chromium")
+      stablep.ungoogled-chromium
     ] ++ electrons;
   };
   programs = {
