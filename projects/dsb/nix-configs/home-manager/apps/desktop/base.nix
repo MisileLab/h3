@@ -17,6 +17,7 @@ in
       galaxy-buds-client ferium prismlauncher
       seahorse kdePackages.filelight (stablep.firefoxpwa) gparted
       onionshare jetbrains.idea-community-bin gimp (stablep.zed-editor) telegram-desktop
+      xournalpp
     ] ++ ([briar-desktop exodus]);
     file = {
       ".local/share/PrismLauncher/themes/catppuccin-mocha.zip".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
