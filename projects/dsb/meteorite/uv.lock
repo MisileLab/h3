@@ -42,6 +42,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/b7/bd/5fa8967755ec169d07b4e52684897a612bebb3d2086d2eade79c33642630/edgedb-2.2.0.tar.gz", hash = "sha256:3ddbb841fe80d25ede524535dd52878cf74adae8c920e1f5dd912cddf66fe5f8", size = 1276984 }
 
 [[package]]
+name = "fake-useragent"
+version = "2.0.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d6/a4/f8d204c20e7879c2c1fd1719095673f447a3111282bfe09c0a74a5ed5000/fake_useragent-2.0.3.tar.gz", hash = "sha256:af86a26ef8229efece8fed529b4aeb5b73747d889b60f01cd477b6f301df46e6", size = 194741 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/11/4f/a639b1dbdc557241e702eefb931ba24ba235c84f8fffdca3e272f096c6af/fake_useragent-2.0.3-py3-none-any.whl", hash = "sha256:8bae50abb72c309a5b3ae2f01a0b82426613fd5c4e2a04dca9332399ec44daa1", size = 201110 },
+]
+
+[[package]]
 name = "fastapi"
 version = "0.115.6"
 source = { registry = "https://pypi.org/simple" }
@@ -109,6 +118,7 @@ dependencies = [
     { name = "edgedb" },
     { name = "fastapi" },
     { name = "httpx" },
+    { name = "pcfrv" },
 ]
 
 [package.metadata]
@@ -116,6 +126,21 @@ requires-dist = [
     { name = "edgedb", specifier = "==2.2.0" },
     { name = "fastapi", specifier = "==0.115.6" },
     { name = "httpx", specifier = "==0.28.1" },
+    { name = "pcfrv", specifier = "==0.2.0" },
+]
+
+[[package]]
+name = "pcfrv"
+version = "0.2.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "fake-useragent" },
+    { name = "httpx" },
+    { name = "pydantic" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/b0/53/b81fdb4ed919910118c22a456000355e4573ee522d2607fbd857c671f529/pcfrv-0.2.0.tar.gz", hash = "sha256:50706e0eb01adcbd63c814988161b0120b03906cf79b2ebf6633614ad3510570", size = 3922 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/9c/b6/f95bcc8a16983963751475ed3412536db0b822348b2bf02db19afe5b0393/pcfrv-0.2.0-py3-none-any.whl", hash = "sha256:ac2349143ae86fecb889bf18949be1eabe3cc7d6ddfb2f2db9402fa59dee69ae", size = 4609 },
 ]
 
 [[package]]
