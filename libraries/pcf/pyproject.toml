@@ -1,0 +1,11 @@
+[project]
+name = "pcf"
+version = "0.1.0"
+description = "PyComcigan Forked"
+readme = "README.md"
+requires-python = "==3.13.1"
+dependencies = [
+  "fake-useragent==2.0.3",
+  "httpx==0.28.1",
+  "pydantic==2.10.3",
+]
