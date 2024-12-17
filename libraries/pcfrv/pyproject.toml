@@ -1,7 +1,7 @@
 [project]
-name = "pcf"
+name = "pcfrv"
 version = "0.1.0"
-description = "PyComcigan Forked"
+description = "PyComcigan Forked with Runtime Validation"
 readme = "README.md"
 requires-python = "==3.13.1"
 dependencies = [
