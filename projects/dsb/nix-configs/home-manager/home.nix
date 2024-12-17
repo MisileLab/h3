@@ -1,4 +1,4 @@
-{ ... }:
+{ secrets, ... }:
 {
   imports = [
     ./apps/base.nix
@@ -12,6 +12,7 @@
       QT_QPA_PLATFORM = "wayland";
       EDITOR = "emacsclient";
       XDG_SCREENSHOTS_DIR = "/home/misile/screenshots";
+      UV_PUBLISH_TOKEN = secrets.UV_PUBLISH_TOKEN or "you_need_to_change_in_secrets_nix";
     };
   };
 

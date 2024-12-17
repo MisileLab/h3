@@ -19,7 +19,7 @@ in
     home.packages = with pkgs; [
       sbctl bluez cryptsetup smartmontools borgbackup rclone pulsemixer
       portablemc miniserve openssl transmission glances lunarvim pandoc wkhtmltopdf
-      yt-dlp age magic-wormhole ansifilter b3sum (emacsp)
+      yt-dlp age magic-wormhole ansifilter b3sum (emacsp) git-crypt
       aspell aspellDicts.en
       (writeScript "manual" ''
         ${pkgs.glow}/bin/glow -p ~/.config/home-manager/manual.md
