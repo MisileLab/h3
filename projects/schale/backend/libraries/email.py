@@ -1,5 +1,8 @@
 from .initializer import initializer
 
+from pydantic import validate_call
+
+@validate_call
 def send_email(name: str, content: str, to: list[str]):
   print(f"send email to {to}")
   resp = initializer.smtp_client.send_email(
