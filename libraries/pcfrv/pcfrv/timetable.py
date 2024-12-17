@@ -49,7 +49,7 @@ class TimeTable:
   start_date: str
   day_time: list[str]
   update_date: str
-  timetable: list[list[list[TimeTableData]]]
+  timetable: list[TimeTableData]
   _homeroom_teacher: list[list[str]]
 
   @validate_call(validate_return=True)
@@ -82,14 +82,16 @@ def fetch_timetable(
     resp["학년도"],
     resp["시작일"],
     resp["일과시간"],
-    resp[f"자료{code3}"]
+    resp[f"자료{code3}"],
+    [],
+    []
   )
 
   data = []
   teacher_list = resp[f"자료{code1}"]
-  del teacher_list[0]
+  teacher_list[0] = ""
   sub_list = resp[f"자료{code2}"]
-  del sub_list[0]
+  sub_list[0] = ""
 
   original_timetable = resp["자료" + code5]
   grade = 0
@@ -163,7 +165,7 @@ def get_code() -> tuple[str, str, str, str, str, str, str]:
     return comcigan_code, code0, code1, code2, code3, code4, code5
 
 @validate_call(validate_return=True)
-def get_school_code(school_name, local_code, school_code, comcigan_code) -> tuple[int, int, str]:
+def get_school_code(school_name: str, local_code: int, school_code: int, comcigan_code: str) -> tuple[int, str, int]:
   resp = get(f"{comcigan_url}{comcigan_code}{parse.quote(school_name, encoding='euc-kr')}")
   resp.encoding = 'UTF-8'
   resp = loads(resp.text.strip(chr(0)))
