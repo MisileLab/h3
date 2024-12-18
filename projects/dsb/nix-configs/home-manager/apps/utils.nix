@@ -29,7 +29,7 @@
     };
     atuin = {
       enable = true;
-      enableFishIntegration = true;
+      enableNushellIntegration = true;
       settings = {
         history_filter = [
           "ls" "clear" "cd *" "manual" "poweroff" "zellij *" "exit" "topgrade" "zellij *" "lzg"
@@ -41,7 +41,7 @@
       enable = true;
       settings = {
         theme = "catppuccin-mocha";
-        default_shell = "fish";
+        default_shell = "nu";
       };
     };
     git.delta = {

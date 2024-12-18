@@ -1,6 +1,6 @@
 {pkgs, ...}:
 let
-  writeScript = name: content: pkgs.writeShellScriptBin name "#!${pkgs.fish}/bin/fish\n${content} $@";
+  writeScript = name: content: pkgs.writeShellScriptBin name "#!${pkgs.nushell}/bin/nu\n${content} $@";
   emacsp = (pkgs.emacsPackagesFor pkgs.emacs-nox).emacsWithPackages (
     epkgs: with epkgs; [
       (treesit-grammars.with-grammars (p: builtins.attrValues p))
@@ -41,7 +41,6 @@ in
         enable = true;
         catppuccin.enable = true;
       };
-      nushell.enable = true;
       # nix-index.enable = true;
       glamour.catppuccin.enable = true;
       gpg = {
@@ -54,9 +53,12 @@ in
         catppuccin.enable = true;
       };
       topgrade.enable = true;
-      fish = {
+      oh-my-posh = {
         enable = true;
-        catppuccin.enable = true;
+        useTheme = "catppuccin_mocha";
+      };
+      nushell = {
+        enable = true;
         shellAliases = {
           onefetch = "${pkgs.onefetch}/bin/onefetch --number-of-languages 9999";
           ls = "${pkgs.eza}/bin/eza --icons";
@@ -64,55 +66,25 @@ in
           ocat = "${pkgs.coreutils}/bin/cat";
           ssh = "${pkgs.kitty}/bin/kitten ssh";
         };
-        plugins = [{name="tide"; src=pkgs.fishPlugins.tide.src;}];
-        shellInit = with pkgs; ''
-          fish_add_path -m ~/.cargo/bin
-          fish_add_path -m ~/.avm/bin
-          fish_add_path -m ~/.local/share/solana/install/active_release/bin
-          fish_add_path -m ~/.volta/bin
-          
-          function fzfp
-            if set -q argv[1]
-              $argv (${fzf}/bin/fzf --preview 'bat --color=always --style=numbers --line-range :500 {}')
-            else
-              ${fzf}/bin/fzf --preview 'bat --color=always --style=numbers --line-range :500 {}'
-            end
-          end
-          function git-bulk-pulls
-            if not set -q argv[1]
-              set args .
-            else
-              set args $argv
-            end
-            for j in $args
-              for i in $j/*
-                cd $i
-                ${git}/bin/git pull
-                cd -
-              end
-            end
-          end
-          function git-bulk-status
-            if not set -q argv[1]
-              set args
-            else
-              set args $argv
-            end
-            for j in $args
-              for i in $j/*
-                cd $i
-                echo $i
-                set output (command git status --porcelain=v2)
-                if not test -z "$output"
-                  ${git}/bin/git status
-                end
-                cd -
-              end
-            end
-          end
-          if test "$TERM" = "linux"
-            sway
-          end
+        extraConfig = ''
+def bulk-run [paths: list<string>, command: string, ...args] {
+  mut output = {}
+  for $dir in $paths {
+    for $p in (ls $dir | where type == dir) {
+      let path = $p | get name
+      print $path
+      cd $path
+      let result = (^$command ...$args)
+      $output = ($output | upsert $path $result)
+      cd -
+    }
+  }
+  $output
+}
+$env.PATH = ($env.PATH | split row (char esep) | append "~/.cargo/bin")
+if $env.TERM == "linux" {
+  sway
+}
         '';
       };
       neovim = {

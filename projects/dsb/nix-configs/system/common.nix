@@ -51,7 +51,7 @@
     users.misile = {
       isNormalUser = true;
       extraGroups = ["wheel" "docker"];
-      shell = pkgs.fish;
+      shell = pkgs.nushell;
     };
     extraGroups.vboxusers.members = [ "user-with-access-to-virtualbox" ];
     motd = "I use nixos btw";

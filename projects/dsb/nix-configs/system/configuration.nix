@@ -109,7 +109,6 @@
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [kdiskmark auto-cpufreq];
   programs = {
-    fish.enable = true;
     nix-ld.enable = true;
     steam.enable = true;
     dconf.enable = true;

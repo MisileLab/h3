@@ -39,7 +39,7 @@ in
     kitty = {
       enable = true;
       catppuccin.enable = true;
-      settings.shell = "${pkgs.fish}/bin/fish";
+      settings.shell = "${pkgs.nushell}/bin/nu";
       font = {
         name = "FiraCode Nerd Font Mono";
         size = 11.25;
