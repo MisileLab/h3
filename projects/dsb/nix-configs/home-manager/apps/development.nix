@@ -46,12 +46,12 @@
       }}/themes/catppuccin-mocha.yaml";
     };
   };
+  catppuccin.lazygit.enable = true;
   programs = {
     java={enable=true;package=pkgs.temurin-bin-21;};
     go.enable = true;
     lazygit = {
       enable = true;
-      catppuccin.enable = true;
       settings.git.commit.signOff = true;
     };
     git = {

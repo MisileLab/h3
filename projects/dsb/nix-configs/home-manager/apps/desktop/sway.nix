@@ -86,10 +86,15 @@ titlebar_padding 1
     package = pkgs.swayfx;
     xwayland = true;
   };
+  catppuccin = {
+    rofi.enable = true;
+    swaylock.enable = true;
+    waybar.enable = true;
+    dunst.enable = true;
+  };
   programs = {
     rofi = {
       enable = true;
-      catppuccin.enable = true;
       extraConfig = {
         modi = "run,drun,window";
         icon-theme = "Oranchelo";
@@ -107,13 +112,9 @@ titlebar_padding 1
       };
       package = pkgs.rofi-wayland;
     };
-    swaylock = {
-      enable = true;
-      catppuccin.enable = true;
-    };
+    swaylock.enable = true;
     waybar = {
       enable = true;
-      catppuccin.enable = true;
       settings = [{
         modules-left = [ "custom/clock" "custom/utc-clock" "sway/workspaces" ];
         modules-center = [ "sway/window" ];
@@ -234,10 +235,7 @@ titlebar_padding 1
     };
   };
   services = {
-    dunst = {
-      enable = true;
-      catppuccin.enable = true;
-    };
+    dunst.enable = true;
     avizo.enable = true;
     poweralertd.enable = true;
   };

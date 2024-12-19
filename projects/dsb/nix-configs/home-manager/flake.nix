@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs";
-    # stable.url = "github:nixos/nixpkgs/nixos-unstable";
+    stable.url = "github:nixos/nixpkgs/nixos-unstable";
     # nur.url = "github:nix-community/NUR";
     catppuccin.url = "github:catppuccin/nix";
     home-manager = {
@@ -11,15 +11,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs = { nixpkgs, # stable,
-              home-manager, catppuccin, ... }:
+  outputs = { nixpkgs, stable, home-manager, catppuccin, ... }:
     let
       system = "x86_64-linux"; # replace with your system
       pkgs = import nixpkgs {inherit system;};
       c = import ./config.nix;
       _secrets = builtins.tryEval (import ./secrets.nix);
       secrets = if _secrets.success then _secrets.value else {};
-      # stablep = import stable {inherit system;config = {allowUnfree = true;};};
+      stablep = import stable {inherit system;config = {allowUnfree = true;};};
     in {
       homeConfigurations."misile" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
@@ -30,7 +29,7 @@
         extraSpecialArgs = {
           inherit c;
           inherit secrets;
-          # inherit stablep;
+          inherit stablep;
         };
       };
     };

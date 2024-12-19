@@ -31,14 +31,14 @@ in
       size = 32;
     };
   };
+  catppuccin = {
+    obs.enable = true;
+    kitty.enable = true;
+  };
   programs = {
-    obs-studio = {
-      enable = true;
-      catppuccin.enable = true;
-    };
+    obs-studio.enable = true;
     kitty = {
       enable = true;
-      catppuccin.enable = true;
       settings.shell = "${pkgs.nushell}/bin/nu";
       font = {
         name = "FiraCode Nerd Font Mono";

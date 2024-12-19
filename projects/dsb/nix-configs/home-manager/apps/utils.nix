@@ -10,11 +10,13 @@
     # process utils
     killall screen
   ];
+  catppuccin = {
+    mpv.enable = true;
+    bat.enable = true;
+    delta.enable = true;
+  };
   programs = {
-    mpv = {
-      enable = true;
-      catppuccin.enable = true;
-    };
+    mpv.enable = true;
     zoxide = {
       enable = true;
       options = ["--cmd cd"];
@@ -23,10 +25,7 @@
     tealdeer.enable = true;
     ripgrep.enable = true;
     eza.enable = true;
-    bat = {
-      enable = true;
-      catppuccin.enable = true;
-    };
+    bat.enable = true;
     atuin = {
       enable = true;
       enableNushellIntegration = true;
@@ -44,9 +43,6 @@
         default_shell = "nu";
       };
     };
-    git.delta = {
-      enable = true;
-      catppuccin.enable = true;
-    };
+    git.delta.enable = true;
   };
 }

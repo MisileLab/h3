@@ -36,22 +36,21 @@ in
       (writeScript "git-c" "~/repos/h3/projects/dsb/utils/.venv/bin/python ~/repos/h3/projects/dsb/utils/gen-commit-message.py")
       (writeScript "utils" "~/repos/h3/projects/dsb/utils/zig-out/bin/utils")
     ];
+    catppuccin = {
+      aerc.enable = true;
+      glamour.enable = true;
+      fzf.enable = true;
+      nvim.enable = true;
+    };
     programs = {
-      aerc = {
-        enable = true;
-        catppuccin.enable = true;
-      };
+      aerc.enable = true;
       # nix-index.enable = true;
-      glamour.catppuccin.enable = true;
       gpg = {
         enable = true;
         mutableTrust = true;
       };
       bash.enable = true;
-      fzf = {
-        enable = true;
-        catppuccin.enable = true;
-      };
+      fzf.enable = true;
       topgrade.enable = true;
       oh-my-posh = {
         enable = true;
@@ -87,10 +86,7 @@ if $env.TERM == "linux" {
 }
         '';
       };
-      neovim = {
-        enable = true;
-        catppuccin.enable = true;
-      };
+      neovim.enable = true;
     };
     services = {
       emacs = {

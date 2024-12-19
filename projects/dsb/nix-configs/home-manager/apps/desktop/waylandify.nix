@@ -1,4 +1,4 @@
-{config, pkgs, ...}:
+{config, pkgs, stablep, ...}:
 let
   # base
   base = name: envs: binaryPath: args: (pkgs.writeShellScriptBin "${name}" ''
@@ -17,7 +17,7 @@ let
     (cwl "tetrio" "${tetrio-desktop.override{withTetrioPlus=true;}}/bin/tetrio")
     (cwl "bruno" "${bruno}/bin/bruno")
     (cwl "joplin" "${joplin-desktop}/bin/joplin-desktop")
-    (cwl "signal" "${signal-desktop}/bin/signal-desktop")
+    (cwl "signal" "${stablep.signal-desktop}/bin/signal-desktop")
     (cwl "element" "${element-desktop}/bin/element-desktop")
     (cwl "slack" "${slack}/bin/slack")
   ];
