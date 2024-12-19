@@ -1,0 +1,41 @@
+---
+import Content from "../../../components/content.astro"
+---
+
+<Content title="Rust에서 안전하게 Drop 사용하기" description="" isnews={true} date={1734617630}>
+  <ul>
+  <li>Rust의 <blockquote>vec::Drain</blockquote> 및 <blockquote>Drop</blockquote> 구현에 대한 심층 탐구</li>
+  <li>소유권을 통해 메모리 버그 방지</li>
+  <li><blockquote>Vec::drain</blockquote> 메서드를 사용하여 항목 제거</li>
+  <li>문서가 Rust 1.83에 대한 설명 포함</li>
+  <li>Mutable borrow를 통해 안전성을 유지</li>
+  <li>Drop 특성 구현과 안전성 유지의 관계 설명</li>
+  <li><blockquote>DropGuard</blockquote> 구조체를 통해 원래 <blockquote>Vec</blockquote> 복원</li>
+  <li>Rust의 메모리 안전성 및 누수 위험 설명</li>
+  <li>Rust의 안전성을 위해 Miri 도구 언급</li>
+  <li>영속성 관련 고려 사항 및 성능 문제 논의</li>
+  </ul>
+
+  # 핵심 포인트
+  <ul>
+  <li><blockquote>Drain</blockquote> 구조체는 원래 <blockquote>Vec</blockquote>에 대한 참조를 유지</li>
+  <li>Drop 구현에서의 안전성 유지의 중요성 강조</li>
+  <li>ZST(Zero-Sized Type) 처리에 대한 별도의 주의 필요</li>
+  </ul>
+
+  # 댓글 요약
+  <ul>
+  <li>Drop 구현체는 Drain의 안전성을 보장할 책임이 없어야 하며, Drop에 의존하면 위험함</li>
+  <li>Rust 커뮤니티에서는 Drop과 안전성을 결부짓는 것이 잘못되었다고 인식하고 있음</li>
+  <li><blockquote>std::mem::forget</blockquote>의 존재는 Drop이 안전성을 보장하지 않음을 나타냄</li>
+  <li><blockquote>Vec::drain</blockquote>의 경우 Drop은 최종적으로 비워지지 않은 요소를 누출하지 않을 책임이 있음</li>
+  <li>Drop은 클린업 용도로 사용될 수 있으나, 안전성 보장을 위해서는 다른 방안이 필요함</li>
+  <li>Rust의 새로운 기능들은 기존 구조체를 다양한 컨텍스트에서 더 잘 작동하게 만들고 있음</li>
+  </ul>
+
+  <h2>추가적으로 유용한 링크</h2>
+  <ul>
+  <li><a href="https://doc.rust-lang.org/nightly/nomicon/leaking.html">Nomicon: Leaking</a></li>
+  <li><a href="https://faultlore.com/blah/everyone-poops">이전 블로그 포스트</a></li>
+  </ul>
+</Content>
