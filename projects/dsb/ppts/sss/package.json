@@ -9,7 +9,7 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
 	},
 	"devDependencies": {
-    "@sveltejs/adapter-node": "5.2.10",
+    "@sveltejs/adapter-node": "5.2.11",
 		"@sveltejs/kit": "2.12.1",
 		"@sveltejs/vite-plugin-svelte": "5.0.3",
 		"@types/reveal.js": "5.0.4",
