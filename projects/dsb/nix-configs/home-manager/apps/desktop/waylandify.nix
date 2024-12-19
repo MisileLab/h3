@@ -1,23 +1,25 @@
 {config, pkgs, ...}:
 let
   # base
-  base = name: binaryPath: args: (pkgs.writeShellScriptBin "${name}" ''
-    exec ${binaryPath} ${args}
+  base = name: envs: binaryPath: args: (pkgs.writeShellScriptBin "${name}" ''
+    env ${envs} ${binaryPath} ${args}
   '');
-  # electron-waylandify
-  ewl = name: binaryPath: base name binaryPath "--enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform-hint=auto --ozone-platform=wayland --enable-wayland-ime";
+  # chromium-waylandify
+  cwl = name: binaryPath: base name "" binaryPath "--enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform-hint=auto --ozone-platform=wayland --enable-wayland-ime";
   # java-waylandify
-  jwl = name: binaryPath: base name binaryPath "-Dawt.toolkit.name=WLToolkit";
+  jwl = name: binaryPath: base name "" binaryPath "-Dawt.toolkit.name=WLToolkit";
+  # qt-waylandify
+  qwl = name: binaryPath: base name "QT_QPA_PLATFORM=wayland" binaryPath "";
   electrons = with pkgs; [
-    (ewl "figma" "${figma-linux}/bin/figma-linux")
-    (ewl "discord" "${vesktop}/bin/vesktop")
-    (ewl "vscode" "${vscodium}/bin/codium")
-    (ewl "tetrio" "${tetrio-desktop.override{withTetrioPlus=true;}}/bin/tetrio")
-    (ewl "bruno" "${bruno}/bin/bruno")
-    (ewl "joplin" "${joplin-desktop}/bin/joplin-desktop")
-    (ewl "signal" "${signal-desktop}/bin/signal-desktop")
-    (ewl "element" "${element-desktop}/bin/element-desktop")
-    (ewl "slack" "${slack}/bin/slack")
+    (cwl "figma" "${figma-linux}/bin/figma-linux")
+    (cwl "discord" "${vesktop}/bin/vesktop")
+    (cwl "vscode" "${vscodium}/bin/codium")
+    (cwl "tetrio" "${tetrio-desktop.override{withTetrioPlus=true;}}/bin/tetrio")
+    (cwl "bruno" "${bruno}/bin/bruno")
+    (cwl "joplin" "${joplin-desktop}/bin/joplin-desktop")
+    (cwl "signal" "${signal-desktop}/bin/signal-desktop")
+    (cwl "element" "${element-desktop}/bin/element-desktop")
+    (cwl "slack" "${slack}/bin/slack")
   ];
 in
 {
@@ -30,7 +32,8 @@ in
     };
     packages = with pkgs; [
       (jwl "simplex" "${simplex-chat-desktop}/bin/simplex-chat-desktop")
-      (ewl "chrome" "${ungoogled-chromium}/bin/chromium")
+      (cwl "chrome" "${ungoogled-chromium}/bin/chromium")
+      (qwl "monero" "${monero-gui}/bin/monero-wallet-gui")
       ungoogled-chromium
     ] ++ electrons;
   };

@@ -61,7 +61,7 @@ in
         enable = true;
         shellAliases = {
           onefetch = "${pkgs.onefetch}/bin/onefetch --number-of-languages 9999";
-          ls = "${pkgs.eza}/bin/eza --icons";
+          ez = "${pkgs.eza}/bin/eza --icons";
           cat = "${pkgs.bat}/bin/bat";
           ocat = "${pkgs.coreutils}/bin/cat";
           ssh = "${pkgs.kitty}/bin/kitten ssh";
