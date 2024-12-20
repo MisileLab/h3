@@ -1,4 +1,4 @@
-{config, pkgs, ...}:
+{config, pkgs, stablep, ...}:
 let
   briar-desktop = pkgs.callPackage ./briar.nix {};
 in
@@ -36,7 +36,10 @@ in
     kitty.enable = true;
   };
   programs = {
-    obs-studio.enable = true;
+    obs-studio = {
+      enable = true;
+      package = stablep.obs-studio;
+    };
     kitty = {
       enable = true;
       settings.shell = "${pkgs.nushell}/bin/nu";
