@@ -17,7 +17,7 @@ let
     (cwl "tetrio" "${tetrio-desktop.override{withTetrioPlus=true;}}/bin/tetrio")
     (cwl "bruno" "${bruno}/bin/bruno")
     (cwl "joplin" "${joplin-desktop}/bin/joplin-desktop")
-    (cwl "signal" "${stablep.signal-desktop}/bin/signal-desktop")
+    (cwl "signal" "${signal-desktop}/bin/signal-desktop")
     (cwl "element" "${element-desktop}/bin/element-desktop")
     (cwl "slack" "${slack}/bin/slack")
   ];
@@ -32,9 +32,9 @@ in
     };
     packages = with pkgs; [
       (jwl "simplex" "${simplex-chat-desktop}/bin/simplex-chat-desktop")
-      (cwl "chrome" "${ungoogled-chromium}/bin/chromium")
+      (cwl "chrome" "${stablep.ungoogled-chromium}/bin/chromium")
       (qwl "monero" "${monero-gui}/bin/monero-wallet-gui")
-      ungoogled-chromium
+      stablep.ungoogled-chromium
     ] ++ electrons;
   };
   programs = {

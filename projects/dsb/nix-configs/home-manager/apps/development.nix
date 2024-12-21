@@ -6,7 +6,7 @@
     };
     packages = with pkgs; [
       # Development
-      edgedb d2 pre-commit pijul darcs just dive (dvc.override{enableAWS=true;}) solana-validator
+      edgedb d2 pre-commit pijul darcs just dive (dvc.override{enableAWS=true;}) solana-cli
       snyk pwndbg radicle-node infisical pnpm_9 jetbrains-toolbox ghidra poop binsider
       (pkgs.writeShellScriptBin "gdb" "${pkgs.pwndbg}/bin/pwndbg") process-compose wakatime
 

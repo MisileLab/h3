@@ -1,12 +1,6 @@
 {pkgs, ...}:
 let
   writeScript = name: content: pkgs.writeShellScriptBin name "#!${pkgs.nushell}/bin/nu\n${content} $@";
-  emacsp = (pkgs.emacsPackagesFor pkgs.emacs-nox).emacsWithPackages (
-    epkgs: with epkgs; [
-      (treesit-grammars.with-grammars (p: builtins.attrValues p))
-      treesit-auto
-    ]
-  );
 in
   {
     imports = [
@@ -19,7 +13,7 @@ in
     home.packages = with pkgs; [
       sbctl bluez cryptsetup smartmontools borgbackup rclone pulsemixer
       portablemc miniserve openssl transmission glances lunarvim pandoc wkhtmltopdf
-      yt-dlp age magic-wormhole ansifilter b3sum (emacsp) git-crypt
+      yt-dlp age magic-wormhole ansifilter b3sum git-crypt
       aspell aspellDicts.en
       (writeScript "manual" ''
         ${pkgs.glow}/bin/glow -p ~/.config/home-manager/manual.md
@@ -30,9 +24,6 @@ in
       (writeScript "lzg" "${lazygit}/bin/lazygit")
       (writeScript "nv" "${lunarvim}/bin/lvim")
       (writeScript "lv" "${lunarvim}/bin/lvim")
-      (writeScript "doom" "~/.config/emacs/bin/doom")
-      (writeScript "es" "${emacsp}/bin/emacsclient")
-      (writeScript "esd" "${emacsp}/bin/emacs")
       (writeScript "git-c" "~/repos/h3/projects/dsb/utils/.venv/bin/python ~/repos/h3/projects/dsb/utils/gen-commit-message.py")
       (writeScript "utils" "~/repos/h3/projects/dsb/utils/zig-out/bin/utils")
     ];
@@ -89,10 +80,6 @@ if $env.TERM == "linux" {
       neovim.enable = true;
     };
     services = {
-      emacs = {
-        enable = true;
-        package = emacsp;
-      };
       gpg-agent = {
         enable = true;
         enableSshSupport = true;

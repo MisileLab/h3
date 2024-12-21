@@ -16,7 +16,7 @@ in
       imagemagick virt-manager appflowy xfce.thunar
       galaxy-buds-client ferium prismlauncher
       seahorse kdePackages.filelight firefoxpwa gparted
-      onionshare jetbrains.idea-community-bin gimp zed-editor telegram-desktop
+      onionshare jetbrains.idea-community-bin gimp telegram-desktop
       xournalpp
     ] ++ ([briar-desktop exodus]);
     file = {
@@ -34,11 +34,16 @@ in
   catppuccin = {
     obs.enable = true;
     kitty.enable = true;
+    zed.enable = true;
   };
   programs = {
     obs-studio = {
       enable = true;
       package = stablep.obs-studio;
+    };
+    zed-editor = {
+      enable = true;
+      package = stablep.zed-editor;
     };
     kitty = {
       enable = true;
