@@ -26,9 +26,7 @@
       vala
 
       # lsp
-      (writeShellScriptBin "pyright" "${basedpyright}/bin/basedpyright")
-      (writeShellScriptBin "pyright-langserver" "${basedpyright}/bin/basedpyright-langserver")
-      shellcheck basedpyright nil vala-language-server bash-language-server tailwindcss-language-server
+      shellcheck basedpyright nil vala-language-server bash-language-server
     ]
     ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
     ++ (with nodePackages_latest; [nodejs typescript typescript-language-server svelte-language-server]) # nodejs
