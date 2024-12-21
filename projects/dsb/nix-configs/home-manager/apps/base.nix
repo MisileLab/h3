@@ -1,4 +1,4 @@
-{pkgs, ...}:
+{pkgs, secrets, ...}:
 let
   writeScript = name: content: pkgs.writeShellScriptBin name "#!${pkgs.nushell}/bin/nu\n${content} $@";
 in
@@ -57,6 +57,7 @@ in
           ssh = "${pkgs.kitty}/bin/kitten ssh";
         };
         extraConfig = ''
+$env.UV_PUBLISH_TOKEN = "${secrets.UV_PUBLISH_TOKEN or "you_need_to_change_in_secrets_nix"}"
 def bulk-run [paths: list<string>, command: string, ...args] {
   mut output = {}
   for $dir in $paths {
