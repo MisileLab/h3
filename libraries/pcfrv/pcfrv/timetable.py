@@ -156,7 +156,7 @@ def get_code() -> tuple[str, str, str, str, str, str, str]:
     resp.encoding = 'euc-kr'
     resp = resp.text
     comcigan_code = findall('\\.\\/[0-9]+\\?[0-9]+l', resp)[0][1:]
-    code0 = findall('sc_data\(\'[0-9]+_', resp)[0][9:-1]
+    code0 = findall('sc_data\\(\'[0-9]+_', resp)[0][9:-1]
     code1 = findall('성명=자료.자료[0-9]+', resp)[0][8:]
     code2 = findall('자료.자료[0-9]+\\[sb\\]', resp)[0][5:-4]
     code3 = findall('=H시간표.자료[0-9]+', resp)[0][8:]
@@ -170,7 +170,7 @@ def get_school_code(school_name: str, local_code: int, school_code: int, comciga
   resp.encoding = 'UTF-8'
   resp = loads(resp.text.strip(chr(0)))
   if len(resp["학교검색"]) == 0:
-    return -2, -2, resp
+    return -2, '', -2
   elif len(resp["학교검색"]) > 1:  # 2개 이상이 검색될
     if school_code:
       for data in resp["학교검색"]:
@@ -180,5 +180,5 @@ def get_school_code(school_name: str, local_code: int, school_code: int, comciga
       for data in resp["학교검색"]:
         if data[0] == local_code:
           return data[0], data[2], data[3]
-    return -1, -1, resp
+    return -1, '', -1
   return resp['학교검색'][0][0], resp['학교검색'][0][2], resp['학교검색'][0][3]
