@@ -8,7 +8,7 @@
       # Development
       edgedb d2 pre-commit pijul darcs just dive (dvc.override{enableAWS=true;}) solana-cli
       snyk pwndbg radicle-node infisical pnpm_9 jetbrains-toolbox ghidra poop binsider
-      (pkgs.writeShellScriptBin "gdb" "${pkgs.pwndbg}/bin/pwndbg") process-compose wakatime
+      (writeShellScriptBin "gdb" "${pwndbg}/bin/pwndbg") process-compose wakatime
 
       # Language tools
       ghc cabal-install
@@ -22,14 +22,13 @@
       marksman
       packwiz
       unityhub dotnet-sdk_8
-      ccemux lua-language-server lua (pkgs.writeShellScriptBin "luajit" "${pkgs.luajit}/bin/lua")
+      ccemux lua-language-server lua (writeShellScriptBin "luajit" "${luajit}/bin/lua")
       vala
 
       # lsp
-      shellcheck basedpyright nil vala-language-server bash-language-server
-
-      # custom file
-      (pkgs.writeShellScriptBin "bs" "infisical run --project-config-dir=/home/misile/repos/h3/projects/dsb/utils -- ${pkgs.uv}/bin/uv run -p ~/repos/h3/projects/dsb/utils ~/repos/h3/projects/dsb/utils/butter-shell.py")
+      (writeShellScriptBin "pyright" "${basedpyright}/bin/basedpyright")
+      (writeShellScriptBin "pyright-langserver" "${basedpyright}/bin/basedpyright-langserver")
+      shellcheck basedpyright nil vala-language-server bash-language-server tailwindcss-language-server
     ]
     ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
     ++ (with nodePackages_latest; [nodejs typescript typescript-language-server svelte-language-server]) # nodejs
