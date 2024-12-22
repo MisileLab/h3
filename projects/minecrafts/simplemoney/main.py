@@ -7,8 +7,9 @@ from satellite_py import DB
 from dataclasses import dataclass, field, asdict
 from json.decoder import JSONDecodeError
 from collections import defaultdict
+from collections.abc import Coroutine
 from pathlib import Path
-from typing import Annotated, Any, TYPE_CHECKING, TypeVar
+from typing import Annotated, Any, TYPE_CHECKING, TypeVar, Callable
 
 if TYPE_CHECKING:
   from _typeshed import DataclassInstance
@@ -18,7 +19,7 @@ else:
 db = DB()
 app = FastAPI()
 wss: defaultdict[str, list[WebSocket]] = defaultdict(list)
-pw = PasswordHasher().hash(Path("./pw").read_text())
+pw = PasswordHasher().hash(Path("./pw").read_text().strip("\n"))
 
 @dataclass
 class Account:
@@ -34,11 +35,17 @@ class Transaction:
   received: str
 
 @app.middleware("http")
-async def middleware_auth(request: Request):
+async def middleware_auth(request: Request, call_next: Callable[[Request], Coroutine[Any, Any, Any]]): # pyright: ignore[reportExplicitAny] (i don't like this)
+  if request.url.path in ["/docs", "/openapi.json"]:
+    return await call_next(request)
   try:
+    global pw
     _ = PasswordHasher().verify(pw, request.headers.get("auth", ""))
+    if PasswordHasher().check_needs_rehash(pw):
+      pw = PasswordHasher().hash(Path("./pw").read_text().strip("\n"))
+    return await call_next(request)
   except VerifyMismatchError:
-    raise HTTPException(status_code=400)
+    return PlainTextResponse(status_code=status.HTTP_401_UNAUTHORIZED, content="auth is invalid")
 
 def conv_to_dict(v: DataclassInstance | None, status_code: int = 400) -> dict[str, Any]: # pyright: ignore[reportExplicitAny]
   if v is None:
@@ -49,8 +56,8 @@ def verify_pw(hash: str, v: str) -> bool:
   try:
     ph = PasswordHasher()
     _ = ph.verify(hash, v)
-  except VerifyMismatchError:
-    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="name or password is mismatched")
+  except VerifyMismatchError as e:
+    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="name or password is mismatched") from e
   return ph.check_needs_rehash(hash)
 
 @app.get("/user")

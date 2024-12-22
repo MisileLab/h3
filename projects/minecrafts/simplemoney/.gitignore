@@ -1,6 +1,5 @@
 # Custom
-salt
-whitelisted_ip
+pw
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
