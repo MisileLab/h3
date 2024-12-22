@@ -37,7 +37,7 @@ name = "edgedb"
 version = "2.2.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "certifi", marker = "sys_platform == 'win32'" },
+    { name = "certifi", marker = "platform_system == 'Windows'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/b7/bd/5fa8967755ec169d07b4e52684897a612bebb3d2086d2eade79c33642630/edgedb-2.2.0.tar.gz", hash = "sha256:3ddbb841fe80d25ede524535dd52878cf74adae8c920e1f5dd912cddf66fe5f8", size = 1276984 }
 
@@ -119,6 +119,7 @@ dependencies = [
     { name = "fastapi" },
     { name = "httpx" },
     { name = "pcfrv" },
+    { name = "satellite-py" },
 ]
 
 [package.metadata]
@@ -126,21 +127,22 @@ requires-dist = [
     { name = "edgedb", specifier = "==2.2.0" },
     { name = "fastapi", specifier = "==0.115.6" },
     { name = "httpx", specifier = "==0.28.1" },
-    { name = "pcfrv", specifier = "==0.2.3" },
+    { name = "pcfrv", specifier = "==0.2.6" },
+    { name = "satellite-py", specifier = "==0.1.1" },
 ]
 
 [[package]]
 name = "pcfrv"
-version = "0.2.3"
+version = "0.2.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "fake-useragent" },
     { name = "httpx" },
     { name = "pydantic" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b7/a2/f4700b811e0de03044f6d34ab561db1e14d21f088efeb4f85dc66c82ba87/pcfrv-0.2.3.tar.gz", hash = "sha256:1b89bc5e7efb21722dc15cca26ccd9d626de01bd0b0ce041d15b421b031d8577", size = 4276 }
+sdist = { url = "https://files.pythonhosted.org/packages/1b/53/d92325a4f46333ec0036a211e8684e5efb5698937899c8867245a222bb1d/pcfrv-0.2.6.tar.gz", hash = "sha256:022dc4031e2356c088de7de973db80e2cd416fb1c19aef3af9968cc84d011a82", size = 4245 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/87/dd/b7ea586b32819aa64b41dee0954140bb32a37446c0421ac8f92342274a6f/pcfrv-0.2.3-py3-none-any.whl", hash = "sha256:9fcf05ddd697585bfac0459377a940f4da3ab0aef55256242348d9bab2ddecd7", size = 5498 },
+    { url = "https://files.pythonhosted.org/packages/5d/30/a8430198d4c3813508bfcb565864858b88d37cf0f55ca8bf64681b93dbdd/pcfrv-0.2.6-py3-none-any.whl", hash = "sha256:a8873cebb4d6295c78d55765104a1a9dd8c918e839a999ed3b585f20ce015c63", size = 5494 },
 ]
 
 [[package]]
@@ -180,6 +182,18 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/a4/99/bddde3ddde76c03b65dfd5a66ab436c4e58ffc42927d4ff1198ffbf96f5f/pydantic_core-2.27.2-cp313-cp313-win32.whl", hash = "sha256:1ebaf1d0481914d004a573394f4be3a7616334be70261007e47c2a6fe7e50130", size = 1834387 },
     { url = "https://files.pythonhosted.org/packages/71/47/82b5e846e01b26ac6f1893d3c5f9f3a2eb6ba79be26eef0b759b4fe72946/pydantic_core-2.27.2-cp313-cp313-win_amd64.whl", hash = "sha256:953101387ecf2f5652883208769a79e48db18c6df442568a0b5ccd8c2723abee", size = 1990453 },
     { url = "https://files.pythonhosted.org/packages/51/b2/b2b50d5ecf21acf870190ae5d093602d95f66c9c31f9d5de6062eb329ad1/pydantic_core-2.27.2-cp313-cp313-win_arm64.whl", hash = "sha256:ac4dbfd1691affb8f48c2c13241a2e3b60ff23247cbcf981759c768b6633cf8b", size = 1885186 },
+]
+
+[[package]]
+name = "satellite-py"
+version = "0.1.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "edgedb" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/69/d3/202fd9839ef33b39e9acd5ad6f3e7656aa92eed01e7fabd291ab8834273f/satellite_py-0.1.1.tar.gz", hash = "sha256:d94c62e9afb5e98e77d50adc233d8ddc3185beb5b5100fa493bc1951dfe7486f", size = 1494 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/bc/bb/121b298626d389dae67c8cb8ced6339853d3817e741d474ede45bc8b57f8/satellite_py-0.1.1-py3-none-any.whl", hash = "sha256:de539802f2274f38e6c3af1b723d3713ccb1364f7af1dd06b17123ee3460685b", size = 2045 },
 ]
 
 [[package]]

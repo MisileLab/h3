@@ -1,11 +1,12 @@
 from fastapi import APIRouter, HTTPException, Query, status
-from edgedb import create_async_client
+from edgedb import create_async_client # pyright: ignore[reportUnknownVariableType]
 from pydantic import Field
 
 from os import environ
 from dataclasses import dataclass
 from datetime import datetime
 from re import sub
+from typing import Annotated
 
 from libraries.request import get
 
@@ -29,9 +30,9 @@ class Range:
 @app.get("/", description="get school's lunch, total days must less than 31")
 async def lunch(
   school: str,
-  year: Range = Query(description="year range of lunch"),
-  month: Range = Query(description="month range of lunch"),
-  day: Range = Query(description="day range of lunch")
+  year: Annotated[Range, Query(description="year range of lunch")],
+  month: Annotated[Range, Query(description="month range of lunch")],
+  day: Annotated[Range, Query(description="day range of lunch")]
 ) -> LunchDatas:
   if (
     datetime(year.start, month.start, day.start)
@@ -41,7 +42,7 @@ async def lunch(
       status_code=status.HTTP_400_BAD_REQUEST,
       detail="total days must less than 31"
     )
-  l = LunchDatas()
+  lunch = LunchDatas()
   sel = await db.query_single("""
     select {school_code, ofcdc_code} filter .name = <str>$name limit 1
   """, name=school)
@@ -68,7 +69,7 @@ async def lunch(
       name=school,
       school_code=int(r['SD_SCHUL_CODE']),
       ofcdc_code=r['ATPT_OFCDC_SC_CODE']
-    )
+    ) # pyright: ignore[reportUnusedCallResult]
     sel = {"school_code": int(r['SD_SCHUL_CODE']), "ofcdc_code": r['ATPT_OFCDC_SC_CODE']}
   data = get("https://open.neis.go.kr/hub/mealServiceDietInfo", params={
     "key": environ["NEIS_API"],
@@ -87,5 +88,5 @@ async def lunch(
         for item in menu.split('<br/>')
       ]
     )
-    l.menus.append(lunch_data)
-  return l
+    lunch.menus.append(lunch_data)
+  return lunch
