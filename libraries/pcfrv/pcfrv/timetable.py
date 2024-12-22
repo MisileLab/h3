@@ -50,7 +50,7 @@ class TimeTable:
   start_date: str
   day_time: list[str]
   update_date: str
-  timetable: dict[int, dict[int, dict[int, TimeTableData]]]
+  timetable: dict[int, dict[int, dict[int, list[TimeTableData]]]]
   homeroom_teacher: list[list[str]]
 
   @validate_call(validate_return=True)
@@ -88,7 +88,7 @@ def fetch_timetable(
     []
   )
 
-  data: dict[int, dict[int, dict[int, TimeTableData]]] = {}
+  data: dict[int, dict[int, dict[int, list[TimeTableData]]]] = {}
   teacher_list = resp[f"자료{code1}"]
   teacher_list[0] = ""
   sub_list = resp[f"자료{code2}"]
@@ -102,10 +102,11 @@ def fetch_timetable(
     for j in i[1:]:
       data[grade][cls] = {}
       for day in range(1, original_timetable[grade][cls][0] + 1):
+        data[grade][cls][day] = []
         for period in range(1, original_timetable[grade][cls][day][0] + 1):
           original_period = original_timetable[grade][cls][day][period]
           period_num = 0 if j[day][0] < period else j[day][period]
-          data[grade][cls][day] = TimeTableData(
+          data[grade][cls][day].append(TimeTableData(
             period=period,
             subject=sub_list[period_num // 1000],
             teacher=teacher_list[period_num % 100],
@@ -115,7 +116,7 @@ def fetch_timetable(
               subject=sub_list[original_period // 1000],
               teacher=teacher_list[original_period % 100]
             )
-          )
+          ))
       cls += 1
     grade += 1
 
