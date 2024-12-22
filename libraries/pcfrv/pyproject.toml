@@ -1,6 +1,6 @@
 [project]
 name = "pcfrv"
-version = "0.2.1"
+version = "0.2.3"
 description = "PyComcigan Forked with Runtime Validation"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -9,3 +9,7 @@ dependencies = [
   "httpx==0.28.1",
   "pydantic==2.10.4",
 ]
+
+[tool.basedpyright]
+reportAny = false
+
