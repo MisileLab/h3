@@ -1,0 +1,12 @@
+[project]
+name = "cabinet"
+version = "0.1.0"
+description = "Suicide Detection Model"
+readme = "README.md"
+requires-python = "==3.13.1"
+dependencies = [
+    "googlesearch-python",
+]
+
+[tool.uv.sources]
+googlesearch-python = { git = "https://github.com/Nv7-GitHub/googlesearch" }
