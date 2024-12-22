@@ -40,7 +40,7 @@ class TimeTable:
     start_date: str
     day_time: list[str]
     update_date: str
-    timetable: dict[int, dict[int, dict[int, TimeTableData]]]
+    timetable: dict[int, dict[int, dict[int, list[TimeTableData]]]]
     homeroom_teacher: list[list[str]]
     def homeroom(self, grade: int, cls: int) -> str: ...
     def __init__(self, school_code, school_name, local_code, local_name, school_year, start_date, day_time, update_date, timetable, homeroom_teacher) -> None: ...
