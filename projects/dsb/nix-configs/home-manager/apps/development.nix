@@ -13,7 +13,7 @@
       # Language tools
       ghc cabal-install
       rustup cargo-update
-      python313Full uv mypy ruff-lsp
+      python313Full uv mypy ruff
       nasm
       tailwindcss-language-server deno astro-language-server
       hvm bend
