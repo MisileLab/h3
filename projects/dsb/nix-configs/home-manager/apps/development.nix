@@ -57,9 +57,11 @@
       signing = {key = "138AC61AE9D8D2D55EAE4995CD896843C0CB9E63";signByDefault=true;};
       userName = "misilelab";
       userEmail = "misileminecord@gmail.com";
-      extraConfig = { pull = {rebase = false; };
-        safe = { directory = "*"; };
-        init = {defaultBranch = "main";};
+      extraConfig = {
+        pull.rebase = false;
+        safe.directory = "*";
+        init.defaultBranch = "main";
+        core.editor = "lvim";
         delta.enable = true;
       };
     };
