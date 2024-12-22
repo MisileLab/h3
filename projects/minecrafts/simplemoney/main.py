@@ -2,16 +2,20 @@ from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 from fastapi import FastAPI, Header, Request, status, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.responses import PlainTextResponse
-from edgedb import create_async_client
+from satellite_py import DB
 
 from dataclasses import dataclass, field, asdict
 from json.decoder import JSONDecodeError
 from collections import defaultdict
 from pathlib import Path
-from typing import Annotated, Any
-from _typeshed import DataclassInstance
+from typing import Annotated, Any, TYPE_CHECKING, TypeVar
 
-db = create_async_client()
+if TYPE_CHECKING:
+  from _typeshed import DataclassInstance
+else:
+  DataclassInstance = TypeVar('DataclassInstance')
+
+db = DB()
 app = FastAPI()
 wss: defaultdict[str, list[WebSocket]] = defaultdict(list)
 pw = PasswordHasher().hash(Path("./pw").read_text())
@@ -41,15 +45,6 @@ def conv_to_dict(v: DataclassInstance | None, status_code: int = 400) -> dict[st
     raise HTTPException(status_code=status_code, detail="result of query is None (probably name or password is invalid)")
   return asdict(v)
 
-async def query(*args, **kwargs) -> list[DataclassInstance]: # pyright: ignore[reportUnknownParameterType, reportMissingParameterType]
-  return await db.query(*args, **kwargs) # pyright: ignore[reportUnknownVariableType, reportUnknownArgumentType, reportUnknownMemberType]
-
-async def query_single(*args, **kwargs) -> DataclassInstance | None: # pyright: ignore[reportUnknownParameterType, reportMissingParameterType]
-  return await db.query_single(*args, **kwargs) # pyright: ignore[reportUnknownArgumentType, reportUnknownMemberType]
-
-async def query_required_single(*args, **kwargs) -> DataclassInstance | None: # pyright: ignore[reportUnknownParameterType, reportMissingParameterType]
-  return await db.query_required_single(*args, **kwargs) # pyright: ignore[reportUnknownArgumentType, reportUnknownMemberType]
-
 def verify_pw(hash: str, v: str) -> bool:
   try:
     ph = PasswordHasher()
@@ -62,8 +57,7 @@ def verify_pw(hash: str, v: str) -> bool:
 async def get_user(
   name: Annotated[str, Header()]
 ) -> Account:
-  _user = conv_to_dict(await query_single(
-  """
+  _user = conv_to_dict(await db.query_single("""
     select Account {name, money, transactions: {id}}
     filter .name = <str>$name limit 1
   """,
@@ -75,7 +69,7 @@ async def get_user(
 async def get_transaction(
   id: Annotated[str, Header()]
 ) -> Transaction:
-  return Transaction(**conv_to_dict(await query_single("select Transaction {amount, to, received} filter .id = <std::uuid>$id limit 1", id=id)))
+  return Transaction(**conv_to_dict(await db.query_single("select Transaction {amount, to, received} filter .id = <std::uuid>$id limit 1", id=id)))
 
 @app.post("/account/send")
 async def send_money(
@@ -86,24 +80,24 @@ async def send_money(
 ) -> PlainTextResponse:
   if name == to:
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="can't send to same account")
-  _account = conv_to_dict(await query_single("select Account {name, money, password} filter .name = <str>$name limit 1", name=name))
+  _account = conv_to_dict(await db.query_single("select Account {name, money, password} filter .name = <str>$name limit 1", name=name))
   if verify_pw(_account['password'], password):
-    _ = await query_single("update Account filter .name = <str>$name set {password := <str>$password}", password=PasswordHasher().hash(password))
-  _account_to = conv_to_dict(await query_single("select Account {name, money} filter .name = <str>$name limit 1", name=to))
+    _ = await db.query_single("update Account filter .name = <str>$name set {password := <str>$password}", password=PasswordHasher().hash(password))
+  _account_to = conv_to_dict(await db.query_single("select Account {name, money} filter .name = <str>$name limit 1", name=to))
   account = Account(**_account, password=None)
   account_to = Account(**_account_to, password=None)
   if account.money - amount < 0 or amount <= 0:
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="money amount is less than 0 or your money is not sufficient")
-  t = conv_to_dict(await query_single("""insert Transaction {
+  t = conv_to_dict(await db.query_single("""insert Transaction {
     to := <str>$to,
     received := <str>$received,
     amount := <int64>$amount
   }""", to=account.name, received=account_to.name, amount=amount))['id']
-  _ = await query_single("""update Account filter .name = <str>$name set {
+  _ = await db.query_single("""update Account filter .name = <str>$name set {
     money := <int64>$amount,
     transactions += (select detached Transaction filter .id = <std::uuid>$id)
   }""", name=account.name, id=t, amount=account.money-amount)
-  _ = await query_single("""update Account filter .name = <str>$name set {
+  _ = await db.query_single("""update Account filter .name = <str>$name set {
     money := <int64>$amount,
     transactions += (select detached Transaction filter .id = <std::uuid>$id)
   }""", name=account_to.name, id=t, amount=account_to.money+amount)
@@ -126,10 +120,10 @@ async def event(ws: WebSocket):
   name = data['name']
   try:
     if verify_pw(
-      conv_to_dict(await query_single("select Account {name, money} filter .name = <str>$name", name=name))['password'],
+      conv_to_dict(await db.query_single("select Account {name, money} filter .name = <str>$name", name=name))['password'],
       data['password']
     ):
-      _ = await query_single("update Account filter .name = <str>$name {password := <str>$password}", password=PasswordHasher().hash(data['password']))
+      _ = await db.query_single("update Account filter .name = <str>$name {password := <str>$password}", password=PasswordHasher().hash(data['password']))
   except HTTPException:
     await ws.send_json({"status_code": 400, "detail": "Login failed"})
     await ws.close()
