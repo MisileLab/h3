@@ -119,12 +119,12 @@ wheels = [
 
 [[package]]
 name = "edgedb"
-version = "3.0.0b5"
+version = "2.2.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "certifi", marker = "platform_system == 'Windows'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/6f/81/1d6be82f087159e80f17021839b179263d7556db07bedac6ac9bfaa81631/edgedb-3.0.0b5.tar.gz", hash = "sha256:bd984ad1b5909e445c05e3335d6414de935578183d493fc888c6ad1b4f6a8e80", size = 1301835 }
+sdist = { url = "https://files.pythonhosted.org/packages/b7/bd/5fa8967755ec169d07b4e52684897a612bebb3d2086d2eade79c33642630/edgedb-2.2.0.tar.gz", hash = "sha256:3ddbb841fe80d25ede524535dd52878cf74adae8c920e1f5dd912cddf66fe5f8", size = 1276984 }
 
 [[package]]
 name = "email-validator"
@@ -460,7 +460,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "argon2-cffi", specifier = "==23.1.0" },
-    { name = "edgedb", specifier = "==3.0.0b5" },
+    { name = "edgedb", specifier = "==2.2.0" },
     { name = "fastapi", extras = ["standard"], specifier = "==0.115.6" },
     { name = "loguru", specifier = "==0.7.3" },
     { name = "websockets", specifier = "==14.1" },
