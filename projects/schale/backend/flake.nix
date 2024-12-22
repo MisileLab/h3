@@ -33,15 +33,7 @@
 
           # Add any shell logic you want executed any time the environment is activated
           shellHook = ''
-            if test -n "$FISH_VERSION"; then
-              source ./.venv/bin/activate.fish
-            elif test -n "$CSH_VERSION"; then
-              source ./.venv/bin/activate.csh
-            elif test -n "$NU_VERSION"; then
-              source ./.venv/bin/activate.nu
-            else
-              source ./.venv/bin/activate
-            fi
+            source ./.venv/bin/activate
           '';
         };
       });

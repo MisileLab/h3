@@ -1,5 +1,6 @@
 from libraries.initializer import initializer
 from libraries.email import send_email
+from libraries.lib import nullVerify
 
 from fastapi import HTTPException, status, Header, APIRouter, Form
 from pydantic import BaseModel, Field
@@ -7,6 +8,8 @@ from httpx import AsyncClient
 from blake3 import blake3
 
 from dataclasses import asdict
+from typing import Annotated
+from uuid import UUID
 
 router = APIRouter()
 
@@ -31,7 +34,7 @@ class openLetterPublic(openLetterBase):
 
 @router.get("/info")
 async def info(
-  name: str = Header(description="name of letter")
+  name: Annotated[str, Header(description="name of letter")]
 ) -> openLetterPublic:
   raw = await initializer.c.query_single('select theresa::Letter {name, tldr, file, signers: {id}} filter .name=<str>$name limit 1', name=name)
   if raw is None:
@@ -43,7 +46,7 @@ async def info(
 
 @router.get("/info/signers")
 async def info_signers(
-  name: str = Header(description="name of letter")
+  name: Annotated[str, Header(description="name of letter")]
 ) -> list[SignerBase]:
   raw = await initializer.c.query_single('select theresa::Letter {signers: {name, signature}} filter .name=<str>$name limit 1', name=name)
   if raw is None:
@@ -54,8 +57,8 @@ async def info_signers(
 
 @router.get("/info/signer")
 async def info_signer(
-  name: str = Header(description="name of letter"),
-  name_signer: str = Header(description="name of signer")
+  name: Annotated[str, Header(description="name of letter")],
+  name_signer: Annotated[str, Header(description="name of signer")]
 ) -> Signer:
   raw = await initializer.c.query_single(
     'select theresa::Letter {signers: {name, signature, email, message} filter .name=<str>$name_signer limit 1} filter .name=<str>$name limit 1',
@@ -69,9 +72,9 @@ async def info_signer(
 
 @router.post("/sign")
 async def sign(
-  name: str = Form(description="name of letter"),
-  email: str = Form(description="email of signer"),
-  hcaptcha_response: str = Form(description="h-captcha response", convert_underline=False, alias="h-captcha-response")
+  name: Annotated[str, Form(description="name of letter")],
+  email: Annotated[str, Form(description="email of signer")],
+  hcaptcha_response: Annotated[str, Form(description="h-captcha response", convert_underline=False, alias="h-captcha-response")]
 ):
   async with AsyncClient() as client:
     if not (await client.post(
@@ -97,29 +100,32 @@ async def sign(
 
 @router.post("/confirm")
 async def confirm(
-  name: str = Header(description="name of letter"),
-  name_signer: str = Header(description="name of signer"),
-  email: str = Header(description="email of signer"),
-  hash: str = Header(description="hash of signer"),
-  message: str = Header(description="message of signer"),
-  signature: str | None = Header(description="signature of signer", default=None)
+  name: Annotated[str, Header(description="name of letter")],
+  name_signer: Annotated[str, Header(description="name of signer")],
+  email: Annotated[str, Header(description="email of signer")],
+  hash: Annotated[str, Header(description="hash of signer")],
+  message: Annotated[str, Header(description="message of signer")],
+  signature: Annotated[str | None, Header(description="signature of signer")] = None
 ):
   if hash != blake3(f"{name}{email}{initializer.key}".encode()).hexdigest():
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
   name_signer = name_signer.split("\n")[0]
   dupe_id = await initializer.c.query_single('select theresa::User {id} filter .name=<str>$name limit 1', name=name_signer)
+  _id: UUID
   if dupe_id is None:
     if signature is None:
-      _id = (await initializer.c.query_single('''
+      _id = nullVerify(await initializer.c.query_single( # pyright: ignore[reportUnknownVariableType]
+      '''
         insert theresa::User {
           name := <str>$name,
           email := <str>$email,
           message := <str>$message,
           hash := <str>$hash
         }
-      ''', name=name_signer, email=email, message=message, hash=hash)).id
+      ''', name=name_signer, email=email, message=message, hash=hash)).id # pyright: ignore[reportAttributeAccessIssue]
     else:
-      _id = (await initializer.c.query_single('''
+      _id = nullVerify(await initializer.c.query_single( # pyright: ignore[reportUnknownVariableType]
+      '''
         insert theresa::User {
           name := <str>$name,
           email := <str>$email,
@@ -127,23 +133,25 @@ async def confirm(
           hash := <str>$hash,
           signature := <str>$signature
         }
-      ''', name=name_signer, email=email, message=message, signature=signature, hash=hash)).id
+      ''', name=name_signer, email=email, message=message, signature=signature, hash=hash)).id # pyright: ignore[reportAttributeAccessIssue]
   elif signature is None:
-    _id = (await initializer.c.query_single('''update theresa::User filter .id = <uuid>$id set {
+    _id = nullVerify(await initializer.c.query_single( # pyright: ignore[reportUnknownVariableType]
+    '''update theresa::User filter .id = <uuid>$id set {
       name := <str>$name,
       email := <str>$email,
       message := <str>$message,
       hash := <str>$hash
-    }''', name=name_signer, email=email, message=message, hash=hash, id=dupe_id.id)).id
+    }''', name=name_signer, email=email, message=message, hash=hash, id=dupe_id.id)).id # pyright: ignore[reportAttributeAccessIssue, reportUnknownArgumentType]
   else:
-    _id = (await initializer.c.query_single('''update theresa::User filter .id = <uuid>$id set {
+    _id = nullVerify(await initializer.c.query_single( # pyright: ignore[reportUnknownVariableType]
+    '''update theresa::User filter .id = <uuid>$id set {
       name := <str>$name,
       email := <str>$email,
       message := <str>$message,
       hash := <str>$hash,
       signature := <str>$signature
-    }''', name=name_signer, email=email, message=message, hash=hash, signature=signature, id=dupe_id.id)).id
-  await initializer.c.execute(
+    }''', name=name_signer, email=email, message=message, hash=hash, signature=signature, id=dupe_id.id)).id # pyright: ignore[reportAttributeAccessIssue, reportUnknownArgumentType]
+  _ = await initializer.c.query(
     "update theresa::Letter filter .name = <str>$name set {signers += (select detached theresa::User filter .id = <std::uuid>$id)}",
     name=name,
     id=_id

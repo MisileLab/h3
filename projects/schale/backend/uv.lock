@@ -140,7 +140,7 @@ name = "click"
 version = "8.1.7"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "colorama", marker = "sys_platform == 'win32'" },
+    { name = "colorama", marker = "platform_system == 'Windows'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/96/d3/f04c7bfcf5c1862a2a5b845c6b2b360488cf47af55dfa79c98f6a6bf98b5/click-8.1.7.tar.gz", hash = "sha256:ca9853ad459e787e2192211578cc907e7594e294c7ccc834310722b41b9ca6de", size = 336121 }
 wheels = [
@@ -170,7 +170,7 @@ name = "edgedb"
 version = "2.2.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "certifi", marker = "sys_platform == 'win32'" },
+    { name = "certifi", marker = "platform_system == 'Windows'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/b7/bd/5fa8967755ec169d07b4e52684897a612bebb3d2086d2eade79c33642630/edgedb-2.2.0.tar.gz", hash = "sha256:3ddbb841fe80d25ede524535dd52878cf74adae8c920e1f5dd912cddf66fe5f8", size = 1276984 }
 
@@ -505,6 +505,18 @@ wheels = [
 ]
 
 [[package]]
+name = "satellite-py"
+version = "0.1.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "edgedb" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/69/d3/202fd9839ef33b39e9acd5ad6f3e7656aa92eed01e7fabd291ab8834273f/satellite_py-0.1.1.tar.gz", hash = "sha256:d94c62e9afb5e98e77d50adc233d8ddc3185beb5b5100fa493bc1951dfe7486f", size = 1494 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/bc/bb/121b298626d389dae67c8cb8ced6339853d3817e741d474ede45bc8b57f8/satellite_py-0.1.1-py3-none-any.whl", hash = "sha256:de539802f2274f38e6c3af1b723d3713ccb1364f7af1dd06b17123ee3460685b", size = 2045 },
+]
+
+[[package]]
 name = "schale"
 version = "0.1.0"
 source = { virtual = "." }
@@ -512,9 +524,9 @@ dependencies = [
     { name = "argon2-cffi" },
     { name = "blake3" },
     { name = "boto3" },
-    { name = "edgedb" },
     { name = "fastapi", extra = ["standard"] },
     { name = "python-multipart" },
+    { name = "satellite-py" },
     { name = "tomli" },
 ]
 
@@ -523,9 +535,9 @@ requires-dist = [
     { name = "argon2-cffi", specifier = "==23.1.0" },
     { name = "blake3", specifier = "==1.0.0" },
     { name = "boto3", specifier = "==1.35.86" },
-    { name = "edgedb", specifier = "==2.2.0" },
     { name = "fastapi", extras = ["standard"], specifier = "==0.115.6" },
     { name = "python-multipart", specifier = "==0.0.20" },
+    { name = "satellite-py", specifier = "==0.1.1" },
     { name = "tomli", specifier = "==2.2.1" },
 ]
 
