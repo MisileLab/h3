@@ -1,4 +1,4 @@
-{config, pkgs, stablep, ...}:
+{config, pkgs, ...}:
 let
   # base
   base = name: envs: binaryPath: args: (pkgs.writeShellScriptBin "${name}" ''
@@ -32,9 +32,9 @@ in
     };
     packages = with pkgs; [
       (jwl "simplex" "${simplex-chat-desktop}/bin/simplex-chat-desktop")
-      (cwl "chrome" "${stablep.ungoogled-chromium}/bin/chromium")
+      (cwl "chrome" "${ungoogled-chromium}/bin/chromium")
       (qwl "monero" "${monero-gui}/bin/monero-wallet-gui")
-      stablep.ungoogled-chromium
+      ungoogled-chromium
     ] ++ electrons;
   };
   programs = {
