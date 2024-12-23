@@ -37,8 +37,8 @@ importers:
         specifier: 8.4.49
         version: 8.4.49
       solid-devtools:
-        specifier: 0.31.5
-        version: 0.31.5(solid-js@1.9.3)(vite@6.0.5(jiti@1.21.7)(yaml@2.6.1))
+        specifier: 0.31.6
+        version: 0.31.6(solid-js@1.9.3)(vite@6.0.5(jiti@1.21.7)(yaml@2.6.1))
       tailwind-merge:
         specifier: 2.5.5
         version: 2.5.5
@@ -1021,8 +1021,8 @@ packages:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
 
-  solid-devtools@0.31.5:
-    resolution: {integrity: sha512-+alyJEeyOtwdrSfMmjaHS7GSP067oZDeUvyJiKG4VlgWFGNu3QjXBHaZc5AhKr6w7wfnOhHVzCUnmk+YOWIWNg==}
+  solid-devtools@0.31.6:
+    resolution: {integrity: sha512-tqXlUiHd6kZhVk95ScCMTD+elGVABN1E2OuumJw7UIn3T9Ilv/sl5+HVFDV8HPUGf8Ha2sgVdibz8bccfgKh3w==}
     peerDependencies:
       solid-js: ^1.9.0
       vite: ^2.2.3 || ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0
@@ -2135,7 +2135,7 @@ snapshots:
 
   signal-exit@4.1.0: {}
 
-  solid-devtools@0.31.5(solid-js@1.9.3)(vite@6.0.5(jiti@1.21.7)(yaml@2.6.1)):
+  solid-devtools@0.31.6(solid-js@1.9.3)(vite@6.0.5(jiti@1.21.7)(yaml@2.6.1)):
     dependencies:
       '@babel/core': 7.26.0
       '@babel/plugin-syntax-typescript': 7.25.9(@babel/core@7.26.0)
