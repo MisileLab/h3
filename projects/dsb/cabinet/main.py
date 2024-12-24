@@ -32,7 +32,9 @@ with open("suicidal.csv", "w", newline='') as f:
   i = 1
   while i <= data_num:
     try:
+      print(i, "begin")
       datas = search_res(suicidal, i)
+      print(i, "end")
     except HTTPError as e:
       if e.response.status_code == HTTPStatus.TOO_MANY_REQUESTS:
         print("retry after 120 seconds")
