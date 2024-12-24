@@ -37,8 +37,8 @@ with open("suicidal.csv", "w", newline='') as f:
       print(i, "end")
     except HTTPError as e:
       if e.response.status_code == HTTPStatus.TOO_MANY_REQUESTS:
-        print("retry after 120 seconds")
-        sleep(120)
+        print("retry after 1 hour")
+        sleep(60 * 60)
         continue
       raise e
     for data in datas:
