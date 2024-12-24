@@ -6,6 +6,7 @@ from os import getenv
 from csv import DictWriter
 from http import HTTPStatus
 from time import sleep
+from secrets import SystemRandom
 
 proxy_url = getenv("PROXY_URL")
 proxy_user = getenv("PROXY_USERNAME")
@@ -22,7 +23,12 @@ suicidal = base_query + " 자살"
 
 data_num = 4000
 result_interval = 10
-sleep_interval = 60
+sleep_interval_min = 0
+sleep_interval_max = 60
+if getenv("start_num") is None:
+  start_num = 1
+else:
+  start_num = getenv("start_num")
 
 def search_res(query: str, start_num: int):
   return list(search(query, advanced=True, unique=True, num_results=result_interval, start_num=start_num, lang="ko", safe=None, ssl_verify=None, proxy=proxy)) # pyright: ignore[reportArgumentType]
@@ -30,7 +36,7 @@ def search_res(query: str, start_num: int):
 with open("suicidal.csv", "w", newline='') as f:
   dw = DictWriter(f, fieldnames=["title", "url", "description"])
   dw.writeheader()
-  i = 1
+  i = start_num
   while i <= data_num:
     try:
       print(i, "begin")
@@ -50,6 +56,7 @@ with open("suicidal.csv", "w", newline='') as f:
       print(data.title) # pyright: ignore[reportAny]
       dw.writerow({"title": data.title, "url": data.url, "description": data.description}) # pyright: ignore[reportAny]
     i += result_interval
-    print("rest for 1 min")
-    sleep(60)
+    r = SystemRandom().randint(sleep_interval_min, sleep_interval_max)
+    print(f"rest for {r}")
+    sleep(r)
 
