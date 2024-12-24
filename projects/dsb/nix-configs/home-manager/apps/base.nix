@@ -1,4 +1,4 @@
-{pkgs, secrets, ...}:
+{pkgs, stablep, secrets, ...}:
 let
   writeScript = name: content: pkgs.writeShellScriptBin name "#!${pkgs.nushell}/bin/nu\n${content} $@";
 in
@@ -10,10 +10,11 @@ in
       ./network.nix
       ./utils.nix
     ];
+    # https://github.com/NixOS/nixpkgs/pull/367669
     home.packages = with pkgs; [
       sbctl bluez cryptsetup smartmontools borgbackup rclone pulsemixer
       portablemc miniserve openssl transmission glances lunarvim pandoc wkhtmltopdf
-      yt-dlp age magic-wormhole ansifilter b3sum git-crypt
+      yt-dlp age (stablep.magic-wormhole) ansifilter b3sum git-crypt
       aspell aspellDicts.en
       (writeScript "manual" ''
         ${pkgs.glow}/bin/glow -p ~/.config/home-manager/manual.md

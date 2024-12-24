@@ -1,4 +1,4 @@
-{config, pkgs, ...}:
+{config, pkgs, stablep, ...}:
 let
   # base
   base = name: envs: binaryPath: args: (pkgs.writeShellScriptBin "${name}" ''
@@ -10,7 +10,7 @@ let
   jwl = name: binaryPath: base name "" binaryPath "-Dawt.toolkit.name=WLToolkit";
   # qt-waylandify
   qwl = name: binaryPath: base name "QT_QPA_PLATFORM=wayland" binaryPath "";
-  electrons = with pkgs; [
+  electrons = with stablep; [
     (cwl "figma" "${figma-linux}/bin/figma-linux")
     (cwl "discord" "${vesktop}/bin/vesktop")
     (cwl "vscode" "${vscodium}/bin/codium")
@@ -33,7 +33,7 @@ in
     packages = with pkgs; [
       (jwl "simplex" "${simplex-chat-desktop}/bin/simplex-chat-desktop")
       (cwl "chrome" "${ungoogled-chromium}/bin/chromium")
-      (qwl "monero" "${monero-gui}/bin/monero-wallet-gui")
+      (qwl "monero" "${stablep.monero-gui}/bin/monero-wallet-gui")
       ungoogled-chromium
     ] ++ electrons;
   };

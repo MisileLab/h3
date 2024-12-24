@@ -1,4 +1,4 @@
-{config, pkgs, ...}:
+{config, pkgs, stablep, ...}:
 let
   briar-desktop = pkgs.callPackage ./briar.nix {};
 in
@@ -10,10 +10,11 @@ in
     ./compatibility.nix
     ./sway.nix
   ];
+  # https://github.com/NixOS/nixpkgs/issues/367703
   home = {
     packages = with pkgs; [
       brightnessctl clipman wl-clipboard pavucontrol
-      imagemagick virt-manager appflowy xfce.thunar
+      imagemagick (stablep.virt-manager) appflowy xfce.thunar
       galaxy-buds-client ferium prismlauncher
       seahorse kdePackages.filelight firefoxpwa gparted
       onionshare jetbrains.idea-community-bin gimp telegram-desktop
@@ -38,7 +39,10 @@ in
   };
   programs = {
     zed-editor.enable = true;
-    obs-studio.enable = true;
+    obs-studio = {
+      enable = true;
+      package = stablep.obs-studio;
+    };
     kitty = {
       enable = true;
       settings.shell = "${pkgs.nushell}/bin/nu";

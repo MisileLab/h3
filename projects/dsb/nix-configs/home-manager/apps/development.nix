@@ -1,4 +1,4 @@
-{pkgs, config, ...}:
+{pkgs, stablep, config, ...}:
 {
   home = {
     sessionVariables = {
@@ -7,7 +7,7 @@
     packages = with pkgs; [
       # Development
       edgedb d2 pre-commit pijul darcs just dive (dvc.override{enableAWS=true;}) solana-cli
-      snyk pwndbg radicle-node infisical pnpm_9 jetbrains-toolbox ghidra poop binsider
+      (stablep.snyk) pwndbg radicle-node infisical pnpm_9 jetbrains-toolbox ghidra poop binsider
       (writeShellScriptBin "gdb" "${pwndbg}/bin/pwndbg") process-compose wakatime
 
       # Language tools
@@ -21,7 +21,7 @@
       niv nixpkgs-fmt nix-tree hub fh
       marksman
       packwiz
-      unityhub dotnet-sdk_8
+      (stablep.unityhub) dotnet-sdk_8
       ccemux lua-language-server lua (writeShellScriptBin "luajit" "${luajit}/bin/lua")
       vala
 

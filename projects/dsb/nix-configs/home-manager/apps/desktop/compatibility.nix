@@ -1,5 +1,5 @@
-{pkgs, ...}: {
+{pkgs, stablep, ...}: {
   home.packages = with pkgs; [
-    wineWowPackages.stable appimage-run scrcpy bottles libreoffice
+    wineWowPackages.stable appimage-run scrcpy (stablep.bottles) libreoffice
   ];
 }
