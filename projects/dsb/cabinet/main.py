@@ -19,16 +19,14 @@ else:
 print(proxy)
 
 base_query = "site:x.com"
-suicidal = base_query + " 자살"
+suicidal = f"{base_query} #자살"
 
 data_num = 4000
 result_interval = 10
 sleep_interval_min = 0
 sleep_interval_max = 60
-if getenv("start_num") is None:
-  start_num = 1
-else:
-  start_num = getenv("start_num")
+_start = getenv("start_num")
+start_num = 1 if _start is None else int(_start)
 
 def search_res(query: str, start_num: int):
   return list(search(query, advanced=True, unique=True, num_results=result_interval, start_num=start_num, lang="ko", safe=None, ssl_verify=None, proxy=proxy)) # pyright: ignore[reportArgumentType]
