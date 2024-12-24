@@ -5,8 +5,8 @@ description = "Suicide Detection Model"
 readme = "README.md"
 requires-python = "==3.13.1"
 dependencies = [
-    "googlesearch-python",
+    "googlesearch",
 ]
 
 [tool.uv.sources]
-googlesearch-python = { git = "https://github.com/Nv7-GitHub/googlesearch" }
+googlesearch = { git = "https://github.com/misilelab/googlesearch" }

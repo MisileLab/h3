@@ -18,11 +18,11 @@ name = "cabinet"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
-    { name = "googlesearch-python" },
+    { name = "googlesearch" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "googlesearch-python", git = "https://github.com/Nv7-GitHub/googlesearch" }]
+requires-dist = [{ name = "googlesearch", git = "https://github.com/misilelab/googlesearch" }]
 
 [[package]]
 name = "certifi"
@@ -58,11 +58,21 @@ wheels = [
 ]
 
 [[package]]
-name = "googlesearch-python"
-version = "1.2.5"
-source = { git = "https://github.com/Nv7-GitHub/googlesearch#fcafc8300e09e8f140a7216ede16aa022b754857" }
+name = "fake-useragent"
+version = "2.0.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d6/a4/f8d204c20e7879c2c1fd1719095673f447a3111282bfe09c0a74a5ed5000/fake_useragent-2.0.3.tar.gz", hash = "sha256:af86a26ef8229efece8fed529b4aeb5b73747d889b60f01cd477b6f301df46e6", size = 194741 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/11/4f/a639b1dbdc557241e702eefb931ba24ba235c84f8fffdca3e272f096c6af/fake_useragent-2.0.3-py3-none-any.whl", hash = "sha256:8bae50abb72c309a5b3ae2f01a0b82426613fd5c4e2a04dca9332399ec44daa1", size = 201110 },
+]
+
+[[package]]
+name = "googlesearch"
+version = "0.1.0"
+source = { git = "https://github.com/misilelab/googlesearch#d464238358fb0cb13920f97d2e7000b55c8431ac" }
 dependencies = [
     { name = "beautifulsoup4" },
+    { name = "fake-useragent" },
     { name = "requests" },
 ]
 

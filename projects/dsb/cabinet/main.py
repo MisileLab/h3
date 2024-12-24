@@ -1,7 +1,10 @@
 from googlesearch import search # pyright: ignore[reportMissingTypeStubs, reportUnknownVariableType]
+from requests.exceptions import HTTPError
 
 from os import getenv
 from csv import DictWriter
+from http import HTTPStatus
+from time import sleep
 
 proxy_url = getenv("PROXY_URL")
 proxy_user = getenv("PROXY_USERNAME")
@@ -17,12 +20,27 @@ base_query = "site:x.com"
 suicidal = base_query + " 자살"
 
 data_num = 4000
+result_interval = 10
+sleep_interval = 60
 
-result = list(search(suicidal, advanced=True, unique=True, num_results=data_num, sleep_interval=60, lang="ko", safe=None, ssl_verify=None, proxy=proxy)) # pyright: ignore[reportArgumentType]
-with open("data.csv", "w", newline='') as f:
+def search_res(query: str, start_num: int):
+  return list(search(query, advanced=True, unique=True, num_results=result_interval, start_num=start_num, lang="ko", safe=None, ssl_verify=None, proxy=proxy)) # pyright: ignore[reportArgumentType]
+
+with open("suicidal.csv", "w", newline='') as f:
   dw = DictWriter(f, fieldnames=["title", "url", "description"])
   dw.writeheader()
-  for i in result:
-    print(i.title) # pyright: ignore[reportAny]
-    dw.writerow({"title": i.title, "url": i.url, "description": i.description}) # pyright: ignore[reportAny]
+  i = 1
+  while i <= data_num:
+    try:
+      datas = search_res(suicidal, i)
+    except HTTPError as e:
+      if e.response.status_code == HTTPStatus.TOO_MANY_REQUESTS:
+        print("retry after 120 seconds")
+        sleep(120)
+        continue
+      raise e
+    for data in datas:
+      print(data.title) # pyright: ignore[reportAny]
+      dw.writerow({"title": data.title, "url": data.url, "description": data.description}) # pyright: ignore[reportAny]
+    i += result_interval
 
