@@ -1,5 +1,5 @@
 from googlesearch import search # pyright: ignore[reportMissingTypeStubs, reportUnknownVariableType]
-from requests.exceptions import HTTPError
+from requests.exceptions import HTTPError, ProxyError
 from requests import Timeout
 
 from os import getenv
@@ -46,7 +46,7 @@ with open("suicidal.csv", "w", newline='') as f:
         sleep(60 * 10)
         continue
       raise e
-    except Timeout:
+    except (Timeout, ProxyError):
       print("let's try another interval")
       sleep(10)
       continue
