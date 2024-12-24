@@ -1,5 +1,6 @@
 from googlesearch import search # pyright: ignore[reportMissingTypeStubs, reportUnknownVariableType]
 from requests.exceptions import HTTPError
+from requests import Timeout
 
 from os import getenv
 from csv import DictWriter
@@ -37,12 +38,18 @@ with open("suicidal.csv", "w", newline='') as f:
       print(i, "end")
     except HTTPError as e:
       if e.response.status_code == HTTPStatus.TOO_MANY_REQUESTS:
-        print("retry after 1 hour")
-        sleep(60 * 60)
+        print("retry after 10 mins")
+        sleep(60 * 10)
         continue
       raise e
+    except Timeout:
+      print("let's try another interval")
+      sleep(10)
+      continue
     for data in datas:
       print(data.title) # pyright: ignore[reportAny]
       dw.writerow({"title": data.title, "url": data.url, "description": data.description}) # pyright: ignore[reportAny]
     i += result_interval
+    print("rest for 1 min")
+    sleep(60)
 
