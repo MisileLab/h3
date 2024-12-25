@@ -24,6 +24,7 @@ in
       (writeScript "ocat" "${coreutils}/bin/cat")
       (writeScript "lzg" "${lazygit}/bin/lazygit")
       (writeScript "lv" "${lunarvim}/bin/lvim")
+      (writeScript "nv" "${neovim}/bin/nvim")
       (writeScript "git-c" "~/repos/h3/projects/dsb/utils/.venv/bin/python ~/repos/h3/projects/dsb/utils/gen-commit-message.py")
       (writeScript "utils" "~/repos/h3/projects/dsb/utils/zig-out/bin/utils")
     ];

@@ -15,21 +15,25 @@
       rustup cargo-update
       python313Full uv mypy ruff
       nasm
-      tailwindcss-language-server deno astro-language-server
+      deno
       hvm bend
       clang-tools lldb pkg-config
       niv nixpkgs-fmt nix-tree hub fh
       marksman
       packwiz
       (stablep.unityhub) dotnet-sdk_8
-      ccemux lua-language-server lua (writeShellScriptBin "luajit" "${luajit}/bin/lua")
+      ccemux lua (writeShellScriptBin "luajit" "${luajit}/bin/lua")
       vala
+
+      # normalnvim
+      yazi grcov gnumake
 
       # lsp
       shellcheck basedpyright nil vala-language-server bash-language-server
+      tailwindcss-language-server astro-language-server ruff lua-language-server
     ]
     ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
-    ++ (with nodePackages_latest; [nodejs typescript typescript-language-server svelte-language-server]) # nodejs
+    ++ (with nodePackages_latest; [nodejs typescript typescript-language-server svelte-language-server yarn]) # nodejs
     # https://nixpk.gs/pr-tracker.html?pr=355071
     ++ (with python312Packages; [pip virtualenv python-lsp-server mitmproxy]); # python thing
     file = {
