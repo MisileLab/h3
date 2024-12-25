@@ -22,16 +22,10 @@
       (stablep.unityhub) dotnet-sdk_8
       lua (writeShellScriptBin "luajit" "${luajit}/bin/lua")
       vala
-
-      # lsp
-      shellcheck basedpyright nil vala-language-server bash-language-server
-      tailwindcss-language-server astro-language-server ruff lua-language-server
-      marksman
     ]
     ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
-    ++ (with nodePackages_latest; [nodejs typescript typescript-language-server svelte-language-server yarn]) # nodejs
-    # python-lsp-server failed
-    ++ (with python312Packages; [pip virtualenv python-lsp-server mitmproxy]); # python thing
+    ++ (with nodePackages_latest; [nodejs typescript]) # nodejs
+    ++ (with python313Packages; [pip virtualenv mitmproxy]); # python thing
     file = {
       ".config/process-compose/theme.yaml".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
         url="https://github.com/catppuccin/process-compose";
@@ -46,6 +40,21 @@
   programs = {
     helix = {
       enable = true;
+      extraPackages = with pkgs; [
+        shellcheck basedpyright nil vala-language-server bash-language-server
+        tailwindcss-language-server astro-language-server ruff-lsp lua-language-server
+        marksman
+      ] ++ (with nodePackages_latest; [typescript-language-server svelte-language-server]);
+      languages = {
+        language = [{
+          name = "python";
+          language-servers = ["basedpyright" "ruff"];
+          indent = {
+            tab-width = 2;
+            unit = "\t";
+          };
+        }];
+      };
     };
     java = {
       enable=true;
