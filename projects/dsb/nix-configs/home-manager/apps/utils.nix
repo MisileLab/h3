@@ -5,7 +5,7 @@
     fd cloc
 
     # some fancy cli tools
-    fastfetch onefetch delta genact glow dasel navi nix-output-monitor
+    fastfetch onefetch delta genact glow navi nix-output-monitor
 
     # process utils
     killall screen

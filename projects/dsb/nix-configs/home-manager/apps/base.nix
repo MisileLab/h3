@@ -13,27 +13,22 @@ in
     # https://github.com/NixOS/nixpkgs/pull/367669
     home.packages = with pkgs; [
       sbctl bluez cryptsetup smartmontools borgbackup rclone pulsemixer
-      portablemc miniserve openssl transmission glances pandoc wkhtmltopdf
-      yt-dlp age (stablep.magic-wormhole) ansifilter b3sum git-crypt
-      aspell aspellDicts.en
+      portablemc miniserve openssl transmission
+      yt-dlp (stablep.magic-wormhole) ansifilter b3sum git-crypt
       (writeScript "manual" ''
         ${pkgs.glow}/bin/glow -p ~/.config/home-manager/manual.md
       '')
-      (writeScript "nix-clean" "nix-collect-garbage -d && sudo nix-collect-garbage -d && sudo nix store optimise && nix store optimise && nix-collect-garbage -d && sudo nix-collect-garbage -d")
+      (writeScript "nix-clean" "nix-collect-garbage -d && sudo nix-collect-garbage -d && sudo nix store optimise")
       (writeScript "cat" "${bat}/bin/bat")
       (writeScript "ocat" "${coreutils}/bin/cat")
       (writeScript "lzg" "${lazygit}/bin/lazygit")
-      (writeScript "git-c" "~/repos/h3/projects/dsb/utils/.venv/bin/python ~/repos/h3/projects/dsb/utils/gen-commit-message.py")
       (writeScript "utils" "~/repos/h3/projects/dsb/utils/zig-out/bin/utils")
     ];
     catppuccin = {
-      aerc.enable = true;
       glamour.enable = true;
       fzf.enable = true;
     };
     programs = {
-      aerc.enable = true;
-      # nix-index.enable = true;
       gpg = {
         enable = true;
         mutableTrust = true;
@@ -49,7 +44,6 @@ in
         enable = true;
         shellAliases = {
           onefetch = "${pkgs.onefetch}/bin/onefetch --number-of-languages 9999";
-          ez = "${pkgs.eza}/bin/eza --icons";
           cat = "${pkgs.bat}/bin/bat";
           ocat = "${pkgs.coreutils}/bin/cat";
           ssh = "${pkgs.kitty}/bin/kitten ssh";

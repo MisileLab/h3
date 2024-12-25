@@ -1,5 +1,5 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
-    mullvad-vpn pass-wayland tor-browser-bundle-bin (python312Packages.mat2)
+    mullvad-vpn tor-browser-bundle-bin (python313Packages.mat2)
   ];
 }

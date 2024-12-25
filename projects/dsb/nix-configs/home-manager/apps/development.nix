@@ -6,9 +6,8 @@
     };
     packages = with pkgs; [
       # Development
-      edgedb d2 pre-commit pijul darcs just dive (dvc.override{enableAWS=true;}) solana-cli
-      (stablep.snyk) pwndbg radicle-node infisical pnpm_9 jetbrains-toolbox ghidra poop binsider
-      (writeShellScriptBin "gdb" "${pwndbg}/bin/pwndbg") process-compose wakatime
+      edgedb d2 pre-commit darcs just
+      (stablep.snyk) radicle-node infisical pnpm_9 poop binsider
 
       # Language tools
       ghc cabal-install
@@ -19,28 +18,21 @@
       hvm bend
       clang-tools lldb pkg-config
       niv nixpkgs-fmt nix-tree hub fh
-      marksman
-      packwiz
+      packwiz ccemux
       (stablep.unityhub) dotnet-sdk_8
-      ccemux lua (writeShellScriptBin "luajit" "${luajit}/bin/lua")
+      lua (writeShellScriptBin "luajit" "${luajit}/bin/lua")
       vala
-
-      # normalnvim
-      yazi grcov gnumake
 
       # lsp
       shellcheck basedpyright nil vala-language-server bash-language-server
       tailwindcss-language-server astro-language-server ruff lua-language-server
+      marksman
     ]
     ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
     ++ (with nodePackages_latest; [nodejs typescript typescript-language-server svelte-language-server yarn]) # nodejs
-    # https://nixpk.gs/pr-tracker.html?pr=355071
+    # python-lsp-server failed
     ++ (with python312Packages; [pip virtualenv python-lsp-server mitmproxy]); # python thing
     file = {
-      "non-nixos-things/catppuccin-ghidra".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit{
-        url="https://github.com/catppuccin/ghidra";
-        rev="bed0999f96ee9869ed25e0f1439bef5eff341e22";
-      }}";
       ".config/process-compose/theme.yaml".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
         url="https://github.com/catppuccin/process-compose";
         rev="b0c48aa07244a8ed6a7d339a9b9265a3b561464d";
