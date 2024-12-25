@@ -47,9 +47,18 @@
       }}/themes/catppuccin-mocha.yaml";
     };
   };
-  catppuccin.lazygit.enable = true;
+  catppuccin = {
+    lazygit.enable = true;
+    helix.enable = true;
+  };
   programs = {
-    java={enable=true;package=pkgs.temurin-bin-21;};
+    helix = {
+      enable = true;
+    };
+    java = {
+      enable=true;
+      package=pkgs.temurin-bin-21;
+    };
     go.enable = true;
     lazygit = {
       enable = true;
@@ -65,7 +74,7 @@
         pull.rebase = false;
         safe.directory = "*";
         init.defaultBranch = "main";
-        core.editor = "lvim";
+        core.editor = "hx";
         delta.enable = true;
       };
     };

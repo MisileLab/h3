@@ -13,7 +13,7 @@ in
     # https://github.com/NixOS/nixpkgs/pull/367669
     home.packages = with pkgs; [
       sbctl bluez cryptsetup smartmontools borgbackup rclone pulsemixer
-      portablemc miniserve openssl transmission glances lunarvim pandoc wkhtmltopdf
+      portablemc miniserve openssl transmission glances pandoc wkhtmltopdf
       yt-dlp age (stablep.magic-wormhole) ansifilter b3sum git-crypt
       aspell aspellDicts.en
       (writeScript "manual" ''
@@ -23,8 +23,6 @@ in
       (writeScript "cat" "${bat}/bin/bat")
       (writeScript "ocat" "${coreutils}/bin/cat")
       (writeScript "lzg" "${lazygit}/bin/lazygit")
-      (writeScript "lv" "${lunarvim}/bin/lvim")
-      (writeScript "nv" "${neovim}/bin/nvim")
       (writeScript "git-c" "~/repos/h3/projects/dsb/utils/.venv/bin/python ~/repos/h3/projects/dsb/utils/gen-commit-message.py")
       (writeScript "utils" "~/repos/h3/projects/dsb/utils/zig-out/bin/utils")
     ];
@@ -32,7 +30,6 @@ in
       aerc.enable = true;
       glamour.enable = true;
       fzf.enable = true;
-      nvim.enable = true;
     };
     programs = {
       aerc.enable = true;
@@ -79,7 +76,6 @@ if $env.TERM == "linux" {
 }
         '';
       };
-      neovim.enable = true;
     };
     services = {
       gpg-agent = {

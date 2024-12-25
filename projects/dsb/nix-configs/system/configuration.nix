@@ -1,15 +1,11 @@
 { pkgs, stablep, options, ... }:
 {
   imports = [
-    ./common.nix
+    ./base.nix
     ./hardware-configuration.nix
     ./security.nix
   ];
 
-  nix.gc = {
-    automatic = true;
-    options = "--delete-older-than 1d";
-  };
   services = {
     locate = {
       enable = true;

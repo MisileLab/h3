@@ -1,4 +1,4 @@
-{config, lib, pkgs, ...}:
+{pkgs, ...}:
 {
   security = {
     rtkit.enable = true;

@@ -57,9 +57,15 @@
     motd = "I use nixos btw";
   };
 
-  nix.settings = {
-    experimental-features = ["nix-command" "flakes"];
-    trusted-users = ["root" "misile"];
+  nix = {
+    gc = {
+      automatic = true;
+      options = "--delete-older-than 1d";
+    };
+    settings = {
+      experimental-features = ["nix-command" "flakes"];
+      trusted-users = ["root" "misile"];
+    };
   };
   programs.appimage.binfmt = true;
 
