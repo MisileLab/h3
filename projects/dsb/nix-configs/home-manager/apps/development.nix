@@ -51,7 +51,7 @@
           language-servers = ["basedpyright" "ruff"];
           indent = {
             tab-width = 2;
-            unit = "\t";
+            unit = "  ";
           };
         }];
       };
