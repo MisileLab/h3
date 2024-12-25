@@ -23,8 +23,10 @@
               php
             ];
             shellHook = ''
-              ${pkgs.uv}/bin/uv run ${pkgs.fish}/bin/fish
-              exit
+              if (UV_ACTIVATED != 1) {
+                env UV_ACTIVATED=1 ${pkgs.uv}/bin/uv run ${pkgs.nushell}/bin/nu
+                exit
+              }
             '';
           };
       });
