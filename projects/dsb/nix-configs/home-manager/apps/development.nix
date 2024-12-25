@@ -25,13 +25,16 @@
       ccemux lua (writeShellScriptBin "luajit" "${luajit}/bin/lua")
       vala
 
+      # normalnvim
+      yazi grcov gnumake
+
       # lsp
       shellcheck basedpyright nil vala-language-server bash-language-server
       tailwindcss-language-server astro-language-server ruff lua-language-server
     ]
     ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
     ++ (with nodePackages_latest; [nodejs typescript typescript-language-server svelte-language-server yarn]) # nodejs
-    # pylint failed
+    # https://nixpk.gs/pr-tracker.html?pr=355071
     ++ (with python312Packages; [pip virtualenv python-lsp-server mitmproxy]); # python thing
     file = {
       "non-nixos-things/catppuccin-ghidra".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit{
