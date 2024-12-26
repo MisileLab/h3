@@ -1,4 +1,4 @@
-{ pkgs, stablep, options, ... }:
+{ pkgs, options, ... }:
 {
   imports = [
     ./base.nix
@@ -85,7 +85,6 @@
     docker.enable = true;
     libvirtd = {
       enable = true;
-      package = stablep.libvirt;
       qemu = {
         package = pkgs.qemu_kvm;
         runAsRoot = true;

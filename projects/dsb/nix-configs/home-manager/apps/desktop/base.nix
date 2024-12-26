@@ -7,11 +7,10 @@
     ./compatibility.nix
     ./sway.nix
   ];
-  # https://github.com/NixOS/nixpkgs/issues/367703
   home = {
     packages = with pkgs; [
       brightnessctl clipman wl-clipboard pavucontrol
-      imagemagick (stablep.virt-manager) xfce.thunar
+      imagemagick virt-manager xfce.thunar
       galaxy-buds-client kdePackages.filelight firefoxpwa gparted
       gimp telegram-desktop xournalpp exodus
     ];
