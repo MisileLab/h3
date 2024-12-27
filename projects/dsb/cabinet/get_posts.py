@@ -39,6 +39,7 @@ if not Path("./results").is_dir():
 async def main():
   api = API()
   api.proxy = get_proxy()
+  start_uid = int(getenv("start_uid", -1))
 
   # 1. get username (or id) from url
   # 2. get id and export to json (for backup) and save to list
@@ -62,8 +63,6 @@ async def main():
 
   # 3. pull posts for user in users
   uid = "sample"
-  start_point = getenv("num")
-  start_point = 0 if start_point is None else int(start_point)
   i = 0
 
   with open("./userids", "r") as f:
@@ -72,6 +71,10 @@ async def main():
       if uid == "":
         break
       uid = int(uid)
+      if start_uid not in [-1, uid]:
+        logger.debug("skipping")
+        continue
+      start_uid = -1
       if i > 0:
         i -= 1
         continue

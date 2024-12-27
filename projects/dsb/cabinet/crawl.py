@@ -22,8 +22,7 @@ data_num = 4000
 result_interval = 100
 sleep_interval_min = 0
 sleep_interval_max = 20
-_start = getenv("start_num")
-start_num = 0 if _start is None else int(_start)
+start_num = int(getenv("start_num", 0))
 
 def search_res(query: str, start_num: int):
   res = list(search(query, advanced=True, region="kr", num_results=result_interval, start_num=start_num, safe=None, ssl_verify=None, proxy=proxy)) # pyright: ignore[reportArgumentType]
