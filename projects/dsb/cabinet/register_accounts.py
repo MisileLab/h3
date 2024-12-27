@@ -20,7 +20,8 @@ async def main():
         i["email"],
         i["email_password"],
         None,
-        i["ct0"]
+        mfa_code=i.get("mfa_code"),
+        cookies=f"ct0={i["ct0"]}" if i.get("ct0") is not None else None
       )
 
 if __name__ == "__main__":

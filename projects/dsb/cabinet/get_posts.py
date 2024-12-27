@@ -61,23 +61,23 @@ async def main():
     del processed
 
   # 3. pull posts for user in users
-  id = "sample"
+  uid = "sample"
   start_point = getenv("num")
   start_point = 0 if start_point is None else int(start_point)
   i = 0
 
   with open("./userids", "r") as f:
     while True:
-      id = f.readline().strip("\n")
-      if id == "":
+      uid = f.readline().strip("\n")
+      if uid == "":
         break
-      id = int(id)
+      uid = int(uid)
       if i > 0:
         i -= 1
         continue
-      logger.debug(id)
-      tweets = await get_tweets(api, id)
-      dump(tweets, open(f"./results/{id}.pkl", "wb"))
+      logger.debug(uid)
+      tweets = await get_tweets(api, uid)
+      dump(tweets, open(f"./results/{uid}.pkl", "wb"))
 
 if __name__ == "__main__":
   run(main())
