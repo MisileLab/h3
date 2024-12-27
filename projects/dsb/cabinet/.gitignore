@@ -2,4 +2,4 @@
 *.pkl
 userids
 accounts.db
-accounts.txt
+accounts.csv

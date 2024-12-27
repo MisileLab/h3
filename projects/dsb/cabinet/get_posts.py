@@ -10,6 +10,8 @@ from loguru import logger
 from twscrape import API, Tweet, User, gather # pyright: ignore[reportMissingTypeStubs]
 from twscrape.logger import set_log_level # pyright: ignore[reportMissingTypeStubs]
 
+from lib import get_proxy
+
 def get_value[T](v: T | None) -> T:
   if v is None:
     raise TypeError()
@@ -36,6 +38,7 @@ if not Path("./results").is_dir():
 
 async def main():
   api = API()
+  api.proxy = get_proxy()
 
   # 1. get username (or id) from url
   # 2. get id and export to json (for backup) and save to list

@@ -9,14 +9,9 @@ from http import HTTPStatus
 from time import sleep
 from secrets import SystemRandom
 
-proxy_url = getenv("PROXY_URL")
-proxy_user = getenv("PROXY_USERNAME")
-proxy_pass = getenv("PROXY_PASSWORD")
+from lib import get_proxy
 
-if None in [proxy_url, proxy_user, proxy_pass]:
-  proxy = None
-else:
-  proxy = f"http://{proxy_user}:{proxy_pass}@{proxy_url}"
+proxy = get_proxy()
 logger.info(proxy)
 
 base_query = "site:x.com"
@@ -46,12 +41,12 @@ with open("suicidal.csv", "w", newline='') as f:
       logger.debug(f"{i}, end")
     except HTTPError as e:
       if e.response.status_code == HTTPStatus.TOO_MANY_REQUESTS:
-        logger.warn("retry after 10 mins")
+        logger.warning("retry after 10 mins")
         sleep(60 * 10)
         continue
       raise e
     except (Timeout, ProxyError):
-      logger.warn("let's try another interval")
+      logger.warning("let's try another interval")
       sleep(10)
       continue
     if datas == []:
