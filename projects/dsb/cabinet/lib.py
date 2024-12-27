@@ -15,4 +15,4 @@ def get_proxy():
 async def get_usernames() -> list[str]:
   api = API()
   l = await api.pool.accounts_info()
-  return [a["username"] for a in l]
+  return [a["username"] for a in l if not (a["active"] or a["logged_in"])]
