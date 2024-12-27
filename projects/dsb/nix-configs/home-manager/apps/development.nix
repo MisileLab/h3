@@ -5,7 +5,7 @@
       LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib";
     };
     packages = with pkgs; [
-      neovim
+      neovim wakatime
 
       # Development
       edgedb d2 pre-commit darcs just
@@ -14,7 +14,7 @@
       # Language tools
       ghc cabal-install
       rustup cargo-update
-      python313Full uv mypy ruff
+      python313Full uv mypy
       nasm
       (stablep.deno)
       hvm bend
@@ -26,8 +26,8 @@
       vala
 
       # lsp
-      shellcheck basedpyright nil vala-language-server bash-language-server
-      tailwindcss-language-server astro-language-server ruff-lsp lua-language-server
+      basedpyright nil vala-language-server bash-language-server
+      tailwindcss-language-server astro-language-server ruff lua-language-server
       marksman
     ]
     ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
