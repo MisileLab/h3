@@ -80,6 +80,9 @@ async def main():
         continue
       logger.debug(uid)
       tweets = await get_tweets(api, uid)
+      if len(tweets) == 0:
+        logger.error(f"no tweets on {uid}")
+        break
       Path(f"./results/{uid}.json").touch()
       _ = Path(f"./results/{uid}.json").write_text(dumps(
         [t.dict() for t in tweets]
