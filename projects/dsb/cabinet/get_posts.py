@@ -80,7 +80,8 @@ async def main():
         continue
       logger.debug(uid)
       tweets = await get_tweets(api, uid)
-      _ = Path(f"./results/{uid}.json", "w").write_text(dumps(
+      Path(f"./results/{uid}.json").touch()
+      _ = Path(f"./results/{uid}.json").write_text(dumps(
         [t.dict() for t in tweets]
       ))
 
