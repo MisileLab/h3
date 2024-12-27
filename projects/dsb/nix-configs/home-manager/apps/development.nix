@@ -16,14 +16,14 @@ in
       packages = with pkgs; [
         # Development
         edgedb d2 pre-commit darcs just
-        (stablep.snyk) radicle-node infisical pnpm_9 poop binsider
+        snyk radicle-node infisical pnpm_9 poop binsider
 
         # Language tools
         ghc cabal-install
         rustup cargo-update
         python313Full uv mypy ruff
         nasm
-        deno
+        (stablep.deno)
         hvm bend
         clang-tools lldb pkg-config
         niv nixpkgs-fmt nix-tree hub fh
