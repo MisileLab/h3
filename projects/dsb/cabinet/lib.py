@@ -1,3 +1,5 @@
+from twscrape import API # pyright: ignore[reportMissingTypeStubs]
+
 from os import getenv
 
 def get_proxy():
@@ -5,9 +7,12 @@ def get_proxy():
   proxy_user = getenv("PROXY_USERNAME")
   proxy_pass = getenv("PROXY_PASSWORD")
 
-  if None in [proxy_url, proxy_user, proxy_pass]:
-    proxy = None
-  else:
-    proxy = f"http://{proxy_user}:{proxy_pass}@{proxy_url}"
-  return proxy
+  return (
+    None if None in [proxy_url, proxy_user, proxy_pass] else
+    f"http://{proxy_user}:{proxy_pass}@{proxy_url}"
+  )
 
+async def get_usernames() -> list[str]:
+  api = API()
+  l = await api.pool.accounts_info()
+  return [a["username"] for a in l]
