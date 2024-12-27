@@ -1,2 +1,2 @@
 projects/dsb/nix-configs/home-manager/secrets.nix:pypi-upload-token:2
-projects/dsb/nix-configs/home-manager/apps/development.nix:generic-api-key:82
+projects/dsb/nix-configs/home-manager/apps/development.nix:generic-api-key:59

@@ -10,7 +10,7 @@
     stateVersion = "24.05";
     sessionVariables = {
       QT_QPA_PLATFORM = "wayland";
-      EDITOR = "hx";
+      EDITOR = "nvim";
       XDG_SCREENSHOTS_DIR = "/home/misile/screenshots";
     };
   };
