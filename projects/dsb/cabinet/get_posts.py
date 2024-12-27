@@ -1,10 +1,10 @@
 from csv import DictReader
 from os import getenv
-from pickle import dump
 from time import sleep
 from secrets import SystemRandom
 from asyncio import run
 from pathlib import Path
+from json import dumps
 
 from loguru import logger
 from twscrape import API, Tweet, User, gather # pyright: ignore[reportMissingTypeStubs]
@@ -77,7 +77,9 @@ async def main():
         continue
       logger.debug(uid)
       tweets = await get_tweets(api, uid)
-      dump(tweets, open(f"./results/{uid}.pkl", "wb"))
+      _ = Path(f"./results/{uid}.json", "w").write_text(dumps(
+        [t.dict() for t in tweets]
+      ))
 
 if __name__ == "__main__":
   run(main())
