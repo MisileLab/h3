@@ -7,7 +7,7 @@ requires-python = "==3.13.1"
 dependencies = [
   "googlesearch",
   "loguru==0.7.3",
-  "python-twitter-v2==0.9.2",
+  "twscrape==0.14",
 ]
 
 [tool.uv.sources]
