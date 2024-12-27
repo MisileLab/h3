@@ -12,10 +12,7 @@ api.proxy = get_proxy()
 
 async def main():
   with open("./accounts.csv", newline="") as f:
-    dr = DictReader(
-      f,
-      fieldnames=["name", "password", "email", "email_password", "ct0"]
-    )
+    dr = DictReader(f)
     for i in dr:
       await api.pool.add_account(
         i["name"],
