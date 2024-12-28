@@ -119,8 +119,10 @@ async def send_money(
     await db.query_single("select Account {name, money} filter .name = <str>$name limit 1", name=to),
     detail="destination is not found"
   )
-  account = Account(**_account, password=None)
-  account_to = Account(**_account_to, password=None)
+  _account["password"] = None
+  _account_to["password"] = None
+  account = Account(**_account)
+  account_to = Account(**_account_to)
   if account.money - amount < 0 or amount <= 0:
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="money amount is less than 0 or your money is not sufficient")
   t = conv_to_dict(await db.query_single("""insert Transaction {
