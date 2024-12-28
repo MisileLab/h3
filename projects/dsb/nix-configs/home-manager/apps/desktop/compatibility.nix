@@ -1,5 +1,6 @@
-{pkgs, stablep, ...}: {
+{pkgs, ...}: {
+  # https://github.com/NixOS/nixpkgs/issues/367772
   home.packages = with pkgs; [
-    (stablep.wineWowPackages.stable) appimage-run (stablep.bottles) libreoffice
+    wineWowPackages.stable appimage-run /*bottles*/ libreoffice
   ];
 }

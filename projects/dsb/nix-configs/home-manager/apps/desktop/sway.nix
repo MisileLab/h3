@@ -86,12 +86,6 @@ titlebar_padding 1
     package = pkgs.swayfx;
     xwayland = true;
   };
-  catppuccin = {
-    rofi.enable = true;
-    swaylock.enable = true;
-    waybar.enable = true;
-    dunst.enable = true;
-  };
   programs = {
     rofi = {
       enable = true;

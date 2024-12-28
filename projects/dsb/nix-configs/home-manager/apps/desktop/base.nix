@@ -1,4 +1,4 @@
-{pkgs, stablep, ...}:
+{pkgs, ...}:
 {
   imports = [
     ./security.nix
@@ -20,15 +20,9 @@
       size = 32;
     };
   };
-  catppuccin = {
-    obs.enable = true;
-    kitty.enable = true;
-  };
+  catppuccin.enable = true;
   programs = {
-    obs-studio = {
-      enable = true;
-      package = stablep.obs-studio;
-    };
+    obs-studio.enable = true;
     kitty = {
       enable = true;
       settings.shell = "${pkgs.nushell}/bin/nu";

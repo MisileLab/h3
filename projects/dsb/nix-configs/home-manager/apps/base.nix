@@ -1,4 +1,4 @@
-{pkgs, stablep, secrets, ...}:
+{pkgs, secrets, ...}:
 let
   writeScript = name: content: pkgs.writeShellScriptBin name "#!${pkgs.nushell}/bin/nu\n${content} $@";
 in
@@ -14,7 +14,7 @@ in
     home.packages = with pkgs; [
       sbctl bluez cryptsetup smartmontools borgbackup rclone pulsemixer
       portablemc miniserve openssl transmission
-      yt-dlp (stablep.magic-wormhole) ansifilter b3sum git-crypt
+      yt-dlp /*magic-wormhole*/ ansifilter b3sum git-crypt
       (writeScript "manual" ''
         ${pkgs.glow}/bin/glow -p ~/.config/home-manager/manual.md
       '')
@@ -24,10 +24,6 @@ in
       (writeScript "lzg" "${lazygit}/bin/lazygit")
       (writeScript "utils" "~/repos/h3/projects/dsb/utils/zig-out/bin/utils")
     ];
-    catppuccin = {
-      glamour.enable = true;
-      fzf.enable = true;
-    };
     programs = {
       gpg = {
         enable = true;

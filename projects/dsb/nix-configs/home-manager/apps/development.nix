@@ -1,9 +1,10 @@
-{pkgs, stablep, config, ...}:
+{pkgs, config, ...}:
 {
   home = {
     sessionVariables = {
       LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib";
     };
+    # https://github.com/NixOS/nixpkgs/issues/367694
     packages = with pkgs; [
       neovim wakatime
 
@@ -16,12 +17,12 @@
       rustup cargo-update
       python313Full uv mypy
       nasm
-      (stablep.deno)
+      deno
       hvm bend
       clang-tools lldb pkg-config
       niv nixpkgs-fmt nix-tree hub fh
       packwiz ccemux
-      (stablep.unityhub) dotnet-sdk_8
+      /*unityhub*/ dotnet-sdk_8
       lua (writeShellScriptBin "luajit" "${luajit}/bin/lua") luarocks
       vala
 
