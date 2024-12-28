@@ -11,7 +11,7 @@ from json.decoder import JSONDecodeError
 from collections import defaultdict
 from pathlib import Path
 from typing import Annotated, Any, TYPE_CHECKING, TypeVar
-from uuid import uuid4
+from uuid import uuid4, UUID
 from contextlib import suppress
 
 if TYPE_CHECKING:
@@ -26,6 +26,12 @@ if not Path("./api_key").is_file():
   _ = Path("./api_key").write_text(uuid4().hex)
 pw = PasswordHasher().hash(Path("./api_key").read_text().strip("\n"))
 logger.debug("API key: {}", Path("./api_key").read_text())
+
+def verify_uuid(v: str) -> bool:
+  r: UUID | str = ""
+  with suppress(ValueError):
+    r = UUID(v)
+  return str(r) == v
 
 def get_api_key(api_key: Annotated[str, Security(api_key)]) -> str:
   global pw
@@ -89,6 +95,8 @@ async def get_user(
 async def get_transaction(
   id: Annotated[str, Header()]
 ) -> Transaction:
+  if not verify_uuid(id):
+    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="id is invalid")
   return Transaction(**conv_to_dict(
     await db.query_single("select Transaction {amount, to, received} filter .id = <std::uuid>$id limit 1", id=id),
     status_code=404,
