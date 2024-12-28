@@ -1,6 +1,6 @@
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
-from fastapi import FastAPI, Header, Request, status, HTTPException, WebSocket, WebSocketDisconnect, Security
+from fastapi import FastAPI, Header, Request, status, HTTPException, WebSocket, WebSocketDisconnect, Security, Depends
 from fastapi.security import APIKeyHeader
 from fastapi.responses import PlainTextResponse
 from satellite_py import DB
@@ -32,7 +32,7 @@ def get_api_key(api_key: Annotated[str, Security(api_key)]) -> str:
     return api_key
   raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="API key is invalid")
 
-app = FastAPI(dependencies=[Security(api_key)])
+app = FastAPI(dependencies=[Depends(get_api_key)])
 
 @dataclass
 class Account:
