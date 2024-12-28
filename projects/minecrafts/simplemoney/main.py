@@ -1,6 +1,6 @@
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
-from fastapi import FastAPI, Header, Request, status, HTTPException, WebSocket, WebSocketDisconnect, Security, Depends
+from fastapi import FastAPI, Header, status, HTTPException, WebSocket, WebSocketDisconnect, Security, Depends
 from fastapi.security import APIKeyHeader
 from fastapi.responses import PlainTextResponse
 from satellite_py import DB
@@ -9,10 +9,10 @@ from loguru import logger
 from dataclasses import dataclass, field, asdict
 from json.decoder import JSONDecodeError
 from collections import defaultdict
-from collections.abc import Coroutine
 from pathlib import Path
-from typing import Annotated, Any, TYPE_CHECKING, TypeVar, Callable
+from typing import Annotated, Any, TYPE_CHECKING, TypeVar
 from uuid import uuid4
+from contextlib import suppress
 
 if TYPE_CHECKING:
   from _typeshed import DataclassInstance
@@ -24,12 +24,17 @@ wss: defaultdict[str, list[WebSocket]] = defaultdict(list)
 api_key = APIKeyHeader(name="x-api-key")
 if not Path("./api_key").is_file():
   _ = Path("./api_key").write_text(uuid4().hex)
-pw = PasswordHasher().hash(Path("./api_key").read_text())
+pw = PasswordHasher().hash(Path("./api_key").read_text().strip("\n"))
 logger.debug("API key: {}", Path("./api_key").read_text())
 
 def get_api_key(api_key: Annotated[str, Security(api_key)]) -> str:
-  if PasswordHasher().verify(pw, api_key):
-    return api_key
+  global pw
+  with suppress(VerifyMismatchError):
+    a = PasswordHasher().verify(pw, api_key)
+    if PasswordHasher().check_needs_rehash(pw):
+      pw = PasswordHasher().hash(Path("./pw").read_text().strip("\n"))
+    if a:
+      return api_key
   raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="API key is invalid")
 
 app = FastAPI(dependencies=[Depends(get_api_key)])
@@ -46,19 +51,6 @@ class Transaction:
   amount: int
   to: str
   received: str
-
-@app.middleware("http")
-async def middleware_auth(request: Request, call_next: Callable[[Request], Coroutine[Any, Any, Any]]): # pyright: ignore[reportExplicitAny] (i don't like this)
-  if request.url.path in ["/docs", "/openapi.json"]:
-    return await call_next(request)
-  try:
-    global pw
-    _ = PasswordHasher().verify(pw, request.headers.get("auth", ""))
-    if PasswordHasher().check_needs_rehash(pw):
-      pw = PasswordHasher().hash(Path("./pw").read_text().strip("\n"))
-    return await call_next(request)
-  except VerifyMismatchError:
-    return PlainTextResponse(status_code=status.HTTP_401_UNAUTHORIZED, content="auth is invalid")
 
 def conv_to_dict(v: DataclassInstance | None, status_code: int = 400) -> dict[str, Any]: # pyright: ignore[reportExplicitAny]
   if v is None:
