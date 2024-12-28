@@ -4,7 +4,7 @@ from time import sleep
 from secrets import SystemRandom
 from asyncio import run
 from pathlib import Path
-from json import dumps
+from pickle import dump
 
 from loguru import logger
 from twscrape import API, Tweet, User, gather # pyright: ignore[reportMissingTypeStubs]
@@ -83,10 +83,7 @@ async def main():
       if len(tweets) == 0:
         logger.error(f"no tweets on {uid}")
         break
-      Path(f"./results/{uid}.json").touch()
-      _ = Path(f"./results/{uid}.json").write_text(dumps(
-        [t.dict() for t in tweets]
-      ))
+      dump(tweets, open(f"./results/{uid}.pkl", "wb"))
 
 if __name__ == "__main__":
   run(main())
