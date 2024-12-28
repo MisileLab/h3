@@ -52,9 +52,13 @@ class Transaction:
   to: str
   received: str
 
-def conv_to_dict(v: DataclassInstance | None, status_code: int = 400) -> dict[str, Any]: # pyright: ignore[reportExplicitAny]
+def conv_to_dict(
+  v: DataclassInstance | None,
+  status_code: int = 400,
+  detail: str = "result of query is None (probably name or password is invalid)"
+) -> dict[str, Any]: # pyright: ignore[reportExplicitAny]
   if v is None:
-    raise HTTPException(status_code=status_code, detail="result of query is None (probably name or password is invalid)")
+    raise HTTPException(status_code=status_code, detail=detail)
   return asdict(v)
 
 def verify_pw(hash: str, v: str) -> bool:
@@ -73,7 +77,7 @@ async def get_user(
     select Account {name, money, transactions: {id}}
     filter .name = <str>$name limit 1
   """,
-  name=name))
+  name=name), status_code=404, detail="user not found")
   _user['transactions'] = [str(i['id']) for i in _user['transactions']]
   return Account(password=None, **_user)
 
@@ -81,7 +85,11 @@ async def get_user(
 async def get_transaction(
   id: Annotated[str, Header()]
 ) -> Transaction:
-  return Transaction(**conv_to_dict(await db.query_single("select Transaction {amount, to, received} filter .id = <std::uuid>$id limit 1", id=id)))
+  return Transaction(**conv_to_dict(
+    await db.query_single("select Transaction {amount, to, received} filter .id = <std::uuid>$id limit 1", id=id),
+    status_code=404,
+    detail="transaction not found"
+  ))
 
 @app.post("/account/send")
 async def send_money(
@@ -95,7 +103,10 @@ async def send_money(
   _account = conv_to_dict(await db.query_single("select Account {name, money, password} filter .name = <str>$name limit 1", name=name))
   if verify_pw(_account['password'], password):
     _ = await db.query_single("update Account filter .name = <str>$name set {password := <str>$password}", password=PasswordHasher().hash(password))
-  _account_to = conv_to_dict(await db.query_single("select Account {name, money} filter .name = <str>$name limit 1", name=to))
+  _account_to = conv_to_dict(
+    await db.query_single("select Account {name, money} filter .name = <str>$name limit 1", name=to),
+    detail="destination is not found"
+  )
   account = Account(**_account, password=None)
   account_to = Account(**_account_to, password=None)
   if account.money - amount < 0 or amount <= 0:
