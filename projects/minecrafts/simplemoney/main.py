@@ -1,8 +1,10 @@
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
-from fastapi import FastAPI, Header, Request, status, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, Header, Request, status, HTTPException, WebSocket, WebSocketDisconnect, Security
+from fastapi.security import APIKeyHeader
 from fastapi.responses import PlainTextResponse
 from satellite_py import DB
+from loguru import logger
 
 from dataclasses import dataclass, field, asdict
 from json.decoder import JSONDecodeError
@@ -10,6 +12,7 @@ from collections import defaultdict
 from collections.abc import Coroutine
 from pathlib import Path
 from typing import Annotated, Any, TYPE_CHECKING, TypeVar, Callable
+from uuid import uuid4
 
 if TYPE_CHECKING:
   from _typeshed import DataclassInstance
@@ -17,9 +20,19 @@ else:
   DataclassInstance = TypeVar('DataclassInstance')
 
 db = DB()
-app = FastAPI()
 wss: defaultdict[str, list[WebSocket]] = defaultdict(list)
-pw = PasswordHasher().hash(Path("./pw").read_text().strip("\n"))
+api_key = APIKeyHeader(name="x-api-key")
+if not Path("./api_key").is_file():
+  _ = Path("./api_key").write_text(uuid4().hex)
+pw = PasswordHasher().hash(Path("./pw").read_text())
+logger.debug("API key: {}", Path("./api_key").read_text())
+
+def get_api_key(api_key: Annotated[str, Security(api_key)]) -> str:
+  if PasswordHasher().verify(pw, api_key):
+    return api_key
+  raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="API key is invalid")
+
+app = FastAPI(dependencies=[Security(api_key)])
 
 @dataclass
 class Account:
