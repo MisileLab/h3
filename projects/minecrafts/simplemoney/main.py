@@ -55,11 +55,15 @@ class Transaction:
 def conv_to_dict(
   v: DataclassInstance | None,
   status_code: int = 400,
-  detail: str = "result of query is None (probably name or password is invalid)"
+  detail: str = "result of query is None (probably name or password is invalid)",
+  ignore_id: bool = True
 ) -> dict[str, Any]: # pyright: ignore[reportExplicitAny]
   if v is None:
     raise HTTPException(status_code=status_code, detail=detail)
-  return asdict(v)
+  res = asdict(v)
+  if ignore_id:
+    del res["id"]
+  return res
 
 def verify_pw(hash: str, v: str) -> bool:
   try:
@@ -115,7 +119,7 @@ async def send_money(
     to := <str>$to,
     received := <str>$received,
     amount := <int64>$amount
-  }""", to=account.name, received=account_to.name, amount=amount))['id']
+  }""", to=account.name, received=account_to.name, amount=amount), ignore_id=False)['id']
   _ = await db.query_single("""update Account filter .name = <str>$name set {
     money := <int64>$amount,
     transactions += (select detached Transaction filter .id = <std::uuid>$id)
