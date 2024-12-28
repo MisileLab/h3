@@ -24,7 +24,7 @@ wss: defaultdict[str, list[WebSocket]] = defaultdict(list)
 api_key = APIKeyHeader(name="x-api-key")
 if not Path("./api_key").is_file():
   _ = Path("./api_key").write_text(uuid4().hex)
-pw = PasswordHasher().hash(Path("./pw").read_text())
+pw = PasswordHasher().hash(Path("./api_key").read_text())
 logger.debug("API key: {}", Path("./api_key").read_text())
 
 def get_api_key(api_key: Annotated[str, Security(api_key)]) -> str:
