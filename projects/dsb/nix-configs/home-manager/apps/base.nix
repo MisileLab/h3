@@ -10,11 +10,10 @@ in
       ./network.nix
       ./utils.nix
     ];
-    # https://github.com/NixOS/nixpkgs/pull/367669
     home.packages = with pkgs; [
       sbctl bluez cryptsetup smartmontools borgbackup rclone pulsemixer
       portablemc miniserve openssl transmission
-      yt-dlp /*magic-wormhole*/ ansifilter b3sum git-crypt
+      yt-dlp magic-wormhole ansifilter b3sum git-crypt
       (writeScript "manual" ''
         ${pkgs.glow}/bin/glow -p ~/.config/home-manager/manual.md
       '')
