@@ -19,7 +19,7 @@
       deno
       hvm bend
       clang-tools lldb pkg-config
-      niv nixpkgs-fmt nix-tree hub fh
+      niv nixpkgs-fmt nix-tree hub fh nixfmt-rfc-style
       packwiz ccemux
       unityhub dotnet-sdk_8
       lua (writeShellScriptBin "luajit" "${luajit}/bin/lua") luarocks
