@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.handzlikchris.fastscriptreload": {
+      "version": "https://github.com/handzlikchris/FastScriptReload.git?path=Assets",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "e79ce84471760730926d78f066f8aa8ba9eda6e0"
+    },
     "com.unity.2d.animation": {
       "version": "10.1.4",
       "depth": 1,
