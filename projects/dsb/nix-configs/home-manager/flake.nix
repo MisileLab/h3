@@ -3,6 +3,10 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs";
+    zig = {
+      url = "github:mitchellh/zig-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     stable.url = "github:nixos/nixpkgs/nixos-unstable";
     # nur.url = "github:nix-community/NUR";
     catppuccin.url = "github:catppuccin/nix";
@@ -11,10 +15,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs = { nixpkgs, stable, home-manager, catppuccin, ... }:
+  outputs = { nixpkgs, stable, home-manager, catppuccin, zig, ... }:
     let
       system = "x86_64-linux"; # replace with your system
       pkgs = import nixpkgs {inherit system;};
+      zigpkgs = zig.packages."${system}";
       c = import ./config.nix;
       _secrets = builtins.tryEval (import ./secrets.nix);
       secrets = if _secrets.success then _secrets.value else {};
@@ -30,6 +35,7 @@
           inherit c;
           inherit secrets;
           inherit stablep;
+          inherit zigpkgs;
         };
       };
     };

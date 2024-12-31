@@ -1,4 +1,4 @@
-{pkgs, config, ...}:
+{pkgs, zigpkgs, config, ...}:
 {
   home = {
     sessionVariables = {
@@ -23,12 +23,12 @@
       packwiz ccemux
       unityhub dotnet-sdk_8
       lua (writeShellScriptBin "luajit" "${luajit}/bin/lua") luarocks
-      vala
+      vala (zigpkgs.master)
 
       # lsp
       basedpyright nil vala-language-server bash-language-server
       tailwindcss-language-server astro-language-server ruff lua-language-server
-      marksman
+      marksman zls
     ]
     ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
     ++ (with nodePackages_latest; [nodejs typescript typescript-language-server svelte-language-server]) # nodejs
