@@ -8,7 +8,7 @@
       neovim wakatime
 
       # Development
-      edgedb d2 pre-commit darcs just
+      edgedb d2 pre-commit just
       snyk radicle-node infisical pnpm_9 poop binsider
 
       # Language tools
@@ -71,6 +71,10 @@
     direnv = {
       enable = true;
       nix-direnv.enable = true;
+    };
+    darcs = {
+      enable = true;
+      author = [ "misilelab <misile@duck.com>" ];
     };
   };
 }
