@@ -65,6 +65,7 @@
         init.defaultBranch = "main";
         core.editor = "nvim";
         delta.enable = true;
+        push.autoSetupRemote = true;
       };
     };
     direnv = {
