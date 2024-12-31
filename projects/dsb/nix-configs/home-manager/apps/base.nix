@@ -1,4 +1,4 @@
-{pkgs, secrets, ...}:
+{pkgs, zigpkgs, secrets, ...}:
 let
   writeScript = name: content: pkgs.writeShellScriptBin name "#!${pkgs.nushell}/bin/nu\n${content} $@";
 in
@@ -22,6 +22,7 @@ in
       (writeScript "ocat" "${coreutils}/bin/cat")
       (writeScript "lzg" "${lazygit}/bin/lazygit")
       (writeScript "utils" "~/repos/h3/projects/dsb/utils/zig-out/bin/utils")
+      (writeScript "zig-beta" "${zigpkgs.master}/bin/zig")
     ];
     programs = {
       gpg = {
