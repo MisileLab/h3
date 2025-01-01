@@ -161,7 +161,7 @@ requires-dist = [
     { name = "koreanize-matplotlib", specifier = "==0.1.1" },
     { name = "loguru", specifier = "==0.7.3" },
     { name = "matplotlib", specifier = "==3.10.0" },
-    { name = "twscrape", specifier = "==0.14" },
+    { name = "twscrape", specifier = "==0.15.0" },
 ]
 
 [[package]]
@@ -1415,7 +1415,7 @@ wheels = [
 
 [[package]]
 name = "twscrape"
-version = "0.14"
+version = "0.15.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiosqlite" },
@@ -1424,9 +1424,9 @@ dependencies = [
     { name = "loguru" },
     { name = "pyotp" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ed/d4/31794266694daa7b1dbd3d501bd3685b69876ec70457d53c82cf2ca30119/twscrape-0.14.tar.gz", hash = "sha256:a64247af749fd9e1ea372106a24e2f8a5e5dd952d5d34b2f8ebbb092a1a8f0df", size = 669436 }
+sdist = { url = "https://files.pythonhosted.org/packages/71/fc/5f74a832c8b0014d96ca1f16722e884cc8f669f83af01d52f5d4bc12c66f/twscrape-0.15.0.tar.gz", hash = "sha256:874bed439ac0077cffb928ff337f43d57199952c9feebe810849318177476148", size = 660114 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/19/0f/6a0633ab3779eee424d8915e47ef9e001baee7c9f3f695efc85a61ece4d1/twscrape-0.14-py3-none-any.whl", hash = "sha256:59f65a0c915a011671cf25e5f1db81e44d2bb676ebbc85c8f9a637859d1bc1bb", size = 33785 },
+    { url = "https://files.pythonhosted.org/packages/09/ae/12ecfd6527b6d2e343a743a3d0fcc38caabb048c65af28663648ad7743ae/twscrape-0.15.0-py3-none-any.whl", hash = "sha256:145024ae506e41806efe7607335f0b4cebbd9863ae164d8259dd0cd911c02a50", size = 34077 },
 ]
 
 [[package]]
