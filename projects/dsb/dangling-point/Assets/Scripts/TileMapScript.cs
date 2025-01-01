@@ -1,14 +1,40 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+
+public enum TileType {
+  // Non machine
+  Empty,
+  Wire,
+
+  // machine
+  Producer,
+  Launcher
+}
+
+public class Tile {
+  public TileType type;
+  public int x;
+  public int y;
+}
 
 public class TileMapScript: MonoBehaviour
 {
   private Tilemap tilemap;
-  private TileBase tile;
+  private Dictionary<Vector3Int, Tile> tiles = new();
+
+  void render() {
+    foreach (Vector3Int pos in tilemap.cellBounds.allPositionsWithin) {
+      Debug.Assert(tilemap.HasTile(pos));
+      tiles[pos] = new Tile { type = TileType.Empty, x = pos.x, y = pos.y };
+    }
+  }
 
   void Start() {
     tilemap = gameObject.GetComponent<Tilemap>();
     Debug.Assert(tilemap != null);
+    render();
   }
 
   // Update is called once per frame
