@@ -11,10 +11,10 @@
       scanner.enable = true;
       updater.enable = true;
     };
-    # tor = {
-    #   enable = true;
-    #   client.enable = true;
-    # };
+    tor = {
+      enable = true;
+      client.enable = true;
+    };
     tailscale = {
       enable = true;
       useRoutingFeatures = "client";
