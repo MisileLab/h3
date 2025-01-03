@@ -1,9 +1,9 @@
-name: deploy docs
+name: deploy dist
 
 on:
   push:
     paths:
-      - '.github/workflows/docs.yml'
+      - '.github/workflows/dist.yml'
       - 'dist/**'
 
 jobs:
