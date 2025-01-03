@@ -1,0 +1,13 @@
+name = "Transactions"
+author = "misilelab"
+version = "0.1.0"
+pack-format = "packwiz:1.1.0"
+
+[index]
+file = "index.toml"
+hash-format = "sha256"
+hash = "af42d7830c27e937ca53902077eb6830f3474ba4978188407e25d3520fb44e58"
+
+[versions]
+forge = "47.3.22"
+minecraft = "1.20.1"

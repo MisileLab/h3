@@ -1,0 +1,13 @@
+name = "Clockwork"
+filename = "clockwork-1.20.1-0.1.16-forge-b3b22e39fe.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/84USeAvk/versions/Bk2kwZr0/clockwork-1.20.1-0.1.16-forge-b3b22e39fe.jar"
+hash-format = "sha512"
+hash = "81ffb3ecd6a1389a6ce6ba07ac28b69d3f26064ac0eda6ed730e893782ec3982380a15aadf0c064b0e7fe098bf067a0087dbc2d8e2fc9306a0d657523652069e"
+
+[update]
+[update.modrinth]
+mod-id = "84USeAvk"
+version = "Bk2kwZr0"

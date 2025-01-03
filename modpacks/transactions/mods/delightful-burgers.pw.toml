@@ -1,0 +1,13 @@
+name = "Delightful Burgers"
+filename = "delightfulburgers-1.20.1.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/AqHNT5iP/versions/yzohW55x/delightfulburgers-1.20.1.jar"
+hash-format = "sha512"
+hash = "e09e0d9e091956e78792b807771606ecbfa14ffc28e94f67164db74ca43b080f2736c5c0b5c7bf2592890e46d349245f29e5e11b723f062d7cbdd0c748f608e8"
+
+[update]
+[update.modrinth]
+mod-id = "AqHNT5iP"
+version = "yzohW55x"

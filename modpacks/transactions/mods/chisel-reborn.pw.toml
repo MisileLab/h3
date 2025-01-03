@@ -1,0 +1,13 @@
+name = "Chisel Reborn"
+filename = "chisel-forge-1.20.1-1.8.0.jar"
+side = "both"
+
+[download]
+url = "https://cdn.modrinth.com/data/4KWv7wbN/versions/GokYubu8/chisel-forge-1.20.1-1.8.0.jar"
+hash-format = "sha512"
+hash = "12bd1a3307da0b4316ac55c83e739d376cf27f9f1090cd8ad368d3b76210ea0d9d4d7359715a36c140b8fa00d68ceee3bcb6c2ab560dbc5d758823fc6f976bfb"
+
+[update]
+[update.modrinth]
+mod-id = "4KWv7wbN"
+version = "GokYubu8"
