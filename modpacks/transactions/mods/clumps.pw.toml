@@ -4,8 +4,8 @@ side = "both"
 
 [download]
 url = "https://cdn.modrinth.com/data/Wnxd13zP/versions/nAHGB5ls/Clumps-forge-1.20.1-12.0.0.4.jar"
-hash-format = "sha512"
-hash = "ffd8ff2438e9f9d260d3926ccdd0cccc4772c6f99f29715690aed4f6e97a76035f3aeaa78168e2a458bc4cccf521e97ebdb6e0b61c819facb04af9ebb3638383"
+hash-format = "sha256"
+hash = "8af01712c0dc32cebaff31795ca6d223fddff2ea9b1f5efbd9c3a586a0dacbc0"
 
 [update]
 [update.modrinth]

@@ -4,8 +4,8 @@ side = "both"
 
 [download]
 url = "https://cdn.modrinth.com/data/pvcsfne4/versions/5tGfF2Ok/chefs-delight-1.0.3-forge-1.20.1.jar"
-hash-format = "sha512"
-hash = "a944bfd3b8728f2d1003cc42bf416170337e1aa321d4441bcb5a0d5f00aadd9e97ec395153a7f30f5bac8a5e7fc30143010a78fab5d4fd5659ebfec73e7e8a90"
+hash-format = "sha256"
+hash = "27be85d4cfa48a1b9e469e7f485dd4e7c87b782ade1d5ee6eec4a8c3f7d4b968"
 
 [update]
 [update.modrinth]

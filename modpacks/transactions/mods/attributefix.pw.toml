@@ -4,8 +4,8 @@ side = "both"
 
 [download]
 url = "https://cdn.modrinth.com/data/lOOpEntO/versions/Y42wjyly/AttributeFix-Forge-1.20.1-21.0.4.jar"
-hash-format = "sha512"
-hash = "a4f1431c3abb23d97ae6d742721fcc2d1d97b6f9e72e492cc13f2471b608614b8cbbde513fa0a6f8d002f27168130850bf358d405cd2120c979927d7e88fe3d3"
+hash-format = "sha256"
+hash = "5d8cc8928ce480288d5b504663bb13104df56ac72ce5bf36f2743ec27c701112"
 
 [update]
 [update.modrinth]

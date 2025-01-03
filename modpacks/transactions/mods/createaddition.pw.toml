@@ -4,8 +4,8 @@ side = "both"
 
 [download]
 url = "https://cdn.modrinth.com/data/kU1G12Nn/versions/4DW3pAsX/createaddition-1.20.1-1.2.4e.jar"
-hash-format = "sha512"
-hash = "68d675fa7b546c5dc2778f54e074d84b1310449649ffd503d7b35b846bb725991417d6b2c3fa45de8243d5d38d33fbfbd533a34ef31a5aef5cbc04268dfaae11"
+hash-format = "sha256"
+hash = "7f4112e75fa058fec1eb3ca4656f35fe23200e4c1fa6f925b516d62f6b46c3f1"
 
 [update]
 [update.modrinth]

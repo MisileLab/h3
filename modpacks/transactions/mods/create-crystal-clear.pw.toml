@@ -4,8 +4,8 @@ side = "both"
 
 [download]
 url = "https://cdn.modrinth.com/data/h7QgiH72/versions/sOYtDSLp/Crystal-Clear-2.1-Beta-forge.jar"
-hash-format = "sha512"
-hash = "418f6a46dcf6d25f79e66da6d1df8b0ec7f573f4aef213dd0d160ddbf8089bc8e136a637fcae7b19a5719bd89d67c5610c488bb5929b3b7227e436ec10675463"
+hash-format = "sha256"
+hash = "b2e60925d453e4067a17b48158a550c8e00cfd8b176eacbc4c8b92c6c5033d71"
 
 [update]
 [update.modrinth]
