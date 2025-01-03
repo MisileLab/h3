@@ -37,8 +37,8 @@ importers:
         specifier: 8.4.49
         version: 8.4.49
       solid-devtools:
-        specifier: 0.32.0
-        version: 0.32.0(solid-js@1.9.3)(vite@6.0.7(jiti@1.21.7)(yaml@2.7.0))
+        specifier: 0.33.0
+        version: 0.33.0(solid-js@1.9.3)(vite@6.0.7(jiti@1.21.7)(yaml@2.7.0))
       tailwind-merge:
         specifier: 2.6.0
         version: 2.6.0
@@ -464,13 +464,13 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@solid-devtools/debugger@0.25.0':
-    resolution: {integrity: sha512-pIg/Mrq6QNBcZ7q+Jhn9Nyu0GwMIJ5xis6M9xtQ3DM8tS7hV32MYbr2IRcahitip3my7dlKJGzSuFRu6OANDMA==}
+  '@solid-devtools/debugger@0.26.0':
+    resolution: {integrity: sha512-36QxZ+s/lY60E+Pb9q0eTsdqgaog4c823WIj5dC2LFdGrGXbVGBQEj6k7CgvMnEETdwndrd0Fm72fQyYPlZrVA==}
     peerDependencies:
       solid-js: ^1.9.0
 
-  '@solid-devtools/shared@0.18.0':
-    resolution: {integrity: sha512-Y+m/oZrw0sIn05/1YkozeE/KSQwg0pYFY4Xu4RE0ozrmEBpKwg29CpuhUY7mBKdf9xbS2ojk+NktQ0/Y+/lepg==}
+  '@solid-devtools/shared@0.19.0':
+    resolution: {integrity: sha512-OGo6l84f9X5YEAqSEM4Xl94+xKXSqmACMzKWsAqO0BStLBMVL0vIVu286AQk5XkNxn11/EB9wrdkZc9GUzKlxA==}
     peerDependencies:
       solid-js: ^1.9.0
 
@@ -1022,8 +1022,8 @@ packages:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
 
-  solid-devtools@0.32.0:
-    resolution: {integrity: sha512-SshZsEgpB7n8VadzUqelB5FdEIlz+aLClr78fyKq09O9LYwGh9Z/ac8SFKJSHBZh+sO7F+qCMqiMqHIV1uZYHA==}
+  solid-devtools@0.33.0:
+    resolution: {integrity: sha512-xRB4Jhgns3dBuM/s0j70BpXKy77sNjISud9xXBv60qC4cnJ/TcuVHI1t+05luj1BEKJVQSokqIaVoZWcjqA9yw==}
     peerDependencies:
       solid-js: ^1.9.0
       vite: ^2.2.3 || ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0
@@ -1567,10 +1567,10 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.29.1':
     optional: true
 
-  '@solid-devtools/debugger@0.25.0(solid-js@1.9.3)':
+  '@solid-devtools/debugger@0.26.0(solid-js@1.9.3)':
     dependencies:
       '@nothing-but/utils': 0.17.0
-      '@solid-devtools/shared': 0.18.0(solid-js@1.9.3)
+      '@solid-devtools/shared': 0.19.0(solid-js@1.9.3)
       '@solid-primitives/bounds': 0.0.122(solid-js@1.9.3)
       '@solid-primitives/cursor': 0.0.115(solid-js@1.9.3)
       '@solid-primitives/event-listener': 2.3.3(solid-js@1.9.3)
@@ -1582,7 +1582,7 @@ snapshots:
       '@solid-primitives/utils': 6.2.3(solid-js@1.9.3)
       solid-js: 1.9.3
 
-  '@solid-devtools/shared@0.18.0(solid-js@1.9.3)':
+  '@solid-devtools/shared@0.19.0(solid-js@1.9.3)':
     dependencies:
       '@nothing-but/utils': 0.17.0
       '@solid-primitives/event-listener': 2.3.3(solid-js@1.9.3)
@@ -2133,13 +2133,13 @@ snapshots:
 
   signal-exit@4.1.0: {}
 
-  solid-devtools@0.32.0(solid-js@1.9.3)(vite@6.0.7(jiti@1.21.7)(yaml@2.7.0)):
+  solid-devtools@0.33.0(solid-js@1.9.3)(vite@6.0.7(jiti@1.21.7)(yaml@2.7.0)):
     dependencies:
       '@babel/core': 7.26.0
       '@babel/plugin-syntax-typescript': 7.25.9(@babel/core@7.26.0)
       '@babel/types': 7.26.3
-      '@solid-devtools/debugger': 0.25.0(solid-js@1.9.3)
-      '@solid-devtools/shared': 0.18.0(solid-js@1.9.3)
+      '@solid-devtools/debugger': 0.26.0(solid-js@1.9.3)
+      '@solid-devtools/shared': 0.19.0(solid-js@1.9.3)
       solid-js: 1.9.3
     optionalDependencies:
       vite: 6.0.7(jiti@1.21.7)(yaml@2.7.0)
