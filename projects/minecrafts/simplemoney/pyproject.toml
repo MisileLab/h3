@@ -1,17 +1,10 @@
 [project]
 name = "simplemoney"
 version = "0.1.0"
-description = "A simple money system for Minecraft"
+description = "simple discord bot for private minecraft"
+readme = "README.md"
 requires-python = "==3.13.1"
 dependencies = [
-  "argon2-cffi==23.1.0",
-  "fastapi[standard]==0.115.6",
-  "loguru==0.7.3",
-  "satellite_py==0.1.1",
-  "websockets==14.1",
+  "disnake==2.10.1",
+  "satellite-py==0.1.1"
 ]
-
-[tool.basedpyright]
-reportAny = false
-reportUnknownMemberType = false
-
