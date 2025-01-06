@@ -6,5 +6,5 @@ readme = "README.md"
 requires-python = "==3.13.1"
 dependencies = [
   "disnake==2.10.1",
-  "satellite-py==0.1.1"
+  "tomli==2.2.1",
 ]

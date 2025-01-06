@@ -1,30 +1,44 @@
 module default {
   type User {
-    required name: str {
+    required userid: int64 {
       constraint exclusive;
+      constraint min_value(0);
     };
-    required userid: uint64 {
+    trust: int64 {
       constraint exclusive;
+      constraint min_value(0);
+      default := 0;
     };
-    trust: int64;
-    credit: uint64;
+    credit: int64 {
+      constraint exclusive;
+      constraint min_value(0);
+      default := 0;
+    };
     multi transactions: Data;
     multi banks: Bank;
   }
 
-  type Borrow extending Data, Product {
-    required product_value := (.end_date);
-    constraint exclusive on ((.receiver, .sender, .name));
+  type Borrow extending Data {
+    required product: Product;
+    required date: int64 {
+      constraint min_value(0);
+    };
   }
 
   type Data {
-    required amount: uint64;
+    required amount: int64 {
+      constraint min_value(0);
+    };
     required receiver: uuid;
     required sender: uuid;
   }
 
   type Bank {
-    amount: int64;
+    amount: int64 {
+      constraint exclusive;
+      constraint min_value(0);
+      default := 0;
+    };
     multi products: Product;
     multi borrows: Data;
     multi transactions: Data;
@@ -38,7 +52,9 @@ module default {
     required interest: float64 {
       constraint min_value(0);
     };
-    required end_date: uint64;
+    required end_date: int64 {
+      constraint min_value(0);
+    };
     required min_trust: int64;
   }
 }
