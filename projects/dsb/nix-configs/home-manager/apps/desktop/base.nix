@@ -1,4 +1,4 @@
-{pkgs, ...}:
+{pkgs, stablep, ...}:
 {
   imports = [
     ./security.nix
@@ -12,7 +12,7 @@
       brightnessctl clipman wl-clipboard pavucontrol
       imagemagick virt-manager xfce.thunar
       galaxy-buds-client kdePackages.filelight firefoxpwa gparted
-      gimp telegram-desktop xournalpp exodus
+      gimp (stablep.telegram-desktop) xournalpp exodus
     ];
     pointerCursor = {
       name = "Adwaita";
