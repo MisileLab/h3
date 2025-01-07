@@ -1,4 +1,4 @@
-{config, lib, pkgs, ...}:
+{pkgs, ...}:
 {
   imports = [
     ./applications/yubikey.nix
@@ -8,7 +8,6 @@
     # fprintd.enable = true;
     clamav = {
       daemon.enable = true;
-      scanner.enable = true;
       updater.enable = true;
     };
     tor = {

@@ -13,7 +13,7 @@ in
     home.packages = with pkgs; [
       sbctl bluez cryptsetup smartmontools borgbackup rclone pulsemixer
       portablemc miniserve openssl transmission
-      yt-dlp magic-wormhole ansifilter b3sum git-crypt
+      yt-dlp magic-wormhole ansifilter b3sum git-crypt inxi
       (writeScript "manual" ''
         ${pkgs.glow}/bin/glow -p ~/.config/home-manager/manual.md
       '')
