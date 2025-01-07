@@ -1,10 +1,11 @@
 from pathlib import Path
-from typing import Any
+from typing import Any, Annotated
 
 from disnake import ApplicationCommandInteraction, User
-from disnake.ext.commands import Bot, is_owner
+from disnake.ext.commands import Bot, Param, is_owner
 from edgedb import create_async_client  # pyright: ignore[reportUnknownVariableType]
 from tomli import loads
+from tomli_w import dumps
 
 from queries.money.get_money_async_edgeql import get_money
 from queries.money.set_money_async_edgeql import set_money
@@ -41,6 +42,48 @@ async def give(inter: interType, user: User, amount: int):
     return
   _ = await set_money(db, userid=user.id, money=money + amount)
   await inter.send("지급 완료")
+
+@bot.slash_command(
+  name="수수료",
+  description="수수료를 설정함"
+)
+@is_owner()
+async def fee(
+  inter: interType,
+  send_fee: Annotated[int, Param(
+    ge=-1,
+    description="송금 수수료",
+    default=config["fee"]["send"] # pyright: ignore[reportAny]
+  )],
+  receive_fee: Annotated[int, Param(
+    ge=-1,
+    description="출금 수수료",
+    default=config["fee"]["receive"] # pyright: ignore[reportAny]
+  )],
+  borrow_send_fee: Annotated[int, Param(
+    ge=-1,
+    description="대출 갚는 수수료",
+    default=config["fee"]["borrow"]["send"] # pyright: ignore[reportAny]
+  )],
+  borrow_receive_fee: Annotated[int, Param(
+    ge=-1,
+    description="대출 수수료",
+    default=config["fee"]["borrow"]["receive"] # pyright: ignore[reportAny]
+  )],
+  bank_send_fee: Annotated[int, Param(
+    ge=-1,
+    description="은행끼리의 송금 수수료",
+    default=config["fee"]["bank"]["send"] # pyright: ignore[reportAny]
+  )]
+):
+  await inter.response.defer()
+  config["fee"]["send"] = send_fee
+  config["fee"]["receive"] = receive_fee
+  config["fee"]["borrow"]["send"] = borrow_send_fee
+  config["fee"]["borrow"]["receive"] = borrow_receive_fee
+  config["fee"]["bank"]["send"] = bank_send_fee
+  _ = Path("./config_prod.toml").write_text(dumps(config))
+  await inter.send("수수료 설정 완료")
 
 @bot.slash_command(name="잔고", description="잔고를 확인함")
 @is_owner()
