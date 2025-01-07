@@ -4,18 +4,21 @@ module default {
       constraint exclusive;
       constraint min_value(0);
     };
-    required trust: int64 {
+    required credit: int64 {
       constraint exclusive;
       constraint min_value(0);
       default := 0;
     };
-    required credit: int64 {
+    required money: int64 {
       constraint exclusive;
       constraint min_value(0);
       default := 0;
     };
     multi transactions: Data;
     multi banks: Bank;
+    multi borrows: Borrow {
+      on target delete allow;
+    };
   }
 
   type Borrow extending Data {
@@ -42,7 +45,7 @@ module default {
       default := 0;
     };
     multi products: Product;
-    multi borrows: Data;
+    multi borrows: Borrow;
     multi transactions: Data;
     required owner: User;
   }

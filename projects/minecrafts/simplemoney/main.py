@@ -10,6 +10,8 @@ from queries.money.get_money_async_edgeql import get_money
 from queries.money.set_money_async_edgeql import set_money
 from queries.bank.modify_bank_async_edgeql import modify_bank
 from queries.bank.get_bank_async_edgeql import get_bank
+from queries.credit.set_credit_async_edgeql import set_credit
+from queries.loan.reset_loan_async_edgeql import reset_loan
 
 type interType = ApplicationCommandInteraction[Any] # pyright: ignore[reportExplicitAny]
 
@@ -19,7 +21,7 @@ bot = Bot(
   owner_ids={338902243476635650},
   test_guilds=[1322924155640877056]
 )
-config = loads(Path("./config.toml").read_text())
+config = loads(Path("./config_prod.toml").read_text())
 
 def verify_none[T](v: T | None) -> T:
   if v is None:
@@ -32,12 +34,20 @@ def verify_none[T](v: T | None) -> T:
 )
 @is_owner()
 async def give(inter: interType, user: User, amount: int):
-  credit = verify_none(await get_money(db, userid=user.id))
-  if credit + amount < 0:
+  await inter.response.defer()
+  money = verify_none(await get_money(db, userid=user.id))
+  if money + amount < 0:
     await inter.send("지급 결과가 0 미만입니다.")
     return
-  _ = await set_money(db, userid=user.id, credit=credit + amount)
+  _ = await set_money(db, userid=user.id, money=money + amount)
   await inter.send("지급 완료")
+
+@bot.slash_command(name="잔고", description="잔고를 확인함")
+@is_owner()
+async def storage(inter: interType, user: User):
+  await inter.response.defer()
+  money = verify_none(await get_money(db, userid=user.id))
+  await inter.send(str(money))
 
 @bot.slash_command(name="은행")
 async def bank():
@@ -46,11 +56,11 @@ async def bank():
 @bank.sub_command(name="설정", description="은행을 설정함 (없을 경우 추가, 이름은 변경 불가능함)") # pyright: ignore[reportUnknownMemberType]
 @is_owner()
 async def bank_setting(
-    inter: interType,
-    name: str,
-    owner: User | None = None,
-    amount: int | None = None
-  ):
+  inter: interType,
+  name: str,
+  owner: User | None = None,
+  amount: int | None = None
+):
   await inter.response.defer()
   bank = await get_bank(db, name=name)
   if bank is None:
@@ -61,6 +71,28 @@ async def bank_setting(
   ownerid = owner.id if owner is not None else bank.owner.userid
   amount = amount if amount is not None else bank.amount
   _ = await modify_bank(db, name=name, owner=ownerid, amount=amount)
+
+@bot.slash_command(name="신용도")
+async def credit():
+  pass
+
+@credit.sub_command(name="설정", description="신용도를 설정함") # pyright: ignore[reportUnknownMemberType]
+@is_owner()
+async def credit_setting(inter: interType, user: User, credit: int):
+  await inter.response.defer()
+  _ = await set_credit(db, userid=user.id, credit=credit)
+  await inter.send("신용도 설정 완료")
+
+@bot.slash_command(name="대출")
+async def loan():
+  pass
+
+@loan.sub_command(name="리셋", description="대출 기록을 리셋함") # pyright: ignore[reportUnknownMemberType]
+@is_owner()
+async def loan_reset(inter: interType, user: User):
+  await inter.response.defer()
+  _ = await reset_loan(db, userid=user.id)
+  await inter.send("대출 기록 리셋 완료")
 
 bot.run(config["token"])
 

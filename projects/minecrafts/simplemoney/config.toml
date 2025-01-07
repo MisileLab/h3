@@ -1,3 +1,5 @@
+token = ""
+
 [fees]
 receive = 0
 send = 0
@@ -8,4 +10,3 @@ send = 0
 
 [fees.bank]
 send = 0
-
