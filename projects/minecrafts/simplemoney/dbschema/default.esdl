@@ -4,12 +4,12 @@ module default {
       constraint exclusive;
       constraint min_value(0);
     };
-    trust: int64 {
+    required trust: int64 {
       constraint exclusive;
       constraint min_value(0);
       default := 0;
     };
-    credit: int64 {
+    required credit: int64 {
       constraint exclusive;
       constraint min_value(0);
       default := 0;
@@ -34,15 +34,17 @@ module default {
   }
 
   type Bank {
-    amount: int64 {
+    required name: str {
       constraint exclusive;
+    };
+    required amount: int64 {
       constraint min_value(0);
       default := 0;
     };
     multi products: Product;
     multi borrows: Data;
     multi transactions: Data;
-    multi owners: User;
+    required owner: User;
   }
 
   type Product {

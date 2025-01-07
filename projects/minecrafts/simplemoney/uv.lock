@@ -64,6 +64,15 @@ wheels = [
 ]
 
 [[package]]
+name = "certifi"
+version = "2024.12.14"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/0f/bd/1d41ee578ce09523c81a15426705dd20969f5abf006d1afe8aeff0dd776a/certifi-2024.12.14.tar.gz", hash = "sha256:b650d30f370c2b724812bee08008be0c4163b163ddaec3f2546c1caf65f191db", size = 166010 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a5/32/8f6669fc4798494966bf446c8c4a162e0b5d893dff088afddf76414f70e1/certifi-2024.12.14-py3-none-any.whl", hash = "sha256:1275f7a45be9464efc1173084eaa30f866fe2e47d389406136d332ed4967ec56", size = 164927 },
+]
+
+[[package]]
 name = "disnake"
 version = "2.10.1"
 source = { registry = "https://pypi.org/simple" }
@@ -74,6 +83,15 @@ sdist = { url = "https://files.pythonhosted.org/packages/52/6e/a8daf8b56e875f692
 wheels = [
     { url = "https://files.pythonhosted.org/packages/c2/51/69111539d2f4ce71b9194f8bae6826d8ebb811630cc8e19bf8981d44e43c/disnake-2.10.1-py3-none-any.whl", hash = "sha256:60175459cf5ada0381fc174d693f862c3f0b78e58ce51c39fd9960d86072409d", size = 1128608 },
 ]
+
+[[package]]
+name = "edgedb"
+version = "2.2.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "certifi", marker = "sys_platform == 'win32'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/b7/bd/5fa8967755ec169d07b4e52684897a612bebb3d2086d2eade79c33642630/edgedb-2.2.0.tar.gz", hash = "sha256:3ddbb841fe80d25ede524535dd52878cf74adae8c920e1f5dd912cddf66fe5f8", size = 1276984 }
 
 [[package]]
 name = "frozenlist"
@@ -163,12 +181,14 @@ version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "disnake" },
+    { name = "edgedb" },
     { name = "tomli" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "disnake", specifier = "==2.10.1" },
+    { name = "edgedb", specifier = "==2.2.0" },
     { name = "tomli", specifier = "==2.2.1" },
 ]
 
