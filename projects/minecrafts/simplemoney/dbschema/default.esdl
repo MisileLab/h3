@@ -5,7 +5,7 @@ module default {
       constraint min_value(0);
     };
     required credit: int64 {
-      constraint exclusive;
+      constraint min_value(0);
       default := 0;
     };
     required money: int64 {
@@ -40,7 +40,7 @@ module default {
     required name: str {
       constraint exclusive;
     };
-    required amount: int64 {
+    required money: int64 {
       constraint min_value(0);
       default := 0;
     };

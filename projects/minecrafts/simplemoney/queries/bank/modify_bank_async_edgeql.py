@@ -34,7 +34,7 @@ async def modify_bank(
     *,
     owner: int,
     name: str,
-    amount: int,
+    money: int,
 ) -> ModifyBankResult:
     return await executor.query_single(
         """\
@@ -42,15 +42,15 @@ async def modify_bank(
           owner := (select User filter .userid = <int64>$owner)
         insert Bank {
           name := <str>$name,
-          amount := <int64>$amount,
+          money := <int64>$money,
           owner := owner
         } unless conflict on .name else (
           update Bank set {
-          amount := <int64>$amount,
+          money := <int64>$money,
           owner := owner
         })\
         """,
         owner=owner,
         name=name,
-        amount=amount,
+        money=money,
     )

@@ -1,6 +1,6 @@
 select default::Bank {
   id,
-  amount,
+  money,
   name,
   owner: {userid}
 }
