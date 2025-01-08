@@ -3,6 +3,7 @@ from typing import Any, Annotated
 
 from disnake import ApplicationCommandInteraction, User
 from disnake.ext.commands import Bot, Param, is_owner
+from disnake.ext.tasks import loop
 from edgedb import create_async_client  # pyright: ignore[reportUnknownVariableType]
 from tomli import loads
 from tomli_w import dumps
@@ -11,6 +12,9 @@ from queries.money.get_money_async_edgeql import get_money
 from queries.money.set_money_async_edgeql import set_money
 from queries.bank.modify_bank_async_edgeql import modify_bank
 from queries.bank.get_bank_async_edgeql import get_bank
+from queries.bank.is_bank_owner_async_edgeql import is_bank_owner
+from queries.bank.products.add_product_async_edgeql import add_product
+from queries.bank.products.delete_product_async_edgeql import delete_product
 from queries.credit.set_credit_async_edgeql import set_credit
 from queries.loan.reset_loan_async_edgeql import reset_loan
 
@@ -28,6 +32,11 @@ def verify_none[T](v: T | None) -> T:
   if v is None:
     raise TypeError("it's None")
   return v
+
+@loop(seconds=1)
+async def loan_check():
+  # TODO: make loan check system
+  pass 
 
 @bot.slash_command(
   name="지급",
@@ -107,13 +116,39 @@ async def bank_setting(
   await inter.response.defer()
   bank = await get_bank(db, name=name)
   if bank is None:
-    if None in [amount, bank]:
+    if owner is None or amount is None:
       await inter.send("은행을 추가하려는 경우 모든 정보를 써야합니다.")
       return
-    raise ValueError("Unreachable")
-  ownerid = owner.id if owner is not None else bank.owner.userid
-  amount = amount if amount is not None else bank.amount
+    ownerid = owner.id
+  else:
+    ownerid = bank.owner.userid
+    amount = bank.amount
   _ = await modify_bank(db, name=name, owner=ownerid, amount=amount)
+
+@bank.sub_command(name="대출생성", description="은행에서 대출 상품 생성함") # pyright: ignore[reportUnknownMemberType]
+async def bank_loan_create(
+  inter: interType,
+  bank_name: str,
+  name: str,
+  min_trust: int,
+  interest: Annotated[int, Param(ge=-1)],
+  end_date: Annotated[int, Param(ge=0)]
+):
+  await inter.response.defer()
+  if not verify_none(await is_bank_owner(db, name=bank_name, ownerid=inter.author.id)):
+    await inter.send("은행의 소유자가 아닙니다.")
+    return
+  _ = await add_product(db, bank_name=bank_name, name=name, min_trust=min_trust, end_date=end_date, interest=interest)
+  await inter.send("상품 생성 완료")
+
+@bank.sub_command(name="대출삭제", description="은행에서 대출 상품 삭제함") # pyright: ignore[reportUnknownMemberType]
+async def bank_loan_delete(inter: interType, bank_name: str, name: str):
+  await inter.response.defer()
+  if not verify_none(await is_bank_owner(db, name=bank_name, ownerid=inter.author.id)):
+    await inter.send("은행의 소유자가 아닙니다.")
+    return
+  _ = delete_product(db, bank_name=bank_name, name=name)
+  await inter.send("상품 삭제 완료")
 
 @bot.slash_command(name="신용도")
 async def credit():

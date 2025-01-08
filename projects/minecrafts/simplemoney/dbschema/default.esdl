@@ -6,7 +6,6 @@ module default {
     };
     required credit: int64 {
       constraint exclusive;
-      constraint min_value(0);
       default := 0;
     };
     required money: int64 {
@@ -16,14 +15,15 @@ module default {
     };
     multi transactions: Data;
     multi banks: Bank;
-    multi borrows: Borrow {
+    multi loans: Loan {
       on target delete allow;
     };
   }
 
-  type Borrow extending Data {
+  type Loan extending Data {
     required product: Product;
-    required date: int64 {
+    required date: datetime;
+    required interest: int64 {
       constraint min_value(0);
     };
   }
@@ -44,8 +44,12 @@ module default {
       constraint min_value(0);
       default := 0;
     };
-    multi products: Product;
-    multi borrows: Borrow;
+    multi products: Product {
+      on target delete allow;
+    };
+    multi loans: Loan {
+      on target delete allow;
+    };
     multi transactions: Data;
     required owner: User;
   }
@@ -54,7 +58,7 @@ module default {
     required name: str {
       constraint exclusive;
     };
-    required interest: float64 {
+    required interest: int64 {
       constraint min_value(0);
     };
     required end_date: int64 {
