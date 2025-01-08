@@ -3,3 +3,9 @@ results
 userids
 accounts.db
 accounts.csv
+
+# community/Python/JupyterNotebooks.gitignore by ignofierplus
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+profile_default/
+ipython_config.py
