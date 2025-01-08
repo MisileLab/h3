@@ -1,0 +1,10 @@
+[project]
+name = "sugar-pills"
+version = "0.1.0"
+description = "The music detection based on incorrect melody, thumbnail, lyrics, title."
+readme = "README.md"
+# https://github.com/pytorch/pytorch/issues/130249
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "tensorflow==2.18.0"
+]
