@@ -14,7 +14,7 @@ module default {
       default := 0;
     };
     multi transactions: Data;
-    multi banks: Bank;
+    multi banks: Data;
     multi loans: Loan {
       on target delete allow;
     };
