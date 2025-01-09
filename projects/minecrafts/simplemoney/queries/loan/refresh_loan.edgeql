@@ -1,6 +1,6 @@
 update Loan filter .id = <uuid>$id set {
   date := <datetime>$date,
-  interest := <int64>$interest
+  amount := <int64>$amount
 };
 update User filter .id = <uuid>$userid set {
   credit := <int64>$credit

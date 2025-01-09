@@ -2,6 +2,7 @@ from datetime import timedelta
 from pathlib import Path
 from traceback import print_exception
 from typing import Annotated, Any
+from datetime import datetime
 
 from disnake import ApplicationCommandInteraction, User
 from disnake.ext.commands import Bot, Param, is_owner
@@ -17,6 +18,7 @@ from queries.bank.is_bank_owner_async_edgeql import is_bank_owner
 from queries.bank.modify_bank_async_edgeql import modify_bank
 from queries.bank.send_to_user_async_edgeql import send_to_user
 from queries.bank.send_to_bank_async_edgeql import send_to_bank
+from queries.products.get_product_async_edgeql import get_product
 from queries.products.add_product_async_edgeql import add_product
 from queries.products.delete_product_async_edgeql import delete_product
 from queries.credit.get_credit_async_edgeql import get_credit
@@ -25,11 +27,16 @@ from queries.loan.get_loan_expired_async_edgeql import get_loan_expired
 from queries.loan.refresh_loan_async_edgeql import refresh_loan
 from queries.loan.reset_loan_async_edgeql import reset_loan
 from queries.loan.get_loan_bank_async_edgeql import get_loan_bank
+from queries.loan.get_loan_user_async_edgeql import get_loan_user
+from queries.loan.add_loan_async_edgeql import add_loan
+from queries.loan.pay_loan_async_edgeql import pay_loan
 from queries.money.set_money_async_edgeql import set_money
 from queries.money.get_money_async_edgeql import get_money
 from queries.user.get_user_async_edgeql import get_user
 from queries.user.get_user_banks_async_edgeql import get_user_banks
 from queries.user.is_any_bank_owner_async_edgeql import is_any_bank_owner
+from queries.user.deposit_to_bank_async_edgeql import deposit_to_bank
+from queries.user.send_async_edgeql import send
 
 type interType = ApplicationCommandInteraction[Any] # pyright: ignore[reportExplicitAny]
 
@@ -70,14 +77,14 @@ def verify_none[T](v: T | None) -> T:
   return v
 
 @loop(seconds=1)
-async def loan_check():
+async def loan_refresh():
   for i in await get_loan_expired(db):
     receiver = verify_none(await get_user(db, id=i.receiver))
     _ = await refresh_loan(
       db,
       date=i.date + timedelta(i.product.end_date),
       id=i.id,
-      interest=int(i.interest + (i.amount / 100) * i.product.interest),
+      amount=i.amount + int((i.amount / 100) * i.product.interest),
       credit=receiver.credit - 1,
       userid=i.receiver
     )
@@ -92,6 +99,21 @@ async def money(inter: interType):
     bank = verify_none(await get_bank_by_id(db, id=i.sender))
     contents.append(f"{bank.name}: {i.amount}")
   _ = await inter.edit_original_message(f"현금: {money.money}\n{'\n'.join(contents)}")
+
+@bot.slash_command(name="송금", description="돈을 다른 유저에게 송금함")
+async def send_money(inter: interType, user: User, amount: int):
+  await inter.response.defer(ephemeral=True)
+  sender_money = verify_none(await get_money(db, userid=inter.author.id))
+  receiver_money = verify_none(await get_money(db, userid=user.id))
+  _ = await send(
+    db,
+    receiverid=user.id,
+    senderid=inter.author.id,
+    amount=amount,
+    sender_money=sender_money - amount,
+    receiver_money=receiver_money + amount - int(amount / 100 * config.fee.send)
+  )
+  _ = await inter.edit_original_message("송금 완료")
 
 @bot.slash_command(
   name="지급",
@@ -169,6 +191,36 @@ async def storage(inter: interType, user: User):
 async def bank():
   pass
 
+@bank.sub_command(name="입금", description="은행에 돈을 입금함") # pyright: ignore[reportUnknownMemberType]
+async def bank_deposit(inter: interType, bank_name: str, amount: int):
+  await inter.response.defer(ephemeral=True)
+  bank = verify_none(await get_bank(db, name=bank_name))
+  money = verify_none(await get_money(db, userid=inter.author.id))
+  _ = await deposit_to_bank(
+    db,
+    receiver=bank.id,
+    senderid=inter.author.id,
+    amount=amount,
+    sender_money=money - amount,
+    receiver_money=money + amount
+  )
+  _ = await inter.edit_original_message("입금 완료")
+
+@bank.sub_command(name="출금", description="은행에서 돈을 출금함") # pyright: ignore[reportUnknownMemberType]
+async def bank_withdraw(inter: interType, bank_name: str, amount: int):
+  await inter.response.defer(ephemeral=True)
+  bank = verify_none(await get_bank(db, name=bank_name))
+  money = verify_none(await get_money(db, userid=inter.author.id))
+  _ = await send_to_user(
+    db,
+    receiverid=inter.author.id,
+    sender=bank.id,
+    amount=amount,
+    sender_money=bank.money - amount,
+    receiver_money=money + amount - int(amount / 100 * config.fee.receive)
+  )
+  _ = await inter.edit_original_message("출금 완료")
+
 @bank.sub_command(name="설정", description="은행을 설정함 (없을 경우 추가, 이름은 변경 불가능함)") # pyright: ignore[reportUnknownMemberType]
 @is_owner()
 async def bank_setting(
@@ -225,13 +277,14 @@ async def bank_loan_check(inter: interType, bank_name: str):
   for i in verify_none(await get_loan_bank(db, name=bank_name)):
     contents.append(
       ",".join([
+        i.product.name,
         f"<t:{int(i.date.timestamp())}:R>",
-        str(i.amount + i.interest),
+        str(i.amount),
         f"{i.product.interest}%",
         f"<@{verify_none(await get_user(db, id=i.receiver)).userid}>"
       ])
     )
-  _ = await inter.edit_original_message(content=f"만기일,돈,이자율,유저\n{'\n'.join(contents)}")
+  _ = await inter.edit_original_message(content=f"상품 이름,만기일,돈,이자율,유저\n{'\n'.join(contents)}")
 
 @bank.sub_command(name="송금", description="은행 돈을 다른 곳으로 송금") # pyright: ignore[reportUnknownMemberType]
 async def bank_send(
@@ -293,6 +346,11 @@ async def credit_setting(inter: interType, user: User, credit: int):
   _ = await set_credit(db, userid=user.id, credit=credit)
   _ = await inter.edit_original_message("신용도 설정 완료")
 
+@credit.sub_command(name="확인", description="신용도를 확인함") # pyright: ignore[reportUnknownMemberType]
+async def credit_check(inter: interType, user: User):
+  await inter.response.defer(ephemeral=True)
+  _ = await inter.edit_original_message(str(verify_none(await get_credit(db, userid=user.id))))
+
 @bot.slash_command(name="대출")
 async def loan():
   pass
@@ -303,6 +361,45 @@ async def loan_reset(inter: interType, user: User):
   await inter.response.defer(ephemeral=True)
   _ = await reset_loan(db, userid=user.id)
   _ = await inter.edit_original_message("대출 기록 리셋 완료")
+
+@loan.sub_command(name="확인", description="현재 대출 목록을 확인함") # pyright: ignore[reportUnknownMemberType]
+async def loan_check(inter: interType):
+  await inter.response.defer(ephemeral=True)
+  contents: list[str] = []
+  for i in verify_none(await get_loan_user(db, userid=inter.author.id)):
+    contents.append(
+      f"{i.product.name},{i.amount}원"
+    )
+  _ = await inter.edit_original_message(content="상품 이름,갚을 돈\n".join(contents))
+
+@loan.sub_command(name="시작", description="대출을 시작함") # pyright: ignore[reportUnknownMemberType]
+async def loan_start(inter: interType, product_name: str, bank_name: str, amount: Annotated[int, Param(ge=100)]):
+  await inter.response.defer(ephemeral=True)
+  product = verify_none(await get_product(db, bank_name=bank_name, name=product_name))
+  _ = await add_loan(
+    db,
+    product_id=product.id,
+    bank_name=bank_name,
+    bank_money=verify_none(await get_bank(db, name=bank_name)).money - amount,
+    amount=amount + int(amount / 100 * product.interest),
+    receiver_id=inter.author.id,
+    receiver_money=verify_none(await get_money(db, userid=inter.author.id)) + amount - int(amount / 100 * config.fee.borrow.send),
+    date=datetime.now() + timedelta(product.end_date)
+  )
+
+@loan.sub_command(name="갚기", description="대출을 갚음") # pyright: ignore[reportUnknownMemberType]
+async def loan_pay(inter: interType, product_name: str, bank_name: str, amount: Annotated[int, Param(ge=100)]):
+  await inter.response.defer(ephemeral=True)
+  _ = await pay_loan(
+    db,
+    bank_name=bank_name,
+    product_name=product_name,
+    amount=amount - int(amount / 100 * config.fee.borrow.receive),
+    receiver_id=inter.author.id,
+    receiver_money=verify_none(await get_money(db, userid=inter.author.id)) + amount,
+    bank_money=verify_none(await get_bank(db, name=bank_name)).money + amount - int(amount / 100 * config.fee.borrow.receive)
+  )
+  _ = await inter.edit_original_message("대출 갚기 완료")
 
 bot.run(config.token)
 

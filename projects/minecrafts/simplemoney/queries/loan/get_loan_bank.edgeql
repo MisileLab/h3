@@ -1,1 +1,1 @@
-select (select Bank {loans: {date, interest, amount, receiver, product: {interest}}} filter .name = <str>$name).loans;
+select (select Bank {loans: {date, amount, receiver, product: {interest, name}}} filter .name = <str>$name).loans;

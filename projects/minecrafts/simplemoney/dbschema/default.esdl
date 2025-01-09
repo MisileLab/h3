@@ -23,9 +23,6 @@ module default {
   type Loan extending Data {
     required product: Product;
     required date: datetime;
-    required interest: int64 {
-      constraint min_value(0);
-    };
   }
 
   type Data {
