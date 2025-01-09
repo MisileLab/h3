@@ -9,7 +9,6 @@ module default {
       default := 0;
     };
     required money: int64 {
-      constraint exclusive;
       constraint min_value(0);
       default := 0;
     };

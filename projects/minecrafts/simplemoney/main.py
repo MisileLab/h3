@@ -1,11 +1,14 @@
-from datetime import timedelta
+from contextlib import suppress
+from datetime import UTC, timedelta
 from pathlib import Path
 from traceback import print_exception
-from typing import Annotated, Any
+from typing import Any
 from datetime import datetime
 
 from disnake import ApplicationCommandInteraction, User
-from disnake.ext.commands import Bot, Param, is_owner
+from disnake.errors import InteractionResponded
+from disnake.ext.commands import InteractionBot, Param, is_owner
+from disnake.ext.commands.errors import NotOwner
 from disnake.ext.tasks import loop
 from edgedb import create_async_client  # pyright: ignore[reportUnknownVariableType]
 from tomli import loads
@@ -32,11 +35,11 @@ from queries.loan.add_loan_async_edgeql import add_loan
 from queries.loan.pay_loan_async_edgeql import pay_loan
 from queries.money.set_money_async_edgeql import set_money
 from queries.money.get_money_async_edgeql import get_money
-from queries.user.get_user_async_edgeql import get_user
 from queries.user.get_user_banks_async_edgeql import get_user_banks
 from queries.user.is_any_bank_owner_async_edgeql import is_any_bank_owner
 from queries.user.deposit_to_bank_async_edgeql import deposit_to_bank
 from queries.user.send_async_edgeql import send
+from queries.user.get_user_by_uuid_async_edgeql import get_user_by_uuid
 
 type interType = ApplicationCommandInteraction[Any] # pyright: ignore[reportExplicitAny]
 
@@ -51,13 +54,12 @@ class Fee(subFee):
   bank: sendFee 
 
 class Config(BaseModel):
-  fee: Fee
+  fees: Fee
   token: str
 
 db = create_async_client()
-bot = Bot(
-  help_command=None,
-  owner_ids={338902243476635650},
+bot = InteractionBot(
+  owner_ids={735677489958879324, 338902243476635650},
   test_guilds=[1322924155640877056]
 )
 config = Config.model_validate(loads(Path("./config_prod.toml").read_text()))
@@ -67,9 +69,14 @@ async def on_ready():
   print("ready")
 
 @bot.event
-async def on_command_error(ctx: interType, error: Exception):
+async def on_slash_command_error(ctx: interType, error: Exception):
+  with suppress(InteractionResponded):
+    await ctx.response.defer(ephemeral=True)
+  if isinstance(error, NotOwner):
+    _ = await ctx.edit_original_message("you are not owner :skull:")
+    return
   print_exception(error)
-  await ctx.send("error (probably you are wrong)")
+  _ = await ctx.edit_original_message("error (probably you are wrong)")
 
 def verify_none[T](v: T | None) -> T:
   if v is None:
@@ -79,7 +86,7 @@ def verify_none[T](v: T | None) -> T:
 @loop(seconds=1)
 async def loan_refresh():
   for i in await get_loan_expired(db):
-    receiver = verify_none(await get_user(db, id=i.receiver))
+    receiver = verify_none(await get_user_by_uuid(db, id=i.receiver))
     _ = await refresh_loan(
       db,
       date=i.date + timedelta(i.product.end_date),
@@ -111,7 +118,7 @@ async def send_money(inter: interType, user: User, amount: int):
     senderid=inter.author.id,
     amount=amount,
     sender_money=sender_money - amount,
-    receiver_money=receiver_money + amount - int(amount / 100 * config.fee.send)
+    receiver_money=receiver_money + amount - int(amount / 100 * config.fees.send)
   )
   _ = await inter.edit_original_message("송금 완료")
 
@@ -136,43 +143,43 @@ async def give(inter: interType, user: User, amount: int):
 @is_owner()
 async def fee(
   inter: interType,
-  send_fee: Annotated[int, Param(
+  send_fee: int = Param(
     ge=-1,
     le=100,
     description="송금 수수료",
-    default=config.fee.send 
-  )],
-  receive_fee: Annotated[int, Param(
+    default=config.fees.send 
+  ), # pyright: ignore[reportCallInDefaultInitializer]
+  receive_fee: int = Param(
     ge=-1,
     le=100,
     description="출금 수수료",
-    default=config.fee.receive
-  )],
-  borrow_send_fee: Annotated[int, Param(
+    default=config.fees.receive
+  ), # pyright: ignore[reportCallInDefaultInitializer]
+  borrow_send_fee: int = Param(
     ge=-1,
     le=100,
     description="대출 갚는 수수료",
-    default=config.fee.borrow.send
-  )],
-  borrow_receive_fee: Annotated[int, Param(
+    default=config.fees.borrow.send
+  ), # pyright: ignore[reportCallInDefaultInitializer]
+  borrow_receive_fee: int = Param(
     ge=-1,
     le=100,
     description="대출 수수료",
-    default=config.fee.borrow.receive
-  )],
-  bank_send_fee: Annotated[int, Param(
+    default=config.fees.borrow.receive
+  ), # pyright: ignore[reportCallInDefaultInitializer]
+  bank_send_fee: int = Param(
     ge=-1,
     le=100,
     description="은행끼리의 송금 수수료",
-    default=config.fee.bank.send
-  )]
+    default=config.fees.bank.send
+  ) # pyright: ignore[reportCallInDefaultInitializer]
 ):
   await inter.response.defer(ephemeral=True)
-  config.fee.send = send_fee
-  config.fee.receive = receive_fee
-  config.fee.borrow.send = borrow_send_fee
-  config.fee.borrow.receive = borrow_receive_fee
-  config.fee.bank.send = bank_send_fee
+  config.fees.send = send_fee
+  config.fees.receive = receive_fee
+  config.fees.borrow.send = borrow_send_fee
+  config.fees.borrow.receive = borrow_receive_fee
+  config.fees.bank.send = bank_send_fee
   _ = Path("./config_prod.toml").write_text(dumps(config.model_dump()))
   _ = await inter.edit_original_message("수수료 설정 완료")
 
@@ -188,7 +195,7 @@ async def storage(inter: interType, user: User):
   _ = await inter.edit_original_message(f"현금: {money.money}\n{'\n'.join(contents)}")
 
 @bot.slash_command(name="은행")
-async def bank():
+async def bank(_: interType):
   pass
 
 @bank.sub_command(name="입금", description="은행에 돈을 입금함") # pyright: ignore[reportUnknownMemberType]
@@ -217,7 +224,7 @@ async def bank_withdraw(inter: interType, bank_name: str, amount: int):
     sender=bank.id,
     amount=amount,
     sender_money=bank.money - amount,
-    receiver_money=money + amount - int(amount / 100 * config.fee.receive)
+    receiver_money=money + amount - int(amount / 100 * config.fees.receive)
   )
   _ = await inter.edit_original_message("출금 완료")
 
@@ -248,8 +255,8 @@ async def bank_loan_create(
   bank_name: str,
   name: str,
   min_trust: int,
-  interest: Annotated[int, Param(ge=-1)],
-  end_date: Annotated[int, Param(ge=0)]
+  interest: int = Param(ge=-1), # pyright: ignore[reportCallInDefaultInitializer]
+  end_date: int = Param(ge=0) # pyright: ignore[reportCallInDefaultInitializer]
 ):
   await inter.response.defer(ephemeral=True)
   if not verify_none(await is_bank_owner(db, name=bank_name, ownerid=inter.author.id)):
@@ -281,7 +288,7 @@ async def bank_loan_check(inter: interType, bank_name: str):
         f"<t:{int(i.date.timestamp())}:R>",
         str(i.amount),
         f"{i.product.interest}%",
-        f"<@{verify_none(await get_user(db, id=i.receiver)).userid}>"
+        f"<@{verify_none(await get_user_by_uuid(db, id=i.receiver)).userid}>"
       ])
     )
   _ = await inter.edit_original_message(content=f"상품 이름,만기일,돈,이자율,유저\n{'\n'.join(contents)}")
@@ -290,9 +297,9 @@ async def bank_loan_check(inter: interType, bank_name: str):
 async def bank_send(
     inter: interType,
     bank_name: str,
-    amount: Annotated[int, Param(ge=100)],
-    destination_user: Annotated[User | None, Param(description="송금할 유저(은행이나 유저 둘 중 하나만 설정해야함)")],
-    destination_bank: Annotated[str | None, Param(description="송금할 은행(은행이나 유저 둘 중 하나만 설정해야함)")]
+    amount: int = Param(ge=100), # pyright: ignore[reportCallInDefaultInitializer]
+    destination_user: User | None = Param(description="송금할 유저(은행이나 유저 둘 중 하나만 설정해야함)"), # pyright: ignore[reportCallInDefaultInitializer]
+    destination_bank: str | None = Param(description="송금할 은행(은행이나 유저 둘 중 하나만 설정해야함)") # pyright: ignore[reportCallInDefaultInitializer]
   ):
   await inter.response.defer(ephemeral=True)
   if not verify_none(await is_bank_owner(db, name=bank_name, ownerid=inter.author.id)):
@@ -311,7 +318,7 @@ async def bank_send(
       sender_money=sender.money - amount,
       receiver_money=verify_none(
         await get_money(db, userid=destination_user.id)
-      ) + amount - int(amount / 100 * config.fee.bank.send)
+      ) + amount - int(amount / 100 * config.fees.bank.send)
     )
   elif destination_bank is not None:
     receiver = verify_none(await get_bank(db, name=destination_bank))
@@ -321,7 +328,7 @@ async def bank_send(
       sender=sender.id,
       amount=amount,
       sender_money=sender.money - amount,
-      receiver_money=receiver.money + amount - int(amount / 100 * config.fee.bank.send)
+      receiver_money=receiver.money + amount - int(amount / 100 * config.fees.bank.send)
     )
   else:
     raise ValueError("Unreachable")
@@ -336,7 +343,7 @@ async def bank_credit(inter: interType, user: User):
   _ = await inter.edit_original_message(str(verify_none(await get_credit(db, userid=user.id))))
 
 @bot.slash_command(name="신용도")
-async def credit():
+async def credit(_: interType):
   pass
 
 @credit.sub_command(name="설정", description="신용도를 설정함") # pyright: ignore[reportUnknownMemberType]
@@ -347,12 +354,12 @@ async def credit_setting(inter: interType, user: User, credit: int):
   _ = await inter.edit_original_message("신용도 설정 완료")
 
 @credit.sub_command(name="확인", description="신용도를 확인함") # pyright: ignore[reportUnknownMemberType]
-async def credit_check(inter: interType, user: User):
+async def credit_check(inter: interType):
   await inter.response.defer(ephemeral=True)
-  _ = await inter.edit_original_message(str(verify_none(await get_credit(db, userid=user.id))))
+  _ = await inter.edit_original_message(str(verify_none(await get_credit(db, userid=inter.author.id))))
 
 @bot.slash_command(name="대출")
-async def loan():
+async def loan(_: interType):
   pass
 
 @loan.sub_command(name="리셋", description="대출 기록을 리셋함") # pyright: ignore[reportUnknownMemberType]
@@ -370,10 +377,10 @@ async def loan_check(inter: interType):
     contents.append(
       f"{i.product.name},{i.amount}원"
     )
-  _ = await inter.edit_original_message(content="상품 이름,갚을 돈\n".join(contents))
+  _ = await inter.edit_original_message(content=f"상품 이름,갚을 돈\n{'\n'.join(contents)}")
 
 @loan.sub_command(name="시작", description="대출을 시작함") # pyright: ignore[reportUnknownMemberType]
-async def loan_start(inter: interType, product_name: str, bank_name: str, amount: Annotated[int, Param(ge=100)]):
+async def loan_start(inter: interType, product_name: str, bank_name: str, amount: int = Param(ge=100)): # pyright: ignore[reportCallInDefaultInitializer]
   await inter.response.defer(ephemeral=True)
   product = verify_none(await get_product(db, bank_name=bank_name, name=product_name))
   _ = await add_loan(
@@ -383,21 +390,22 @@ async def loan_start(inter: interType, product_name: str, bank_name: str, amount
     bank_money=verify_none(await get_bank(db, name=bank_name)).money - amount,
     amount=amount + int(amount / 100 * product.interest),
     receiver_id=inter.author.id,
-    receiver_money=verify_none(await get_money(db, userid=inter.author.id)) + amount - int(amount / 100 * config.fee.borrow.send),
-    date=datetime.now() + timedelta(product.end_date)
+    receiver_money=verify_none(await get_money(db, userid=inter.author.id)) + amount - int(amount / 100 * config.fees.borrow.send),
+    date=datetime.now(UTC) + timedelta(product.end_date)
   )
+  _ = await inter.edit_original_message("대출 완료")
 
 @loan.sub_command(name="갚기", description="대출을 갚음") # pyright: ignore[reportUnknownMemberType]
-async def loan_pay(inter: interType, product_name: str, bank_name: str, amount: Annotated[int, Param(ge=100)]):
+async def loan_pay(inter: interType, product_name: str, bank_name: str, amount: int = Param(ge=100)): # # pyright: ignore[reportCallInDefaultInitializer]
   await inter.response.defer(ephemeral=True)
   _ = await pay_loan(
     db,
     bank_name=bank_name,
     product_name=product_name,
-    amount=amount - int(amount / 100 * config.fee.borrow.receive),
+    amount=amount,
     receiver_id=inter.author.id,
     receiver_money=verify_none(await get_money(db, userid=inter.author.id)) + amount,
-    bank_money=verify_none(await get_bank(db, name=bank_name)).money + amount - int(amount / 100 * config.fee.borrow.receive)
+    bank_money=verify_none(await get_bank(db, name=bank_name)).money + amount - int(amount / 100 * config.fees.borrow.receive)
   )
   _ = await inter.edit_original_message("대출 갚기 완료")
 
