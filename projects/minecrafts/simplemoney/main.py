@@ -328,8 +328,14 @@ async def bank_send(
     inter: interType,
     bank_name: str,
     amount: int,
-    destination_user: User | None = Param(description="송금할 유저(은행이나 유저 둘 중 하나만 설정해야함)"), # pyright: ignore[reportCallInDefaultInitializer]
-    destination_bank: str | None = Param(description="송금할 은행(은행이나 유저 둘 중 하나만 설정해야함)") # pyright: ignore[reportCallInDefaultInitializer]
+    destination_user: User | None = Param(
+      description="송금할 유저(은행이나 유저 둘 중 하나만 설정해야함)",
+      default=None
+    ), # pyright: ignore[reportCallInDefaultInitializer]
+    destination_bank: str | None = Param(
+      description="송금할 은행(은행이나 유저 둘 중 하나만 설정해야함)",
+      default=None
+    ) # pyright: ignore[reportCallInDefaultInitializer]
   ):
   await inter.response.defer(ephemeral=True)
   if not verify_none(await is_bank_owner(db, name=bank_name, ownerid=inter.author.id)):
