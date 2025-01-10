@@ -8,8 +8,7 @@ from datetime import datetime
 
 from disnake import ApplicationCommandInteraction, User
 from disnake.errors import InteractionResponded
-from disnake.ext.commands import CommandInvokeError, InteractionBot, Param, has_guild_permissions
-from disnake.ext.commands.errors import NotOwner
+from disnake.ext.commands import CommandInvokeError, InteractionBot, MissingPermissions, Param, has_guild_permissions
 from disnake.ext.tasks import loop
 from edgedb import create_async_client  # pyright: ignore[reportUnknownVariableType]
 from tomli import loads
@@ -81,10 +80,10 @@ async def on_ready():
 async def on_slash_command_error(ctx: interType, error: CommandInvokeError):
   with suppress(InteractionResponded):
     await ctx.response.defer(ephemeral=True)
-  err = error.original
-  if isinstance(err, NotOwner):
-    _ = await ctx.edit_original_message("you are not owner :skull:")
+  if isinstance(error, MissingPermissions):
+    _ = await ctx.edit_original_message("you don't have permission")
     return
+  err = error.original
   if isinstance(err, ValueNoneError) and err.message != "it's None":
     _ = await ctx.edit_original_message(err.message)
     return
