@@ -325,18 +325,18 @@ async def bank_loan_check(inter: interType, bank_name: str):
 
 @bank.sub_command(name="송금", description="은행 돈을 다른 곳으로 송금") # pyright: ignore[reportUnknownMemberType]
 async def bank_send(
-    inter: interType,
-    bank_name: str,
-    amount: int,
-    destination_user: User | None = Param(
-      description="송금할 유저(은행이나 유저 둘 중 하나만 설정해야함)",
-      default=None
-    ), # pyright: ignore[reportCallInDefaultInitializer]
-    destination_bank: str | None = Param(
-      description="송금할 은행(은행이나 유저 둘 중 하나만 설정해야함)",
-      default=None
-    ) # pyright: ignore[reportCallInDefaultInitializer]
-  ):
+  inter: interType,
+  bank_name: str,
+  amount: int,
+  destination_user: User | None = Param(
+    description="송금할 유저(은행이나 유저 둘 중 하나만 설정해야함)",
+    default=None
+  ), # pyright: ignore[reportCallInDefaultInitializer]
+  destination_bank: str | None = Param(
+    description="송금할 은행(은행이나 유저 둘 중 하나만 설정해야함)",
+    default=None
+  ) # pyright: ignore[reportCallInDefaultInitializer]
+):
   await inter.response.defer(ephemeral=True)
   if not verify_none(await is_bank_owner(db, name=bank_name, ownerid=inter.author.id)):
     _ = await inter.edit_original_message("은행의 소유자가 아닙니다.")
@@ -344,7 +344,7 @@ async def bank_send(
   if [destination_bank, destination_user].count(None) != 1:
     _ = await inter.edit_original_message("도착지가 한 개가 아닙니다.")
     return
-  sender = verify_none(await get_bank(db, name=bank.name))
+  sender = verify_none(await get_bank(db, name=bank_name))
   if destination_user is not None:
     _ = await send_to_user(
       db,
