@@ -18,10 +18,10 @@ async def delete_product(
     *,
     bank_name: str,
     name: str,
-) -> DeleteProductResult | None:
-    return await executor.query_single(
+) -> list[DeleteProductResult]:
+    return await executor.query(
         """\
-        delete (select Bank {products: {name}} filter .name = <str>$bank_name and .products.name = <str>$name)\
+        delete ((select Bank {products: {name}} filter .name = <str>$bank_name and .products.name = <str>$name).products)\
         """,
         bank_name=bank_name,
         name=name,

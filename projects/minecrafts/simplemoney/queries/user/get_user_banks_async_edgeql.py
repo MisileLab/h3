@@ -13,13 +13,14 @@ class GetUserBanksResult:
     id: uuid.UUID
     banks: list[GetUserBanksResultBanksItem]
     money: int
+    credit: int
 
 
 @dataclasses.dataclass
 class GetUserBanksResultBanksItem:
     id: uuid.UUID
     amount: int
-    sender: uuid.UUID
+    receiver: uuid.UUID
 
 
 async def get_user_banks(
@@ -33,7 +34,7 @@ async def get_user_banks(
           credit := 0,
           userid := <int64>$userid
         } unless conflict on .userid;
-        select (select User { banks: {amount, sender}, money } filter .userid = <int64>$userid);\
+        select (select User { banks: {amount, receiver}, money, credit } filter .userid = <int64>$userid);\
         """,
         userid=userid,
     )

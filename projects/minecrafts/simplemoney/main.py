@@ -1,13 +1,14 @@
 from contextlib import suppress
 from datetime import UTC, timedelta
+from math import ceil
 from pathlib import Path
 from traceback import print_exception
-from typing import Any
+from typing import Any, final
 from datetime import datetime
 
 from disnake import ApplicationCommandInteraction, User
 from disnake.errors import InteractionResponded
-from disnake.ext.commands import InteractionBot, Param, is_owner
+from disnake.ext.commands import CommandInvokeError, InteractionBot, Param, has_guild_permissions
 from disnake.ext.commands.errors import NotOwner
 from disnake.ext.tasks import loop
 from edgedb import create_async_client  # pyright: ignore[reportUnknownVariableType]
@@ -21,6 +22,7 @@ from queries.bank.is_bank_owner_async_edgeql import is_bank_owner
 from queries.bank.modify_bank_async_edgeql import modify_bank
 from queries.bank.send_to_user_async_edgeql import send_to_user
 from queries.bank.send_to_bank_async_edgeql import send_to_bank
+from queries.bank.get_bank_products_async_edgeql import get_bank_products
 from queries.products.get_product_async_edgeql import get_product
 from queries.products.add_product_async_edgeql import add_product
 from queries.products.delete_product_async_edgeql import delete_product
@@ -31,6 +33,7 @@ from queries.loan.refresh_loan_async_edgeql import refresh_loan
 from queries.loan.reset_loan_async_edgeql import reset_loan
 from queries.loan.get_loan_bank_async_edgeql import get_loan_bank
 from queries.loan.get_loan_user_async_edgeql import get_loan_user
+from queries.loan.get_loan_amount_async_edgeql import get_loan_amount
 from queries.loan.add_loan_async_edgeql import add_loan
 from queries.loan.pay_loan_async_edgeql import pay_loan
 from queries.money.set_money_async_edgeql import set_money
@@ -59,28 +62,38 @@ class Config(BaseModel):
 
 db = create_async_client()
 bot = InteractionBot(
-  owner_ids={735677489958879324, 338902243476635650},
+  owner_ids={735677489958879324},
   test_guilds=[1322924155640877056]
 )
 config = Config.model_validate(loads(Path("./config_prod.toml").read_text()))
+
+@final
+class ValueNoneError(Exception):
+  def __init__(self, message: str):
+    super().__init__(message)
+    self.message = message
 
 @bot.event
 async def on_ready():
   print("ready")
 
 @bot.event
-async def on_slash_command_error(ctx: interType, error: Exception):
+async def on_slash_command_error(ctx: interType, error: CommandInvokeError):
   with suppress(InteractionResponded):
     await ctx.response.defer(ephemeral=True)
-  if isinstance(error, NotOwner):
+  err = error.original
+  if isinstance(err, NotOwner):
     _ = await ctx.edit_original_message("you are not owner :skull:")
+    return
+  if isinstance(err, ValueNoneError) and err.message != "it's None":
+    _ = await ctx.edit_original_message(err.message)
     return
   print_exception(error)
   _ = await ctx.edit_original_message("error (probably you are wrong)")
 
-def verify_none[T](v: T | None) -> T:
+def verify_none[T](v: T | None, message: str = "it's None") -> T:
   if v is None:
-    raise TypeError("it's None")
+    raise ValueNoneError(message)
   return v
 
 @loop(seconds=1)
@@ -91,7 +104,7 @@ async def loan_refresh():
       db,
       date=i.date + timedelta(i.product.end_date),
       id=i.id,
-      amount=i.amount + int((i.amount / 100) * i.product.interest),
+      amount=i.amount + ceil((i.amount / 100) * i.product.interest),
       credit=receiver.credit - 1,
       userid=i.receiver
     )
@@ -103,7 +116,7 @@ async def money(inter: interType):
   money = verify_none(await get_user_banks(db, userid=inter.author.id))
   contents: list[str] = []
   for i in money.banks:
-    bank = verify_none(await get_bank_by_id(db, id=i.sender))
+    bank = verify_none(await get_bank_by_id(db, id=i.receiver))
     contents.append(f"{bank.name}: {i.amount}")
   _ = await inter.edit_original_message(f"현금: {money.money}\n{'\n'.join(contents)}")
 
@@ -118,7 +131,7 @@ async def send_money(inter: interType, user: User, amount: int):
     senderid=inter.author.id,
     amount=amount,
     sender_money=sender_money - amount,
-    receiver_money=receiver_money + amount - int(amount / 100 * config.fees.send)
+    receiver_money=receiver_money + amount - ceil(amount / 100 * config.fees.send)
   )
   _ = await inter.edit_original_message("송금 완료")
 
@@ -126,7 +139,7 @@ async def send_money(inter: interType, user: User, amount: int):
   name="지급",
   description="화폐를 지급하거나 제거함"
 )
-@is_owner()
+@has_guild_permissions(administrator=True)
 async def give(inter: interType, user: User, amount: int):
   await inter.response.defer(ephemeral=True)
   money = verify_none(await get_money(db, userid=user.id))
@@ -140,7 +153,7 @@ async def give(inter: interType, user: User, amount: int):
   name="수수료",
   description="수수료를 설정함"
 )
-@is_owner()
+@has_guild_permissions(administrator=True)
 async def fee(
   inter: interType,
   send_fee: int = Param(
@@ -184,13 +197,13 @@ async def fee(
   _ = await inter.edit_original_message("수수료 설정 완료")
 
 @bot.slash_command(name="잔고", description="잔고를 확인함")
-@is_owner()
+@has_guild_permissions(administrator=True)
 async def storage(inter: interType, user: User):
   await inter.response.defer(ephemeral=True)
   money = verify_none(await get_user_banks(db, userid=user.id))
   contents: list[str] = []
   for i in money.banks:
-    bank = verify_none(await get_bank_by_id(db, id=i.sender))
+    bank = verify_none(await get_bank_by_id(db, id=i.receiver))
     contents.append(f"{bank.name}: {i.amount}")
   _ = await inter.edit_original_message(f"현금: {money.money}\n{'\n'.join(contents)}")
 
@@ -198,25 +211,34 @@ async def storage(inter: interType, user: User):
 async def bank(_: interType):
   pass
 
+@bank.sub_command(name="잔고", description="은행의 잔고를 확인함") # pyright: ignore[reportUnknownMemberType]
+async def bank_balance(inter: interType, bank_name: str):
+  await inter.response.defer(ephemeral=True)
+  if not verify_none(await is_bank_owner(db, name=bank_name, ownerid=inter.author.id)):
+    _ = await inter.edit_original_message("은행의 소유자가 아닙니다.")
+    return
+  bank = verify_none(await get_bank(db, name=bank_name))
+  _ = await inter.edit_original_message(str(bank.money))
+
 @bank.sub_command(name="입금", description="은행에 돈을 입금함") # pyright: ignore[reportUnknownMemberType]
 async def bank_deposit(inter: interType, bank_name: str, amount: int):
   await inter.response.defer(ephemeral=True)
   bank = verify_none(await get_bank(db, name=bank_name))
-  money = verify_none(await get_money(db, userid=inter.author.id))
   _ = await deposit_to_bank(
     db,
     receiver=bank.id,
     senderid=inter.author.id,
-    amount=amount,
-    sender_money=money - amount,
-    receiver_money=money + amount
+    amount=amount
   )
   _ = await inter.edit_original_message("입금 완료")
 
 @bank.sub_command(name="출금", description="은행에서 돈을 출금함") # pyright: ignore[reportUnknownMemberType]
 async def bank_withdraw(inter: interType, bank_name: str, amount: int):
   await inter.response.defer(ephemeral=True)
-  bank = verify_none(await get_bank(db, name=bank_name))
+  bank = verify_none(
+    await get_bank(db, name=bank_name),
+    "은행이 존재하지 않습니다."
+  )
   money = verify_none(await get_money(db, userid=inter.author.id))
   _ = await send_to_user(
     db,
@@ -224,12 +246,12 @@ async def bank_withdraw(inter: interType, bank_name: str, amount: int):
     sender=bank.id,
     amount=amount,
     sender_money=bank.money - amount,
-    receiver_money=money + amount - int(amount / 100 * config.fees.receive)
+    receiver_money=money + amount - ceil(amount / 100 * config.fees.receive)
   )
   _ = await inter.edit_original_message("출금 완료")
 
 @bank.sub_command(name="설정", description="은행을 설정함 (없을 경우 추가, 이름은 변경 불가능함)") # pyright: ignore[reportUnknownMemberType]
-@is_owner()
+@has_guild_permissions(administrator=True)
 async def bank_setting(
   inter: interType,
   name: str,
@@ -254,15 +276,24 @@ async def bank_loan_create(
   inter: interType,
   bank_name: str,
   name: str,
-  min_trust: int,
-  interest: int = Param(ge=-1), # pyright: ignore[reportCallInDefaultInitializer]
-  end_date: int = Param(ge=0) # pyright: ignore[reportCallInDefaultInitializer]
+  min_trust: int = Param(description="최소 신용도"), # pyright: ignore[reportCallInDefaultInitializer]
+  interest: int = Param(ge=-1, description="이자, 단위: 퍼센트"), # pyright: ignore[reportCallInDefaultInitializer]
+  end_date: int = Param(ge=0, description="단위: 일"), # pyright: ignore[reportCallInDefaultInitializer]
+  max_amount: int = Param(ge=0, description="최대 대출 가능 금액") # pyright: ignore[reportCallInDefaultInitializer]
 ):
   await inter.response.defer(ephemeral=True)
   if not verify_none(await is_bank_owner(db, name=bank_name, ownerid=inter.author.id)):
     _ = await inter.edit_original_message("은행의 소유자가 아닙니다.")
     return
-  _ = await add_product(db, bank_name=bank_name, name=name, min_trust=min_trust, end_date=end_date, interest=interest)
+  _ = await add_product(
+    db,
+    bank_name=bank_name,
+    name=name,
+    min_trust=min_trust,
+    end_date=end_date,
+    interest=interest,
+    max_amount=max_amount
+  )
   _ = await inter.edit_original_message("상품 생성 완료")
 
 @bank.sub_command(name="대출삭제", description="은행에서 대출 상품 삭제함") # pyright: ignore[reportUnknownMemberType]
@@ -271,7 +302,7 @@ async def bank_loan_delete(inter: interType, bank_name: str, name: str):
   if not verify_none(await is_bank_owner(db, name=bank_name, ownerid=inter.author.id)):
     _ = await inter.edit_original_message("은행의 소유자가 아닙니다.")
     return
-  _ = delete_product(db, bank_name=bank_name, name=name)
+  _ = await delete_product(db, bank_name=bank_name, name=name)
   _ = await inter.edit_original_message("상품 삭제 완료")
 
 @bank.sub_command(name="대출확인", description="진행중인 대출 확인") # pyright: ignore[reportUnknownMemberType]
@@ -297,7 +328,7 @@ async def bank_loan_check(inter: interType, bank_name: str):
 async def bank_send(
     inter: interType,
     bank_name: str,
-    amount: int = Param(ge=100), # pyright: ignore[reportCallInDefaultInitializer]
+    amount: int,
     destination_user: User | None = Param(description="송금할 유저(은행이나 유저 둘 중 하나만 설정해야함)"), # pyright: ignore[reportCallInDefaultInitializer]
     destination_bank: str | None = Param(description="송금할 은행(은행이나 유저 둘 중 하나만 설정해야함)") # pyright: ignore[reportCallInDefaultInitializer]
   ):
@@ -318,7 +349,7 @@ async def bank_send(
       sender_money=sender.money - amount,
       receiver_money=verify_none(
         await get_money(db, userid=destination_user.id)
-      ) + amount - int(amount / 100 * config.fees.bank.send)
+      ) + amount - ceil(amount / 100 * config.fees.bank.send)
     )
   elif destination_bank is not None:
     receiver = verify_none(await get_bank(db, name=destination_bank))
@@ -328,7 +359,7 @@ async def bank_send(
       sender=sender.id,
       amount=amount,
       sender_money=sender.money - amount,
-      receiver_money=receiver.money + amount - int(amount / 100 * config.fees.bank.send)
+      receiver_money=receiver.money + amount - ceil(amount / 100 * config.fees.bank.send)
     )
   else:
     raise ValueError("Unreachable")
@@ -347,7 +378,7 @@ async def credit(_: interType):
   pass
 
 @credit.sub_command(name="설정", description="신용도를 설정함") # pyright: ignore[reportUnknownMemberType]
-@is_owner()
+@has_guild_permissions(administrator=True)
 async def credit_setting(inter: interType, user: User, credit: int):
   await inter.response.defer(ephemeral=True)
   _ = await set_credit(db, userid=user.id, credit=credit)
@@ -362,8 +393,18 @@ async def credit_check(inter: interType):
 async def loan(_: interType):
   pass
 
+@loan.sub_command(name="상품목록", description="대출 상품 목록을 확인함") # pyright: ignore[reportUnknownMemberType]
+async def loan_product(inter: interType, bank_name: str):
+  await inter.response.defer(ephemeral=True)
+  contents: list[str] = []
+  for i in verify_none(await get_bank_products(db, name=bank_name)).products:
+    contents.append(
+      f"{i.name},{i.min_trust},{i.interest}%,{i.end_date}일,{i.max_amount}"
+    )
+  _ = await inter.edit_original_message(content=f"상품 이름,신용도,이자율,만기일,최대 대출가능한 돈\n{'\n'.join(contents)}")
+
 @loan.sub_command(name="리셋", description="대출 기록을 리셋함") # pyright: ignore[reportUnknownMemberType]
-@is_owner()
+@has_guild_permissions(administrator=True)
 async def loan_reset(inter: interType, user: User):
   await inter.response.defer(ephemeral=True)
   _ = await reset_loan(db, userid=user.id)
@@ -377,27 +418,47 @@ async def loan_check(inter: interType):
     contents.append(
       f"{i.product.name},{i.amount}원"
     )
+  if len(contents) == 0:
+    _ = await inter.edit_original_message("대출한 것이 없습니다.")
   _ = await inter.edit_original_message(content=f"상품 이름,갚을 돈\n{'\n'.join(contents)}")
 
 @loan.sub_command(name="시작", description="대출을 시작함") # pyright: ignore[reportUnknownMemberType]
-async def loan_start(inter: interType, product_name: str, bank_name: str, amount: int = Param(ge=100)): # pyright: ignore[reportCallInDefaultInitializer]
+async def loan_start(inter: interType, product_name: str, bank_name: str, amount: int):
   await inter.response.defer(ephemeral=True)
-  product = verify_none(await get_product(db, bank_name=bank_name, name=product_name))
+  product = verify_none(
+    await get_product(db, bank_name=bank_name, name=product_name),
+    "그런 상품이 없습니다."
+  )
+  user = verify_none(await get_user_banks(db, userid=inter.author.id))
+  res = await get_loan_amount(
+      db,
+      userid=inter.author.id,
+      sender=verify_none(await get_bank(db, name=bank_name)).id,
+      product_name=product_name
+    )
+  loan = 0 if res is None else res.amount
+  if user.credit < product.min_trust:
+    _ = await inter.edit_original_message("신용도가 부족합니다.")
+    return
+  if amount + loan > product.max_amount:
+    _ = await inter.edit_original_message("최대 대출 가능 금액을 초과했습니다.")
+    return
   _ = await add_loan(
     db,
     product_id=product.id,
     bank_name=bank_name,
     bank_money=verify_none(await get_bank(db, name=bank_name)).money - amount,
-    amount=amount + int(amount / 100 * product.interest),
+    amount=amount + ceil(amount / 100 * product.interest),
     receiver_id=inter.author.id,
-    receiver_money=verify_none(await get_money(db, userid=inter.author.id)) + amount - int(amount / 100 * config.fees.borrow.send),
+    receiver_money=verify_none(await get_money(db, userid=inter.author.id)) + amount - ceil(amount / 100 * config.fees.borrow.send),
     date=datetime.now(UTC) + timedelta(product.end_date)
   )
   _ = await inter.edit_original_message("대출 완료")
 
 @loan.sub_command(name="갚기", description="대출을 갚음") # pyright: ignore[reportUnknownMemberType]
-async def loan_pay(inter: interType, product_name: str, bank_name: str, amount: int = Param(ge=100)): # # pyright: ignore[reportCallInDefaultInitializer]
+async def loan_pay(inter: interType, product_name: str, bank_name: str, amount: int):
   await inter.response.defer(ephemeral=True)
+  amount -= ceil(amount / 100 * config.fees.borrow.receive)
   _ = await pay_loan(
     db,
     bank_name=bank_name,
@@ -405,7 +466,7 @@ async def loan_pay(inter: interType, product_name: str, bank_name: str, amount: 
     amount=amount,
     receiver_id=inter.author.id,
     receiver_money=verify_none(await get_money(db, userid=inter.author.id)) + amount,
-    bank_money=verify_none(await get_bank(db, name=bank_name)).money + amount - int(amount / 100 * config.fees.borrow.receive)
+    bank_money=verify_none(await get_bank(db, name=bank_name)).money + amount
   )
   _ = await inter.edit_original_message("대출 갚기 완료")
 

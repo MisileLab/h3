@@ -20,6 +20,7 @@ async def add_product(
     interest: int,
     min_trust: int,
     end_date: int,
+    max_amount: int,
     bank_name: str,
 ) -> AddProductResult | None:
     return await executor.query_single(
@@ -29,7 +30,8 @@ async def add_product(
             name := <str>$name,
             interest := <int64>$interest,
             min_trust := <int64>$min_trust,
-            end_date := <int64>$end_date
+            end_date := <int64>$end_date,
+            max_amount := <int64>$max_amount
           })
         }\
         """,
@@ -37,5 +39,6 @@ async def add_product(
         interest=interest,
         min_trust=min_trust,
         end_date=end_date,
+        max_amount=max_amount,
         bank_name=bank_name,
     )

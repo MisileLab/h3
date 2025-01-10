@@ -13,7 +13,9 @@ module default {
       default := 0;
     };
     multi transactions: Data;
-    multi banks: Data;
+    multi banks: Data {
+      on target delete allow;
+    };
     multi loans: Loan {
       on target delete allow;
     };
@@ -54,6 +56,9 @@ module default {
     required name: str {
       constraint exclusive;
     };
+    required max_amount: int64 {
+      constraint min_value(0);
+    }
     required interest: int64 {
       constraint min_value(0);
     };

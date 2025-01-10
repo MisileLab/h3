@@ -1,1 +1,1 @@
-delete (select Bank {products: {name}} filter .name = <str>$bank_name and .products.name = <str>$name)
+delete ((select Bank {products: {name}} filter .name = <str>$bank_name and .products.name = <str>$name).products)
