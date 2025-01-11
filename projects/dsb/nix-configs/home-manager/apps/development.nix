@@ -1,4 +1,4 @@
-{pkgs, config, ...}:
+{pkgs, stablep, config, ...}:
 {
   home = {
     sessionVariables = {
@@ -13,7 +13,7 @@
 
       # Language tools
       ghc cabal-install
-      rustup cargo-update
+      (stablep.rustup) cargo-update
       python313Full uv mypy
       nasm
       deno
