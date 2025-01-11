@@ -15,35 +15,18 @@ from tomli import loads
 from tomli_w import dumps
 from pydantic import BaseModel
 
-from queries.bank.get_bank_async_edgeql import get_bank
-from queries.bank.get_bank_by_id_async_edgeql import get_bank_by_id
-from queries.bank.get_bank_id_async_edgeql import get_bank_id
-from queries.bank.get_bank_money_async_edgeql import get_bank_money
-from queries.bank.is_bank_owner_async_edgeql import is_bank_owner
-from queries.bank.modify_bank_async_edgeql import modify_bank
-from queries.bank.send_to_user_async_edgeql import send_to_user
-from queries.bank.send_to_bank_async_edgeql import send_to_bank
-from queries.bank.get_bank_products_async_edgeql import get_bank_products
-from queries.products.get_product_async_edgeql import get_product
-from queries.products.add_product_async_edgeql import add_product
-from queries.products.delete_product_async_edgeql import delete_product
-from queries.credit.get_credit_async_edgeql import get_credit
-from queries.credit.set_credit_async_edgeql import set_credit
-from queries.loan.get_loan_expired_async_edgeql import get_loan_expired
-from queries.loan.refresh_loan_async_edgeql import refresh_loan
-from queries.loan.reset_loan_async_edgeql import reset_loan
-from queries.loan.get_loan_bank_async_edgeql import get_loan_bank
-from queries.loan.get_loan_user_async_edgeql import get_loan_user
-from queries.loan.get_loan_amount_async_edgeql import get_loan_amount
-from queries.loan.add_loan_async_edgeql import add_loan
-from queries.loan.pay_loan_async_edgeql import pay_loan
-from queries.money.set_money_async_edgeql import set_money
-from queries.money.get_money_async_edgeql import get_money
-from queries.user.get_user_banks_async_edgeql import get_user_banks
-from queries.user.is_any_bank_owner_async_edgeql import is_any_bank_owner
-from queries.user.deposit_to_bank_async_edgeql import deposit_to_bank
-from queries.user.send_async_edgeql import send
-from queries.user.get_user_by_uuid_async_edgeql import get_user_by_uuid
+from queries.bank import get_bank, get_bank_by_id, get_bank_money, get_bank_id, get_bank_products
+from queries.bank import is_bank_owner, modify_bank
+from queries.bank import send_to_user, send_to_bank
+from queries.products import get_product, add_product, delete_product
+from queries.credit import get_credit, set_credit
+from queries.loan import get_loan_bank, get_loan_user, get_loan_amount, get_loan_expired
+from queries.loan import add_loan, pay_loan, reset_loan
+from queries.loan import refresh_loan
+from queries.money import get_money, set_money
+from queries.user import get_user_banks, get_user_by_uuid
+from queries.user import is_any_bank_owner
+from queries.user import deposit_to_bank, send
 
 type interType = ApplicationCommandInteraction[Any] # pyright: ignore[reportExplicitAny]
 
