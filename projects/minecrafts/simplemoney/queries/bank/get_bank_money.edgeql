@@ -1,0 +1,1 @@
+select Bank {money} filter .name = <str>$name;

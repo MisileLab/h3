@@ -17,6 +17,8 @@ from pydantic import BaseModel
 
 from queries.bank.get_bank_async_edgeql import get_bank
 from queries.bank.get_bank_by_id_async_edgeql import get_bank_by_id
+from queries.bank.get_bank_id_async_edgeql import get_bank_id
+from queries.bank.get_bank_money_async_edgeql import get_bank_money
 from queries.bank.is_bank_owner_async_edgeql import is_bank_owner
 from queries.bank.modify_bank_async_edgeql import modify_bank
 from queries.bank.send_to_user_async_edgeql import send_to_user
@@ -122,15 +124,19 @@ async def money(inter: interType):
 @bot.slash_command(name="송금", description="돈을 다른 유저에게 송금함")
 async def send_money(inter: interType, user: User, amount: int):
   await inter.response.defer(ephemeral=True)
-  sender_money = verify_none(await get_money(db, userid=inter.author.id))
-  receiver_money = verify_none(await get_money(db, userid=user.id))
+  sender_money = verify_none(
+    await get_money(db, userid=inter.author.id),
+    "유저가 등록되지 않았습니다. /보유량을 사용해서 등록해주세요."
+  )
+  if sender_money < amount:
+    _ = await inter.edit_original_message("돈이 부족합니다.")
+    return
   _ = await send(
     db,
     receiverid=user.id,
     senderid=inter.author.id,
     amount=amount,
-    sender_money=sender_money - amount,
-    receiver_money=receiver_money + amount - ceil(amount / 100 * config.fees.send)
+    fee=config.fees.send
   )
   _ = await inter.edit_original_message("송금 완료")
 
@@ -141,7 +147,10 @@ async def send_money(inter: interType, user: User, amount: int):
 @has_guild_permissions(administrator=True)
 async def give(inter: interType, user: User, amount: int):
   await inter.response.defer(ephemeral=True)
-  money = verify_none(await get_money(db, userid=user.id))
+  money = verify_none(
+    await get_money(db, userid=user.id),
+    "유저가 등록되지 않았습니다."
+  )
   if money + amount < 0:
     _ = await inter.edit_original_message("지급 결과가 0 미만입니다.")
     return
@@ -222,7 +231,7 @@ async def bank_balance(inter: interType, bank_name: str):
 @bank.sub_command(name="입금", description="은행에 돈을 입금함") # pyright: ignore[reportUnknownMemberType]
 async def bank_deposit(inter: interType, bank_name: str, amount: int):
   await inter.response.defer(ephemeral=True)
-  bank = verify_none(await get_bank(db, name=bank_name))
+  bank = verify_none(await get_bank_id(db, name=bank_name))
   _ = await deposit_to_bank(
     db,
     receiver=bank.id,
@@ -235,19 +244,19 @@ async def bank_deposit(inter: interType, bank_name: str, amount: int):
 async def bank_withdraw(inter: interType, bank_name: str, amount: int):
   await inter.response.defer(ephemeral=True)
   bank = verify_none(
-    await get_bank(db, name=bank_name),
+    await get_bank_money(db, name=bank_name),
     "은행이 존재하지 않습니다."
   )
-  money = verify_none(await get_money(db, userid=inter.author.id))
   _ = await send_to_user(
     db,
     receiverid=inter.author.id,
     sender=bank.id,
     amount=amount,
-    sender_money=bank.money - amount,
-    receiver_money=money + amount - ceil(amount / 100 * config.fees.receive)
+    fee=config.fees.receive
   )
   _ = await inter.edit_original_message("출금 완료")
+
+# TODO: refactor after this
 
 @bank.sub_command(name="설정", description="은행을 설정함 (없을 경우 추가, 이름은 변경 불가능함)") # pyright: ignore[reportUnknownMemberType]
 @has_guild_permissions(administrator=True)
@@ -351,10 +360,7 @@ async def bank_send(
       receiverid=destination_user.id,
       sender=sender.id,
       amount=amount,
-      sender_money=sender.money - amount,
-      receiver_money=verify_none(
-        await get_money(db, userid=destination_user.id)
-      ) + amount - ceil(amount / 100 * config.fees.bank.send)
+      fee=config.fees.bank.send
     )
   elif destination_bank is not None:
     receiver = verify_none(await get_bank(db, name=destination_bank))
