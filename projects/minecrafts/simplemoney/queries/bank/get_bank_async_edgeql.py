@@ -12,7 +12,6 @@ import uuid
 class GetBankResult:
     id: uuid.UUID
     money: int
-    name: str
     owner: GetBankResultOwner
 
 
@@ -32,7 +31,6 @@ async def get_bank(
         select default::Bank {
           id,
           money,
-          name,
           owner: {userid}
         }
         filter .name = <str>$name\

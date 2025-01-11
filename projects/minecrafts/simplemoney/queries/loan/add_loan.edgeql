@@ -2,13 +2,14 @@ with
   receiver := (select User filter .userid = <int64>$receiver_id),
   sender := (select Bank filter .name = <str>$bank_name),
   product := (select Product filter .id = <uuid>$product_id),
+  computed_amount := (<int64>$amount + <int64>math::ceil(product.interest / 100 * <int64>$amount)),
   exist_loan := (
     update Loan filter .receiver = receiver.id and .sender = sender.id and .product = product set {
-      amount := .amount + <int64>$amount
+      amount := computed_amount,
     }
   ),
   loan := exist_loan ?? (insert Loan {
-    amount := <int64>$amount,
+    amount := computed_amount,
     receiver := receiver.id,
     sender := sender.id,
     product := product,
@@ -21,6 +22,8 @@ with
     loans += loan
   }).loans
 update sender set {
-  money := <int64>$bank_money
+  money := .money - <int64>$amount
 };
-update User filter .userid = <int64>$receiver_id set {money := <int64>$receiver_money};
+update User filter .userid = <int64>$receiver_id set {
+  money := .money + <int64>$amount - <int64>math::ceil(<int64>$amount / 100 * <int64>$fee)
+};

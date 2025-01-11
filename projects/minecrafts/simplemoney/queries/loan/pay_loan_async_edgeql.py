@@ -20,24 +20,25 @@ async def pay_loan(
     bank_name: str,
     product_name: str,
     amount: int,
-    bank_money: int,
-    receiver_money: int,
 ) -> list[PayLoanResult]:
     return await executor.query(
         """\
         with
           receiver := (select User filter .userid = <int64>$receiver_id),
           sender := (select Bank filter .name = <str>$bank_name),
-          loan := (select Loan filter .sender = sender.id and .receiver = receiver.id and .product.name = <str>$product_name),
+          loan := (
+            select Loan
+            filter .sender = sender.id and .receiver = receiver.id and .product.name = <str>$product_name
+          ),
         update loan set {amount := .amount - <int64>$amount};
-        update Bank set {money := <int64>$bank_money};
-        update User filter .userid = <int64>$receiver_id set {money := <int64>$receiver_money};
+        update Bank filter .name = <str>$bank_name set {money := .money + <int64>$amount};
+        update User filter .userid = <int64>$receiver_id set {
+          money := .money - <int64>$amount
+        };
         delete Loan filter .amount = 0;\
         """,
         receiver_id=receiver_id,
         bank_name=bank_name,
         product_name=product_name,
         amount=amount,
-        bank_money=bank_money,
-        receiver_money=receiver_money,
     )

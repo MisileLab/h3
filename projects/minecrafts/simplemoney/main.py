@@ -10,7 +10,7 @@ from disnake import ApplicationCommandInteraction, User
 from disnake.errors import InteractionResponded
 from disnake.ext.commands import CommandInvokeError, InteractionBot, MissingPermissions, Param, has_guild_permissions
 from disnake.ext.tasks import loop
-from edgedb import create_async_client  # pyright: ignore[reportUnknownVariableType]
+from edgedb import ConstraintViolationError, create_async_client  # pyright: ignore[reportUnknownVariableType]
 from tomli import loads
 from tomli_w import dumps
 from pydantic import BaseModel
@@ -256,8 +256,6 @@ async def bank_withdraw(inter: interType, bank_name: str, amount: int):
   )
   _ = await inter.edit_original_message("출금 완료")
 
-# TODO: refactor after this
-
 @bank.sub_command(name="설정", description="은행을 설정함 (없을 경우 추가, 이름은 변경 불가능함)") # pyright: ignore[reportUnknownMemberType]
 @has_guild_permissions(administrator=True)
 async def bank_setting(
@@ -293,15 +291,18 @@ async def bank_loan_create(
   if not verify_none(await is_bank_owner(db, name=bank_name, ownerid=inter.author.id)):
     _ = await inter.edit_original_message("은행의 소유자가 아닙니다.")
     return
-  _ = await add_product(
-    db,
-    bank_name=bank_name,
-    name=name,
-    min_trust=min_trust,
-    end_date=end_date,
-    interest=interest,
-    max_amount=max_amount
-  )
+  try:
+    _ = await add_product(
+      db,
+      bank_name=bank_name,
+      name=name,
+      min_trust=min_trust,
+      end_date=end_date,
+      interest=interest,
+      max_amount=max_amount
+    )
+  except ConstraintViolationError:
+    _ = await inter.edit_original_message("이미 존재하는 상품입니다.")
   _ = await inter.edit_original_message("상품 생성 완료")
 
 @bank.sub_command(name="대출삭제", description="은행에서 대출 상품 삭제함") # pyright: ignore[reportUnknownMemberType]
@@ -310,6 +311,7 @@ async def bank_loan_delete(inter: interType, bank_name: str, name: str):
   if not verify_none(await is_bank_owner(db, name=bank_name, ownerid=inter.author.id)):
     _ = await inter.edit_original_message("은행의 소유자가 아닙니다.")
     return
+  # TODO: proper eror when product has loans or product doesn't exists
   _ = await delete_product(db, bank_name=bank_name, name=name)
   _ = await inter.edit_original_message("상품 삭제 완료")
 
@@ -354,6 +356,11 @@ async def bank_send(
     _ = await inter.edit_original_message("도착지가 한 개가 아닙니다.")
     return
   sender = verify_none(await get_bank(db, name=bank_name))
+  money = verify_none(await get_bank_money(db, name=bank_name)).money
+  if money < amount:
+    _ = await inter.edit_original_message("돈이 부족합니다.")
+    return
+  # TODO: proper error when destination doesn't exists on db
   if destination_user is not None:
     _ = await send_to_user(
       db,
@@ -369,8 +376,7 @@ async def bank_send(
       receiver=receiver.id,
       sender=sender.id,
       amount=amount,
-      sender_money=sender.money - amount,
-      receiver_money=receiver.money + amount - ceil(amount / 100 * config.fees.bank.send)
+      fee=config.fees.bank.send
     )
   else:
     raise ValueError("Unreachable")
@@ -408,7 +414,10 @@ async def loan(_: interType):
 async def loan_product(inter: interType, bank_name: str):
   await inter.response.defer(ephemeral=True)
   contents: list[str] = []
-  for i in verify_none(await get_bank_products(db, name=bank_name)).products:
+  for i in verify_none(
+    await get_bank_products(db, name=bank_name),
+    "은행이 존재하지 않습니다."
+  ).products:
     contents.append(
       f"{i.name},{i.min_trust},{i.interest}%,{i.end_date}일,{i.max_amount}"
     )
@@ -425,7 +434,10 @@ async def loan_reset(inter: interType, user: User):
 async def loan_check(inter: interType):
   await inter.response.defer(ephemeral=True)
   contents: list[str] = []
-  for i in verify_none(await get_loan_user(db, userid=inter.author.id)):
+  for i in verify_none(
+    await get_loan_user(db, userid=inter.author.id),
+    "대출한 것이 없습니다."
+  ):
     contents.append(
       f"{i.product.name},{i.amount}원"
     )
@@ -440,13 +452,16 @@ async def loan_start(inter: interType, product_name: str, bank_name: str, amount
     await get_product(db, bank_name=bank_name, name=product_name),
     "그런 상품이 없습니다."
   )
-  user = verify_none(await get_user_banks(db, userid=inter.author.id))
+  user = verify_none(
+    await get_user_banks(db, userid=inter.author.id),
+    "유저가 등록되지 않았습니다. /보유량을 사용해서 등록해주세요."
+  )
   res = await get_loan_amount(
-      db,
-      userid=inter.author.id,
-      sender=verify_none(await get_bank(db, name=bank_name)).id,
-      product_name=product_name
-    )
+    db,
+    userid=inter.author.id,
+    sender=verify_none(await get_bank(db, name=bank_name)).id,
+    product_name=product_name
+  )
   loan = 0 if res is None else res.amount
   if user.credit < product.min_trust:
     _ = await inter.edit_original_message("신용도가 부족합니다.")
@@ -458,10 +473,9 @@ async def loan_start(inter: interType, product_name: str, bank_name: str, amount
     db,
     product_id=product.id,
     bank_name=bank_name,
-    bank_money=verify_none(await get_bank(db, name=bank_name)).money - amount,
-    amount=amount + ceil(amount / 100 * product.interest),
+    amount=amount,
+    fee=config.fees.borrow.send,
     receiver_id=inter.author.id,
-    receiver_money=verify_none(await get_money(db, userid=inter.author.id)) + amount - ceil(amount / 100 * config.fees.borrow.send),
     date=datetime.now(UTC) + timedelta(product.end_date)
   )
   _ = await inter.edit_original_message("대출 완료")
@@ -475,9 +489,7 @@ async def loan_pay(inter: interType, product_name: str, bank_name: str, amount: 
     bank_name=bank_name,
     product_name=product_name,
     amount=amount,
-    receiver_id=inter.author.id,
-    receiver_money=verify_none(await get_money(db, userid=inter.author.id)) + amount,
-    bank_money=verify_none(await get_bank(db, name=bank_name)).money + amount
+    receiver_id=inter.author.id
   )
   _ = await inter.edit_original_message("대출 갚기 완료")
 
