@@ -19,8 +19,8 @@ async def deposit_to_bank(
     receiver: uuid.UUID,
     senderid: int,
     amount: int,
-) -> DepositToBankResult | None:
-    return await executor.query_single(
+) -> list[DepositToBankResult]:
+    return await executor.query(
         """\
         with
           receiver := (select Bank filter .id = <uuid>$receiver),
@@ -36,8 +36,9 @@ async def deposit_to_bank(
               amount := .amount + <int64>$amount
             })
           ),
-          def := (update sender set {transactions += data, money := .money - <int64>$amount})
-        update receiver set {transactions += data, money := .money + <int64>$amount};\
+          def := (update sender set {transactions += data, money := .money - <int64>$amount}),
+          def2 := (update receiver set {transactions += data, money := .money + <int64>$amount})
+        select {def, def2};\
         """,
         receiver=receiver,
         senderid=senderid,

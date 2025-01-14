@@ -12,5 +12,6 @@ with
       amount := .amount + <int64>$amount
     })
   ),
-  def := (update sender set {transactions += data, money := .money - <int64>$amount})
-update receiver set {transactions += data, money := .money + <int64>$amount};
+  def := (update sender set {transactions += data, money := .money - <int64>$amount}),
+  def2 := (update receiver set {transactions += data, money := .money + <int64>$amount})
+select {def, def2};

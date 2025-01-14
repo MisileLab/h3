@@ -20,18 +20,19 @@ async def send_to_bank(
     sender: uuid.UUID,
     amount: int,
     fee: int,
-) -> SendToBankResult | None:
-    return await executor.query_single(
+) -> list[SendToBankResult]:
+    return await executor.query(
         """\
         with
           receiver := (select Bank filter .id = <uuid>$receiver),
           sender := (select Bank filter .id = <uuid>$sender),
           data := (insert Data {amount := <int64>$amount, sender := sender.id, receiver := receiver.id}),
           def := (update sender set {transactions += data, money := .money - <int64>$amount}),
-        update receiver set {
-          transactions += data,
-          money := .money + <int64>$amount - <int64>math::ceil(<int64>$amount / 100 * <int64>$fee)
-        };\
+          def2 := (update receiver set {
+            transactions += data,
+            money := .money + <int64>$amount - <int64>math::ceil(<int64>$amount / 100 * <int64>$fee)
+          })
+        select {def, def2};\
         """,
         receiver=receiver,
         sender=sender,

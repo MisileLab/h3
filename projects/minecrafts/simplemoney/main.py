@@ -255,8 +255,8 @@ async def bank_setting(
       return
     ownerid = owner.id
   else:
-    ownerid = bank.owner.userid
-    money = bank.money
+    ownerid = bank.owner.userid if owner is None else owner.id
+    money = bank.money if money is None else money
   _ = await modify_bank(db, name=name, owner=ownerid, money=money)
   _ = await inter.edit_original_message("은행 변경 완료")
 

@@ -20,18 +20,19 @@ async def send(
     senderid: int,
     amount: int,
     fee: float,
-) -> SendResult | None:
-    return await executor.query_single(
+) -> list[SendResult]:
+    return await executor.query(
         """\
         with
           receiver := (select User filter .userid = <int64>$receiverid),
           sender := (select User filter .userid = <int64>$senderid),
           data := (insert Data {amount := <int64>$amount, sender := sender.id, receiver := receiver.id}),
-          def := (update sender set {transactions += data, money := .money - <int64>$amount})
-        update receiver set {
-          transactions += data,
-          money := .money + <int64>$amount - <int64>(math::ceil(<int64>$amount / 100 * <float64>$fee))
-        };\
+          def := (update sender set {transactions += data, money := .money - <int64>$amount}),
+          def2 := (update receiver set {
+            transactions += data,
+            money := .money + <int64>$amount - <int64>(math::ceil(<int64>$amount / 100 * <float64>$fee))
+          })
+        select {def, def2};\
         """,
         receiverid=receiverid,
         senderid=senderid,

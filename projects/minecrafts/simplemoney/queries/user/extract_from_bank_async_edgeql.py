@@ -19,8 +19,8 @@ async def extract_from_bank(
     receiver: uuid.UUID,
     senderid: int,
     amount: int,
-) -> ExtractFromBankResult | None:
-    return await executor.query_single(
+) -> list[ExtractFromBankResult]:
+    return await executor.query(
         """\
         with
           receiver := (select Bank filter .id = <uuid>$receiver),
@@ -28,8 +28,9 @@ async def extract_from_bank(
           banks := (select sender.banks {id, receiver, amount} filter .receiver = <uuid>$receiver),
           data := (insert Data {amount := <int64>$amount, sender := sender.id, receiver := receiver.id}),
           bank := (update banks set {amount := .amount - <int64>$amount}),
-          def := (update sender set {transactions += data, money := .money + <int64>$amount})
-        update receiver set {transactions += data, money := .money - <int64>$amount};\
+          def := (update sender set {transactions += data, money := .money + <int64>$amount}),
+          def2 := (update receiver set {transactions += data, money := .money - <int64>$amount})
+        select {def, def2};\
         """,
         receiver=receiver,
         senderid=senderid,
