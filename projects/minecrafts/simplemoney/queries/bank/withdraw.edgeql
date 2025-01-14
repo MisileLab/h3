@@ -6,5 +6,9 @@ with
   def2 := (update receiver set {
     transactions += data,
     money := .money + <int64>$amount - <int64>math::ceil(<int64>$amount / 100 * <int64>$fee)
-  })
-select {sender, def, def2};
+  }),
+  def3 := (
+    update receiver.banks filter .receiver = <uuid>$sender
+    set {amount := .amount - <int64>$amount}
+  )
+select {def, def2, def3};

@@ -18,6 +18,7 @@ from pydantic import BaseModel
 from queries.bank import get_bank, get_bank_by_id, get_bank_money, get_bank_id, get_bank_products
 from queries.bank import is_bank_owner, modify_bank
 from queries.bank import send_to_user, send_to_bank
+from queries.bank.withdraw_async_edgeql import withdraw
 from queries.products import get_product, add_product, delete_product
 from queries.credit import get_credit, set_credit
 from queries.loan import get_loan_bank, get_loan_user, get_loan_amount, get_loan_expired
@@ -100,12 +101,18 @@ async def money(inter: interType):
   money = verify_none(await get_user_banks(db, userid=inter.author.id))
   contents: list[str] = []
   for i in money.banks:
+    if i.amount == 0:
+      continue
     bank = verify_none(await get_bank_by_id(db, id=i.receiver))
     contents.append(f"{bank.name}: {i.amount}")
   _ = await inter.edit_original_message(f"현금: {money.money}\n{'\n'.join(contents)}")
 
 @bot.slash_command(name="송금", description="돈을 다른 유저에게 송금함")
-async def send_money(inter: interType, user: User, amount: int):
+async def send_money(
+  inter: interType,
+  user: User,
+  amount: int = Param(ge=0) # pyright: ignore[reportCallInDefaultInitializer]
+):
   await inter.response.defer(ephemeral=True)
   sender_money = verify_none(
     await get_money(db, userid=inter.author.id),
@@ -128,7 +135,11 @@ async def send_money(inter: interType, user: User, amount: int):
   description="화폐를 지급하거나 제거함"
 )
 @has_guild_permissions(administrator=True)
-async def give(inter: interType, user: User, amount: int):
+async def give(
+  inter: interType,
+  user: User,
+  amount: int
+):
   await inter.response.defer(ephemeral=True)
   money = verify_none(
     await get_money(db, userid=user.id),
@@ -194,6 +205,8 @@ async def storage(inter: interType, user: User):
   money = verify_none(await get_user_banks(db, userid=user.id))
   contents: list[str] = []
   for i in money.banks:
+    if i.amount == 0:
+      continue
     bank = verify_none(await get_bank_by_id(db, id=i.receiver))
     contents.append(f"{bank.name}: {i.amount}")
   _ = await inter.edit_original_message(f"현금: {money.money}\n{'\n'.join(contents)}")
@@ -212,7 +225,11 @@ async def bank_balance(inter: interType, bank_name: str):
   _ = await inter.edit_original_message(str(bank.money))
 
 @bank.sub_command(name="입금", description="은행에 돈을 입금함") # pyright: ignore[reportUnknownMemberType]
-async def bank_deposit(inter: interType, bank_name: str, amount: int):
+async def bank_deposit(
+  inter: interType,
+  bank_name: str,
+  amount: int = Param(ge=0) # pyright: ignore[reportCallInDefaultInitializer]
+):
   await inter.response.defer(ephemeral=True)
   bank = verify_none(await get_bank_id(db, name=bank_name))
   _ = await deposit_to_bank(
@@ -224,13 +241,17 @@ async def bank_deposit(inter: interType, bank_name: str, amount: int):
   _ = await inter.edit_original_message("입금 완료")
 
 @bank.sub_command(name="출금", description="은행에서 돈을 출금함") # pyright: ignore[reportUnknownMemberType]
-async def bank_withdraw(inter: interType, bank_name: str, amount: int):
+async def bank_withdraw(
+  inter: interType,
+  bank_name: str,
+  amount: int = Param(ge=0) # pyright: ignore[reportCallInDefaultInitializer]
+):
   await inter.response.defer(ephemeral=True)
   bank = verify_none(
     await get_bank_money(db, name=bank_name),
     "은행이 존재하지 않습니다."
   )
-  _ = await send_to_user(
+  _ = await withdraw(
     db,
     receiverid=inter.author.id,
     sender=bank.id,
@@ -321,7 +342,7 @@ async def bank_loan_check(inter: interType, bank_name: str):
 async def bank_send(
   inter: interType,
   bank_name: str,
-  amount: int,
+  amount: int = Param(ge=0), # pyright: ignore[reportCallInDefaultInitializer]
   destination_user: User | None = Param(
     description="송금할 유저(은행이나 유저 둘 중 하나만 설정해야함)",
     default=None
@@ -429,7 +450,12 @@ async def loan_check(inter: interType):
   _ = await inter.edit_original_message(content=f"상품 이름,갚을 돈\n{'\n'.join(contents)}")
 
 @loan.sub_command(name="시작", description="대출을 시작함") # pyright: ignore[reportUnknownMemberType]
-async def loan_start(inter: interType, product_name: str, bank_name: str, amount: int):
+async def loan_start(
+  inter: interType,
+  product_name: str,
+  bank_name: str,
+  amount: int = Param(ge=1) # pyright: ignore[reportCallInDefaultInitializer]
+):
   await inter.response.defer(ephemeral=True)
   product = verify_none(
     await get_product(db, bank_name=bank_name, name=product_name),
@@ -464,15 +490,20 @@ async def loan_start(inter: interType, product_name: str, bank_name: str, amount
   _ = await inter.edit_original_message("대출 완료")
 
 @loan.sub_command(name="갚기", description="대출을 갚음") # pyright: ignore[reportUnknownMemberType]
-async def loan_pay(inter: interType, product_name: str, bank_name: str, amount: int):
+async def loan_pay(
+  inter: interType,
+  product_name: str,
+  bank_name: str,
+  amount: int = Param(ge=1) # pyright: ignore[reportCallInDefaultInitializer]
+):
   await inter.response.defer(ephemeral=True)
-  amount -= ceil(amount / 100 * config.fees.borrow.receive)
   _ = await pay_loan(
     db,
     bank_name=bank_name,
     product_name=product_name,
     amount=amount,
-    receiver_id=inter.author.id
+    receiver_id=inter.author.id,
+    fee=config.fees.borrow.receive
   )
   _ = await inter.edit_original_message("대출 갚기 완료")
 
