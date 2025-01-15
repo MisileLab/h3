@@ -16,7 +16,7 @@ dependencies = [
 
 [project.optional-dependencies]
 legacy = [
-  "pwntools==4.13.1"
+  "pwntools==4.14.0"
 ]
 
 [tool.uv]

@@ -244,7 +244,7 @@ requires-dist = [
     { name = "lxml", specifier = "==5.3.0" },
     { name = "numpy", specifier = "==2.2.1" },
     { name = "promise", specifier = "==2.3" },
-    { name = "pwntools", marker = "extra == 'legacy'", specifier = "==4.13.1" },
+    { name = "pwntools", marker = "extra == 'legacy'", specifier = "==4.14.0" },
     { name = "selenium", specifier = "==4.27.1" },
 ]
 
@@ -531,7 +531,7 @@ wheels = [
 
 [[package]]
 name = "pwntools"
-version = "4.13.1"
+version = "4.14.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "capstone" },
@@ -556,9 +556,9 @@ dependencies = [
     { name = "unix-ar" },
     { name = "zstandard" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/24/72/f26dd3713ac1cbe7c451a7ae9e586096deb1a2da5218e308881a4d13c3d4/pwntools-4.13.1.tar.gz", hash = "sha256:b3322725fb5031dc30965e3855073608d9abf74d2abf97a72c67d44aadfce37c", size = 5476226 }
+sdist = { url = "https://files.pythonhosted.org/packages/12/09/52f0bf1706b844acec79ea1c8a64b3823891890fe44f36eb607710061334/pwntools-4.14.0.tar.gz", hash = "sha256:83b3247de083dffafac3bf40f4d1455732f16e25ce3105fd09b55ac0f0d12e83", size = 5611279 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f7/a5/3a8e96f787cbe644aff525108c6c52ddf0140fa8174f8b32bdcc555fe0ff/pwntools-4.13.1-py2.py3-none-any.whl", hash = "sha256:2f910a15204bfbc05f62948e796a15dae3e8c386447536947638b5dd028de23f", size = 11905563 },
+    { url = "https://files.pythonhosted.org/packages/56/2c/68f3b66c0fd393b356ed92c8cc233ee3795b08c7f034150f05aaf46aee4e/pwntools-4.14.0-py2.py3-none-any.whl", hash = "sha256:50938e7f0b2e8f7d7e807706766a449ccc2ee9b13e4889a79a8d8866fb743ad4", size = 12857459 },
 ]
 
 [[package]]
