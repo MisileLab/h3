@@ -1,57 +1,54 @@
-from requests.exceptions import HTTPError, ProxyError
-from requests import Timeout
 from loguru import logger
+from twscrape import User, API # pyright: ignore[reportMissingTypeStubs]
 
-from os import getenv
+from os import listdir
 from csv import DictWriter
-from http import HTTPStatus
-from time import sleep
 from secrets import SystemRandom
+from asyncio import run
 
 from lib import get_proxy
 
 proxy = get_proxy()
 logger.info(proxy)
+api = API(proxy=proxy)
 
-base_query = "site:x.com"
-logger.debug(base_query)
-
-data_num = 4000
-result_interval = 100
 sleep_interval_min = 0
 sleep_interval_max = 20
-start_num = int(getenv("start_num", 0))
+min_depth = 2
+max_depth = 4
 
-def search_res(query: str, start_num: int):
-  raise NotImplementedError
+async def search_res(userid: int, max_depth: int, depth: int = 0) -> User | None:
+  if depth > max_depth:
+    return None
+  user = await api.user_by_id(userid) # pyright: ignore[reportUnknownMemberType]
+  if user is None:
+    return None
+  index = 0
+  follower_index = SystemRandom().randint(0, user.followersCount-1)
+  selected_follower: User | None = None
+  async for i in api.followers(user.id): # pyright: ignore[reportUnknownMemberType]
+    if index == follower_index:
+      selected_follower = i
+    index += 1
+  if selected_follower is None:
+    return None
+  res = await search_res(selected_follower.id, max_depth, depth+1)
+  if res is None and depth < min_depth:
+    return await search_res(userid, max_depth, depth)
+  return res if res is not None else user
 
-with open("suicidal.csv", "w", newline='') as f:
-  dw = DictWriter(f, fieldnames=["title", "url", "description"])
-  dw.writeheader()
-  i = start_num
-  while i <= data_num:
-    try:
-      logger.debug(f"{i}, begin")
-      datas = search_res(base_query, i)
-      logger.debug(f"{i}, end")
-    except HTTPError as e:
-      if e.response.status_code == HTTPStatus.TOO_MANY_REQUESTS:
-        logger.warning("retry after 10 mins")
-        sleep(60 * 10)
+async def main():
+  with open("normal.csv", "w", newline='') as f:
+    dw = DictWriter(f, fieldnames=["id", "name", "url"])
+    dw.writeheader()
+    for i in listdir("results"):
+      user = await search_res(int(i.removesuffix(".pkl")), max_depth)
+      if user is None:
+        logger.error(f"user {i.removesuffix('.pkl')} not found, skipping")
         continue
-      raise e
-    except (Timeout, ProxyError):
-      logger.warning("let's try another interval")
-      sleep(10)
-      continue
-    if datas == []:
-      print("data is None")
-      break
-    for data in datas:
-      logger.info(data.title) # pyright: ignore[reportAny]
-      dw.writerow({"title": data.title, "url": data.url, "description": data.description}) # pyright: ignore[reportAny]
-    i += result_interval
-    r = SystemRandom().randint(sleep_interval_min, sleep_interval_max)
-    logger.debug(f"sleep {r} secs")
-    sleep(r)
+      logger.info(user.id_str)
+      dw.writerow({"id": user.id, "name": user.id_str, "url": user.url})
+
+if __name__ == "__main__":
+  run(main())
 
