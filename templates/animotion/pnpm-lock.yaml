@@ -31,8 +31,8 @@ importers:
         version: 4.0.0-beta.9
     devDependencies:
       '@sveltejs/adapter-auto':
-        specifier: 3.3.1
-        version: 3.3.1(@sveltejs/kit@2.15.3(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.18.0)(vite@6.0.7(jiti@2.4.2)(lightningcss@1.29.1)))(svelte@5.18.0)(vite@6.0.7(jiti@2.4.2)(lightningcss@1.29.1)))
+        specifier: 4.0.0
+        version: 4.0.0(@sveltejs/kit@2.15.3(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.18.0)(vite@6.0.7(jiti@2.4.2)(lightningcss@1.29.1)))(svelte@5.18.0)(vite@6.0.7(jiti@2.4.2)(lightningcss@1.29.1)))
       '@sveltejs/kit':
         specifier: 2.15.3
         version: 2.15.3(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.18.0)(vite@6.0.7(jiti@2.4.2)(lightningcss@1.29.1)))(svelte@5.18.0)(vite@6.0.7(jiti@2.4.2)(lightningcss@1.29.1))
@@ -382,8 +382,8 @@ packages:
   '@shikijs/vscode-textmate@10.0.1':
     resolution: {integrity: sha512-fTIQwLF+Qhuws31iw7Ncl1R3HUDtGwIipiJ9iU+UsDUwMhegFcQKQHd51nZjb7CArq0MvON8rbgCGQYWHUKAdg==}
 
-  '@sveltejs/adapter-auto@3.3.1':
-    resolution: {integrity: sha512-5Sc7WAxYdL6q9j/+D0jJKjGREGlfIevDyHSQ2eNETHcB1TKlQWHcAo8AS8H1QdjNvSXpvOwNjykDUHPEAyGgdQ==}
+  '@sveltejs/adapter-auto@4.0.0':
+    resolution: {integrity: sha512-kmuYSQdD2AwThymQF0haQhM8rE5rhutQXG4LNbnbShwhMO4qQGnKaaTy+88DuNSuoQDi58+thpq8XpHc1+oEKQ==}
     peerDependencies:
       '@sveltejs/kit': ^2.0.0
 
@@ -1325,7 +1325,7 @@ snapshots:
 
   '@shikijs/vscode-textmate@10.0.1': {}
 
-  '@sveltejs/adapter-auto@3.3.1(@sveltejs/kit@2.15.3(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.18.0)(vite@6.0.7(jiti@2.4.2)(lightningcss@1.29.1)))(svelte@5.18.0)(vite@6.0.7(jiti@2.4.2)(lightningcss@1.29.1)))':
+  '@sveltejs/adapter-auto@4.0.0(@sveltejs/kit@2.15.3(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.18.0)(vite@6.0.7(jiti@2.4.2)(lightningcss@1.29.1)))(svelte@5.18.0)(vite@6.0.7(jiti@2.4.2)(lightningcss@1.29.1)))':
     dependencies:
       '@sveltejs/kit': 2.15.3(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.18.0)(vite@6.0.7(jiti@2.4.2)(lightningcss@1.29.1)))(svelte@5.18.0)(vite@6.0.7(jiti@2.4.2)(lightningcss@1.29.1))
       import-meta-resolve: 4.1.0
