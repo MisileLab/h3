@@ -26,12 +26,15 @@ async def search_res(userid: int, max_depth: int, depth: int = 0) -> User | None
   index = 0
   follower_index = SystemRandom().randint(0, user.followersCount-1)
   selected_follower: User | None = None
+  logger.debug(f"getting {userid}'s followers, index: {follower_index}")
   async for i in api.followers(user.id): # pyright: ignore[reportUnknownMemberType]
-    if index == follower_index:
-      selected_follower = i
+    if index > follower_index:
+      break
+    selected_follower = i
     index += 1
+    logger.debug(index)
   if selected_follower is None:
-    return None
+    raise ValueError("no follower?")
   res = await search_res(selected_follower.id, max_depth, depth+1)
   if res is None and depth < min_depth:
     return await search_res(userid, max_depth, depth)
