@@ -33,13 +33,13 @@ async def search_res(userid: int, max_depth: int, depth: int = 0) -> User | None
   selected_following: User | None = None
   logger.debug(f"getting {userid}'s following, index: {following_index}")
   async for i in api.following(user.id): # pyright: ignore[reportUnknownMemberType]
-    if index > following_index:
+    if index > following_index and selected_following is not None:
       break
     selected_following = i
     index += 1
     logger.debug(index)
   if selected_following is None:
-    raise ValueError("no following?")
+    return None
   res = await search_res(selected_following.id, max_depth, depth+1)
   if res is None and depth < min_depth:
     return await search_res(userid, max_depth, depth)
