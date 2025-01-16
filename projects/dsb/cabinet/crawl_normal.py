@@ -54,8 +54,8 @@ async def main():
       if user is None:
         logger.error(f"user {i.removesuffix('.pkl')} not found, skipping")
         continue
-      logger.info(user.id_str)
-      dw.writerow({"id": user.id, "name": user.id_str, "url": user.url})
+      logger.info(user.username, user.displayname)
+      dw.writerow({"id": user.id, "name": user.username, "url": user.url})
 
 if __name__ == "__main__":
   run(main())
