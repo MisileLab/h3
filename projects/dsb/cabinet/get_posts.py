@@ -39,7 +39,6 @@ if not Path("./results").is_dir():
 async def main():
   api = API()
   api.proxy = get_proxy()
-  start_uid = int(getenv("start_uid", -1))
 
   # 1. get username (or id) from url
   # 2. get id and export to json (for backup) and save to list
@@ -71,10 +70,9 @@ async def main():
       if uid == "":
         break
       uid = int(uid)
-      if start_uid not in [-1, uid]:
-        logger.debug("skipping")
+      if Path("results", f"{uid}.pkl").is_file():
+        logger.warning(f"skipping {uid}")
         continue
-      start_uid = -1
       if i > 0:
         i -= 1
         continue
