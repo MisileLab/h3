@@ -5,6 +5,7 @@ from os import listdir
 from csv import DictWriter
 from secrets import SystemRandom
 from asyncio import run
+from pathlib import Path
 
 from lib import get_proxy
 
@@ -45,10 +46,13 @@ async def search_res(userid: int, max_depth: int, depth: int = 0) -> User | None
     return await search_res(userid, max_depth, depth)
   return res if res is not None else user
 
+exist = Path("normal.csv").is_file()
+
 async def main():
-  with open("normal.csv", "w", newline='') as f:
+  with open("normal.csv", "a" if exist else "w", newline='') as f:
     dw = DictWriter(f, fieldnames=["id", "name", "url"])
-    dw.writeheader()
+    if not exist:
+      dw.writeheader()
     for i in listdir("results"):
       user = await search_res(int(i.removesuffix(".pkl")), max_depth)
       if user is None:
