@@ -6,7 +6,7 @@ writed: list[str] = []
 with open("normal.csv", "r", newline="") as f:
   dr = DictReader(f)
   with open("result_normal.csv", "w", newline="") as res:
-    dw = DictWriter(res, fieldnames=Path("suicidal.csv").read_text().split("\n")[0].split(","))
+    dw = DictWriter(res, fieldnames=Path("normal.csv").read_text().split("\n")[0].split(","))
     dw.writeheader()
     for i in dr:
       if i["url"] in writed:
