@@ -20,6 +20,8 @@ sleep_interval_min = 0
 sleep_interval_max = 20
 min_depth = 2
 max_depth = 4
+max_following_count = 50
+max_user_follower_count = 5000
 
 async def search_res(userid: int, max_depth: int, depth: int = 0) -> User | None:
   if depth > max_depth:
@@ -29,11 +31,19 @@ async def search_res(userid: int, max_depth: int, depth: int = 0) -> User | None
   if user is None:
     return None
   followings: list[User] = []
-  async for i in api.following(userid): # pyright: ignore[reportUnknownMemberType]
+  async for i in api.following(userid, limit=max_following_count): # pyright: ignore[reportUnknownMemberType]
     followings.append(i)
   if len(followings) == 0:
     return None
   selected_following = SystemRandom().choice(followings)
+  while not selected_following.verified or selected_following.followersCount > max_user_follower_count:
+    logger.warning(f"skipping {selected_following.displayname}")
+    if selected_following.verified:
+      logger.warning(f"{selected_following.displayname} is verified")
+    else:
+      logger.warning(f"{selected_following.displayname} has too many followers ({selected_following.followersCount})")
+    followings.remove(selected_following)
+    selected_following = SystemRandom().choice(followings)
   logger.debug(f"selected: {selected_following.displayname}")
   res = await search_res(selected_following.id, max_depth, depth+1)
   if res is None and depth < min_depth:
