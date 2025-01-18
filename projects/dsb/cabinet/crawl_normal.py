@@ -28,6 +28,8 @@ async def search_res(userid: int, max_depth: int, depth: int = 0) -> User | None
   followings: list[User] = []
   async for i in api.following(userid): # pyright: ignore[reportUnknownMemberType]
     followings.append(i)
+  if len(followings) == 0:
+    return None
   selected_following = SystemRandom().choice(followings)
   logger.debug(f"selected: {selected_following.displayname}")
   res = await search_res(selected_following.id, max_depth, depth+1)
