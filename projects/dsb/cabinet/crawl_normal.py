@@ -6,9 +6,12 @@ from csv import DictWriter
 from secrets import SystemRandom
 from asyncio import run
 from pathlib import Path
+from sys import stdout
 
 from lib import get_proxy
 
+logger.remove()
+_ = logger.add(stdout, level="DEBUG")
 proxy = get_proxy()
 logger.info(proxy)
 api = API(proxy=proxy)
