@@ -36,7 +36,7 @@ async def search_res(userid: int, max_depth: int, depth: int = 0) -> User | None
   if len(followings) == 0:
     return None
   selected_following = SystemRandom().choice(followings)
-  while not selected_following.verified or selected_following.followersCount > max_user_follower_count:
+  while selected_following.verified or selected_following.followersCount > max_user_follower_count:
     logger.warning(f"skipping {selected_following.displayname}")
     if selected_following.verified:
       logger.warning(f"{selected_following.displayname} is verified")
