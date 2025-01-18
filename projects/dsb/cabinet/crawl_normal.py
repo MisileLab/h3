@@ -16,6 +16,9 @@ proxy = get_proxy()
 logger.info(proxy)
 api = API(proxy=proxy)
 
+class NotEnoughData(Exception):
+  pass
+
 sleep_interval_min = 0
 sleep_interval_max = 20
 min_depth = 2
@@ -34,20 +37,27 @@ async def search_res(userid: int, max_depth: int, depth: int = 0) -> User | None
   async for i in api.following(userid, limit=max_following_count): # pyright: ignore[reportUnknownMemberType]
     followings.append(i)
   if len(followings) == 0:
-    return None
+    logger.warning("user has no following")
+    raise NotEnoughData()
   selected_following = SystemRandom().choice(followings)
   while selected_following.verified or selected_following.followersCount > max_user_follower_count:
-    logger.warning(f"skipping {selected_following.displayname}")
+    if len(followings) == 1:
+      logger.warning("user has only non-normal users")
+      raise NotEnoughData()
+    logger.info(f"skipping {selected_following.displayname}")
     if selected_following.verified:
-      logger.warning(f"{selected_following.displayname} is verified")
+      logger.info(f"{selected_following.displayname} is verified")
     else:
-      logger.warning(f"{selected_following.displayname} has too many followers ({selected_following.followersCount})")
+      logger.info(f"{selected_following.displayname} has too many followers ({selected_following.followersCount})")
     followings.remove(selected_following)
     selected_following = SystemRandom().choice(followings)
   logger.debug(f"selected: {selected_following.displayname}")
   res = await search_res(selected_following.id, max_depth, depth+1)
   if res is None and depth < min_depth:
-    return await search_res(userid, max_depth, depth)
+    try:
+      return await search_res(userid, max_depth, depth)
+    except NotEnoughData:
+      return None
   return res if res is not None else user
 
 exist = Path("normal.csv").is_file()
@@ -58,7 +68,11 @@ async def main():
     if not exist:
       dw.writeheader()
     for i in listdir("results"):
-      user = await search_res(int(i.removesuffix(".pkl")), max_depth)
+      try:
+        user = await search_res(int(i.removesuffix(".pkl")), max_depth)
+      except NotEnoughData:
+        logger.error(f"user {i.removesuffix('.pkl')} has not enough data, skipping")
+        continue
       if user is None:
         logger.error(f"user {i.removesuffix('.pkl')} not found, skipping")
         continue
