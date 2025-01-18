@@ -45,7 +45,12 @@ in
           ssh = "${pkgs.kitty}/bin/kitten ssh";
         };
         extraConfig = ''
+use std/util "path add"
 $env.UV_PUBLISH_TOKEN = "${secrets.UV_PUBLISH_TOKEN or "you_need_to_change_in_secrets_nix"}"
+$env.config.hooks.command_not_found = {
+  |x|
+  print (command-not-found $x | str trim)
+}
 def bulk-run [paths: list<string>, command: string, ...args] {
   mut output = {}
   for $dir in $paths {
@@ -60,7 +65,7 @@ def bulk-run [paths: list<string>, command: string, ...args] {
   }
   $output
 }
-$env.PATH = ($env.PATH | split row (char esep) | append "~/.cargo/bin")
+path add "~/.cargo/bin"
 if $env.TERM == "linux" {
   sway
 }

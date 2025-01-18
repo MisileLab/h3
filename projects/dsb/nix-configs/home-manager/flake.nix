@@ -13,12 +13,16 @@
       url = "github:catppuccin/nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs = { nixpkgs, /*stable,*/ home-manager, catppuccin, zig, ... }:
+  outputs = { nixpkgs, /*stable,*/ home-manager, catppuccin, zig, nix-index-database, ... }:
     let
       system = "x86_64-linux"; # replace with your system
       pkgs = import nixpkgs {inherit system;};
@@ -33,6 +37,7 @@
         modules = [
           ./home.nix
           catppuccin.homeManagerModules.catppuccin
+          nix-index-database.hmModules.nix-index
         ];
         extraSpecialArgs = {
           inherit c;
