@@ -21,6 +21,7 @@ max_depth = 4
 async def search_res(userid: int, max_depth: int, depth: int = 0) -> User | None:
   if depth > max_depth:
     return None
+  logger.debug(f"searching {userid}, depth: {depth}")
   user = await api.user_by_id(userid) # pyright: ignore[reportUnknownMemberType]
   if user is None:
     return None
@@ -58,7 +59,7 @@ async def main():
       if user is None:
         logger.error(f"user {i.removesuffix('.pkl')} not found, skipping")
         continue
-      logger.info(user.username, user.displayname)
+      logger.info(f"{user.username}: {user.displayname}")
       dw.writerow({"id": user.id, "name": user.username, "url": user.url})
 
 if __name__ == "__main__":
