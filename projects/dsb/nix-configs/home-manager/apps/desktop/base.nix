@@ -11,8 +11,8 @@
     packages = with pkgs; [
       brightnessctl clipman wl-clipboard pavucontrol
       imagemagick virt-manager xfce.thunar
-      galaxy-buds-client (stablep.kdePackages.filelight) firefoxpwa gparted
-      gimp (stablep.telegram-desktop) xournalpp exodus
+      galaxy-buds-client kdePackages.filelight firefoxpwa gparted
+      gimp telegram-desktop xournalpp exodus
     ];
     pointerCursor = {
       name = "Adwaita";
