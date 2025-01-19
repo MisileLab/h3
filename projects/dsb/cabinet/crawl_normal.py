@@ -59,14 +59,17 @@ async def search_res(userid: int, max_depth: int, depth: int = 0) -> User | None
   try:
     res = await search_res(selected_following.id, max_depth, depth+1)
   except NotEnoughData:
+    logger.error(f"not enough data on first, {depth} {min_depth}")
     if depth-1 > min_depth:
       return await search_res(userid, max_depth, depth-1)
     else:
       return None
   if res is None and depth > min_depth:
+    logger.warning("res's return is None")
     try:
       return await search_res(userid, max_depth, depth)
     except NotEnoughData:
+      logger.error(f"not enough data on second, {depth} {min_depth}")
       if depth-1 > min_depth:
         return await search_res(userid, max_depth, depth-1)
       else:
