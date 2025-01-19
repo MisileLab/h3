@@ -22,8 +22,8 @@ class NotEnoughData(Exception):
 
 sleep_interval_min = 0
 sleep_interval_max = 20
-min_depth = 2
-max_depth = 4
+min_depth = 1
+max_depth = 3
 max_following_count = 50
 max_user_follower_count = 5000
 
