@@ -28,8 +28,8 @@ max_following_count = 50
 max_user_follower_count = 5000
 
 async def search_res(userid: int, max_depth: int, depth: int = 0) -> User | None:
-  sleep_sec = SystemRandom().randint(1, 5)
-  logger.info("sleep {sleep_sec} secs")
+  sleep_sec = SystemRandom().randint(1, 3)
+  logger.info(f"sleep {sleep_sec} secs")
   sleep(sleep_sec)
   if depth > max_depth:
     return None
