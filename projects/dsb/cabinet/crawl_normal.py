@@ -40,19 +40,18 @@ async def search_res(userid: int, max_depth: int, depth: int = 0) -> User | None
   user = await api.user_by_id(userid) # pyright: ignore[reportUnknownMemberType]
   if user is None:
     return None
-  followings_set: set[User] = set()
+  followings: list[User] = []
   async for i in api.following(userid, limit=max_following_count): # pyright: ignore[reportUnknownMemberType]
-    followings_set.add(i)
-  followings_list: list[User] = list(followings_set)
-  for i in followings_list:
+    followings.append(i)
+  for i in followings:
     if i.id in ignore_list:
-      followings_list.remove(i)
-  if len(followings_list) == 0:
+      followings.remove(i)
+  if len(followings) == 0:
     logger.warning("user has no following")
     raise NotEnoughData(userid)
-  selected_following = SystemRandom().choice(followings_list)
+  selected_following = SystemRandom().choice(followings)
   while selected_following.verified or selected_following.followersCount > max_user_follower_count:
-    if len(followings_list) == 1:
+    if len(followings) == 1:
       logger.warning("user has only non-normal users")
       raise NotEnoughData(selected_following.id)
     logger.info(f"skipping {selected_following.displayname}")
@@ -60,8 +59,8 @@ async def search_res(userid: int, max_depth: int, depth: int = 0) -> User | None
       logger.info(f"{selected_following.displayname} is verified")
     else:
       logger.info(f"{selected_following.displayname} has too many followers ({selected_following.followersCount})")
-    followings_list.remove(selected_following)
-    selected_following = SystemRandom().choice(followings_list)
+    followings.remove(selected_following)
+    selected_following = SystemRandom().choice(followings)
   logger.debug(f"selected: {selected_following.displayname}")
   try:
     res = await search_res(selected_following.id, max_depth, depth+1)
