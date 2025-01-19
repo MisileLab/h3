@@ -61,7 +61,10 @@ async def search_res(userid: int, max_depth: int, depth: int = 0) -> User | None
     try:
       return await search_res(userid, max_depth, depth)
     except NotEnoughData:
-      return None
+      if depth-1 < min_depth:
+        return await search_res(userid, max_depth, depth-1)
+      else:
+        return None
   return res if res is not None else user
 
 exist = Path("normal.csv").is_file()
