@@ -31,7 +31,7 @@ async def search_res(userid: int, max_depth: int, depth: int = 0) -> User | None
   sleep_sec = SystemRandom().randint(1, 3)
   logger.info(f"sleep {sleep_sec} secs")
   sleep(sleep_sec)
-  if depth > max_depth:
+  if depth >= max_depth:
     return None
   logger.debug(f"searching {userid}, depth: {depth}")
   user = await api.user_by_id(userid) # pyright: ignore[reportUnknownMemberType]
@@ -64,7 +64,7 @@ async def search_res(userid: int, max_depth: int, depth: int = 0) -> User | None
       return await search_res(userid, max_depth, depth-1)
     else:
       return None
-  if res is None and depth > min_depth:
+  if res is None and depth > min_depth and depth < max_depth:
     logger.warning("res's return is None")
     try:
       return await search_res(userid, max_depth, depth)
