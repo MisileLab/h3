@@ -1,4 +1,4 @@
-{pkgs, ...}:
+{pkgs, config, ...}:
 let
   # base
   base = name: envs: binaryPath: args: (pkgs.writeShellScriptBin "${name}" ''
@@ -24,6 +24,12 @@ in
       (qwl "monero" "${monero-gui}/bin/monero-wallet-gui")
       ungoogled-chromium
     ] ++ electrons;
+    file = {
+      ".config/process-compose/catppuccin-mocha.theme".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
+        url="https://github.com/catppuccin/simplex";
+        rev="4166f14ec29d4a5d863f095e259512bdf32d2556";
+      }}/themes/catppuccin-mocha.theme";
+    };
   };
   programs = {
     vscode = {
