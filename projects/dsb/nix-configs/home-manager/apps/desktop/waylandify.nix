@@ -25,7 +25,7 @@ in
       ungoogled-chromium
     ] ++ electrons;
     file = {
-      ".config/process-compose/catppuccin-mocha.theme".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
+      ".config/simplex/catppuccin-mocha.theme".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
         url="https://github.com/catppuccin/simplex";
         rev="4166f14ec29d4a5d863f095e259512bdf32d2556";
       }}/themes/catppuccin-mocha.theme";
