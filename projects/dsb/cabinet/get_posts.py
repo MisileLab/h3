@@ -79,8 +79,8 @@ async def main():
       logger.debug(uid)
       tweets = await get_tweets(api, uid)
       if len(tweets) == 0:
-        logger.error(f"no tweets on {uid}")
-        break
+        logger.error(f"no tweets on {uid}, skip it")
+        continue
       dump(tweets, open(f"./results/{uid}.pkl", "wb"))
 
 if __name__ == "__main__":
