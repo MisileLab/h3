@@ -32,6 +32,6 @@
 		"@tailwindcss/vite": "4.0.0",
 		"@types/node": "22.10.7",
 		"reveal.js": "5.1.0",
-		"tailwindcss": "4.0.0-beta.10"
+		"tailwindcss": "4.0.0"
 	}
 }
