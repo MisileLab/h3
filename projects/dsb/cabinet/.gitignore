@@ -4,6 +4,7 @@ results_normal
 userids
 accounts.db
 accounts.csv
+embeddings
 
 # community/Python/JupyterNotebooks.gitignore by ignofierplus
 .ipynb_checkpoints
