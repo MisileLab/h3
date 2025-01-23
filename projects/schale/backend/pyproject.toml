@@ -5,7 +5,7 @@ description = "Backend of schale"
 requires-python = "==3.13.1"
 dependencies = [
   "boto3==1.36.4",
-  "fastapi[standard]==0.115.6",
+  "fastapi[standard]==0.115.7",
   "tomli==2.2.1",
   "python-multipart==0.0.20",
   "argon2-cffi==23.1.0",
