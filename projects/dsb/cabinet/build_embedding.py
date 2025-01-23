@@ -13,7 +13,7 @@ class Data:
 data: dict[int, Data] = {}
 
 for i in Path("results").glob("*.pkl"):
-  data[int(i.name.strip(".pkl"))] = Data(loads(i.read_bytes()), False) # pyright: ignore[reportAny]
+  data[int(i.name.strip(".pkl"))] = Data(loads(i.read_bytes()), True) # pyright: ignore[reportAny]
 
 for i in Path("results_normal").glob("*.pkl"):
   data[int(i.name.strip(".pkl"))] = Data(loads(i.read_bytes()), False) # pyright: ignore[reportAny]
