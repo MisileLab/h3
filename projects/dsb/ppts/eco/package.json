@@ -15,7 +15,7 @@
 		"@types/reveal.js": "5.0.4",
 		"prettier": "3.4.2",
 		"prettier-plugin-svelte": "3.3.3",
-		"prettier-plugin-tailwindcss": "0.6.10",
+		"prettier-plugin-tailwindcss": "0.6.11",
 		"shiki": "2.1.0",
 		"shiki-magic-move": "1.0.0",
 		"svelte": "5.19.2",
