@@ -7,7 +7,7 @@ requires-python = "==3.13.1"
 dependencies = [
   "disnake==2.10.1",
   "edgedb==2.2.0",
-  "pydantic==2.10.5",
+  "pydantic==2.10.6",
   "tomli==2.2.1",
   "tomli-w==1.2.0",
 ]
