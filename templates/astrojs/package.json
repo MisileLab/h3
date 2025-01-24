@@ -11,11 +11,11 @@
   },
   "dependencies": {
     "@astrojs/check": "0.9.4",
-    "@astrojs/tailwind": "5.1.5",
     "@misile/satellite": "0.0.5",
+    "@tailwindcss/vite": "4.0.0",
     "astro": "5.1.9",
     "nanostores": "0.11.3",
-    "tailwindcss": "3.4.17",
+    "tailwindcss": "4.0.0",
     "typescript": "5.7.3"
   }
 }
