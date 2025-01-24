@@ -5,6 +5,8 @@ userids
 accounts.db
 accounts.csv
 embeddings
+embedding_results
+batches.pkl
 
 # community/Python/JupyterNotebooks.gitignore by ignofierplus
 .ipynb_checkpoints
