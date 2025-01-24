@@ -8,6 +8,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     stable.url = "github:nixos/nixpkgs/nixos-unstable";
+    # https://github.com/NixOS/nixpkgs/pull/376189
+    swayfx_fix.url = "github:LordGrimmauld/nixpkgs/swayfx-fix";
     # nur.url = "github:nix-community/NUR";
     catppuccin = {
       url = "github:catppuccin/nix";
@@ -22,7 +24,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs = { nixpkgs, stable, home-manager, catppuccin, zig, nix-index-database, ... }:
+  outputs = { nixpkgs, stable, home-manager, catppuccin, zig, nix-index-database, swayfx_fix, ... }:
     let
       system = "x86_64-linux"; # replace with your system
       pkgs = import nixpkgs {inherit system;};
@@ -31,6 +33,7 @@
       _secrets = builtins.tryEval (import ./secrets.nix);
       secrets = if _secrets.success then _secrets.value else {};
       stablep = import stable {inherit system;config = {allowUnfree = true;};};
+      swayfx_fixpkgs = import swayfx_fix {inherit system;};
     in {
       homeConfigurations."misile" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
@@ -44,6 +47,7 @@
           inherit secrets;
           inherit stablep;
           inherit zigpkgs;
+          inherit swayfx_fixpkgs;
         };
       };
     };

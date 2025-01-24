@@ -1,4 +1,4 @@
-{c, pkgs, stablep, ...}:
+{c, pkgs, swayfx_fixpkgs, ...}:
 let
   returnColorCSS = {r, g, b, a, addi ? ""}: ''
     ${(if c.gtk4 then "backdrop-filter: blur(5px)" else "")}
@@ -43,7 +43,7 @@ bindsym XF86MonBrightnessUp exec ${pkgs.avizo}/bin/lightctl up
 bindsym XF86MonBrightnessDown exec ${pkgs.avizo}/bin/lightctl down
 
 bindsym Mod4+y exec ${pkgs.clipman}/bin/clipman pick --tool="rofi" --max-items=30
-bindsym Mod4+shift+y exec ${stablep.swayfx}/bin/swaynag --type warning -m 'You want to clear clipboard?' -b 'Yes' 'exec ${pkgs.clipman}/bin/clipman clear --all'
+bindsym Mod4+shift+y exec ${swayfx_fixpkgs.swayfx}/bin/swaynag --type warning -m 'You want to clear clipboard?' -b 'Yes' 'exec ${pkgs.clipman}/bin/clipman clear --all'
     '';
     extraConfig = ''
 titlebar_separator disable
@@ -59,8 +59,8 @@ titlebar_padding 1
           ''
           ${pkgs.swayidle}/bin/swayidle -w \
               timeout 60 '${pkgs.swaylock}/bin/swaylock -f' \
-              timeout 90 "${stablep.swayfx}/bin/swaymsg 'output * dpms off'" \
-              resume "${stablep.swayfx}/bin/swaymsg 'output * dpms on'" \
+              timeout 90 "${swayfx_fixpkgs.swayfx}/bin/swaymsg 'output * dpms off'" \
+              resume "${swayfx_fixpkgs.swayfx}/bin/swaymsg 'output * dpms on'" \
               before-sleep '${pkgs.swaylock}/bin/swaylock -f' \
               lock '${pkgs.swaylock}/bin/swaylock -f'
           '';}
@@ -83,7 +83,7 @@ titlebar_padding 1
       modifier = "Mod4";
     };
     checkConfig = false;
-    package = stablep.swayfx;
+    package = swayfx_fixpkgs.swayfx;
     xwayland = true;
   };
   programs = {

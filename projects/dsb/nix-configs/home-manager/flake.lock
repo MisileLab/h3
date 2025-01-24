@@ -61,11 +61,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1737575492,
-        "narHash": "sha256-qa/D3NC1JoApnUuLrq1gseBmIxeg6icm/ojPgggMDVQ=",
+        "lastModified": 1737704314,
+        "narHash": "sha256-zta8jvOQ2wRCZmiwFEnS5iCulWAh8e+fLUlQxrgOBjM=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "cefb1889b96ddd1dac3dd4734e894f4cadab7802",
+        "rev": "a0428685572b134f6594e7d7f5db5e1febbab2d7",
         "type": "github"
       },
       "original": {
@@ -96,11 +96,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1737615118,
-        "narHash": "sha256-ieVuV4dlFGhaHjvajKZLd/tTekORUsPRkxsV3BImbG8=",
+        "lastModified": 1737714054,
+        "narHash": "sha256-3/VsYRkVliz5KFVtATgKwWqDN77bzUq2pVa8a8xUpA4=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "7693cb2892a64e9f97e5a021ed9ef4e2643efe83",
+        "rev": "2dc232a12896133805673574f4d1fd172713de67",
         "type": "github"
       },
       "original": {
@@ -116,21 +116,38 @@
         "nix-index-database": "nix-index-database",
         "nixpkgs": "nixpkgs",
         "stable": "stable",
+        "swayfx_fix": "swayfx_fix",
         "zig": "zig"
       }
     },
     "stable": {
       "locked": {
-        "lastModified": 1737062831,
-        "narHash": "sha256-Tbk1MZbtV2s5aG+iM99U8FqwxU/YNArMcWAv6clcsBc=",
+        "lastModified": 1737469691,
+        "narHash": "sha256-nmKOgAU48S41dTPIXAq0AHZSehWUn6ZPrUKijHAMmIk=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "5df43628fdf08d642be8ba5b3625a6c70731c19c",
+        "rev": "9e4d5190a9482a1fb9d18adf0bdb83c6e506eaab",
         "type": "github"
       },
       "original": {
         "owner": "nixos",
         "ref": "nixos-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "swayfx_fix": {
+      "locked": {
+        "lastModified": 1737659476,
+        "narHash": "sha256-jAaH6CIsRfY+g6HtDBTl2amPk8xOmrf3PXDJBIxSWCw=",
+        "owner": "LordGrimmauld",
+        "repo": "nixpkgs",
+        "rev": "7933373dd9ff5f7fd4703ac405a176aa1b8701af",
+        "type": "github"
+      },
+      "original": {
+        "owner": "LordGrimmauld",
+        "ref": "swayfx-fix",
         "repo": "nixpkgs",
         "type": "github"
       }

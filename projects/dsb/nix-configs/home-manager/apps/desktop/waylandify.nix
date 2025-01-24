@@ -1,4 +1,4 @@
-{pkgs, config, ...}:
+{pkgs, stablep, config, ...}:
 let
   # base
   base = name: envs: binaryPath: args: (pkgs.writeShellScriptBin "${name}" ''
@@ -10,7 +10,7 @@ let
   jwl = name: binaryPath: base name "" binaryPath "-Dawt.toolkit.name=WLToolkit";
   # qt-waylandify
   qwl = name: binaryPath: base name "QT_QPA_PLATFORM=wayland" binaryPath "";
-  electrons = with pkgs; [
+  electrons = with stablep; [
     (cwl "figma" "${figma-linux}/bin/figma-linux")
     (cwl "discord" "${vesktop}/bin/vesktop")
     (cwl "vscode" "${vscodium}/bin/codium")
@@ -20,9 +20,9 @@ in
   home = {
     packages = with pkgs; [
       (jwl "simplex" "${simplex-chat-desktop}/bin/simplex-chat-desktop")
-      (cwl "chrome" "${ungoogled-chromium}/bin/chromium")
+      (cwl "chrome" "${stablep.ungoogled-chromium}/bin/chromium")
       (qwl "monero" "${monero-gui}/bin/monero-wallet-gui")
-      ungoogled-chromium
+      stablep.ungoogled-chromium
     ] ++ electrons;
     file = {
       ".config/simplex/catppuccin-mocha.theme".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
