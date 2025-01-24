@@ -1,7 +1,5 @@
 ---
 import Base from "../components/base.astro"
-import Text from "../components/text.astro"
-import { AnimationType } from "../components/lib";
 
 interface CPair {
   type: string,
@@ -78,7 +76,7 @@ const addresses: Array<CPair> = [{
   "type": "eurc(eth)",
   "address": "0x9e26AaEDb917B549e8102C74167E62b21f5BBF76"
 }];
- ---
+---
 
 <Base>
   <Fragment slot="head">
@@ -103,40 +101,32 @@ const addresses: Array<CPair> = [{
 	<div class="w-full h-full flex flex-row">
     <div class="w-full h-screen justify-center items-center flex flex-col">
       <div class="flex flex-col">
-        <Text><p class="text-black text-4xl sm:text-6xl font-bold">Misile</p></Text>
-        <div class="flex flex-row w-fit h-fit text-2xl sm:text-4xl font-normal text-gray gap-x-4">
-          <Text animationType={AnimationType.random}><span>The</span></Text>
-          <Text animationType={AnimationType.random}><span class="text-blue">Python</span></Text>
-          <Text animationType={AnimationType.random}><span>and</span></Text>
-          <Text animationType={AnimationType.random}><span class="text-purple">AstroJS</span></Text>
-          <Text animationType={AnimationType.random}><span>User</span></Text>
+        <p class="text-4xl sm:text-6xl font-bold">Misile</p>
+        <div class="flex flex-row w-fit h-fit text-2xl sm:text-4xl font-normal text-indigo-200 gap-x-4">
+          <span>The</span>
+          <span class="text-indigo-600">Python</span>
+          <span>and</span>
+          <span class="text-purple-600">AstroJS</span>
+          <span>User</span>
         </div>
-        <div class="flex flex-row w-fit h-fit text-xl sm:text-3xl font-normal text-blue gap-2">
-          <Text animationType={AnimationType.random}>
-            <a href="/projects">Projects</a>
-          </Text>
-          <span class="text-gray">|</span>
-          <Text animationType={AnimationType.random}>
-            <a href="/en/blog">Blog</a>
-          </Text>
-          <span class="text-gray">|</span>
-          <Text animationType={AnimationType.random}>
-            <a href="/contact">Contact</a>
-          </Text>
-          <span class="text-gray">|</span>
-          <Text animationType={AnimationType.random}>
-            <a href="https://mail.misile.xyz">Subscribe</a>
-          </Text>
+        <div class="flex flex-row w-fit h-fit text-xl sm:text-3xl font-normal text-indigo-200 gap-2">
+          <a href="/projects">Projects</a>
+          <span class="text-indigo-300">|</span>
+          <a href="/en/blog">Blog</a>
+          <span class="text-indigo-300">|</span>
+          <a href="/contact">Contact</a>
+          <span class="text-indigo-300">|</span>
+          <a href="https://mail.misile.xyz">Subscribe</a>
         </div>
-        <div class="flex flex-row gap-x-2 items-center text-sm sm:text-xl md:text-2xl lg:text-4xl">
+        <div class="flex flex-row gap-x-2 items-center text-sm sm:text-xl md:text-2xl lg:text-4xl text-indigo-200">
           <span>Donate</span>
-          <select class="w-auto max-w-1/2 bg-white" id="crypto-select">
+          <select class="w-auto max-w-1/2 bg-gray-950 text-indigo-300" id="crypto-select">
             {addresses.toSorted((a, b)=>a.type.localeCompare(b.type)).map((v)=>{
               return <option value={v.address}>{v.type}</option>
             })}
           </select>
           <span>(Click to Copy) -></span>
-          <span class="text-blue" id="crypto-placeholder">None</span>
+          <span class="text-indigo-300" id="crypto-placeholder">None</span>
         </div>
       </div>
     </div>

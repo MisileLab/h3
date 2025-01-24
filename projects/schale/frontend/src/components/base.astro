@@ -4,6 +4,7 @@ export interface Props {
 }
 let {rewind = false} = Astro.props;
 Astro.response.headers.set('onion-location', `http://b723cfcf6psmade7vqldtbc332nhhrwy52wvka3afy5s5257pzbqswid.onion${Astro.url.pathname}`)
+import "../styles/global.css"
 ---
 
 <html lang="en">
@@ -33,7 +34,7 @@ Astro.response.headers.set('onion-location', `http://b723cfcf6psmade7vqldtbc332n
     {!rewind && <style is:global>* {font-family: 'Iosevka', 'SarasaMono';}</style>}
     {rewind && <style is:global> * {font-family: 'SarasaMono';}</style>}
   </head>
-  <body class="bg-white">
+  <body class="bg-gray-950 text-indigo-100">
     <slot />
   </body>
 </html>

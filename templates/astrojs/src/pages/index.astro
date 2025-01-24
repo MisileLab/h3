@@ -1,22 +1,20 @@
 ---
 import Base from "../components/base.astro"
-import Text from "../components/text.astro"
-import { AnimationType, HoverType } from "../components/lib";
 ---
 
 <Base>
   <Fragment name="head">
-    <title>Animatified Minimalism</title>
+    <title>Template</title>
   </Fragment>
-	<div class="bg-gray w-full h-full flex flex-row">
-    <div class="w-full h-screen justify-center items-center flex flex-col bg-white">
+	<div class="w-full h-full flex flex-row">
+    <div class="w-full h-screen justify-center items-center flex flex-col">
       <div class="flex flex-col">
-        <Text><p class="text-black text-6xl font-bold">Animatified Minimalism</p></Text>
-        <div class="flex flex-row w-fit h-fit text-4xl font-normal text-gray">
-          <Text animationType={AnimationType.random}><span>Beyond&nbsp;</span></Text>
-          <Text animationType={AnimationType.rewind} initialTime={0} hover={HoverType.show}><span class="text-blue">Minimalism</span></Text>
+        <p class="text-indigo-50 text-6xl font-bold">Template</p>
+        <div class="flex flex-row w-fit h-fit text-4xl font-normal text-indigo-100">
+          <span>The simple&nbsp;</span>
+          <span class="text-indigo-500">Template</span>
         </div>
-        <Text><p class="text-red text-3xl font-thin">The next-generation of Minimalism</p></Text>
+        <p class="text-red-400 text-3xl font-thin">Based on <span class="underline">minimalism</span></p>
       </div>
     </div>
 	</div>

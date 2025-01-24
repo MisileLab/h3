@@ -1,6 +1,5 @@
 ---
 import Base from "../../../components/base.astro"
-import Text from "../../../components/text.astro"
 import { type Post, getPost } from "./lib.ts"
 
 import { nullValue } from "@misile/satellite/errors"
@@ -29,14 +28,14 @@ catch (e) {
 	<div class="w-full h-full flex flex-row">
     <div class="w-full h-screen justify-center items-center flex flex-col">
       <div class="flex flex-col">
-        <Text><p class="text-black text-4xl sm:text-6xl font-bold">{post.name}</p></Text>
-        <Text><p class="text-2xl sm:text-4xl font-normal text-gray">{post.tldr}</p></Text>
-        <div class="flex flex-row w-fit h-fit text-xl sm:text-3xl font-normal text-blue gap-2">
-          <Text><a href={post.file}>File</a></Text>
-          <p class="text-black">|</p>
-          <Text><a href=`${Astro.url.pathname}/sign`>Sign</a></Text>
-          <p class="text-black">|</p>
-          <Text><a href=`${Astro.url.pathname}/signers`>Signers ({post.signer})</a></Text>
+        <p class="text-4xl sm:text-6xl font-bold">{post.name}</p>
+        <p class="text-2xl sm:text-4xl font-normal text-indigo-200">{post.tldr}</p>
+        <div class="flex flex-row w-fit h-fit text-xl sm:text-3xl font-normal text-indigo-400 gap-2">
+          <a href={post.file}>File</a>
+          <p class="text-indigo-500">|</p>
+          <a href=`${Astro.url.pathname}/sign`>Sign</a>
+          <p class="text-indigo-500">|</p>
+          <a href=`${Astro.url.pathname}/signers`>Signers ({post.signer})</a>
         </div>
       </div>
     </div>
