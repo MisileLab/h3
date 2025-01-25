@@ -1,6 +1,29 @@
 # cabinet
 
-More cleaner version of [this project](https://github.com/compy07/2024-)
+Find suicidal people by stream of text and hashtags.
+
+## Features
+
+- [ ] Basic identification
+  - [ ] Embedding Layer
+  - [ ] Emotion Layer
+  - [ ] Context Layer
+  - [ ] Hashtag Layer
+- [ ] Improvement Points
+  - [ ] Add test, validate dataset
+  - [ ] Epoch support
+  - [ ] Automatic Loss Stop (save best model)
+  - [ ] Optimizer
+  - [ ] Other embeddings
+    - [x] openai/embedding-3-large
+    - [ ] voyage ai
+  - [ ] More datasets
+    - [x] X
+    - [ ] Bluesky
+    - [ ] Mastodon
+    - [ ] Instagram
+- [ ] Multi Lang support
+  - [ ] English
 
 ## Datasets
 
