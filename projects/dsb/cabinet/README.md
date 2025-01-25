@@ -1,6 +1,6 @@
 # cabinet
 
-Find suicidal people by stream of text and hashtags.
+Find suicidal people by stream of text.
 
 ## Features
 
@@ -8,12 +8,12 @@ Find suicidal people by stream of text and hashtags.
   - [ ] Embedding Layer
   - [ ] Emotion Layer
   - [ ] Context Layer
-  - [ ] Hashtag Layer
 - [ ] Improvement Points
   - [ ] Add test, validate dataset
   - [ ] Epoch support
   - [ ] Automatic Loss Stop (save best model)
   - [ ] Optimizer
+  - [ ] Other bert-based model (context layer, emotion layer)
   - [ ] Other embeddings
     - [x] openai/embedding-3-large
     - [ ] voyage ai
