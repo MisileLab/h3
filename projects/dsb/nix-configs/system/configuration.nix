@@ -10,7 +10,6 @@
     locate = {
       enable = true;
       package = pkgs.plocate;
-      localuser = null;
       interval = "never";
       prunePaths = options.services.locate.prunePaths.default ++ ([
         "/home/misile/.cargo"
