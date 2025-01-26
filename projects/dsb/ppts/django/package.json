@@ -12,7 +12,7 @@
 		"@sveltejs/adapter-node": "5.2.12",
 		"@sveltejs/kit": "2.16.1",
 		"@sveltejs/vite-plugin-svelte": "5.0.3",
-		"@types/reveal.js": "5.0.4",
+		"@types/reveal.js": "5.0.5",
 		"prettier": "3.4.2",
 		"prettier-plugin-svelte": "3.3.3",
 		"prettier-plugin-tailwindcss": "0.6.11",
