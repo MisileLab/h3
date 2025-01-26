@@ -1,9 +1,11 @@
+from dataclasses import dataclass
 from pathlib import Path
-from collections import defaultdict
 from json import loads
 from typing import final, override
 
-from torch import Tensor, nn, cat, optim
+from tqdm import tqdm
+from torch import Tensor, nn, cat, ones, optim, zeros
+from torch.utils.data import TensorDataset, DataLoader
 
 @final
 class Model(nn.Module):
@@ -33,16 +35,48 @@ class Model(nn.Module):
 
 amount = 3
 
-normals = Path("embedding_results").glob("normal*")
-suicidals = Path("embedding_results").glob("suicidal*")
-processed_ids: dict[int, list[int]] = defaultdict(list)
+@final
+@dataclass
+class Data:
+  normal = Tensor()
+  suicidal = Tensor()
+
+result = Data()
+
+for i in tqdm(Path("embedding_results").glob("*.jsonl")):
+  data = sorted(loads(i.read_text()), key=lambda x: int(x["custom-id"].removeprefix("request-"))) # pyright: ignore[reportAny]
+  embedding: list[list[float]] = [x["response"]["body"]["data"][0]["embedding"] for x in data] # pyright: ignore[reportAny]
+  n = amount-1
+  suicidal = i.name.startswith("suicidal")
+  t = tqdm(leave=False, total=len(embedding)-amount)
+  while n < len(embedding):
+    if suicidal:
+      result.suicidal = cat([result.suicidal, Tensor(embedding[n-amount:n+1])], dim=1)
+    else:
+      result.normal = cat([result.normal, Tensor(embedding[n-amount:n+1])], dim=1)
+    n += 1
+    _ = t.update(1)
+
+dataset = TensorDataset(
+  cat([result.normal, result.suicidal], dim=1),
+  cat([zeros(result.normal.shape[1]), ones(result.suicidal.shape[1])])
+)
+batch_size = 32
+data_loaders = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+
+epoches = 300
+model = Model(amount)
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.AdamW(model.parameters(), lr=2e-5)
 
 model = Model(amount)
-criterion = nn.MSELoss()
-optimizer = optim.Adam(model.parameters())
-_ = model.train()
+for _ in tqdm(range(epoches)):
+  _ = model.train()
+  for x, y in data_loaders: # pyright: ignore[reportAny]
+    forward: Tensor = model(x)
+    loss = criterion(forward, y) # pyright: ignore[reportAny]
 
-# TODO: make entire data to stream of Tensor
-
-# TODO: actual train
+    optimizer.zero_grad()
+    loss.backward() # pyright: ignore[reportAny]
+    _ = optimizer.step() # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
 
