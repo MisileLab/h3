@@ -10,7 +10,7 @@ dependencies = [
   "koreanize-matplotlib==0.1.1",
   "loguru==0.7.3",
   "matplotlib==3.10.0",
-  "openai==1.60.0",
+  "openai==1.60.1",
   "tiktoken==0.8.0",
   "torch==2.5.1",
   "twscrape==0.15.0",
