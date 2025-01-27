@@ -5,7 +5,7 @@ Find suicidal people by stream of text.
 ## Features
 
 - [ ] Basic identification
-  - [ ] Embedding Layer
+  - [x] Embedding Layer
   - [ ] Emotion Layer
   - [ ] Context Layer
 - [ ] Improvement Points

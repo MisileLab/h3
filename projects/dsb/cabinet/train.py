@@ -4,7 +4,7 @@ from json import loads
 from typing import final, override
 
 from tqdm import tqdm
-from torch import Tensor, nn, cat, ones, optim, zeros
+from torch import Tensor, nn, cat, ones, optim, zeros, save # pyright: ignore[reportUnknownVariableType]
 from torch.utils.data import TensorDataset, DataLoader
 
 @final
@@ -79,4 +79,6 @@ for _ in tqdm(range(epoches)):
     optimizer.zero_grad()
     loss.backward() # pyright: ignore[reportAny]
     _ = optimizer.step() # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
+
+save(model.state_dict(), "model.pth")
 
