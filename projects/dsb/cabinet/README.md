@@ -10,7 +10,7 @@ Find suicidal people by stream of text.
   - [ ] Context Layer
 - [ ] Improvement Points
   - [ ] Add test, validate dataset
-  - [ ] Epoch support
+  - [x] Epoch support
   - [ ] Automatic Loss Stop (save best model)
   - [ ] Optimizer
   - [ ] Other bert-based model (context layer, emotion layer)
