@@ -29,4 +29,6 @@ Find suicidal people by stream of text.
 ## Datasets
 
 - [v0](https://minio.misile.xyz/noa/datasets/cabinet_v0.tar.zst)
+  - [with openai/embedding-3-large](https://sen1014-my.sharepoint.com/:u:/g/personal/m1_sunrint_sen_hs_kr/EU5O3_JbHA5NhAPI0KbjElkBuMQTW2ZB_SGCnzJ5SfVScw?e=bI58Zy)
+    - password: `ovjU#14W&itSFC3naFeL`
 
