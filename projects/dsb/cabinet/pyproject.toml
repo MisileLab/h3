@@ -13,7 +13,7 @@ dependencies = [
   "openai==1.60.2",
   "pip==25.0", # needs for pytorch gpu version
   "tiktoken==0.8.0",
-  "torch==2.5.1",
+  "torch==2.6.0+cpu",
   "tqdm==4.67.1",
   "twscrape==0.15.0",
 ]
