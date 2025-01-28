@@ -17,6 +17,7 @@ Find suicidal people by stream of text.
   - [ ] Other embeddings
     - [x] openai/embedding-3-large
     - [ ] voyage ai
+    - [ ] unsupervised embedding
   - [ ] More datasets
     - [x] X
     - [ ] Bluesky
