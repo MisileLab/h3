@@ -14,7 +14,7 @@
     "@astrojs/node": "9.0.2",
     "@astrojs/sitemap": "3.2.1",
     "@misile/satellite": "0.0.5",
-    "@tailwindcss/vite": "4.0.0",
+    "@tailwindcss/vite": "4.0.1",
     "astro": "5.1.10",
     "dayjs": "1.11.13",
     "mobile-device-detect": "0.4.3",
