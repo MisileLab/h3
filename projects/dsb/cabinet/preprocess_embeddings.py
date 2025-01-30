@@ -5,9 +5,10 @@ from pandas import read_json # pyright: ignore[reportMissingTypeStubs, reportUnk
 
 from pathlib import Path
 from os import getenv
+from sys import platform
 from pickle import dumps
 
-if not torch.cuda.is_available():
+if not torch.cuda.is_available() and Path("zluda").exists() and platform == "win32":
   # rocm thing
   # https://github.com/lshqqytiger/ZLUDA
   torch.backends.cudnn.enabled = False
