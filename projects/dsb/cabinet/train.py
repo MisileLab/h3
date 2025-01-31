@@ -10,9 +10,9 @@ else:
 
 from tqdm.auto import tqdm
 
-from torch import Tensor, nn, cat, optim, save
+from torch import Tensor, nn, cat, optim, save, abs
 from torch.cuda import is_available
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, TensorDataset, random_split
 
 device = "cuda" if is_available() else "cpu"
 print(device)
@@ -49,24 +49,71 @@ class Model(nn.Module):
     return self.percentage_layer(concatenated) # pyright: ignore[reportAny]
 
 amount = 3
-data_loaders: DataLoader[tuple[Tensor, ...]] = loads(Path("data.pkl").read_bytes())
+batch_size = 32
 
-epochs = 300
+dataset: TensorDataset = loads(Path("dataset.pkl").read_bytes())
+train_size = int(0.8 * len(dataset))
+test_size = len(dataset) - train_size
+
+train_dataset, test_dataset = random_split(dataset, [train_size, test_size])
+train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False)
+
+epoches = 300
 model = Model(amount).to(device)
 criterion = nn.HuberLoss()
 optimizer = optim.AdamW(model.parameters(), lr=2e-5)
 
-for _ in tqdm(range(epochs)):
+t = tqdm(range(epoches))
+
+# Early Stopping Parameters
+patience = 5
+best_loss = float('inf')
+patience_counter = 0
+model_path = "model.pth"
+best_model = model.state_dict()
+
+for epoch in t:
   _ = model.train()
-  for x, y in data_loaders: # pyright: ignore[reportAny]
-    x = x.to(device) # pyright: ignore[reportAny]
-    y = y.to(device).unsqueeze(1) # pyright: ignore[reportAny]
+  running_loss = 0.0
+  for x, y in train_loader:
+    x: Tensor
+    y: Tensor
+    x = x.to(device)
+    y = y.to(device).unsqueeze(1)
+    optimizer.zero_grad()
 
     output: Tensor = model(x)
     loss = criterion(output, y) # pyright: ignore[reportAny]
 
-    optimizer.zero_grad()
     _ = loss.backward() # pyright: ignore[reportAny]
     _ = optimizer.step() # pyright: ignore[reportUnknownVariableType, reportUnknownMemberType]
+    running_loss += loss.item() # pyright: ignore[reportAny]
+  
+  avg_loss = running_loss / len(train_loader)
+  t.set_description(str(avg_loss))
+  
+  if avg_loss < best_loss:
+    best_loss = avg_loss
+    patience_counter = 0
+    best_model = model.state_dict()
+  else:
+    patience_counter += 1
+    if patience_counter >= patience:
+      print("Early stopping triggered!")
+      break
 
-save(model.state_dict(), "model.pth")
+print("Training completed!")
+
+_ = save(best_model, model_path)
+_ = model.load_state_dict(best_model)
+
+_ = model.eval()
+x_test: Tensor
+y_test: Tensor
+res: list[Tensor] = []
+for x_test, y_test in test_loader:
+  x_test, y_test = x_test.to(device), y_test.to(device).unsqueeze(1)
+  prediction: Tensor = model(x_test)
+  _ = res.append(abs(prediction - y_test))
+print(sum(res) / len(res))

@@ -174,7 +174,7 @@ dependencies = [
     { name = "pip" },
     { name = "tiktoken" },
     { name = "torch", version = "2.6.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "sys_platform == 'linux'" },
-    { name = "torch", version = "2.7.0.dev20250128+cu118", source = { registry = "https://download.pytorch.org/whl/nightly/cu118" }, marker = "sys_platform != 'linux'" },
+    { name = "torch", version = "2.7.0.dev20250131+cu118", source = { registry = "https://download.pytorch.org/whl/nightly/cu118" }, marker = "sys_platform != 'linux'" },
     { name = "tqdm" },
     { name = "twscrape" },
 ]
@@ -1660,14 +1660,13 @@ dependencies = [
 wheels = [
     { url = "https://download.pytorch.org/whl/cpu/torch-2.6.0%2Bcpu-cp313-cp313-linux_x86_64.whl", hash = "sha256:e70ee2e37ad27a90201d101a41c2e10df7cf15a9ebd17c084f54cf2518c57bdf" },
     { url = "https://download.pytorch.org/whl/cpu/torch-2.6.0%2Bcpu-cp313-cp313-manylinux_2_28_aarch64.whl", hash = "sha256:b5e7e8d561b263b5ad8049736281cd12c78e51e7bc1a913fd4098fd0e0b96347" },
-    { url = "https://download.pytorch.org/whl/cpu/torch-2.6.0%2Bcpu-cp313-cp313-win_amd64.whl", hash = "sha256:b436a6c62d086dc5b32f5721b59f0ca8ad3bf9de09ee9b5b83dbf1e7a7e22c60" },
     { url = "https://download.pytorch.org/whl/cpu/torch-2.6.0%2Bcpu-cp313-cp313t-linux_x86_64.whl", hash = "sha256:fb34d6cc4e6e20e66d74852c3d84e0301dc5e1a7c822076ef288886f978390f0" },
     { url = "https://download.pytorch.org/whl/cpu/torch-2.6.0%2Bcpu-cp313-cp313t-manylinux_2_28_aarch64.whl", hash = "sha256:7cac05af909ee1c5c2915e8f3efaa1ea015e7e414be0ff53071402b9e4f3c7df" },
 ]
 
 [[package]]
 name = "torch"
-version = "2.7.0.dev20250128+cu118"
+version = "2.7.0.dev20250131+cu118"
 source = { registry = "https://download.pytorch.org/whl/nightly/cu118" }
 resolution-markers = [
     "sys_platform != 'linux'",
@@ -1682,8 +1681,8 @@ dependencies = [
     { name = "typing-extensions", marker = "sys_platform != 'linux'" },
 ]
 wheels = [
-    { url = "https://download.pytorch.org/whl/nightly/cu118/torch-2.7.0.dev20250128%2Bcu118-cp313-cp313-win_amd64.whl" },
-    { url = "https://download.pytorch.org/whl/nightly/cu118/torch-2.7.0.dev20250128%2Bcu118-cp313-cp313t-win_amd64.whl" },
+    { url = "https://download.pytorch.org/whl/nightly/cu118/torch-2.7.0.dev20250131%2Bcu118-cp313-cp313-win_amd64.whl" },
+    { url = "https://download.pytorch.org/whl/nightly/cu118/torch-2.7.0.dev20250131%2Bcu118-cp313-cp313t-win_amd64.whl" },
 ]
 
 [[package]]

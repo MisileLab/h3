@@ -1,18 +1,24 @@
 from typing import final, override
 from os import getenv
 
-from torch import nn, Tensor, cat, load # pyright: ignore[reportUnknownVariableType]
+from torch import nn, tensor, Tensor, cat, load
+from torch.cuda import is_available
 from openai import OpenAI
+
+device = "cuda" if is_available() else "cpu"
+print(device)
 
 @final
 class Model(nn.Module):
   def __init__(self, data_amount: int) -> None:
-    super().__init__() # pyright: ignore[reportUnknownMemberType]
-    self.embedding_layers: list[nn.Sequential] = [nn.Sequential(
-      nn.Linear(4096, 64),
-      nn.ReLU(),
-      nn.Dropout(0.2)
-    ) for _ in range(data_amount)]
+    super().__init__()  # pyright: ignore[reportUnknownMemberType]
+    self.embedding_layers = nn.ModuleList([
+      nn.Sequential(
+        nn.Linear(3072, 64),
+        nn.ReLU(),
+        nn.Dropout(0.2)
+      ) for _ in range(data_amount)
+    ])
 
     self.percentage_layer = nn.Sequential()
     n = 64 * data_amount
@@ -20,33 +26,36 @@ class Model(nn.Module):
       _ = self.percentage_layer.append(nn.Linear(n, n // 4))
       _ = self.percentage_layer.append(nn.ReLU())
       _ = self.percentage_layer.append(nn.Dropout(0.2))
-    _ = self.percentage_layer.append(nn.Linear(32, 1))
+      n //= 4
+    _ = self.percentage_layer.append(nn.Linear(n, 1))
+    self.percentage_layer = self.percentage_layer
 
   @override
-  def forward(self, x: list[Tensor]) -> Tensor:
-    embedding_layer_results: list[Tensor] = [
-      f(i) for f, i in zip(self.embedding_layers, x)
-    ]
-
-    return self.percentage_layer(cat(embedding_layer_results, dim=1)) # pyright: ignore[reportAny]
+  def forward(self, x: Tensor) -> Tensor:
+    embedding_layer_results: list[Tensor] = []
+    for i, f in enumerate(self.embedding_layers):
+      xi = x[:, i, :]
+      _ = embedding_layer_results.append(f(xi)) # pyright: ignore[reportAny]
+    concatenated = cat(embedding_layer_results, dim=1)
+    return self.percentage_layer(concatenated) # pyright: ignore[reportAny]
 
 amount = 3
 
-model = Model(amount)
-_ = model.load_state_dict(load('model.pth', weights_only=True)) # pyright: ignore[reportAny]
+model = Model(amount).to(device)
+_ = model.load_state_dict(load("model.pth", weights_only=True, map_location=device)) # pyright: ignore[reportAny]
 _ = model.eval()
 o = OpenAI(api_key=getenv("OPENAI_KEY"))
 chats: list[str] = []
 for i in range(3):
   _ = chats.append(input(f"chat {i+1}: "))
 
-embeddings: list[Tensor] = []
+embeddings: list[list[float]] = []
 for i in chats:
   resp = o.embeddings.create(
     input=i,
     model='text-embedding-3-large'
   )
-  embeddings.append(Tensor(*resp.data[0].embedding))
+  embeddings.append(resp.data[0].embedding)
 
-print(model(cat(embeddings, dim=0))) # pyright: ignore[reportAny]
+print(model(tensor(embeddings).unsqueeze(0))[0][0] * 100) # pyright: ignore[reportAny]
 
