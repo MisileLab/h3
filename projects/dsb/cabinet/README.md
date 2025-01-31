@@ -28,7 +28,7 @@ Find suicidal people using stream of text.
 
 ## Datasets
 
-- v0
+- [v0](https://minio.misile.xyz/noa/models/cabinet_v0.pth.zst)
   - [dataset (twscrape Tweets)](https://minio.misile.xyz/noa/datasets/cabinet_v0.tar.zst)
   - [with openai/embedding-3-large (pytorch TensorDataset)](https://minio.misile.xyz/noa/dataset/cabinet_v0_pytorch.pt.zst)
 
