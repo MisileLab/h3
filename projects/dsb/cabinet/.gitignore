@@ -1,6 +1,6 @@
-*.csv
-results
-results_normal
+user.pkl
+user_raw.pkl
+data.pkl
 userids
 accounts.db
 accounts.csv

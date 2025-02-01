@@ -1,42 +1,56 @@
-from googlesearch import search # pyright: ignore[reportMissingTypeStubs, reportUnknownVariableType]
-from requests.exceptions import HTTPError, ProxyError
+from googlesearch import SearchResult, search # pyright: ignore[reportMissingTypeStubs, reportUnknownVariableType]
+from pandas import concat # pyright: ignore[reportMissingTypeStubs]
 from requests import Timeout
+from requests.exceptions import HTTPError, ProxyError
 from loguru import logger
 
-from os import getenv
-from csv import DictWriter
 from http import HTTPStatus
 from time import sleep
 from secrets import SystemRandom
 
-from lib import get_proxy
+from lib import get_proxy, read_pickle
 
 proxy = get_proxy()
-logger.info(proxy)
 
 base_query = "site:x.com"
-suicidal = f"{base_query} #자살"
-logger.debug(suicidal)
+suicidals = [
+  "자해", "자해러", "자해계",
+  "자살", "자살시도", "자살충동", "자살사고",
+  "죽고싶다", "죽고싶어"
+]
 
 data_num = 4000
 result_interval = 100
 sleep_interval_min = 0
 sleep_interval_max = 20
-start_num = int(getenv("start_num", 0))
 
 def search_res(query: str, start_num: int):
-  res = list(search(query, advanced=True, region="kr", num_results=result_interval, start_num=start_num, safe=None, ssl_verify=None, proxy=proxy)) # pyright: ignore[reportArgumentType]
+  res: list[SearchResult] = []
+  for i in search( # pyright: ignore[reportUnknownVariableType]
+    query,
+    advanced=True,
+    region="kr",
+    num_results=result_interval,
+    start_num=start_num,
+    safe=None, # pyright: ignore[reportArgumentType]
+    ssl_verify=None,
+    proxy=proxy
+  ):
+    if not isinstance(i, SearchResult):
+      logger.debug("skip")
+      continue
+    res.append(i)
   logger.debug(res)
   return res
 
-with open("suicidal.csv", "w", newline='') as f:
-  dw = DictWriter(f, fieldnames=["title", "url", "description"])
-  dw.writeheader()
-  i = start_num
+df = read_pickle("user_raw.pkl")
+
+for suicidal_tag in suicidals:
+  i = 0
   while i <= data_num:
     try:
       logger.debug(f"{i}, begin")
-      datas = search_res(suicidal, i)
+      datas = search_res(base_query + f" #{suicidal_tag}", i)
       logger.debug(f"{i}, end")
     except HTTPError as e:
       if e.response.status_code == HTTPStatus.TOO_MANY_REQUESTS:
@@ -52,10 +66,12 @@ with open("suicidal.csv", "w", newline='') as f:
       print("data is None")
       break
     for data in datas:
-      logger.info(data.title) # pyright: ignore[reportAny]
-      dw.writerow({"title": data.title, "url": data.url, "description": data.description}) # pyright: ignore[reportAny]
+      logger.info(data.title) # pyright: ignore[reportUnknownArgumentType]
+      if df.loc[df["url"] == data.url].empty: # pyright: ignore[reportUnknownMemberType]
+        df = concat({"title": data.title, "url": data.url, "description": data.description})
     i += result_interval
     r = SystemRandom().randint(sleep_interval_min, sleep_interval_max)
     logger.debug(f"sleep {r} secs")
     sleep(r)
 
+df.to_pickle("user_raw.pkl")

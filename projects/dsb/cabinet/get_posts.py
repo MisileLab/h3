@@ -1,16 +1,14 @@
-from csv import DictReader
-from os import getenv
 from time import sleep
 from secrets import SystemRandom
 from asyncio import run
 from pathlib import Path
-from pickle import dump
 
 from loguru import logger
-from twscrape import API, Tweet, User, gather # pyright: ignore[reportMissingTypeStubs]
+from twscrape import API, Tweet, gather # pyright: ignore[reportMissingTypeStubs]
 from twscrape.logger import set_log_level # pyright: ignore[reportMissingTypeStubs]
+from pandas import DataFrame, concat # pyright: ignore[reportMissingTypeStubs]
 
-from lib import get_proxy
+from lib import get_proxy, read_pickle
 
 def get_value[T](v: T | None) -> T:
   if v is None:
@@ -23,11 +21,11 @@ async def get_tweets(api: API, user_id: int) -> list[Tweet]:
   sleep(r)
   return await gather(api.user_tweets(user_id)) # pyright: ignore[reportUnknownMemberType]
 
-async def get_id_by_name(api: API, username: str) -> int:
+async def get_user(api: API, userid: int) -> int:
   r = SystemRandom().randint(1, 10)
   logger.info(f"sleep {r} sec")
   sleep(r)
-  res: User | None = await api.user_by_login(username) # pyright: ignore[reportUnknownMemberType]
+  res = await api.user_by_id(userid) # pyright: ignore[reportUnknownMemberType]
   if res is None:
     raise TypeError("user is None")
   return res.id
@@ -37,51 +35,27 @@ if not Path("./results").is_dir():
   Path("./results").mkdir()
 
 async def main():
-  api = API()
-  api.proxy = get_proxy()
+  api = API(proxy=get_proxy())
+  df = read_pickle("data.pkl")
+  df_user = read_pickle("user.pkl")
 
-  # 1. get username (or id) from url
-  # 2. get id and export to json (for backup) and save to list
-  if getenv("parseId") == "0":
-    processed: list[str] = []
-    with open("./userids", "w") as f:
-      with open("./result.csv", "r") as r:
-        dr = DictReader(r)
-        for i in dr:
-          _id = ""
-          for j in i["url"].removeprefix("https://x.com/"):
-            if j in ["/", "?"]:
-              break
-            _id += j
-          logger.debug(_id)
-          if _id not in processed:
-            user_id = await get_id_by_name(api, _id)
-            _ = f.write(f"{user_id}\n")
-            processed.append(_id)
-    del processed
-
-  # 3. pull posts for user in users
-  uid = "sample"
-  i = 0
-
-  with open("./userids", "r") as f:
-    while True:
-      uid = f.readline().strip("\n")
-      if uid == "":
-        break
-      uid = int(uid)
-      if Path("results", f"{uid}.pkl").is_file():
-        logger.warning(f"skipping {uid}")
-        continue
-      if i > 0:
-        i -= 1
-        continue
-      logger.debug(uid)
-      tweets = await get_tweets(api, uid)
-      if len(tweets) == 0:
-        logger.error(f"no tweets on {uid}, skip it")
-        continue
-      dump(tweets, open(f"./results/{uid}.pkl", "wb"))
+  for i in df_user: # pyright: ignore[reportUnknownVariableType]
+    uid: int = i["id"] # pyright: ignore[reportUnknownVariableType]
+    logger.debug(uid)
+    if not df.loc[df["id"] == uid].empty: # pyright: ignore[reportUnknownMemberType]
+      logger.info("skip because exists")
+      continue
+    tweets = await get_tweets(api, uid) # pyright: ignore[reportUnknownArgumentType]
+    if len(tweets) == 0:
+      logger.error(f"no tweets on {uid}, skip it")
+      continue
+    df_user = concat([df_user, DataFrame({
+      "id": uid,
+      "name": i["name"],
+      "url": i["url"],
+      "sucidal": i["sucidal"],
+      "tweets": tweets
+    })])
 
 if __name__ == "__main__":
   run(main())

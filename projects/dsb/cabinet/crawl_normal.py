@@ -1,20 +1,15 @@
 from loguru import logger
 from twscrape import User, API # pyright: ignore[reportMissingTypeStubs]
+from pandas import DataFrame, concat # pyright: ignore[reportMissingTypeStubs]
 
-from os import listdir
-from csv import DictWriter
 from secrets import SystemRandom
 from asyncio import run
-from pathlib import Path
-from sys import stdout
 from time import sleep
+from copy import deepcopy
 
-from lib import get_proxy
+from lib import get_proxy, read_pickle
 
-logger.remove()
-_ = logger.add(stdout, level="DEBUG")
 proxy = get_proxy()
-logger.info(proxy)
 api = API(proxy=proxy)
 
 sleep_interval_min = 0
@@ -82,24 +77,22 @@ async def search_res(userid: int, max_depth: int, depth: int = 0) -> User | None
         raise NotEnoughData(userid)
   return res if res is not None else user
 
-exist = Path("normal.csv").is_file()
-
 async def main():
-  with open("normal.csv", "a" if exist else "w", newline='') as f:
-    dw = DictWriter(f, fieldnames=["id", "name", "url"])
-    if not exist:
-      dw.writeheader()
-    for i in listdir("results"):
-      try:
-        user = await search_res(int(i.removesuffix(".pkl")), max_depth)
-      except NotEnoughData:
-        logger.error(f"user {i.removesuffix('.pkl')} has not enough data, skipping")
-        continue
-      if user is None:
-        logger.error(f"user {i.removesuffix('.pkl')} not found, skipping")
-        continue
-      logger.info(f"{user.username}: {user.displayname}")
-      dw.writerow({"id": user.id, "name": user.username, "url": user.url})
+  df = read_pickle("user.pkl")
+  for i in deepcopy(df.loc[df['suicidal']]): # pyright: ignore[reportUnknownVariableType, reportUnknownArgumentType]
+    userid: int = i["id"] # pyright: ignore[reportUnknownVariableType]
+    try:
+      user = await search_res(userid, max_depth) # pyright: ignore[reportUnknownArgumentType]
+    except NotEnoughData:
+      logger.error(f"{userid} has not enough data, skipping")
+      continue
+    if user is None:
+      logger.error(f"{userid} not found, skipping")
+      continue
+    logger.info(f"{user.username}: {user.displayname}")
+    if df.loc[df['id'] == user.id].empty: # pyright: ignore[reportUnknownMemberType]
+      df = concat([df, DataFrame({"id": user.id, "name": user.username, "url": user.url, "suicidal": False})])
+  df.to_pickle("user.pkl")
 
 if __name__ == "__main__":
   run(main())
