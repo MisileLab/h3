@@ -9,7 +9,7 @@ dependencies = [
   "koreanize-matplotlib==0.1.1",
   "loguru==0.7.3",
   "matplotlib==3.10.0",
-  "openai==1.60.2",
+  "openai==1.61.0",
   "pandas==2.2.3",
   "pip==25.0", # needs for pytorch gpu version
   "tiktoken==0.8.0",
