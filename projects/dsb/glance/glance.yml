@@ -23,7 +23,7 @@ pages:
                 name: Monero
               - symbol: USDT-USD
                 name: Tether
-              - symbol: USDKRW
+              - symbol: KRW=X
                 name: krw to usd
   - name: Communities
     columns:
