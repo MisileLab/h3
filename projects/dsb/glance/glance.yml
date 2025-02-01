@@ -23,8 +23,8 @@ pages:
                 name: Monero
               - symbol: USDT-USD
                 name: Tether
-              - symbol: INTC
-                name: Intel
+              - symbol: USDKRW
+                name: krw to usd
   - name: Communities
     columns:
       - size: full
