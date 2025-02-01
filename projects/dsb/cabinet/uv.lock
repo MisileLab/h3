@@ -164,7 +164,6 @@ name = "cabinet"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
-    { name = "googlesearch" },
     { name = "jupyterlab" },
     { name = "koreanize-matplotlib" },
     { name = "loguru" },
@@ -181,7 +180,6 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "googlesearch", git = "https://github.com/misilelab/googlesearch" },
     { name = "jupyterlab", specifier = "==4.3.5" },
     { name = "koreanize-matplotlib", specifier = "==0.1.1" },
     { name = "loguru", specifier = "==0.7.3" },
@@ -190,8 +188,8 @@ requires-dist = [
     { name = "pandas", specifier = "==2.2.3" },
     { name = "pip", specifier = "==25.0" },
     { name = "tiktoken", specifier = "==0.8.0" },
-    { name = "torch", marker = "sys_platform != 'linux'", specifier = ">=2.6.0", index = "https://download.pytorch.org/whl/nightly/cu118" },
-    { name = "torch", marker = "sys_platform == 'linux'", specifier = ">=2.6.0", index = "https://download.pytorch.org/whl/cpu" },
+    { name = "torch", marker = "sys_platform != 'linux'", specifier = ">=2.6.0,<2.7.0.dev20250201", index = "https://download.pytorch.org/whl/nightly/cu118" },
+    { name = "torch", marker = "sys_platform == 'linux'", specifier = ">=2.6.0,<2.7.0.dev20250201", index = "https://download.pytorch.org/whl/cpu" },
     { name = "tqdm", specifier = "==4.67.1" },
     { name = "twscrape", specifier = "==0.15.0" },
 ]
@@ -419,16 +417,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/ee/11/de70dee31455c546fbc88301971ec03c328f3d1138cfba14263f651e9551/fsspec-2024.12.0.tar.gz", hash = "sha256:670700c977ed2fb51e0d9f9253177ed20cbde4a3e5c0283cc5385b5870c8533f", size = 291600 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/de/86/5486b0188d08aa643e127774a99bac51ffa6cf343e3deb0583956dca5b22/fsspec-2024.12.0-py3-none-any.whl", hash = "sha256:b520aed47ad9804237ff878b504267a3b0b441e97508bd6d2d8774e3db85cee2", size = 183862 },
-]
-
-[[package]]
-name = "googlesearch"
-version = "0.2.0"
-source = { git = "https://github.com/misilelab/googlesearch#dca0cafbc4f3b8db5fa2e6ab7d523b7613621894" }
-dependencies = [
-    { name = "beautifulsoup4" },
-    { name = "fake-useragent" },
-    { name = "requests" },
 ]
 
 [[package]]

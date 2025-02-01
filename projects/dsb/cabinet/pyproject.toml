@@ -5,7 +5,6 @@ description = "Suicide Detection Model"
 readme = "README.md"
 requires-python = "==3.13.1"
 dependencies = [
-  "googlesearch",
   "jupyterlab==4.3.5",
   "koreanize-matplotlib==0.1.1",
   "loguru==0.7.3",
@@ -14,13 +13,13 @@ dependencies = [
   "pandas==2.2.3",
   "pip==25.0", # needs for pytorch gpu version
   "tiktoken==0.8.0",
-  "torch>=2.6.0",
+  # 20250201 doesn't have windows build
+  "torch>=2.6.0,<2.7.0.dev20250201",
   "tqdm==4.67.1",
   "twscrape==0.15.0",
 ]
 
 [tool.uv.sources]
-googlesearch = { git = "https://github.com/misilelab/googlesearch" }
 torch = [
   { index = "pytorch-cpu", marker = "platform_system == 'Linux'" },
   { index = "pytorch-cuda", marker = "platform_system != 'Linux'"}
