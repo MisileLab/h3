@@ -46,6 +46,7 @@ def search_res(query: str, start_num: int):
 df = read_pickle("user_raw.pkl")
 
 for suicidal_tag in suicidals:
+  logger.info(suicidal_tag)
   i = 0
   while i <= data_num:
     try:
@@ -58,7 +59,7 @@ for suicidal_tag in suicidals:
         sleep(60 * 10)
         continue
       raise e
-    except (Timeout, ProxyError):
+    except (Timeout, ProxyError, ConnectionError):
       logger.warning("let's try another interval")
       sleep(10)
       continue
