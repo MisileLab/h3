@@ -9,7 +9,7 @@ from twscrape import API, Tweet, gather # pyright: ignore[reportMissingTypeStubs
 from twscrape.logger import set_log_level # pyright: ignore[reportMissingTypeStubs]
 from pandas import DataFrame, concat # pyright: ignore[reportMissingTypeStubs]
 
-from lib import get_proxy, read_pickle
+from lib import get_proxy, is_unique, read_pickle
 
 url_filter = compile(r"(https?:\/\/)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)")
 
@@ -45,7 +45,7 @@ async def main():
   for i in df_user: # pyright: ignore[reportUnknownVariableType]
     uid: int = i["id"] # pyright: ignore[reportUnknownVariableType]
     logger.debug(uid)
-    if not df.loc[df["id"] == uid].empty: # pyright: ignore[reportUnknownMemberType]
+    if not is_unique(df, "id", uid): # pyright: ignore[reportUnknownArgumentType]
       logger.info("skip because exists")
       continue
     data: list[str] = []

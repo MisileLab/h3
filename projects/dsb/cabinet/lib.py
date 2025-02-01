@@ -33,3 +33,9 @@ def read_pickle(file_path: str) -> DataFrame:
   else:
     df = DataFrame()
   return df
+
+def is_unique(df: DataFrame, key: str, value: object) -> bool:
+  try:
+    return df.loc[df[key] == value].empty # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
+  except KeyError:
+    return True

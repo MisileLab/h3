@@ -6,7 +6,7 @@ from asyncio import run
 from time import sleep
 from secrets import SystemRandom
 
-from lib import get_proxy, read_pickle
+from lib import get_proxy, is_unique, read_pickle
 
 proxy = get_proxy()
 
@@ -27,7 +27,7 @@ async def main():
     async for tweet in api.search(f"#{suicidal_tag}"): # pyright: ignore[reportUnknownMemberType]
       user = tweet.user
       logger.info(user.username)
-      if df.loc[df["id"] == user.id].empty: # pyright: ignore[reportUnknownMemberType]
+      if is_unique(df, "id", user.id):
         df = concat([df, DataFrame({
           "id": user.id,
           "name": user.username,

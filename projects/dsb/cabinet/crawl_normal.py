@@ -7,7 +7,7 @@ from asyncio import run
 from time import sleep
 from copy import deepcopy
 
-from lib import get_proxy, read_pickle
+from lib import get_proxy, is_unique, read_pickle
 
 proxy = get_proxy()
 api = API(proxy=proxy)
@@ -90,7 +90,7 @@ async def main():
       logger.error(f"{userid} not found, skipping")
       continue
     logger.info(f"{user.username}: {user.displayname}")
-    if df.loc[df['id'] == user.id].empty: # pyright: ignore[reportUnknownMemberType]
+    if is_unique(df, "id", user.id):
       df = concat([df, DataFrame({"id": user.id, "name": user.username, "url": user.url, "suicidal": False})])
   df.to_pickle("user.pkl")
 
