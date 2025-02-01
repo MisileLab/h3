@@ -7,9 +7,8 @@ from re import compile, sub
 from loguru import logger
 from twscrape import API, Tweet, gather # pyright: ignore[reportMissingTypeStubs]
 from twscrape.logger import set_log_level # pyright: ignore[reportMissingTypeStubs]
-from pandas import DataFrame, concat # pyright: ignore[reportMissingTypeStubs]
 
-from lib import get_proxy, is_unique, read_pickle
+from lib import append, get_proxy, is_unique, read_pickle
 
 url_filter = compile(r"(https?:\/\/)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)")
 
@@ -68,13 +67,13 @@ async def main():
     if len(data) == 0:
       logger.error(f"no tweets on {uid}, skip it")
       continue
-    df_user = concat([df_user, DataFrame({
+    df_user = append(df_user, {
       "id": uid,
       "name": i["name"],
       "url": i["url"],
       "sucidal": i["sucidal"],
       "data": data
-    })])
+    })
 
 if __name__ == "__main__":
   run(main())

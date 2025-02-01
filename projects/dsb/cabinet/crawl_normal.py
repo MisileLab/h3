@@ -1,13 +1,12 @@
 from loguru import logger
 from twscrape import User, API # pyright: ignore[reportMissingTypeStubs]
-from pandas import DataFrame, concat # pyright: ignore[reportMissingTypeStubs]
 
 from secrets import SystemRandom
 from asyncio import run
 from time import sleep
 from copy import deepcopy
 
-from lib import get_proxy, is_unique, read_pickle
+from lib import get_proxy, is_unique, read_pickle, append
 
 proxy = get_proxy()
 api = API(proxy=proxy)
@@ -91,7 +90,7 @@ async def main():
       continue
     logger.info(f"{user.username}: {user.displayname}")
     if is_unique(df, "id", user.id):
-      df = concat([df, DataFrame({"id": user.id, "name": user.username, "url": user.url, "suicidal": False})])
+      df = append(df, {"id": user.id, "name": user.username, "url": user.url, "suicidal": False})
   df.to_pickle("user.pkl")
 
 if __name__ == "__main__":

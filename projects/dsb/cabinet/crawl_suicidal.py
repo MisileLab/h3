@@ -1,12 +1,11 @@
 from twscrape import API # pyright: ignore[reportMissingTypeStubs]
-from pandas import DataFrame, concat # pyright: ignore[reportMissingTypeStubs]
 from loguru import logger
 
 from asyncio import run
 from time import sleep
 from secrets import SystemRandom
 
-from lib import get_proxy, is_unique, read_pickle
+from lib import get_proxy, is_unique, read_pickle, append
 
 proxy = get_proxy()
 
@@ -28,12 +27,12 @@ async def main():
       user = tweet.user
       logger.info(user.username)
       if is_unique(df, "id", user.id):
-        df = concat([df, DataFrame({
+        df = append(df, {
           "id": user.id,
           "name": user.username,
           "url": user.url,
           "suicidal": True
-        })])
+        })
       r = SystemRandom().randint(0, 10)
       logger.debug(f"sleep {r} secs")
       sleep(r)

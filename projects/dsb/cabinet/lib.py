@@ -1,4 +1,4 @@
-from pandas import DataFrame, read_pickle as _read_pickle # pyright: ignore[reportMissingTypeStubs]
+from pandas import DataFrame, read_pickle as _read_pickle, concat # pyright: ignore[reportMissingTypeStubs]
 from twscrape import API # pyright: ignore[reportMissingTypeStubs]
 from loguru import logger
 
@@ -39,3 +39,6 @@ def is_unique(df: DataFrame, key: str, value: object) -> bool:
     return df.loc[df[key] == value].empty # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
   except KeyError:
     return True
+
+def append(df: DataFrame, data: dict[str, object]) -> DataFrame:
+  return concat([df, DataFrame({k:[v] for k,v in data.items()})])
