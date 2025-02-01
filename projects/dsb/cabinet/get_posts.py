@@ -2,6 +2,7 @@ from time import sleep
 from secrets import SystemRandom
 from asyncio import run
 from pathlib import Path
+from re import compile, sub
 
 from loguru import logger
 from twscrape import API, Tweet, gather # pyright: ignore[reportMissingTypeStubs]
@@ -9,6 +10,8 @@ from twscrape.logger import set_log_level # pyright: ignore[reportMissingTypeStu
 from pandas import DataFrame, concat # pyright: ignore[reportMissingTypeStubs]
 
 from lib import get_proxy, read_pickle
+
+url_filter = compile(r"(https?:\/\/)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)")
 
 def get_value[T](v: T | None) -> T:
   if v is None:
@@ -45,8 +48,24 @@ async def main():
     if not df.loc[df["id"] == uid].empty: # pyright: ignore[reportUnknownMemberType]
       logger.info("skip because exists")
       continue
-    tweets = await get_tweets(api, uid) # pyright: ignore[reportUnknownArgumentType]
-    if len(tweets) == 0:
+    data: list[str] = []
+    nxt_skip = False
+    for j in await get_tweets(api, uid): # pyright: ignore[reportUnknownArgumentType]
+      if nxt_skip:
+        nxt_skip = False
+        continue
+      if j.retweetedTweet is not None:
+        print("retweeted")
+        nxt_skip = True
+        continue
+      for mention in j.mentionedUsers:
+        print(f"delete {mention.username}")
+        j.rawContent = j.rawContent.replace(f"@{mention.username}", "").replace(f"@{mention.displayname}", "")
+      j.rawContent = sub(url_filter, "", j.rawContent)
+      if j.rawContent == "":
+        continue
+      data.append(j.rawContent)
+    if len(data) == 0:
       logger.error(f"no tweets on {uid}, skip it")
       continue
     df_user = concat([df_user, DataFrame({
@@ -54,7 +73,7 @@ async def main():
       "name": i["name"],
       "url": i["url"],
       "sucidal": i["sucidal"],
-      "tweets": tweets
+      "data": data
     })])
 
 if __name__ == "__main__":
