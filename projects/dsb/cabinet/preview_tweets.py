@@ -8,7 +8,7 @@ from lib import read_pickle
 data = read_pickle("data.pkl")
 data_res = DataFrame()
 
-for i in data: # pyright: ignore[reportUnknownVariableType]
+for i in data.loc: # pyright: ignore[reportUnknownVariableType]
   i: Series
   if i["confirmed"] is True:
     logger.info("skip because already confirmed")

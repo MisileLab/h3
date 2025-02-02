@@ -41,7 +41,7 @@ async def main():
   df = read_pickle("data.pkl")
   df_user = read_pickle("user.pkl")
 
-  for i in df_user: # pyright: ignore[reportUnknownVariableType]
+  for i in df_user.loc: # pyright: ignore[reportUnknownVariableType]
     uid: int = i["id"] # pyright: ignore[reportUnknownVariableType]
     logger.debug(uid)
     if not is_unique(df, "id", uid): # pyright: ignore[reportUnknownArgumentType]
@@ -67,7 +67,7 @@ async def main():
     if len(data) == 0:
       logger.error(f"no tweets on {uid}, skip it")
       continue
-    df_user = append(df_user, {
+    df = append(df, {
       "id": uid,
       "name": i["name"],
       "url": i["url"],
@@ -75,6 +75,8 @@ async def main():
       "data": data,
       "confirmed": False
     })
+
+  df.to_pickle("data.pkl")
 
 if __name__ == "__main__":
   run(main())
