@@ -71,7 +71,7 @@ async def main():
       "id": uid,
       "name": i["name"],
       "url": i["url"],
-      "sucidal": i["sucidal"],
+      "suicidal": i["suicidal"],
       "data": data,
       "confirmed": False
     })
