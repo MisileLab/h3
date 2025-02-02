@@ -54,11 +54,11 @@ async def main():
         nxt_skip = False
         continue
       if j.retweetedTweet is not None:
-        print("retweeted")
+        logger.warning("retweeted")
         nxt_skip = True
         continue
       for mention in j.mentionedUsers:
-        print(f"delete {mention.username}")
+        logger.info(f"delete {mention.username}")
         j.rawContent = j.rawContent.replace(f"@{mention.username}", "").replace(f"@{mention.displayname}", "")
       j.rawContent = sub(url_filter, "", j.rawContent)
       if j.rawContent == "":
@@ -72,7 +72,8 @@ async def main():
       "name": i["name"],
       "url": i["url"],
       "sucidal": i["sucidal"],
-      "data": data
+      "data": data,
+      "confirmed": False
     })
 
 if __name__ == "__main__":
