@@ -4,10 +4,8 @@ Find suicidal people using stream of text.
 
 ## Features
 
-- [ ] Basic identification
+- [x] Basic identification
   - [x] Embedding Layer
-  - [ ] Emotion Layer
-  - [ ] Context Layer
 - [ ] Improvement Points
   - [x] Add test dataset
   - [x] Epoch support
@@ -25,6 +23,9 @@ Find suicidal people using stream of text.
     - [ ] Instagram
 - [ ] Multi Lang support
   - [ ] English
+- [ ] More research needed
+  - [ ] Emotion Layer
+  - [ ] Context Layer
 
 ## Models
 
