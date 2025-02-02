@@ -6,7 +6,7 @@ from asyncio import run
 from time import sleep
 from copy import deepcopy
 
-from lib import get_proxy, is_unique, read_pickle, append
+from lib import get_proxy, is_unique, read_pickle, append, write_to_pickle
 
 proxy = get_proxy()
 api = API(proxy=proxy)
@@ -91,7 +91,7 @@ async def main():
     logger.info(f"{user.username}: {user.displayname}")
     if is_unique(df, "id", user.id):
       df = append(df, {"id": user.id, "name": user.username, "url": user.url, "suicidal": False})
-  df.to_pickle("user.pkl")
+  write_to_pickle(df, "user.pkl")
 
 if __name__ == "__main__":
   run(main())

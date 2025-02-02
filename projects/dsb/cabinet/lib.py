@@ -32,7 +32,12 @@ def read_pickle(file_path: str) -> DataFrame:
     df = DataFrame() if not isinstance(_df, DataFrame) else _df
   else:
     df = DataFrame()
+  df = df.reset_index()
   return df
+
+def write_to_pickle(df: DataFrame, file_path: str) -> None:
+  df = df.reset_index()
+  df.to_pickle(file_path)
 
 def is_unique(df: DataFrame, key: str, value: object) -> bool:
   try:

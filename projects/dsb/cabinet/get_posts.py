@@ -8,7 +8,7 @@ from loguru import logger
 from twscrape import API, Tweet, gather # pyright: ignore[reportMissingTypeStubs]
 from twscrape.logger import set_log_level # pyright: ignore[reportMissingTypeStubs]
 
-from lib import append, get_proxy, is_unique, read_pickle
+from lib import append, get_proxy, is_unique, read_pickle, write_to_pickle
 
 url_filter = compile(r"(https?:\/\/)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)")
 
@@ -76,7 +76,7 @@ async def main():
       "confirmed": False
     })
 
-  df.to_pickle("data.pkl")
+  write_to_pickle(df, "data.pkl")
 
 if __name__ == "__main__":
   run(main())

@@ -5,7 +5,7 @@ from asyncio import run
 from time import sleep
 from secrets import SystemRandom
 
-from lib import get_proxy, is_unique, read_pickle, append
+from lib import get_proxy, is_unique, read_pickle, append, write_to_pickle
 
 proxy = get_proxy()
 
@@ -36,7 +36,7 @@ async def main():
       r = SystemRandom().randint(0, 10)
       logger.debug(f"sleep {r} secs")
       sleep(r)
-  df.to_pickle("user.pkl")
+  write_to_pickle(df, "user.pkl")
 
 if __name__ == "__main__":
   run(main())

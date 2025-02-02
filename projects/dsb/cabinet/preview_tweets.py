@@ -3,7 +3,7 @@ from pydoc import pager
 from loguru import logger
 from pandas import DataFrame, Series # pyright: ignore[reportMissingTypeStubs]
 
-from lib import read_pickle, append
+from lib import read_pickle, append, write_to_pickle
 
 data = read_pickle("data.pkl")
 data_res = DataFrame()
@@ -26,5 +26,4 @@ for i in data.loc: # pyright: ignore[reportUnknownVariableType]
   i["confirmed"] = True
   data_res = append(data_res, i) # pyright: ignore[reportUnknownArgumentType]
 
-data_res.to_pickle("data.pkl")
-
+write_to_pickle(data_res, "data.pkl")
