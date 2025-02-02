@@ -25,5 +25,4 @@ for i in data.loc: # pyright: ignore[reportUnknownVariableType]
   i["suicidal"] = suicidal.lower() == "y"
   i["confirmed"] = True
   data_res = append(data_res, i) # pyright: ignore[reportUnknownArgumentType]
-
-write_to_pickle(data_res, "data.pkl")
+  write_to_pickle(data_res, "data.pkl")
