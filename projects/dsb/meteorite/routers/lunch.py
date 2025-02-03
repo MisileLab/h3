@@ -10,6 +10,9 @@ from typing import Annotated
 
 from libraries.request import get
 
+from queries.get_school_async_edgeql import get_school
+from queries.add_school_async_edgeql import add_school
+
 app = APIRouter(prefix="/lunch/{school}")
 db = create_async_client()
 
@@ -43,9 +46,7 @@ async def lunch(
       detail="total days must less than 31"
     )
   lunch = LunchDatas()
-  sel = await db.query_single("""
-    select {school_code, ofcdc_code} filter .name = <str>$name limit 1
-  """, name=school)
+  sel = await get_school(db, name=school)
   if sel is None:
     r = get("https://open.neis.go.kr/hub/schoolInfo", params={
       "key": environ["NEIS_API"],
@@ -59,23 +60,16 @@ async def lunch(
         detail="school doesn't exists"
       )
     r = r[0]
-    await db.query("""
-      insert {
-        name := <str>$name,
-        school_code := <int64>$school_code,
-        ofcdc_code: <str>$ofcdc_code
-      }
-    """,
-      name=school,
-      school_code=int(r['SD_SCHUL_CODE']),
-      ofcdc_code=r['ATPT_OFCDC_SC_CODE']
-    ) # pyright: ignore[reportUnusedCallResult]
-    sel = {"school_code": int(r['SD_SCHUL_CODE']), "ofcdc_code": r['ATPT_OFCDC_SC_CODE']}
+    _ = await add_school(db, name=school, school_code=int(r['SD_SCHUL_CODE']), ofcdc_code=r['ATPT_OFCDC_SC_CODE'])
+    sel = await get_school(db, name=school)
+    if sel is None:
+      print("idk something wrong")
+      raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="idk something wrong")
   data = get("https://open.neis.go.kr/hub/mealServiceDietInfo", params={
     "key": environ["NEIS_API"],
     "type": "json",
-    "ATPT_OFCDC_SC_CODE": sel['ofcdc_code'],
-    "SD_SCHUL_CODE": sel['school_code'],
+    "ATPT_OFCDC_SC_CODE": sel.ofcdc_code,
+    "SD_SCHUL_CODE": sel.school_code,
     "MLSV_FROM_YMD": f"{year.start}{month.start:2d}{day.start:2d}",
     "MLSV_TO_YMD": f"{year.start}{month.start:2d}{day.start:2d}"
   })
