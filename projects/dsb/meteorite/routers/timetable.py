@@ -1,9 +1,9 @@
-from fastapi import APIRouter
-from pydantic import Field
-from pcfrv.timetable import TimeTableData, fetch_timetable
-
 from dataclasses import dataclass
 from typing import Annotated
+
+from fastapi import APIRouter, HTTPException, status
+from pcfrv.timetable import SchoolNotFound, TimeTableData, fetch_timetable
+from pydantic import Field
 
 app = APIRouter()
 
@@ -25,4 +25,7 @@ async def get_timetable(
   s_class: Annotated[int, Field(description="class of timetable", alias="class")],
   next_week: Annotated[bool, Field(description="if True, returns next week's timetable else, returns current week's timetable")] = False
 ) -> dict[int, list[TimeTableData]]:
-  return fetch_timetable(school, next_week=next_week).timetable[grade][s_class]
+  try:
+    return fetch_timetable(school, next_week=next_week).timetable[grade][s_class]
+  except SchoolNotFound:
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="School not found")
