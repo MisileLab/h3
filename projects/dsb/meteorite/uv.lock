@@ -289,21 +289,21 @@ requires-dist = [
     { name = "fastapi", extras = ["standard"], specifier = "==0.115.8" },
     { name = "httpx", specifier = "==0.28.1" },
     { name = "loguru", specifier = "==0.7.3" },
-    { name = "pcfrv", specifier = "==0.2.8" },
+    { name = "pcfrv", specifier = "==0.2.9" },
 ]
 
 [[package]]
 name = "pcfrv"
-version = "0.2.8"
+version = "0.2.9"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "fake-useragent" },
     { name = "httpx" },
     { name = "pydantic" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/e9/2e/bbe342a98b501e76cc47d00af7e6d8b6c54f7bc720ee0bf926a64389bd5d/pcfrv-0.2.8.tar.gz", hash = "sha256:73ddf7f4539c30d5c20b9a765cc8c66fbaf774023190f0342f4e4dcca306bd46", size = 3485 }
+sdist = { url = "https://files.pythonhosted.org/packages/5e/11/86594d5d5349f5afcfc054a15fef4862d65f0f6a21d3077648bc638ab865/pcfrv-0.2.9.tar.gz", hash = "sha256:fcfc1aea10157c8d720303ae8ca7103c0f4c4e21c8048b7e46d5be5ac777c4a3", size = 3512 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/21/e2/5e7cc283a7b05cc6a7b56f79b560e58fe61bbb56ecaa98b2faf664f23654/pcfrv-0.2.8-py3-none-any.whl", hash = "sha256:199a45412a28b40b2d1059b28f8088d34ef042b1225366018a3f97d43b7df9a9", size = 4659 },
+    { url = "https://files.pythonhosted.org/packages/37/e4/16dc1795da2ac43727fc316bfac3e80ae5508a76e6c0969d2a82014153af/pcfrv-0.2.9-py3-none-any.whl", hash = "sha256:08e2a10534966c9db94f447eb6caf3a923aac8e67958eefc2cda325bbff81fa5", size = 4699 },
 ]
 
 [[package]]
