@@ -3,6 +3,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, HTTPException, status
 from pcfrv.timetable import SchoolNotFound, TimeTableData, fetch_timetable
+from pcfrv.search_school import School, get_school_code
 from pydantic import Field
 
 app = APIRouter()
@@ -29,3 +30,8 @@ async def get_timetable(
     return fetch_timetable(school, next_week=next_week).timetable[grade][s_class]
   except SchoolNotFound:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="School not found")
+
+@app.get("/search", description="return list of school's name that starts with input")
+async def search(school: Annotated[str, Field(description="name of school")]) -> list[School]:
+  return get_school_code(school)
+
