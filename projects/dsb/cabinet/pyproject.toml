@@ -15,8 +15,7 @@ dependencies = [
   "pip==25.0",
   "pypager==3.0.1",
   "tiktoken==0.8.0",
-  # 20250201 doesn't have windows build
-  "torch>=2.6.0,<2.7.0.dev20250201",
+  "torch>=2.6.0",
   "tqdm==4.67.1",
   "twscrape==0.15.0",
 ]
