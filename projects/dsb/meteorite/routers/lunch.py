@@ -25,22 +25,13 @@ class LunchData:
 class LunchDatas:
   menus: list[LunchData] = Field(description="menus of data", default=[])
 
-@dataclass
-class Range:
-  start: int
-  end: int
-
 @app.get("/", description="get school's lunch, total days must less than 31")
 async def lunch(
   school: str,
-  year: Annotated[Range, Query(description="year range of lunch")],
-  month: Annotated[Range, Query(description="month range of lunch")],
-  day: Annotated[Range, Query(description="day range of lunch")]
+  start: Annotated[datetime, Query(description="start date of lunch")],
+  end: Annotated[datetime, Query(description="end date of lunch")]
 ) -> LunchDatas:
-  if (
-    datetime(year.start, month.start, day.start)
-    - datetime(year.end, month.end, day.end)
-  ).days >= 30:
+  if (end - start).days > 30:
     raise HTTPException(
       status_code=status.HTTP_400_BAD_REQUEST,
       detail="total days must less than 31"
@@ -70,8 +61,8 @@ async def lunch(
     "type": "json",
     "ATPT_OFCDC_SC_CODE": sel.ofcdc_code,
     "SD_SCHUL_CODE": sel.school_code,
-    "MLSV_FROM_YMD": f"{year.start}{month.start:2d}{day.start:2d}",
-    "MLSV_TO_YMD": f"{year.start}{month.start:2d}{day.start:2d}"
+    "MLSV_FROM_YMD": f"{start.year}{start.month:2d}{start.day:2d}",
+    "MLSV_TO_YMD": f"{end.year}{end.month:2d}{end.day:2d}"
   })
   for row in data['mealServiceDietInfo'][1]['row']:
     menu = row['DDISH_NM']
