@@ -1,15 +1,13 @@
-from pandas import DataFrame, Series # pyright: ignore[reportMissingTypeStubs]
+from pandas import DataFrame # pyright: ignore[reportMissingTypeStubs]
 
-from lib import read_pickle, append, write_to_pickle
+from lib import read_pickle, append, write_to_pickle, User, Data
 
 df = read_pickle("data.pkl")
 df_user = DataFrame()
 
-for i in df.loc[df['confirmed']]: # pyright: ignore[reportUnknownVariableType]
-  data: Series = i # pyright: ignore[reportUnknownVariableType]
-  del data["confirmed"]
-  del data["tweets"]
-  df_user = append(df_user, data) # pyright: ignore[reportUnknownArgumentType]
+for _i in df.loc[df['confirmed']]: # pyright: ignore[reportUnknownVariableType]
+  data = Data.model_validate(_i)
+  df_user = append(df_user, User.model_validate(data))
 
 write_to_pickle(df_user, "user.pkl")
 

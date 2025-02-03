@@ -1,6 +1,7 @@
 from pandas import DataFrame, Series, read_pickle as _read_pickle, concat # pyright: ignore[reportMissingTypeStubs]
 from twscrape import API # pyright: ignore[reportMissingTypeStubs]
 from loguru import logger
+from pydantic import BaseModel
 
 from os import getenv
 from sys import stdout
@@ -8,6 +9,16 @@ from pathlib import Path
 
 logger.remove()
 _ = logger.add(stdout, level="DEBUG")
+
+class User(BaseModel):
+  uid: int
+  name: str
+  suicidal: bool
+  url: str
+
+class Data(User):
+  data: list[str]
+  confirmed: bool = False
 
 def get_proxy():
   proxy_url = getenv("PROXY_URL")
@@ -44,7 +55,9 @@ def is_unique(df: DataFrame, key: str, value: object) -> bool:
   except KeyError:
     return True
 
-def append(df: DataFrame, data: dict[str, object] | Series) -> DataFrame:
-  if not isinstance(data, Series):
+def append(df: DataFrame, data: dict[str, object] | Series | BaseModel) -> DataFrame:
+  if isinstance(data, BaseModel):
+    data = Series(data.model_dump())
+  elif isinstance(data, dict):
     data = Series(data)
   return concat([df, data.to_frame().T], ignore_index=True)

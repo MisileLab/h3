@@ -8,7 +8,7 @@ from loguru import logger
 from twscrape import API, Tweet, gather # pyright: ignore[reportMissingTypeStubs]
 from twscrape.logger import set_log_level # pyright: ignore[reportMissingTypeStubs]
 
-from lib import append, get_proxy, is_unique, read_pickle, write_to_pickle
+from lib import Data, User, append, get_proxy, is_unique, read_pickle, write_to_pickle
 
 url_filter = compile(r"(https?:\/\/)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)")
 
@@ -41,15 +41,16 @@ async def main():
   df = read_pickle("data.pkl")
   df_user = read_pickle("user.pkl")
 
-  for i in df_user.loc: # pyright: ignore[reportUnknownVariableType]
-    uid: int = i["id"] # pyright: ignore[reportUnknownVariableType]
+  for _i in df_user.to_dict("records"): # pyright: ignore[reportUnknownVariableType, reportUnknownMemberType]
+    i: User = User.model_validate(_i)
+    uid: int = i.uid
     logger.debug(uid)
-    if not is_unique(df, "id", uid): # pyright: ignore[reportUnknownArgumentType]
+    if not is_unique(df, "id", uid):
       logger.info("skip because exists")
       continue
     data: list[str] = []
     nxt_skip = False
-    for j in await get_tweets(api, uid): # pyright: ignore[reportUnknownArgumentType]
+    for j in await get_tweets(api, uid):
       if nxt_skip:
         nxt_skip = False
         continue
@@ -67,14 +68,13 @@ async def main():
     if len(data) == 0:
       logger.error(f"no tweets on {uid}, skip it")
       continue
-    df = append(df, {
-      "id": uid,
-      "name": i["name"],
-      "url": i["url"],
-      "suicidal": i["suicidal"],
-      "data": data,
-      "confirmed": False
-    })
+    df = append(df, Data(
+      uid=uid,
+      name=i.name,
+      url=i.url,
+      suicidal=i.suicidal,
+      data=data
+    ))
 
   write_to_pickle(df, "data.pkl")
 
