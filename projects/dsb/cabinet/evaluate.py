@@ -1,7 +1,7 @@
 from typing import final, override
 from os import getenv
 
-from torch import nn, tensor, Tensor, cat, load
+from torch import nn, tensor, Tensor, cat, load # pyright: ignore[reportUnknownVariableType]
 from torch.cuda import is_available
 from openai import OpenAI
 

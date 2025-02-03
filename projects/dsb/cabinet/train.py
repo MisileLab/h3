@@ -10,7 +10,7 @@ else:
 
 from tqdm.auto import tqdm
 
-from torch import Tensor, nn, cat, optim, save, abs
+from torch import Tensor, nn, cat, optim, save, abs # pyright: ignore[reportUnknownVariableType]
 from torch.cuda import is_available
 from torch.utils.data import DataLoader, TensorDataset, random_split
 

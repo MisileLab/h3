@@ -3,9 +3,9 @@ data.pkl
 userids
 accounts.db
 accounts.csv
+batches.pkl
 embeddings
 embedding_results
-batches.pkl
 dataset.pt
 model.pth
 zluda

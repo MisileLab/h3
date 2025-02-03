@@ -1,5 +1,5 @@
 import torch
-from torch import save, tensor, cat
+from torch import save, tensor, cat # pyright: ignore[reportUnknownVariableType]
 from torch.utils.data import TensorDataset
 from tqdm.auto import tqdm
 from pandas import read_json # pyright: ignore[reportMissingTypeStubs, reportUnknownVariableType]
