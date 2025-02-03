@@ -2,7 +2,10 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from routers.lunch import app as LunchRouter
+from routers.timetable import app as TimetableRouter
 
 app = FastAPI()
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 app.include_router(LunchRouter)
+app.include_router(TimetableRouter)
+
