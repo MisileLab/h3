@@ -17,7 +17,7 @@ class School:
 comcigan_url = 'http://comci.net:4082'
 
 @validate_call(validate_return=True)
-def get_code() -> int:
+def get_code() -> str:
   resp = get(f"{comcigan_url}/st", headers={"User-Agent": UserAgent(platforms=["desktop"]).random})
   resp.encoding = 'euc-kr'
   return findall('\\.\\/[0-9]+\\?[0-9]+l', resp.text)[0][1:]
