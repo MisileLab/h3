@@ -4,7 +4,7 @@ from pydantic import Field
 
 from os import environ
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import date as pdate
 from re import sub
 from typing import Annotated
 
@@ -18,7 +18,7 @@ db = create_async_client()
 
 @dataclass
 class LunchData:
-  date: str = Field(description="date of day", examples=["20240604"])
+  date: pdate = Field(description="date of day")
   menu: list[str] = Field(description="menu of day")
 
 @dataclass
@@ -28,8 +28,8 @@ class LunchDatas:
 @app.get("/", description="get school's lunch, total days must less than 31")
 async def lunch(
   school: str,
-  start: Annotated[datetime, Query(description="start date of lunch")],
-  end: Annotated[datetime, Query(description="end date of lunch")]
+  start: Annotated[pdate, Query(description="start date of lunch")],
+  end: Annotated[pdate, Query(description="end date of lunch")]
 ) -> LunchDatas:
   if (end - start).days > 30:
     raise HTTPException(
@@ -66,8 +66,9 @@ async def lunch(
   })
   for row in data['mealServiceDietInfo'][1]['row']:
     menu = row['DDISH_NM']
+    date_data = row["MLSV_YMD"]
     lunch_data = LunchData(
-      date=row['MLSV_YMD'],
+      date=pdate(date_data[0:4], date_data[4:6], date_data[6:8]),
       menu=[
         sub(r'\s*\([^)]*\)', '', item.strip())
         for item in menu.split('<br/>')
