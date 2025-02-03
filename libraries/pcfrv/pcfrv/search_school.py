@@ -26,4 +26,4 @@ def get_code() -> str:
 def get_school_code(school_name: str) -> list[School]:
   resp = get(f"{comcigan_url}{get_code()}{parse.quote(school_name, encoding='euc-kr')}")
   resp.encoding = 'UTF-8'
-  return [School(*i) for i in loads(resp.text.strip(chr(0)))]
+  return [School(i[2],i[1],i[0],i[3]) for i in loads(resp.text.strip(chr(0)))["학교검색"]]
