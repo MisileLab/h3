@@ -72,14 +72,15 @@ wheels = [
 
 [[package]]
 name = "beautifulsoup4"
-version = "4.12.3"
+version = "4.13.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "soupsieve" },
+    { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/b3/ca/824b1195773ce6166d388573fc106ce56d4a805bd7427b624e063596ec58/beautifulsoup4-4.12.3.tar.gz", hash = "sha256:74e3d1928edc070d21748185c46e3fb33490f22f52a3addee9aee0f4f7781051", size = 581181 }
+sdist = { url = "https://files.pythonhosted.org/packages/4b/d3/6f4047d1de55b7a290ef8d4b4ebf59dcc24742920ebbed0909f823424205/beautifulsoup4-4.13.0.tar.gz", hash = "sha256:b6e5afb3a2b1472c8db751a92eabf7834e5c7099f990c5e4b35f1f16b60bae64", size = 558514 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b1/fe/e8c672695b37eecc5cbf43e1d0638d88d66ba3a44c4d321c796f4e59167f/beautifulsoup4-4.12.3-py3-none-any.whl", hash = "sha256:b80878c9f40111313e55da8ba20bdba06d8fa3969fc68304167741bbf9e082ed", size = 147925 },
+    { url = "https://files.pythonhosted.org/packages/6e/74/d53cf0c527b20fc87351e6fd9d51aac9b5d1e32ec5a3a32b84671806ab40/beautifulsoup4-4.13.0-py3-none-any.whl", hash = "sha256:9c4c3dfa67aba55f6cd03769c441b21e6a369797fd6766e4b4c6b3399aae2735", size = 184993 },
 ]
 
 [[package]]
@@ -382,11 +383,11 @@ wheels = [
 
 [[package]]
 name = "pyglet"
-version = "2.1.0"
+version = "2.1.2"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/e5/28/75585eb227d452d488e62d75e123d86201c5ed7222286f5dd9005a58baae/pyglet-2.1.0.tar.gz", hash = "sha256:50c5a82203f1ffd56990d225315035b37aacba7510f8f65c4b10a7301be788c8", size = 6513329 }
+sdist = { url = "https://files.pythonhosted.org/packages/ea/4b/44b4dc01ffac9f8950d540c99159f83e2c398df2a600394feb6d2dbf7340/pyglet-2.1.2.tar.gz", hash = "sha256:6fc1fed55eb6dc80c87a7a45ac62c2a61be08cd31114b27abef8619959be7845", size = 6515611 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/31/bc/cebfe84d0d5c45ca156fef0cd274c3d7cbae23f73762d15067e3bad3c608/pyglet-2.1.0-py3-none-any.whl", hash = "sha256:ed2ff5b9eeacf845d019f9768b01c811ebe167372dcb699146e59da2c4666e0b", size = 961321 },
+    { url = "https://files.pythonhosted.org/packages/3c/aa/edc16d04f6de8e833b4cba3068185fd2aad9e6f3a22fbc89afec36414f12/pyglet-2.1.2-py3-none-any.whl", hash = "sha256:2819fa9d66ead4b1682d1b7fa7170692d46277e1a6661b329bdba3e65288c036", size = 961981 },
 ]
 
 [[package]]
