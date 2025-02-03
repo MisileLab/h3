@@ -127,36 +127,36 @@ requires-dist = [
     { name = "edgedb", specifier = "==2.2.0" },
     { name = "fastapi", specifier = "==0.115.8" },
     { name = "httpx", specifier = "==0.28.1" },
-    { name = "pcfrv", specifier = "==0.2.6" },
+    { name = "pcfrv", specifier = "==0.2.7" },
     { name = "satellite-py", specifier = "==0.1.1" },
 ]
 
 [[package]]
 name = "pcfrv"
-version = "0.2.6"
+version = "0.2.7"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "fake-useragent" },
     { name = "httpx" },
     { name = "pydantic" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/1b/53/d92325a4f46333ec0036a211e8684e5efb5698937899c8867245a222bb1d/pcfrv-0.2.6.tar.gz", hash = "sha256:022dc4031e2356c088de7de973db80e2cd416fb1c19aef3af9968cc84d011a82", size = 4245 }
+sdist = { url = "https://files.pythonhosted.org/packages/0b/e7/e4f87f879afd06a123eedf121086c151bb9b8486afc931447ed7c5794668/pcfrv-0.2.7.tar.gz", hash = "sha256:df3d8e4a11d8cef703efd73a64ecfd77e94fe3cba92dc8cd1834c9d9a4b12e96", size = 3495 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5d/30/a8430198d4c3813508bfcb565864858b88d37cf0f55ca8bf64681b93dbdd/pcfrv-0.2.6-py3-none-any.whl", hash = "sha256:a8873cebb4d6295c78d55765104a1a9dd8c918e839a999ed3b585f20ce015c63", size = 5494 },
+    { url = "https://files.pythonhosted.org/packages/b7/5c/23c5ec43395cb3d1e3f97214b50244fbee01c42f7245026095be84f43607/pcfrv-0.2.7-py3-none-any.whl", hash = "sha256:d83db550b899830931f998b4ef59203b872448b9fab3dc614d4a6eb5774ced34", size = 4660 },
 ]
 
 [[package]]
 name = "pydantic"
-version = "2.10.4"
+version = "2.10.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "annotated-types" },
     { name = "pydantic-core" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/70/7e/fb60e6fee04d0ef8f15e4e01ff187a196fa976eb0f0ab524af4599e5754c/pydantic-2.10.4.tar.gz", hash = "sha256:82f12e9723da6de4fe2ba888b5971157b3be7ad914267dea8f05f82b28254f06", size = 762094 }
+sdist = { url = "https://files.pythonhosted.org/packages/b7/ae/d5220c5c52b158b1de7ca89fc5edb72f304a70a4c540c84c8844bf4008de/pydantic-2.10.6.tar.gz", hash = "sha256:ca5daa827cce33de7a42be142548b0096bf05a7e7b365aebfa5f8eeec7128236", size = 761681 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f3/26/3e1bbe954fde7ee22a6e7d31582c642aad9e84ffe4b5fb61e63b87cd326f/pydantic-2.10.4-py3-none-any.whl", hash = "sha256:597e135ea68be3a37552fb524bc7d0d66dcf93d395acd93a00682f1efcb8ee3d", size = 431765 },
+    { url = "https://files.pythonhosted.org/packages/f4/3c/8cc1cc84deffa6e25d2d0c688ebb80635dfdbf1dbea3e30c541c8cf4d860/pydantic-2.10.6-py3-none-any.whl", hash = "sha256:427d664bf0b8a2b34ff5dd0f5a18df00591adcee7198fbd71981054cef37b584", size = 431696 },
 ]
 
 [[package]]
