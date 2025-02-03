@@ -1,3 +1,4 @@
+from contextlib import suppress
 from pandas import DataFrame, Series, read_pickle as _read_pickle, concat # pyright: ignore[reportMissingTypeStubs]
 from twscrape import API # pyright: ignore[reportMissingTypeStubs]
 from loguru import logger
@@ -46,7 +47,8 @@ def read_pickle(file_path: str) -> DataFrame:
   return df
 
 def write_to_pickle(df: DataFrame, file_path: str) -> None:
-  df = df.reset_index()
+  with suppress(ValueError):
+    df = df.reset_index()
   df.to_pickle(file_path)
 
 def is_unique(df: DataFrame, key: str, value: object) -> bool:
