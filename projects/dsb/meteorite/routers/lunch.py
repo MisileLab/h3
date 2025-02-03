@@ -44,7 +44,7 @@ async def lunch(
       "type": "json",
       "SCHUL_NM": school,
       "pSize": 1
-    })[1]['row']
+    })['schoolInfo'][1]['row']
     if len(r) == 0:
       raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
