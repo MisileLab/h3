@@ -19,6 +19,11 @@ class ClassInfo(BaseClass):
   replaced: bool
   original: BaseClass | None = None
 
+@dataclass
+class Classes:
+  grade: int
+  classes: list[int]
+
 @app.get("/timetable", description="returns dict, key is range of 1(monday) to 5(friday), value is list of classes")
 async def get_timetable(
   school: Annotated[str, Field(description="name of school, can be autocompleted")],
@@ -31,7 +36,20 @@ async def get_timetable(
   except SchoolNotFound:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="School not found")
 
-@app.get("/search", description="return list of school's name that starts with input")
+@app.get("/search", description="return list of school's name that matches")
 async def search(school: Annotated[str, Field(description="name of school")]) -> list[School]:
   return get_school_code(school)
+
+@app.get("/classlist", description="return list of classes")
+async def classlist(school: Annotated[str, Field(description="name of school")]) -> list[Classes]:
+  try:
+    t = fetch_timetable(school)
+    res: list[Classes] = []
+    for g, v in t.timetable.items():
+      res.append(Classes(g, []))
+      for c in v.keys():
+        res[-1].classes.append(c)
+    return res
+  except SchoolNotFound:
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="School not found")
 
