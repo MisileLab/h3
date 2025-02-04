@@ -5,7 +5,7 @@ class School:
     name: str
     period: str
     school_code: int
-    period_code: str
+    period_code: int
     def __init__(self, name, period, school_code, period_code) -> None: ...
 
 comcigan_url: str
