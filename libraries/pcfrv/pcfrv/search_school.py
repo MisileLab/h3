@@ -27,6 +27,6 @@ def get_school_code(school_name: str) -> list[School]:
   resp = get(f"{comcigan_url}{get_code()}{parse.quote(school_name, encoding='euc-kr')}")
   resp.encoding = 'UTF-8'
   schools = [School(i[2],i[1],i[0],int(i[3])) for i in loads(resp.text.strip(chr(0)))["학교검색"]]
-  if schools[-1].period_code == 0 and schools[-1].school_code == 0:
+  if len(schools) > 0 and schools[-1].period_code == 0 and schools[-1].school_code == 0:
     del schools[-1]
   return schools
