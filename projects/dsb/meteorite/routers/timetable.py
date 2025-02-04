@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Annotated
 
 from fastapi import APIRouter, HTTPException, status
-from pcfrv.timetable import SchoolNotFound, TimeTableData, fetch_timetable
+from pcfrv.timetable import SchoolDuplicated, SchoolNotFound, TimeTableData, fetch_timetable
 from pcfrv.search_school import School, get_school_code
 from pydantic import Field
 
@@ -35,10 +35,15 @@ async def get_timetable(
     return fetch_timetable(school, next_week=next_week).timetable[grade][s_class]
   except SchoolNotFound:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="School not found")
+  except SchoolDuplicated:
+    raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="School name is duplicated")
 
 @app.get("/search", description="return list of school's name that matches")
 async def search(school: Annotated[str, Field(description="name of school")]) -> list[School]:
-  return get_school_code(school)
+  try:
+    return get_school_code(school)
+  except SchoolDuplicated:
+    raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="School name is duplicated")
 
 @app.get("/classlist", description="return list of classes")
 async def classlist(school: Annotated[str, Field(description="name of school")]) -> list[Classes]:
@@ -52,4 +57,6 @@ async def classlist(school: Annotated[str, Field(description="name of school")])
     return res
   except SchoolNotFound:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="School not found")
+  except SchoolDuplicated:
+    raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="School name is duplicated")
 
