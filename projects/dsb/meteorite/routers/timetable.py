@@ -36,14 +36,11 @@ async def get_timetable(
   except SchoolNotFound:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="School not found")
   except SchoolDuplicated:
-    raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="School name is duplicated")
+    raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="School search result is multiple")
 
 @app.get("/search", description="return list of school's name that matches")
 async def search(school: Annotated[str, Field(description="name of school")]) -> list[School]:
-  try:
-    return get_school_code(school)
-  except SchoolDuplicated:
-    raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="School name is duplicated")
+  return get_school_code(school)
 
 @app.get("/classlist", description="return list of classes")
 async def classlist(school: Annotated[str, Field(description="name of school")]) -> list[Classes]:
@@ -58,5 +55,5 @@ async def classlist(school: Annotated[str, Field(description="name of school")])
   except SchoolNotFound:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="School not found")
   except SchoolDuplicated:
-    raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="School name is duplicated")
+    raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="School search is multiple")
 
