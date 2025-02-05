@@ -10,7 +10,7 @@ dependencies = [
   "python-multipart==0.0.20",
   "argon2-cffi==23.1.0",
   "blake3==1.0.4",
-  "satellite-py==0.1.2",
+  "satellite-py==0.1.3",
 ]
 
 [tool.basedpyright]
