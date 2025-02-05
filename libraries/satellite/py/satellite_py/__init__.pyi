@@ -1,4 +1,7 @@
 from _typeshed import DataclassInstance, Incomplete
+from dataclasses import dataclass
+
+edge_db: bool
 
 class DB:
     db: Incomplete
@@ -6,3 +9,10 @@ class DB:
     async def query(self, query: str, *args, **kwargs) -> list[DataclassInstance]: ...
     async def query_single(self, query: str, *args, **kwargs) -> DataclassInstance | None: ...
     async def query_required_single(self, query: str, *args, **kwargs) -> DataclassInstance | None: ...
+
+@dataclass
+class Error:
+    detail: str | None
+    def __init__(self, detail) -> None: ...
+
+def generate_error_responses(status_codes: list[int]) -> dict[int, dict[str, type[Error]]]: ...
