@@ -11,6 +11,7 @@ Find suicidal people using stream of text.
   - [x] Epoch support
   - [x] Automatic Loss Stop (save best model)
   - [x] Optimizer
+  - [ ] seperated multi-modal
   - [ ] Other embeddings
     - [x] openai/embedding-3-large
     - [ ] voyage ai
