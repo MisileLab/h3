@@ -64,5 +64,5 @@ async def classlist(school: Annotated[str, Field(description="name of school")])
   except SchoolNotFound:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="School not found")
   except SchoolDuplicated:
-    raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="School search is multiple")
+    raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="School search result is multiple")
 
