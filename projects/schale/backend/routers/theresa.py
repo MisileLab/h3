@@ -3,6 +3,7 @@ from libraries.email import send_email
 from libraries.lib import nullVerify
 
 from fastapi import HTTPException, status, Header, APIRouter, Form
+from satellite_py import generate_error_responses
 from pydantic import BaseModel, Field
 from httpx import AsyncClient
 from blake3 import blake3
@@ -32,7 +33,9 @@ class openLetter(openLetterBase):
 class openLetterPublic(openLetterBase):
   signer: int = Field(description="count of signers", default=0)
 
-@router.get("/info")
+NOT_FOUND_RESP= generate_error_responses([404])
+
+@router.get("/info", responses=NOT_FOUND_RESP)
 async def info(
   name: Annotated[str, Header(description="name of letter")]
 ) -> openLetterPublic:
@@ -44,7 +47,7 @@ async def info(
   del raw["signers"]
   return openLetterPublic(**raw)
 
-@router.get("/info/signers")
+@router.get("/info/signers", responses=NOT_FOUND_RESP)
 async def info_signers(
   name: Annotated[str, Header(description="name of letter")]
 ) -> list[SignerBase]:
@@ -55,7 +58,7 @@ async def info_signers(
   signers = raw["signers"]
   return [SignerBase(**i) for i in signers]
 
-@router.get("/info/signer")
+@router.get("/info/signer", responses=NOT_FOUND_RESP)
 async def info_signer(
   name: Annotated[str, Header(description="name of letter")],
   name_signer: Annotated[str, Header(description="name of signer")]
@@ -70,7 +73,7 @@ async def info_signer(
   raw = asdict(raw)
   return Signer(**raw["signers"][0])
 
-@router.post("/sign")
+@router.post("/sign", responses=generate_error_responses([403, 404]))
 async def sign(
   name: Annotated[str, Form(description="name of letter")],
   email: Annotated[str, Form(description="email of signer")],
@@ -98,7 +101,7 @@ async def sign(
     [email]
   )
 
-@router.post("/confirm")
+@router.post("/confirm", responses=generate_error_responses([403]))
 async def confirm(
   name: Annotated[str, Header(description="name of letter")],
   name_signer: Annotated[str, Header(description="name of signer")],

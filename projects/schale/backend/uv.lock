@@ -178,6 +178,15 @@ wheels = [
 ]
 
 [[package]]
+name = "edgedb"
+version = "2.2.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "certifi", marker = "sys_platform == 'win32'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/b7/bd/5fa8967755ec169d07b4e52684897a612bebb3d2086d2eade79c33642630/edgedb-2.2.0.tar.gz", hash = "sha256:3ddbb841fe80d25ede524535dd52878cf74adae8c920e1f5dd912cddf66fe5f8", size = 1276984 }
+
+[[package]]
 name = "email-validator"
 version = "2.2.0"
 source = { registry = "https://pypi.org/simple" }
@@ -509,14 +518,19 @@ wheels = [
 
 [[package]]
 name = "satellite-py"
-version = "0.1.3"
+version = "0.1.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pydantic" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/87/48/b5eb434e22252c581aac31713366d0d9014f0f11704750309bfe37b08817/satellite_py-0.1.3.tar.gz", hash = "sha256:d8355a6c187ffd431d3fdbafbff83a0093191bf085f8392d0b135ca55a6c2323", size = 1931 }
+sdist = { url = "https://files.pythonhosted.org/packages/68/c1/62f83da9363566434f62d0f62463fac1fa4059bf8533c029229846218049/satellite_py-0.1.5.tar.gz", hash = "sha256:7ced30df809a605ffb90897fc685294a46984cc58e63ca4e6b904d41a1ecbe53", size = 1819 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/55/79/77cdf972a1f059cf3a2e22cab4a4921438f0ca42329cb5a0b35a6c137600/satellite_py-0.1.3-py3-none-any.whl", hash = "sha256:8e4bf58dd01cc56e01123b1addf54149424f589091ef0aeb78d6fac18af8b256", size = 2724 },
+    { url = "https://files.pythonhosted.org/packages/64/d9/d94dec790fb9994f20851a4932bc4186795c087f2b8702bea1333da00dc2/satellite_py-0.1.5-py3-none-any.whl", hash = "sha256:754441d50f2bb964961ca9a42716f680e1b815b9110e017119899910b4435fc1", size = 2367 },
+]
+
+[package.optional-dependencies]
+edgedb = [
+    { name = "edgedb" },
 ]
 
 [[package]]
@@ -529,7 +543,7 @@ dependencies = [
     { name = "boto3" },
     { name = "fastapi", extra = ["standard"] },
     { name = "python-multipart" },
-    { name = "satellite-py" },
+    { name = "satellite-py", extra = ["edgedb"] },
     { name = "tomli" },
 ]
 
@@ -540,7 +554,7 @@ requires-dist = [
     { name = "boto3", specifier = "==1.36.13" },
     { name = "fastapi", extras = ["standard"], specifier = "==0.115.8" },
     { name = "python-multipart", specifier = "==0.0.20" },
-    { name = "satellite-py", specifier = "==0.1.3" },
+    { name = "satellite-py", extras = ["edgedb"], specifier = "==0.1.5" },
     { name = "tomli", specifier = "==2.2.1" },
 ]
 
