@@ -175,7 +175,7 @@ dependencies = [
     { name = "pypager" },
     { name = "tiktoken" },
     { name = "torch", version = "2.6.0+cpu", source = { registry = "https://download.pytorch.org/whl/cpu" }, marker = "sys_platform == 'linux'" },
-    { name = "torch", version = "2.7.0.dev20250203+cu118", source = { registry = "https://download.pytorch.org/whl/nightly/cu118" }, marker = "sys_platform != 'linux'" },
+    { name = "torch", version = "2.7.0.dev20250205+cu118", source = { registry = "https://download.pytorch.org/whl/nightly/cu118" }, marker = "sys_platform != 'linux'" },
     { name = "tqdm" },
     { name = "twscrape" },
 ]
@@ -186,7 +186,7 @@ requires-dist = [
     { name = "koreanize-matplotlib", specifier = "==0.1.1" },
     { name = "loguru", specifier = "==0.7.3" },
     { name = "matplotlib", specifier = "==3.10.0" },
-    { name = "openai", specifier = "==1.61.0" },
+    { name = "openai", specifier = "==1.61.1" },
     { name = "pandas", specifier = "==2.2.3" },
     { name = "pip", specifier = "==25.0" },
     { name = "pypager", specifier = "==3.0.1" },
@@ -1048,7 +1048,7 @@ wheels = [
 
 [[package]]
 name = "openai"
-version = "1.61.0"
+version = "1.61.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
@@ -1060,9 +1060,9 @@ dependencies = [
     { name = "tqdm" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/32/2a/b3fa8790be17d632f59d4f50257b909a3f669036e5195c1ae55737274620/openai-1.61.0.tar.gz", hash = "sha256:216f325a24ed8578e929b0f1b3fb2052165f3b04b0461818adaa51aa29c71f8a", size = 350174 }
+sdist = { url = "https://files.pythonhosted.org/packages/d9/cf/61e71ce64cf0a38f029da0f9a5f10c9fa0e69a7a977b537126dac50adfea/openai-1.61.1.tar.gz", hash = "sha256:ce1851507218209961f89f3520e06726c0aa7d0512386f0f977e3ac3e4f2472e", size = 350784 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/93/76/70c5ad6612b3e4c89fa520266bbf2430a89cae8bd87c1e2284698af5927e/openai-1.61.0-py3-none-any.whl", hash = "sha256:e8c512c0743accbdbe77f3429a1490d862f8352045de8dc81969301eb4a4f666", size = 460623 },
+    { url = "https://files.pythonhosted.org/packages/9a/b6/2e2a011b2dc27a6711376808b4cd8c922c476ea0f1420b39892117fa8563/openai-1.61.1-py3-none-any.whl", hash = "sha256:72b0826240ce26026ac2cd17951691f046e5be82ad122d20a8e1b30ca18bd11e", size = 463126 },
 ]
 
 [[package]]
@@ -1671,7 +1671,7 @@ wheels = [
 
 [[package]]
 name = "torch"
-version = "2.7.0.dev20250203+cu118"
+version = "2.7.0.dev20250205+cu118"
 source = { registry = "https://download.pytorch.org/whl/nightly/cu118" }
 resolution-markers = [
     "sys_platform != 'linux'",
@@ -1686,8 +1686,8 @@ dependencies = [
     { name = "typing-extensions", marker = "sys_platform != 'linux'" },
 ]
 wheels = [
-    { url = "https://download.pytorch.org/whl/nightly/cu118/torch-2.7.0.dev20250203%2Bcu118-cp313-cp313-win_amd64.whl" },
-    { url = "https://download.pytorch.org/whl/nightly/cu118/torch-2.7.0.dev20250203%2Bcu118-cp313-cp313t-win_amd64.whl" },
+    { url = "https://download.pytorch.org/whl/nightly/cu118/torch-2.7.0.dev20250205%2Bcu118-cp313-cp313-win_amd64.whl", hash = "sha256:6b550d63b08f2c25769035104ff72df31b90bd3b996ee153bb718618a29570cf" },
+    { url = "https://download.pytorch.org/whl/nightly/cu118/torch-2.7.0.dev20250205%2Bcu118-cp313-cp313t-win_amd64.whl", hash = "sha256:622b16515820f8305986e860766bec73c0a82bddd552a8ac9e30804225580113" },
 ]
 
 [[package]]
