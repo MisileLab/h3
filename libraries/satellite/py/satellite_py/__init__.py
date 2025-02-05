@@ -33,6 +33,6 @@ if edge_db:
 class Error:
   detail: str | None
 
-def generate_error_responses(status_codes: list[int]) -> dict[int, dict[str, type[Error]]]:
+def generate_error_responses(status_codes: list[int]) -> dict[int | str, dict[str, type[Error]]]:
   return {k: {"model": Error} for k in status_codes}
 
