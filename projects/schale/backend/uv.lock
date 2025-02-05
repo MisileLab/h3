@@ -178,15 +178,6 @@ wheels = [
 ]
 
 [[package]]
-name = "edgedb"
-version = "2.2.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "certifi", marker = "sys_platform == 'win32'" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/b7/bd/5fa8967755ec169d07b4e52684897a612bebb3d2086d2eade79c33642630/edgedb-2.2.0.tar.gz", hash = "sha256:3ddbb841fe80d25ede524535dd52878cf74adae8c920e1f5dd912cddf66fe5f8", size = 1276984 }
-
-[[package]]
 name = "email-validator"
 version = "2.2.0"
 source = { registry = "https://pypi.org/simple" }
@@ -518,14 +509,14 @@ wheels = [
 
 [[package]]
 name = "satellite-py"
-version = "0.1.2"
+version = "0.1.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "edgedb" },
+    { name = "pydantic" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/7f/f3/784d8f46e378b42f606ec31b12a988334b0e7c77ae159034260e0053dda9/satellite_py-0.1.2.tar.gz", hash = "sha256:feb1a2e848586e6083440dccf24c161856bb04e936ef70fc1214cd1a1975ea62", size = 1523 }
+sdist = { url = "https://files.pythonhosted.org/packages/87/48/b5eb434e22252c581aac31713366d0d9014f0f11704750309bfe37b08817/satellite_py-0.1.3.tar.gz", hash = "sha256:d8355a6c187ffd431d3fdbafbff83a0093191bf085f8392d0b135ca55a6c2323", size = 1931 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/57/35/40b16bd5d0ae8cf001b97e68cd06b9eb9f790b59f074c5736b41aa65c1d1/satellite_py-0.1.2-py3-none-any.whl", hash = "sha256:cf221c5f204454e96357b409fef17c35ebaf9a52fafc37be087da418509872f7", size = 2046 },
+    { url = "https://files.pythonhosted.org/packages/55/79/77cdf972a1f059cf3a2e22cab4a4921438f0ca42329cb5a0b35a6c137600/satellite_py-0.1.3-py3-none-any.whl", hash = "sha256:8e4bf58dd01cc56e01123b1addf54149424f589091ef0aeb78d6fac18af8b256", size = 2724 },
 ]
 
 [[package]]
@@ -549,7 +540,7 @@ requires-dist = [
     { name = "boto3", specifier = "==1.36.13" },
     { name = "fastapi", extras = ["standard"], specifier = "==0.115.8" },
     { name = "python-multipart", specifier = "==0.0.20" },
-    { name = "satellite-py", specifier = "==0.1.2" },
+    { name = "satellite-py", specifier = "==0.1.3" },
     { name = "tomli", specifier = "==2.2.1" },
 ]
 
