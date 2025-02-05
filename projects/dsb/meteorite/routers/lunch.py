@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Query, status
 from edgedb import create_async_client # pyright: ignore[reportUnknownVariableType]
 from pydantic import Field, BaseModel
+from satellite_py import generate_error_responses
 
 from os import environ
 from datetime import date as pdate
@@ -22,7 +23,11 @@ class LunchData(BaseModel):
 class LunchDatas(BaseModel):
   menus: list[LunchData] = Field(description="menus of data", default=[])
 
-@app.get("/", description="get school's lunch, total days must less than 31")
+@app.get(
+  "/",
+  description="get school's lunch, total days must less than 31",
+  responses=generate_error_responses([400, 404])
+)
 async def lunch(
   school: str,
   start: Annotated[pdate, Query(description="start date of lunch")],

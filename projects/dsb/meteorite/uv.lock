@@ -281,6 +281,7 @@ dependencies = [
     { name = "httpx" },
     { name = "loguru" },
     { name = "pcfrv" },
+    { name = "satellite-py" },
 ]
 
 [package.metadata]
@@ -290,6 +291,7 @@ requires-dist = [
     { name = "httpx", specifier = "==0.28.1" },
     { name = "loguru", specifier = "==0.7.3" },
     { name = "pcfrv", specifier = "==0.2.11" },
+    { name = "satellite-py", specifier = "==0.1.5" },
 ]
 
 [[package]]
@@ -414,6 +416,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/5b/8a/71cfbf6bf6257ea785d1f030c22468f763eea1b3e5417620f2ba9abd6dca/rich_toolkit-0.13.2.tar.gz", hash = "sha256:fea92557530de7c28f121cbed572ad93d9e0ddc60c3ca643f1b831f2f56b95d3", size = 72288 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/7e/1b/1c2f43af46456050b27810a7a013af8a7e12bc545a0cdc00eb0df55eb769/rich_toolkit-0.13.2-py3-none-any.whl", hash = "sha256:f3f6c583e5283298a2f7dbd3c65aca18b7f818ad96174113ab5bec0b0e35ed61", size = 13566 },
+]
+
+[[package]]
+name = "satellite-py"
+version = "0.1.5"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pydantic" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/68/c1/62f83da9363566434f62d0f62463fac1fa4059bf8533c029229846218049/satellite_py-0.1.5.tar.gz", hash = "sha256:7ced30df809a605ffb90897fc685294a46984cc58e63ca4e6b904d41a1ecbe53", size = 1819 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/64/d9/d94dec790fb9994f20851a4932bc4186795c087f2b8702bea1333da00dc2/satellite_py-0.1.5-py3-none-any.whl", hash = "sha256:754441d50f2bb964961ca9a42716f680e1b815b9110e017119899910b4435fc1", size = 2367 },
 ]
 
 [[package]]

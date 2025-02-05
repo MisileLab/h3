@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import Annotated
 
 from fastapi import APIRouter, HTTPException, status
+from satellite_py import generate_error_responses
 from pcfrv.timetable import SchoolDuplicated, SchoolNotFound, TimeTableData, fetch_timetable
 from pcfrv.search_school import School, get_school_code
 from pydantic import Field
@@ -24,7 +25,11 @@ class Classes:
   grade: int
   classes: list[int]
 
-@app.get("/timetable", description="returns dict, key is range of 1(monday) to 5(friday), value is list of classes")
+@app.get(
+  "/timetable",
+  description="returns dict, key is range of 1(monday) to 5(friday), value is list of classes",
+  responses=generate_error_responses([404, 409])
+)
 async def get_timetable(
   school: Annotated[str, Field(description="name of school, can be autocompleted")],
   grade: Annotated[int, Field(description="grade of timetable")],
@@ -42,7 +47,11 @@ async def get_timetable(
 async def search(school: Annotated[str, Field(description="name of school")]) -> list[School]:
   return get_school_code(school)
 
-@app.get("/classlist", description="return list of classes")
+@app.get(
+  "/classlist",
+  description="return list of classes",
+  responses=generate_error_responses([404, 409])
+)
 async def classlist(school: Annotated[str, Field(description="name of school")]) -> list[Classes]:
   try:
     t = fetch_timetable(school)
