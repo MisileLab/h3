@@ -2,7 +2,7 @@
 
 > Explore, Research, with plants.
 
-Automation minecraft modpack but no overdone things.
+Automation 2d top-view game but no overdone things.
 
 ## Plan
 
