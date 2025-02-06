@@ -1,4 +1,4 @@
-{pkgs, config, ...}:
+{pkgs, stablep, config, ...}:
 {
   home = {
     sessionVariables = {
@@ -9,7 +9,7 @@
 
       # Development
       edgedb d2 pre-commit just
-      snyk radicle-node infisical pnpm_9 poop binsider
+      snyk radicle-node infisical pnpm_9 (stablep.poop) binsider
 
       # Language tools
       ghc cabal-install
@@ -24,12 +24,12 @@
       unityhub dotnet-sdk_8
       lua (writeShellScriptBin "luajit" "${luajit}/bin/lua") luarocks
       vala
-      zig
+      (stablep.zig)
 
       # lsp
       basedpyright nil vala-language-server bash-language-server
       tailwindcss-language-server astro-language-server ruff lua-language-server
-      marksman zls
+      marksman (stablep.zls)
     ]
     ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
     ++ (with nodePackages_latest; [nodejs typescript typescript-language-server svelte-language-server]) # nodejs
