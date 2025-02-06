@@ -4,4 +4,5 @@ from pcfrv.search_school import get_school_code
 print(fetch_timetable('선린인').timetable[1][1][1])
 print(get_school_code("sans"))
 print(get_school_code("선린"))
+print(fetch_timetable("신아중학교").timetable)
 

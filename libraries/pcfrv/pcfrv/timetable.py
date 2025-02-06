@@ -128,7 +128,10 @@ def fetch_timetable(
         del homeroom_teacher[grade][cls:]
         break
       else:
-        homeroom_teacher[grade][cls] = teacher_list[homeroom_teacher[grade][cls]]
+        try:
+          homeroom_teacher[grade][cls] = teacher_list[homeroom_teacher[grade][cls]]
+        except IndexError:
+          homeroom_teacher[grade][cls] = ""
   t.homeroom_teacher = homeroom_teacher
   return t
 
