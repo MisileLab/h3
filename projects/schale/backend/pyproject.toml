@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Backend of schale"
 requires-python = "==3.13.1"
 dependencies = [
-  "boto3==1.36.15",
+  "boto3==1.36.16",
   "fastapi[standard]==0.115.8",
   "tomli==2.2.1",
   "python-multipart==0.0.20",
