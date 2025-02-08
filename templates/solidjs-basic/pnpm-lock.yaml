@@ -14,7 +14,7 @@ importers:
     devDependencies:
       '@catppuccin/tailwindcss':
         specifier: 0.1.6
-        version: 0.1.6(tailwindcss@4.0.4)
+        version: 0.1.6(tailwindcss@4.0.5)
       autoprefixer:
         specifier: 10.4.20
         version: 10.4.20(postcss@8.5.1)
@@ -25,8 +25,8 @@ importers:
         specifier: 0.33.0
         version: 0.33.0(solid-js@1.9.4)(vite@6.1.0)
       tailwindcss:
-        specifier: 4.0.4
-        version: 4.0.4
+        specifier: 4.0.5
+        version: 4.0.5
       typescript:
         specifier: 5.7.3
         version: 5.7.3
@@ -659,8 +659,8 @@ packages:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
     engines: {node: '>=0.10.0'}
 
-  tailwindcss@4.0.4:
-    resolution: {integrity: sha512-/ezDLEkOLf1lXkr9F2iI5BHJbexJpty5zkV2B8bGHCqAdbc9vk85Jgdkq+ZOvNkNPa3yAaqJ8DjRt584Bc84kw==}
+  tailwindcss@4.0.5:
+    resolution: {integrity: sha512-DZZIKX3tA23LGTjHdnwlJOTxfICD1cPeykLLsYF1RQBI9QsCR3i0szohJfJDVjr6aNRAIio5WVO7FGB77fRHwg==}
 
   typescript@5.7.3:
     resolution: {integrity: sha512-84MVSjMEHP+FQRPy3pX9sTVV/INIex71s9TL2Gm5FG/WG1SqXeKyZ0k7/blY/4FdOzI12CBy1vGc4og/eus0fw==}
@@ -858,9 +858,9 @@ snapshots:
       '@babel/helper-string-parser': 7.25.9
       '@babel/helper-validator-identifier': 7.25.9
 
-  '@catppuccin/tailwindcss@0.1.6(tailwindcss@4.0.4)':
+  '@catppuccin/tailwindcss@0.1.6(tailwindcss@4.0.5)':
     dependencies:
-      tailwindcss: 4.0.4
+      tailwindcss: 4.0.5
 
   '@esbuild/aix-ppc64@0.24.2':
     optional: true
@@ -1331,7 +1331,7 @@ snapshots:
 
   source-map-js@1.2.1: {}
 
-  tailwindcss@4.0.4: {}
+  tailwindcss@4.0.5: {}
 
   typescript@5.7.3: {}
 
