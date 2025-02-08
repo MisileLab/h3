@@ -6,6 +6,7 @@
 
     # some fancy cli tools
     fastfetch onefetch delta genact glow navi nix-output-monitor
+    nix-forecast
 
     # process utils
     killall screen
