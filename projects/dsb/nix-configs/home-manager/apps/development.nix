@@ -10,7 +10,7 @@
       # Development
       edgedb d2 pre-commit just
       # https://github.com/NixOS/nixpkgs/issues/380074
-      (stablep.snyk) radicle-node infisical pnpm_9 poop binsider
+      /*snyk*/ radicle-node infisical pnpm_9 poop binsider
 
       # Language tools
       ghc cabal-install
@@ -19,7 +19,8 @@
       nasm
       deno
       hvm bend
-      clang-tools (stablep.lldb) pkg-config
+      # https://github.com/NixOS/nixpkgs/issues/380196
+      clang-tools /*lldb*/ pkg-config
       niv nixpkgs-fmt nix-tree hub fh nixfmt-rfc-style
       packwiz ccemux
       unityhub dotnet-sdk_8
@@ -28,15 +29,14 @@
       zig
 
       # lsp
-      # https://github.com/NixOS/nixpkgs/issues/380079
-      (stablep.basedpyright) nil vala-language-server bash-language-server
+      basedpyright nil (stablep.vala-language-server) bash-language-server
       tailwindcss-language-server astro-language-server ruff lua-language-server
       marksman zls
     ]
     ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
     ++ (with nodePackages_latest; [nodejs typescript typescript-language-server svelte-language-server]) # nodejs
     # https://github.com/NixOS/nixpkgs/pull/379960
-    ++ (with python313Packages; [pip virtualenv (stablep.python313Packages.mitmproxy)]); # python thing
+    ++ (with python313Packages; [pip virtualenv /*mitmproxy*/]); # python thing
     file = {
       ".config/process-compose/theme.yaml".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
         url="https://github.com/catppuccin/process-compose";
