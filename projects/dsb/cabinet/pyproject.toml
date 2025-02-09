@@ -15,24 +15,17 @@ dependencies = [
   "pip==25.0",
   "pypager==3.0.1",
   "tiktoken==0.8.0",
-  "torch>=2.6.0",
+  "torch==2.6.0",
   "tqdm==4.67.1",
   "twscrape==0.15.0",
 ]
 
 [tool.uv.sources]
 torch = [
-  { index = "pytorch-cpu", marker = "platform_system == 'Linux'" },
-  { index = "pytorch-cuda", marker = "platform_system != 'Linux'"}
+  { index = "pytorch-cu" },
 ]
 
 [[tool.uv.index]]
-name = "pytorch-cpu"
-url = "https://download.pytorch.org/whl/cpu"
-explicit = true
-
-# https://github.com/pytorch/pytorch/issues/130249#issue-2395961478
-[[tool.uv.index]]
-name = "pytorch-cuda"
-url = "https://download.pytorch.org/whl/nightly/cu118"
+name = "pytorch-cu"
+url = "https://download.pytorch.org/whl/cu118"
 explicit = true
