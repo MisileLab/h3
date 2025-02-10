@@ -2,11 +2,11 @@
 let
   writeScript = name: content: pkgs.writeShellScriptBin name "#!${pkgs.nushell}/bin/nu\n${content} $@";
   completions = [
-    "eza" "dotnet" "docker" "gh" "git" "glow" "just" "less" "man"
+    "dotnet" "docker" "gh" "git" "glow" "just" "less" "man"
     "nano" "nix" "npm" "pnpm" "pre-commit" "rustup" "rg" "ssh"
     "tar" "vscode" "zellij" "curl" "bat" "cargo"
   ];
-  aliases = ["docker"];
+  aliases = ["docker" "git" "eza"];
 in
   {
     imports = [

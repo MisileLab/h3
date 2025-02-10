@@ -25,7 +25,10 @@
     fzf.enable = true;
     tealdeer.enable = true;
     ripgrep.enable = true;
-    eza.enable = true;
+    eza = {
+      enable = true;
+      enableNushellIntegration = false;
+    };
     bat.enable = true;
     atuin = {
       enable = true;
