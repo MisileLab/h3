@@ -25,6 +25,7 @@ pages:
                 name: Tether
               - symbol: KRW=X
                 name: krw to usd
+          - type: docker-containers
   - name: Communities
     columns:
       - size: full
