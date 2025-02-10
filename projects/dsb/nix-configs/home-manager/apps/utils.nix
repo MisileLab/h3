@@ -11,11 +11,6 @@
     # process utils
     killall screen
   ];
-  catppuccin = {
-    mpv.enable = true;
-    bat.enable = true;
-    delta.enable = true;
-  };
   programs = {
     mpv.enable = true;
     zoxide = {

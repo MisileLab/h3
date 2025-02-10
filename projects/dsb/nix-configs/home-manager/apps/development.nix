@@ -44,9 +44,6 @@
       }}/themes/catppuccin-mocha.yaml";
     };
   };
-  catppuccin = {
-    lazygit.enable = true;
-  };
   programs = {
     java = {
       enable=true;
