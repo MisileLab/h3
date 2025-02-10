@@ -1,4 +1,4 @@
-{pkgs, stablep, config, ...}:
+{pkgs, config, ...}:
 {
   home = {
     sessionVariables = {
@@ -29,13 +29,13 @@
       zig
 
       # lsp
-      basedpyright nil (stablep.vala-language-server) bash-language-server
+      basedpyright nil vala-language-server bash-language-server
       tailwindcss-language-server astro-language-server ruff lua-language-server
       marksman zls
     ]
     ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
     ++ (with nodePackages_latest; [nodejs typescript typescript-language-server svelte-language-server]) # nodejs
-    # https://github.com/NixOS/nixpkgs/pull/379960
+    # https://github.com/NixOS/nixpkgs/pull/380668
     ++ (with python313Packages; [pip virtualenv /*mitmproxy*/]); # python thing
     file = {
       ".config/process-compose/theme.yaml".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
