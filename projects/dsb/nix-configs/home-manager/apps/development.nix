@@ -19,8 +19,7 @@
       nasm
       deno
       hvm bend
-      # https://github.com/NixOS/nixpkgs/issues/380196
-      clang-tools /*lldb*/ pkg-config
+      clang-tools lldb pkg-config
       niv nixpkgs-fmt nix-tree hub fh nixfmt-rfc-style
       packwiz ccemux
       unityhub dotnet-sdk_8
