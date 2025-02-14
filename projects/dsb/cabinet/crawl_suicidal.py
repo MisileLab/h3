@@ -1,11 +1,10 @@
-from twscrape import API # pyright: ignore[reportMissingTypeStubs]
 from loguru import logger
 
 from asyncio import run
 from time import sleep
 from secrets import SystemRandom
 
-from lib import get_proxy, is_unique, read_pickle, append, write_to_pickle, User
+from lib import get_proxy, is_unique, read_pickle, append, write_to_pickle, User, api
 
 proxy = get_proxy()
 
@@ -19,7 +18,6 @@ suicidals = [
 
 async def main():
   df = read_pickle("user.pkl")
-  api = API(proxy=proxy)
 
   for suicidal_tag in suicidals:
     logger.info(suicidal_tag)

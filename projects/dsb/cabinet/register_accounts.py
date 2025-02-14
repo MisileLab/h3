@@ -1,14 +1,11 @@
 from csv import DictReader
 from asyncio import run
 
-from twscrape import API, set_log_level # pyright: ignore[reportMissingTypeStubs]
+from twscrape import set_log_level # pyright: ignore[reportMissingTypeStubs]
 
-from lib import get_proxy
+from lib import api
 
 set_log_level("DEBUG")
-
-api = API()
-api.proxy = get_proxy()
 
 async def main():
   with open("./accounts.csv", newline="") as f:

@@ -33,8 +33,10 @@ def get_proxy():
   logger.debug(prx)
   return prx
 
+api = API(proxy=get_proxy())
+api.pool._order_by = "RANDOM()" # pyright: ignore[reportPrivateUsage]
+
 async def get_usernames() -> list[str]:
-  api = API()
   lst = await api.pool.accounts_info()
   return [a["username"] for a in lst if not (a["active"] or a["logged_in"])]
 

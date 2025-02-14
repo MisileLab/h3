@@ -1,15 +1,13 @@
 from loguru import logger
-from twscrape import User, API # pyright: ignore[reportMissingTypeStubs]
+from twscrape import User # pyright: ignore[reportMissingTypeStubs]
 
 from secrets import SystemRandom
 from asyncio import run
 from time import sleep
-from copy import deepcopy
 
-from lib import get_proxy, is_unique, read_pickle, append, write_to_pickle, User as dUser
+from lib import get_proxy, is_unique, read_pickle, append, write_to_pickle, User as dUser, api
 
 proxy = get_proxy()
-api = API(proxy=proxy)
 
 sleep_interval_min = 0
 sleep_interval_max = 20

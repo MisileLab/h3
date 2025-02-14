@@ -5,10 +5,10 @@ from pathlib import Path
 from re import compile, sub
 
 from loguru import logger
-from twscrape import API, Tweet, gather # pyright: ignore[reportMissingTypeStubs]
+from twscrape import Tweet, gather # pyright: ignore[reportMissingTypeStubs]
 from twscrape.logger import set_log_level # pyright: ignore[reportMissingTypeStubs]
 
-from lib import Data, User, append, get_proxy, is_unique, read_pickle, write_to_pickle
+from lib import Data, User, append, is_unique, read_pickle, write_to_pickle, api
 
 url_filter = compile(r"(https?:\/\/)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)")
 
@@ -17,13 +17,13 @@ def get_value[T](v: T | None) -> T:
     raise TypeError()
   return v
 
-async def get_tweets(api: API, user_id: int) -> list[Tweet]:
+async def get_tweets(user_id: int) -> list[Tweet]:
   r = SystemRandom().randint(1, 10)
   logger.info(f"sleep {r} sec")
   sleep(r)
   return await gather(api.user_tweets(user_id)) # pyright: ignore[reportUnknownMemberType]
 
-async def get_user(api: API, userid: int) -> int:
+async def get_user(userid: int) -> int:
   r = SystemRandom().randint(1, 10)
   logger.info(f"sleep {r} sec")
   sleep(r)
@@ -37,7 +37,6 @@ if not Path("./results").is_dir():
   Path("./results").mkdir()
 
 async def main():
-  api = API(proxy=get_proxy())
   df = read_pickle("data.pkl")
   df_user = read_pickle("user.pkl")
 
@@ -50,7 +49,7 @@ async def main():
       continue
     data: list[str] = []
     nxt_skip = False
-    for j in await get_tweets(api, uid):
+    for j in await get_tweets(uid):
       if nxt_skip:
         nxt_skip = False
         continue
