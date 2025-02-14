@@ -2,7 +2,7 @@ from contextlib import suppress
 from pandas import DataFrame, Series, read_pickle as _read_pickle, concat # pyright: ignore[reportMissingTypeStubs]
 from twscrape import API # pyright: ignore[reportMissingTypeStubs]
 from loguru import logger
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from os import getenv
 from sys import stdout
@@ -12,7 +12,7 @@ logger.remove()
 _ = logger.add(stdout, level="DEBUG")
 
 class User(BaseModel):
-  uid: int
+  uid: int = Field(..., strict=False)
   name: str
   suicidal: bool
   url: str
