@@ -5,9 +5,7 @@ from secrets import SystemRandom
 from asyncio import run
 from time import sleep
 
-from lib import get_proxy, is_unique, read_pickle, append, write_to_pickle, User as dUser, api
-
-proxy = get_proxy()
+from lib import is_unique, read_pickle, append, write_to_pickle, User as dUser, api
 
 sleep_interval_min = 0
 sleep_interval_max = 20

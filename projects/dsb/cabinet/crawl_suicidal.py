@@ -4,9 +4,7 @@ from asyncio import run
 from time import sleep
 from secrets import SystemRandom
 
-from lib import get_proxy, is_unique, read_pickle, append, write_to_pickle, User, api
-
-proxy = get_proxy()
+from lib import is_unique, read_pickle, append, write_to_pickle, User, api
 
 base_query = "site:x.com"
 suicidals = [
