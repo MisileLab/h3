@@ -1,4 +1,5 @@
 from loguru import logger
+from pandas import DataFrame # pyright: ignore[reportMissingTypeStubs]
 from twscrape import User # pyright: ignore[reportMissingTypeStubs]
 
 from secrets import SystemRandom
@@ -20,7 +21,7 @@ class NotEnoughData(Exception):
     super().__init__()
     ignore_list.add(userid)
 
-async def search_res(userid: int, max_depth: int, depth: int = 0) -> User | None:
+async def search_res(df: DataFrame, userid: int, max_depth: int, depth: int = 0) -> User | None:
   sleep_sec = SystemRandom().randint(1, 3)
   logger.info(f"sleep {sleep_sec} secs")
   sleep(sleep_sec)
@@ -40,34 +41,40 @@ async def search_res(userid: int, max_depth: int, depth: int = 0) -> User | None
     logger.warning("user has no following")
     raise NotEnoughData(userid)
   selected_following = SystemRandom().choice(followings)
-  while selected_following.verified or selected_following.followersCount > max_user_follower_count:
+  while (
+    selected_following.verified
+    or selected_following.followersCount > max_user_follower_count
+    or not is_unique(df, "uid", selected_following.id)
+  ):
     if len(followings) == 1:
       logger.warning("user has only non-normal users")
       raise NotEnoughData(selected_following.id)
     logger.info(f"skipping {selected_following.displayname}")
     if selected_following.verified:
       logger.info(f"{selected_following.displayname} is verified")
-    else:
+    elif selected_following.followersCount > max_user_follower_count:
       logger.info(f"{selected_following.displayname} has too many followers ({selected_following.followersCount})")
+    else:
+      logger.info(f"{selected_following.displayname} is already in the list")
     followings.remove(selected_following)
     selected_following = SystemRandom().choice(followings)
   logger.debug(f"selected: {selected_following.displayname}")
   try:
-    res = await search_res(selected_following.id, max_depth, depth+1)
+    res = await search_res(df, selected_following.id, max_depth, depth+1)
   except NotEnoughData:
     logger.error(f"not enough data on first, {depth} {min_depth}")
     if depth-1 > min_depth:
-      return await search_res(userid, max_depth, depth-1)
+      return await search_res(df, userid, max_depth, depth-1)
     else:
       raise NotEnoughData(selected_following.id)
   if res is None and depth > min_depth and depth < max_depth:
     logger.warning("res's return is None")
     try:
-      return await search_res(userid, max_depth, depth)
+      return await search_res(df, userid, max_depth, depth)
     except NotEnoughData:
       logger.error(f"not enough data on second, {depth} {min_depth}")
       if depth-1 > min_depth:
-        return await search_res(userid, max_depth, depth-1)
+        return await search_res(df, userid, max_depth, depth-1)
       else:
         raise NotEnoughData(userid)
   return res if res is not None else user
@@ -78,7 +85,7 @@ async def main():
     raw_user = dUser.model_validate(i)
     userid = raw_user.uid
     try:
-      user = await search_res(userid, max_depth)
+      user = await search_res(df, userid, max_depth)
     except NotEnoughData:
       logger.error(f"{userid} has not enough data, skipping")
       continue
