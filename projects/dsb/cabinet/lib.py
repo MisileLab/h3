@@ -51,6 +51,8 @@ def write_to_pickle(df: DataFrame, file_path: str) -> None:
     df = df.reset_index()
   with suppress(KeyError):
     del df["level_0"]
+  with suppress(KeyError):
+    del df["index"]
   df.to_pickle(file_path)
 
 def is_unique(df: DataFrame, key: str, value: object) -> bool:
