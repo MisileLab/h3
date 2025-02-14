@@ -45,7 +45,7 @@ async def main():
     i: User = User.model_validate(_i)
     uid: int = i.uid
     logger.debug(uid)
-    if not is_unique(df, "id", uid):
+    if not is_unique(df, "uid", uid):
       logger.info("skip because exists")
       continue
     data: list[str] = []

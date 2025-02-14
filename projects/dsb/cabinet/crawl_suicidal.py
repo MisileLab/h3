@@ -26,7 +26,7 @@ async def main():
     async for tweet in api.search(f"#{suicidal_tag}"): # pyright: ignore[reportUnknownMemberType]
       user = tweet.user
       logger.info(user.username)
-      if is_unique(df, "id", user.id):
+      if is_unique(df, "uid", user.id):
         df = append(df, User(
           uid=user.id,
           name=user.username,

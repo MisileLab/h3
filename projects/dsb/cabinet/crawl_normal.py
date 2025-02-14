@@ -79,9 +79,10 @@ async def search_res(userid: int, max_depth: int, depth: int = 0) -> User | None
 async def main():
   df = read_pickle("user.pkl")
   for i in deepcopy(df.loc[df['suicidal']]): # pyright: ignore[reportUnknownVariableType, reportUnknownArgumentType]
-    userid: int = i["id"] # pyright: ignore[reportUnknownVariableType]
+    raw_user = dUser.model_validate(i)
+    userid = raw_user.uid
     try:
-      user = await search_res(userid, max_depth) # pyright: ignore[reportUnknownArgumentType]
+      user = await search_res(userid, max_depth)
     except NotEnoughData:
       logger.error(f"{userid} has not enough data, skipping")
       continue
@@ -89,7 +90,7 @@ async def main():
       logger.error(f"{userid} not found, skipping")
       continue
     logger.info(f"{user.username}: {user.displayname}")
-    if is_unique(df, "id", user.id):
+    if is_unique(df, "uid", user.id):
       df = append(df, dUser(uid=user.id, name=user.username, url=user.url, suicidal=False))
   write_to_pickle(df, "user.pkl")
 
