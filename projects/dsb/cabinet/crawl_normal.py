@@ -78,7 +78,7 @@ async def search_res(userid: int, max_depth: int, depth: int = 0) -> User | None
 
 async def main():
   df = read_pickle("user.pkl")
-  for i in deepcopy(df.loc[df['suicidal']]): # pyright: ignore[reportUnknownVariableType, reportUnknownArgumentType]
+  for i in df.loc[df['suicidal']].to_dict('records'): # pyright: ignore[reportUnknownVariableType, reportUnknownMemberType]
     raw_user = dUser.model_validate(i)
     userid = raw_user.uid
     try:
