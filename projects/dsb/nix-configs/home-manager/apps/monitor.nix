@@ -6,7 +6,9 @@
     ];
   };
   programs = {
-    # https://github.com/NixOS/nixpkgs/pull/367695
-    btop.enable = true;
+    btop = {
+      enable = true;
+      package = pkgs.btop-rocm;
+    };
   };
 }

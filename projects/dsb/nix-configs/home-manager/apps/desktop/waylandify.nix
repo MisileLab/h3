@@ -1,4 +1,4 @@
-{pkgs, config, ...}:
+{pkgs, stablep, config, ...}:
 let
   # base
   base = name: envs: binaryPath: args: (pkgs.writeShellScriptBin "${name}" ''
@@ -15,15 +15,17 @@ let
     (cwl "discord" "${vesktop}/bin/vesktop")
     (cwl "vscode" "${vscodium}/bin/codium")
   ];
+  chromiums = with stablep; [
+    (cwl "chrome" "${ungoogled-chromium}/bin/chromium")
+    ungoogled-chromium
+  ];
 in
 {
   home = {
     packages = with pkgs; [
       (jwl "simplex" "${simplex-chat-desktop}/bin/simplex-chat-desktop")
-      (cwl "chrome" "${ungoogled-chromium}/bin/chromium")
       (qwl "monero" "${monero-gui}/bin/monero-wallet-gui")
-      ungoogled-chromium
-    ] ++ electrons;
+    ] ++ electrons ++ chromiums;
     file = {
       ".config/simplex/catppuccin-mocha.theme".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
         url="https://github.com/catppuccin/simplex";
