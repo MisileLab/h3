@@ -95,6 +95,8 @@ async def main():
     logger.info(f"{user.username}: {user.displayname}")
     if is_unique(df, "uid", user.id):
       df = append(df, dUser(uid=user.id, name=user.username, url=user.url, suicidal=False))
+    else:
+      logger.error(f"{user.id} is already in the list, this is a bug")
   write_to_pickle(df, "user.pkl")
 
 if __name__ == "__main__":
