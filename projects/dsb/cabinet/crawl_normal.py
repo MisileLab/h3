@@ -44,7 +44,7 @@ async def search_res(df: DataFrame, userid: int, max_depth: int, depth: int = 0)
   while (
     selected_following.verified
     or selected_following.followersCount > max_user_follower_count
-    or (not is_unique(df, "uid", selected_following.id) and depth >= max_depth)
+    or (depth == max_depth and not is_unique(df, "uid", selected_following.id))
   ):
     if len(followings) == 1:
       logger.warning("user has only non-normal users")
