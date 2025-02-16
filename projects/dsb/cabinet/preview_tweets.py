@@ -12,10 +12,16 @@ data_res = deepcopy(data)
 for _i in data.loc[data["confirmed"] == False].to_dict('records'): # pyright: ignore[reportUnknownVariableType, reportUnknownMemberType] # noqa: E712
   i = Data.model_validate(_i)
   tweets: list[str] = i.data
-  p = Pager()
-  _ = p.add_source(StringSource("\n--sep--\n".join(i for i in tweets if i.count("자살")+i.count("자해") != 0)))
-  p.run()
-  full = input("do you want to see full? [y/n]: ").lower() == "y"
+  suicidal_comments: str = "\n--sep--\n".join(i for i in tweets if i.count("자살")+i.count("자해") != 0)
+  if suicidal_comments != "":
+    p = Pager()
+    _ = p.add_source(StringSource(suicidal_comments))
+    p.run()
+  elif i.suicidal:
+    print("previously suicidal but none found")
+  else:
+    print("suicidal none found")
+  full = suicidal_comments == "" or input("do you want to see full? [y/n]: ").lower() == "y"
   if full:
     p = Pager()
     _ = p.add_source(StringSource("\n--sep--\n".join(i for i in tweets)))
