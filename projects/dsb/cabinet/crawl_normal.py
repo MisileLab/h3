@@ -1,3 +1,4 @@
+from httpx import ConnectTimeout
 from loguru import logger
 from pandas import DataFrame # pyright: ignore[reportMissingTypeStubs]
 from twscrape import User # pyright: ignore[reportMissingTypeStubs]
@@ -89,7 +90,7 @@ async def subroutine(i: dict[str, object], df: DataFrame, retry: int = 0):
   except NotEnoughData:
     logger.error(f"{userid} has not enough data, skipping")
     return
-  except TimeoutError:
+  except ConnectTimeout:
     logger.error(f"{userid} timed out, retry again, current: {retry}")
     if retry >= max_retry:
       logger.error(f"{userid} reached max retry, skipping")
