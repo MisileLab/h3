@@ -1,4 +1,4 @@
-{pkgs, stablep, config, ...}:
+{pkgs, config, ...}:
 let
   # base
   base = name: envs: binaryPath: args: (pkgs.writeShellScriptBin "${name}" ''
@@ -15,7 +15,7 @@ let
     (cwl "discord" "${vesktop}/bin/vesktop")
     (cwl "vscode" "${vscodium}/bin/codium")
   ];
-  chromiums = with stablep; [
+  chromiums = with pkgs; [
     (cwl "chrome" "${ungoogled-chromium}/bin/chromium")
     ungoogled-chromium
   ];
