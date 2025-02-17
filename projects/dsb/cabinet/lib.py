@@ -34,7 +34,7 @@ def get_proxy():
   return prx
 
 api = API(proxy=get_proxy())
-api.pool._order_by = "RANDOM()" # pyright: ignore[reportPrivateUsage]
+# api.pool._order_by = "RANDOM()"
 
 async def get_usernames() -> list[str]:
   lst = await api.pool.accounts_info()
