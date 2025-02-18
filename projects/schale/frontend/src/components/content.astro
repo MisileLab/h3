@@ -29,6 +29,9 @@ if (import.meta.env.PROD && date === 0) {throw Error("It is just draft.")}
   <style is:global>
     @reference "tailwindcss/theme";
 
+    h1 {
+      margin-top: 1rem;
+    }
     h1, h1 > strong > *, h1 > span {
       @apply text-3xl md:text-4xl;
     }
