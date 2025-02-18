@@ -82,35 +82,34 @@ async def search_res(df: DataFrame, userid: int, max_depth: int, depth: int = 0)
         raise NotEnoughData(userid)
   return res if res is not None else user
 
-async def subroutine(i: dict[str, object], df: DataFrame, retry: int = 0):
+async def subroutine(i: dict[str, object], df: DataFrame, retry: int = 0) -> DataFrame:
   raw_user = dUser.model_validate(i)
   userid = raw_user.uid
   try:
     user = await search_res(df, userid, max_depth)
   except NotEnoughData:
     logger.error(f"{userid} has not enough data, skipping")
-    return
+    return df
   except ConnectTimeout:
     logger.error(f"{userid} timed out, retry again, current: {retry}")
     if retry >= max_retry:
       logger.error(f"{userid} reached max retry, skipping")
-      return
-    await subroutine(i, df, retry+1)
-    return
+      return df
+    return await subroutine(i, df, retry+1)
   if user is None:
     logger.error(f"{userid} not found, skipping")
-    return
+    return df
   logger.info(f"{user.username}: {user.displayname}")
   if is_unique(df, "uid", user.id):
     df = append(df, dUser(uid=user.id, name=user.username, url=user.url, suicidal=False))
   else:
     logger.error(f"{user.id} is already in the list, this is a bug")
-  return
+  return df
 
 async def main():
   df = read_pickle("user.pkl")
   for i in df.loc[df['suicidal']].to_dict('records'): # pyright: ignore[reportUnknownVariableType, reportUnknownMemberType]
-    await subroutine(i, df) # pyright: ignore[reportUnknownArgumentType]
+    df = await subroutine(i, df) # pyright: ignore[reportUnknownArgumentType]
   write_to_pickle(df, "user.pkl")
 
 if __name__ == "__main__":
