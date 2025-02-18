@@ -55,8 +55,8 @@ importers:
         specifier: 2.4.2
         version: 2.4.2
       shiki-magic-move:
-        specifier: 1.0.0
-        version: 1.0.0(shiki@2.4.2)(svelte@5.20.1)
+        specifier: 1.0.1
+        version: 1.0.1(shiki@2.4.2)(svelte@5.20.1)
       svelte:
         specifier: 5.20.1
         version: 5.20.1
@@ -948,11 +948,11 @@ packages:
   set-cookie-parser@2.7.1:
     resolution: {integrity: sha512-IOc8uWeOZgnb3ptbCURJWNjWUPcO3ZnTTdzsurqERrP6nPyv+paC55vJM0LpOlT2ne+Ix+9+CRG1MNLlyZ4GjQ==}
 
-  shiki-magic-move@1.0.0:
-    resolution: {integrity: sha512-CU1mSLc9H3AV9SuVon3AAhesdi5WZh4GC3SR+Q0I4ilg71q0/OKnOWu0bT8Kgt5w6cJKYkEcQKNEHKCaqSLTIQ==}
+  shiki-magic-move@1.0.1:
+    resolution: {integrity: sha512-mrSTGTq2jcr9vbu/S0Lpt/gSnni2iQvAlSFiTyM8ePumPX4zrValkfUNYgyESkhqt8RqecQZXERzcY8VglSbEA==}
     peerDependencies:
       react: ^18.2.0 || ^19.0.0
-      shiki: ^2.0.0
+      shiki: ^1.0.0 || ^2.0.0 || ^3.0.0
       solid-js: ^1.9.1
       svelte: ^5.0.0-0
       vue: ^3.4.0
@@ -1116,7 +1116,7 @@ snapshots:
       '@tailwindcss/vite': 4.0.0(vite@6.1.0(jiti@2.4.2)(lightningcss@1.29.1))
       reveal.js: 5.1.0
       shiki: 2.4.2
-      shiki-magic-move: 1.0.0(shiki@2.4.2)(svelte@5.20.1)
+      shiki-magic-move: 1.0.1(shiki@2.4.2)(svelte@5.20.1)
       svelte: 5.20.1
       tailwindcss: 4.0.0
     transitivePeerDependencies:
@@ -1820,7 +1820,7 @@ snapshots:
 
   set-cookie-parser@2.7.1: {}
 
-  shiki-magic-move@1.0.0(shiki@2.4.2)(svelte@5.20.1):
+  shiki-magic-move@1.0.1(shiki@2.4.2)(svelte@5.20.1):
     dependencies:
       diff-match-patch-es: 1.0.1
       ohash: 1.1.4
