@@ -16,7 +16,7 @@
 		"@types/node": "22.13.4",
 		"@types/reveal.js": "5.0.5",
 		"autoprefixer": "10.4.20",
-		"postcss": "8.5.2",
+		"postcss": "8.5.3",
 		"postcss-load-config": "6.0.1",
 		"prettier": "3.5.1",
 		"prettier-plugin-svelte": "3.3.3",
