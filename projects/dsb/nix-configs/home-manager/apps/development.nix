@@ -1,4 +1,4 @@
-{pkgs, stablep, config, ...}:
+{pkgs, config, ...}:
 {
   home = {
     sessionVariables = {
@@ -10,12 +10,12 @@
       # Development
       edgedb d2 pre-commit just
       # https://github.com/NixOS/nixpkgs/issues/380074
-      /*snyk*/ (stablep.radicle-node) infisical pnpm_9 poop binsider
+      /*snyk*/ radicle-node infisical pnpm_9 poop binsider
 
       # Language tools
       ghc cabal-install
       rustup cargo-update
-      python313Full (stablep.uv) mypy
+      python313Full uv mypy
       nasm
       deno
       hvm bend

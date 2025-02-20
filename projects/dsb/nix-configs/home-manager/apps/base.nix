@@ -1,4 +1,4 @@
-{lib, pkgs, stablep, zigpkgs, secrets, ...}:
+{lib, pkgs, zigpkgs, secrets, ...}:
 let
   writeScript = name: content: pkgs.writeShellScriptBin name "#!${pkgs.nushell}/bin/nu\n${content} $@";
   completions = [
@@ -18,8 +18,8 @@ in
     ];
     home = {
       packages = with pkgs; [
-        sbctl bluez cryptsetup smartmontools (stablep.borgbackup) rclone pulsemixer
-        portablemc miniserve openssl transmission
+        sbctl bluez cryptsetup smartmontools borgbackup rclone pulsemixer
+        portablemc miniserve openssl transmission attic-client
         yt-dlp magic-wormhole ansifilter b3sum git-crypt inxi
         (writeScript "manual" ''
           ${pkgs.glow}/bin/glow -p ~/.config/home-manager/manual.md
@@ -33,7 +33,7 @@ in
       ];
       activation = {
         installCompletions = lib.hm.dag.entryAfter ["writeBoundary"] ''
-          ${stablep.uv}/bin/uv generate-shell-completion nushell > /home/misile/non-nixos-things/scripts/uv-completions.nu
+          ${pkgs.uv}/bin/uv generate-shell-completion nushell > /home/misile/non-nixos-things/scripts/uv-completions.nu
         '';
       };
     };
