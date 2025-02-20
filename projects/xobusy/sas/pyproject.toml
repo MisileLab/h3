@@ -4,5 +4,5 @@ version = "0.1.0"
 description = "get out"
 requires-python = "==3.13.1"
 dependencies = [
-  "bitarray==3.0.0"
+  "bitarray==3.1.0"
 ]
