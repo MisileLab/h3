@@ -2,7 +2,7 @@
 name = "dhs"
 version = "0.1.0"
 description = "dreamhacks"
-requires-python = "==3.13.1"
+requires-python = "==3.13.2"
 dependencies = [
   "beautifulsoup4==4.13.3",
   "flask==3.1.0",

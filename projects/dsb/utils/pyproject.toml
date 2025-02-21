@@ -3,7 +3,7 @@ name = "utils"
 version = "0.1.0"
 description = "Utils for me"
 readme = "README.md"
-requires-python = "==3.13.1"
+requires-python = "==3.13.2"
 dependencies = [
   "fake-useragent==2.0.3",
   "gradio-client==1.7.1",
