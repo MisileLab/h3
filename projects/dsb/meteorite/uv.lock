@@ -292,7 +292,7 @@ requires-dist = [
     { name = "httpx", specifier = "==0.28.1" },
     { name = "loguru", specifier = "==0.7.3" },
     { name = "pcfrv", specifier = "==0.2.12" },
-    { name = "satellite-py", specifier = "==0.1.5" },
+    { name = "satellite-py", specifier = "==0.1.6" },
 ]
 
 [[package]]
@@ -421,14 +421,14 @@ wheels = [
 
 [[package]]
 name = "satellite-py"
-version = "0.1.5"
+version = "0.1.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "pydantic" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/68/c1/62f83da9363566434f62d0f62463fac1fa4059bf8533c029229846218049/satellite_py-0.1.5.tar.gz", hash = "sha256:7ced30df809a605ffb90897fc685294a46984cc58e63ca4e6b904d41a1ecbe53", size = 1819 }
+sdist = { url = "https://files.pythonhosted.org/packages/b0/6c/b21183785fa1a37e3e69b8aa557780f58d9bc90108aa8250ab3a143073d9/satellite_py-0.1.6.tar.gz", hash = "sha256:f6de9f8b745092f57163b9143c715f177c420931c4f12d14f85bbb7c65bdad9c", size = 1827 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/64/d9/d94dec790fb9994f20851a4932bc4186795c087f2b8702bea1333da00dc2/satellite_py-0.1.5-py3-none-any.whl", hash = "sha256:754441d50f2bb964961ca9a42716f680e1b815b9110e017119899910b4435fc1", size = 2367 },
+    { url = "https://files.pythonhosted.org/packages/28/7f/32d39dea746911046cd5d6ed33d132c1d94985b8d292a23fbd9c1c733412/satellite_py-0.1.6-py3-none-any.whl", hash = "sha256:ff326a794a49e52451946670f23c91c279a9c51697cc36c4fe2d042a31f00444", size = 2367 },
 ]
 
 [[package]]
