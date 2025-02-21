@@ -26,8 +26,6 @@ blur_radius 10
 blur_passes 4
 shadows enable
 
-for_window [class=".*"] opacity 0.9
-for_window [app_id=".*"] opacity 0.9
 for_window [instance="GalaxyBudsClient"] floating enable
 
 bindsym Print exec ${pkgs.sway-contrib.grimshot}/bin/grimshot --notify copy area
