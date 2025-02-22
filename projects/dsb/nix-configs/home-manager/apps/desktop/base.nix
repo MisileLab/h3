@@ -12,7 +12,7 @@
       brightnessctl clipman wl-clipboard pavucontrol
       imagemagick virt-manager xfce.thunar
       galaxy-buds-client kdePackages.filelight (stablep.firefoxpwa) gparted
-      gimp telegram-desktop xournalpp okular zotero
+      gimp telegram-desktop xournalpp (kdePackages.okular) zotero
     ];
     pointerCursor = {
       name = "Adwaita";
