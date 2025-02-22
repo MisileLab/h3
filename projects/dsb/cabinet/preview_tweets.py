@@ -1,3 +1,4 @@
+from contextlib import suppress
 from copy import deepcopy
 
 from pandas import DataFrame # pyright: ignore[reportMissingTypeStubs]
@@ -8,7 +9,8 @@ from lib import Data, read_pickle, write_to_pickle
 
 data = read_pickle("data.pkl")
 data_res = deepcopy(data)
-try:
+
+with suppress(KeyboardInterrupt):
   for _i in data.loc[data["confirmed"] == False].to_dict('records'): # pyright: ignore[reportUnknownVariableType, reportUnknownMemberType] # noqa: E712
     i = Data.model_validate(_i)
     tweets: list[str] = i.data
@@ -38,5 +40,5 @@ try:
       continue
     data_res.loc[data_res["uid"] == i.uid, "suicidal"] = suicidal.lower() == "y"
     data_res.loc[data_res["uid"] == i.uid, "confirmed"] = True
-except KeyboardInterrupt:
-  write_to_pickle(data_res, "data.pkl")
+
+write_to_pickle(data_res, "data.pkl")
