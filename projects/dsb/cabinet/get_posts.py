@@ -4,6 +4,7 @@ from asyncio import run
 from pathlib import Path
 from re import compile, sub
 
+from httpx import ConnectTimeout
 from loguru import logger
 from twscrape import Tweet, gather # pyright: ignore[reportMissingTypeStubs]
 from twscrape.logger import set_log_level # pyright: ignore[reportMissingTypeStubs]
@@ -49,7 +50,13 @@ async def main():
       continue
     data: list[str] = []
     nxt_skip = False
-    for j in await get_tweets(uid):
+    tweets: list[Tweet]
+    try:
+      tweets = await get_tweets(uid)
+    except ConnectTimeout:
+      logger.warning("timeout error, try again")
+      tweets = await get_tweets(uid)
+    for j in tweets:
       if nxt_skip:
         nxt_skip = False
         continue
