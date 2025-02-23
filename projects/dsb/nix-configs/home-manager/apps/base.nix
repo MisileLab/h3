@@ -30,6 +30,7 @@ in
         (writeScript "lzg" "${lazygit}/bin/lazygit")
         (writeScript "utils" "~/repos/h3/projects/dsb/utils/zig-out/bin/utils")
         (writeScript "zig-beta" "${zigpkgs.master}/bin/zig")
+        (writeScript "ssh" "${pkgs.kitty}/bin/kitten ssh")
       ];
       activation = {
         installCompletions = lib.hm.dag.entryAfter ["writeBoundary"] ''
@@ -55,7 +56,6 @@ in
           onefetch = "${pkgs.onefetch}/bin/onefetch --number-of-languages 9999";
           cat = "${pkgs.bat}/bin/bat";
           ocat = "${pkgs.coreutils}/bin/cat";
-          ssh = "${pkgs.kitty}/bin/kitten ssh";
         };
         extraConfig = ''
 # completion that command name and program different
