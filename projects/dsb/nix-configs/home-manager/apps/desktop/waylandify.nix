@@ -33,10 +33,4 @@ in
       }}/themes/catppuccin-mocha.theme";
     };
   };
-  programs = {
-    vscode = {
-      enable = true;
-      package = pkgs.vscode-with-extensions.override { vscodeExtensions = with pkgs.vscode-extensions; [ ms-vsliveshare.vsliveshare ]; };
-    };
-  };
 }
