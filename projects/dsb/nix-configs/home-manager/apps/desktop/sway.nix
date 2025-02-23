@@ -1,4 +1,4 @@
-{c, pkgs, stablep, ...}:
+{c, pkgs, ...}:
 let
   returnColorCSS = {r, g, b, a, addi ? ""}: ''
     ${(if c.gtk4 then "backdrop-filter: blur(5px)" else "")}
@@ -33,12 +33,12 @@ bindsym Shift+Print	exec ${pkgs.sway-contrib.grimshot}/bin/grimshot --notify cop
 bindsym Shift+Alt+Print exec ${pkgs.sway-contrib.grimshot}/bin/grimshot --notify savecopy anything
 bindsym Alt+Print exec ${pkgs.sway-contrib.grimshot}/bin/grimshot --notify save area
 
-bindsym XF86AudioRaiseVolume exec ${stablep.avizo}/bin/volumectl -u up
-bindsym XF86AudioLowerVolume exec ${stablep.avizo}/bin/volumectl -u down
-bindsym XF86AudioMute exec ${stablep.avizo}/bin/volumectl toggle-mute
-bindsym XF86AudioMicMute exec ${stablep.avizo}/bin/volumectl -m toggle-mute
-bindsym XF86MonBrightnessUp exec ${stablep.avizo}/bin/lightctl up
-bindsym XF86MonBrightnessDown exec ${stablep.avizo}/bin/lightctl down
+bindsym XF86AudioRaiseVolume exec ${pkgs.avizo}/bin/volumectl -u up
+bindsym XF86AudioLowerVolume exec ${pkgs.avizo}/bin/volumectl -u down
+bindsym XF86AudioMute exec ${pkgs.avizo}/bin/volumectl toggle-mute
+bindsym XF86AudioMicMute exec ${pkgs.avizo}/bin/volumectl -m toggle-mute
+bindsym XF86MonBrightnessUp exec ${pkgs.avizo}/bin/lightctl up
+bindsym XF86MonBrightnessDown exec ${pkgs.avizo}/bin/lightctl down
 
 bindsym Mod4+y exec ${pkgs.clipman}/bin/clipman pick --tool="rofi" --max-items=30
 bindsym Mod4+shift+y exec ${pkgs.swayfx}/bin/swaynag --type warning -m 'You want to clear clipboard?' -b 'Yes' 'exec ${pkgs.clipman}/bin/clipman clear --all'
@@ -65,7 +65,7 @@ titlebar_padding 1
         {command = "${pkgs.waybar}/bin/waybar";}
         {command = "${pkgs.swaybg}/bin/swaybg --image ~/.config/home-manager/bg.png";}
         {command = "${pkgs.wl-clipboard}/bin/wl-paste -t text --watch ${pkgs.clipman}/bin/clipman store --no-persist";}
-        {command = "${stablep.avizo}/bin/avizo-service";}
+        {command = "${pkgs.avizo}/bin/avizo-service";}
       ];
       menu = "${pkgs.rofi-wayland}/bin/rofi -show drun";
       terminal = "${pkgs.kitty}/bin/kitty";
@@ -228,11 +228,7 @@ titlebar_padding 1
   };
   services = {
     dunst.enable = true;
-    # https://github.com/NixOS/nixpkgs/issues/383727
-    avizo = {
-      enable = true;
-      package = stablep.avizo;
-    };
+    avizo.enable = true;
     poweralertd.enable = true;
   };
 }
