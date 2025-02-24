@@ -3,7 +3,7 @@ name = "cabinet"
 version = "0.1.0"
 description = "Suicide Detection Model"
 readme = "README.md"
-requires-python = ">=3.13.1"
+requires-python = "==3.13.2"
 dependencies = [
   "jupyterlab==4.3.5",
   "koreanize-matplotlib==0.1.1",
