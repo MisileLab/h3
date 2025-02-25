@@ -5,7 +5,7 @@ from openai import OpenAI
 
 o = OpenAI(api_key=getenv("OPENAI_KEY"))
 
-for i in Path("./embedding_results").glob("*.json"):
+for i in Path("./embedding_results").glob("*.jsonl"):
   bid = i.stem
   batch = o.batches.retrieve(bid)
   if batch.status == "completed":

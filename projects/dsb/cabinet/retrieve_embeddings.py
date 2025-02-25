@@ -10,7 +10,7 @@ o = OpenAI(api_key=getenv("OPENAI_KEY"))
 
 for i in batches:
   batch = o.batches.retrieve(i.id)
-  if Path(f"embedding_results/{batch.id}.json").exists():
+  if Path(f"embedding_results/{batch.id}.jsonl").exists():
     print("skip")
     continue
   if batch.status == "completed":
