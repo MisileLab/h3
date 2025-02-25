@@ -10,7 +10,7 @@ else:
 
 from tqdm.auto import tqdm
 
-from torch import Tensor, nn, cat, optim, save, abs # pyright: ignore[reportUnknownVariableType]
+from torch import tensor, Tensor, nn, cat, optim, save, abs # pyright: ignore[reportUnknownVariableType]
 from torch.cuda import is_available
 from torch.utils.data import DataLoader, TensorDataset, random_split
 
@@ -51,11 +51,20 @@ class Model(nn.Module):
 amount = 3
 batch_size = 32
 
-dataset: TensorDataset = loads(Path("dataset.pkl").read_bytes())
+dataset: dict[str, list[list[list[float]]]] = loads(Path("embedding.pkl").read_bytes())
+x_t = Tensor(device=device)
+y_t = Tensor(device=device)
+for i in dataset["suicidal"]:
+  x_t = cat((x_t, tensor(i, device=device)))
+  y_t = cat((y_t, tensor([1], device=device)))
+for i in dataset["normal"]:
+  x_t = cat((x_t, tensor(i, device=device)))
+  y_t = cat((y_t, tensor([0], device=device)))
+t_dataset = TensorDataset(x_t, y_t)
 train_size = int(0.8 * len(dataset))
 test_size = len(dataset) - train_size
 
-train_dataset, test_dataset = random_split(dataset, [train_size, test_size])
+train_dataset, test_dataset = random_split(t_dataset, [train_size, test_size])
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False)
 
@@ -76,7 +85,18 @@ best_model = model.state_dict()
 for epoch in t:
   _ = model.train()
   running_loss = 0.0
+  count = 0
   for x, y in train_loader:
+    n = amount-1
+    if len(x) < amount:
+      continue
+    sub_x_t = Tensor(device=device)
+    sub_y_t = Tensor(device=device)
+    while n < len(x):
+      sub_x_t = cat((sub_x_t, x[n-amount:n]))
+      sub_y_t = cat((sub_y_t, y[0]))
+      n += 1
+      count += 1
     x: Tensor
     y: Tensor
     x = x.to(device)
@@ -90,7 +110,7 @@ for epoch in t:
     _ = optimizer.step() # pyright: ignore[reportUnknownVariableType, reportUnknownMemberType]
     running_loss += loss.item() # pyright: ignore[reportAny]
   
-  avg_loss = running_loss / len(train_loader)
+  avg_loss = running_loss / count
   t.set_description(str(avg_loss))
   
   if avg_loss < best_loss:

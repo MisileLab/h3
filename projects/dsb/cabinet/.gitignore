@@ -6,9 +6,8 @@ accounts.csv
 batches.pkl
 embeddings
 embedding_results
-dataset.pt
+embedding.pkl
 model.pth
-zluda
 
 # community/Python/JupyterNotebooks.gitignore by ignofierplus
 .ipynb_checkpoints
