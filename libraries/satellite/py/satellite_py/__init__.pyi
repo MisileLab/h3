@@ -1,14 +1,4 @@
-from _typeshed import DataclassInstance, Incomplete
 from dataclasses import dataclass
-
-edge_db: bool
-
-class DB:
-    db: Incomplete
-    def __init__(self, *args, **kwargs) -> None: ...
-    async def query(self, query: str, *args, **kwargs) -> list[DataclassInstance]: ...
-    async def query_single(self, query: str, *args, **kwargs) -> DataclassInstance | None: ...
-    async def query_required_single(self, query: str, *args, **kwargs) -> DataclassInstance | None: ...
 
 @dataclass
 class Error:

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Query, status
-from edgedb import create_async_client # pyright: ignore[reportUnknownVariableType]
+from gel import create_async_client # pyright: ignore[reportUnknownVariableType]
 from pydantic import Field, BaseModel
 from satellite_py import generate_error_responses
 

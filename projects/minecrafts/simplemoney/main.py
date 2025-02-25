@@ -10,7 +10,7 @@ from disnake import ApplicationCommandInteraction, User
 from disnake.errors import InteractionResponded
 from disnake.ext.commands import CommandInvokeError, InteractionBot, MissingPermissions, Param, has_guild_permissions
 from disnake.ext.tasks import loop
-from edgedb import ConstraintViolationError, create_async_client  # pyright: ignore[reportUnknownVariableType]
+from gel import ConstraintViolationError, create_async_client  # pyright: ignore[reportUnknownVariableType]
 from tomli import loads
 from tomli_w import dumps
 from pydantic import BaseModel
