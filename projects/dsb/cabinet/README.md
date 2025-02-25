@@ -11,6 +11,7 @@ Find suicidal people using stream of text.
   - [x] Epoch support
   - [x] Automatic Loss Stop (save best model)
   - [x] Optimizer
+  - [ ] make mild suicidal to 50% suicidal
   - [ ] seperate message of user that changed (non-suicidal <-> suicidal)
   - [ ] seperate multi-modal version
   - [ ] Other embeddings
