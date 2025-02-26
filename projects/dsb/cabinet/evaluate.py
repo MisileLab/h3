@@ -49,13 +49,18 @@ chats: list[str] = []
 for i in range(3):
   _ = chats.append(input(f"chat {i+1}: "))
 
+caches: dict[str, list[float]] = {}
 embeddings: list[list[float]] = []
 for i in chats:
-  resp = o.embeddings.create(
-    input=i,
-    model='text-embedding-3-large'
-  )
-  embeddings.append(resp.data[0].embedding)
+  if caches.get(i) is None:
+    resp = o.embeddings.create(
+      input=i,
+      model='text-embedding-3-large'
+    )
+    embeddings.append(resp.data[0].embedding)
+    caches[i] = resp.data[0].embedding
+  else:
+    embeddings.append(caches[i])
 
 print(model(tensor(embeddings).unsqueeze(0))[0][0] * 100) # pyright: ignore[reportAny]
 
