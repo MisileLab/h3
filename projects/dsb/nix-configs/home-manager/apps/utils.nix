@@ -37,6 +37,7 @@
     };
     zellij = {
       enable = true;
+      enableBashIntegration = false;
       settings = {
         theme = "catppuccin-mocha";
         default_shell = "nu";
