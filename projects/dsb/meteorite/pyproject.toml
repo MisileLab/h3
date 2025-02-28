@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = "==3.13.2"
 dependencies = [
   "fastapi[standard]==0.115.9",
-  "gel==3.0.0",
+  "gel==3.0.1",
   "httpx==0.28.1",
   "loguru==0.7.3",
   "pcfrv==0.2.12",
