@@ -29,8 +29,8 @@
 		"vite": "6.2.0"
 	},
 	"dependencies": {
-		"@fontsource-variable/jetbrains-mono": "5.1.2",
-		"@fontsource-variable/manrope": "5.1.1",
+		"@fontsource-variable/jetbrains-mono": "5.2.0",
+		"@fontsource-variable/manrope": "5.2.0",
 		"d3-interpolate": "3.0.1",
 		"reveal.js": "5.1.0"
 	}

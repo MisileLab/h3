@@ -15,11 +15,11 @@ importers:
         specifier: 2.0.1
         version: 2.0.1(svelte@5.20.5)
       '@fontsource-variable/jetbrains-mono':
-        specifier: 5.1.2
-        version: 5.1.2
+        specifier: 5.2.0
+        version: 5.2.0
       '@fontsource-variable/manrope':
-        specifier: 5.1.1
-        version: 5.1.1
+        specifier: 5.2.0
+        version: 5.2.0
       '@tailwindcss/vite':
         specifier: 4.0.9
         version: 4.0.9(vite@6.2.0(@types/node@22.13.8)(jiti@2.4.2)(lightningcss@1.29.1))
@@ -242,11 +242,11 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@fontsource-variable/jetbrains-mono@5.1.2':
-    resolution: {integrity: sha512-syGEJ/N4FFisAXegxtbe1etYpo2T630dqCbYufPf7Dli/hMKSoSUIm3wK4q5RsGFRxWno1WecfnsgZA1jRK0EQ==}
+  '@fontsource-variable/jetbrains-mono@5.2.0':
+    resolution: {integrity: sha512-lADaBQjb74/qSw2y4skhPhuz2OJvAdsrO5EkRnRTjkIBNwOryI4bskaDtDRVOCYggvcYAzGgEgG73DFX8LrgZg==}
 
-  '@fontsource-variable/manrope@5.1.1':
-    resolution: {integrity: sha512-bJTED5u+nlztikeRJwCgK3ij3qMVsivP4xTxpcrfQ15crvZuW9hjM5f61CgYF3ryL0rJwkjzOpZjB4CwL/pnBw==}
+  '@fontsource-variable/manrope@5.2.0':
+    resolution: {integrity: sha512-Hxa0Rx4lM+RBTGsHS8qxrTcuW6LkcJm6wPM9r778I4brxmuuYUkdTn6jow4pC0bIc1A+xIl5qPWswRmGd05J3Q==}
 
   '@fontsource/atkinson-hyperlegible@5.1.1':
     resolution: {integrity: sha512-AxjSa0Ld2CrHqz3GV0gHVY7R5ySBw5c1B7FXLz59aUeFK9rJNm5ivc14qzYKaDi0lYCjFQtfpqb9pklie91PeA==}
@@ -1311,9 +1311,9 @@ snapshots:
   '@esbuild/win32-x64@0.25.0':
     optional: true
 
-  '@fontsource-variable/jetbrains-mono@5.1.2': {}
+  '@fontsource-variable/jetbrains-mono@5.2.0': {}
 
-  '@fontsource-variable/manrope@5.1.1': {}
+  '@fontsource-variable/manrope@5.2.0': {}
 
   '@fontsource/atkinson-hyperlegible@5.1.1': {}
 
