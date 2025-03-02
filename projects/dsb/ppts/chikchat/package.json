@@ -29,7 +29,7 @@
 		"vite": "6.2.0"
 	},
 	"dependencies": {
-		"@fontsource-variable/jetbrains-mono": "5.2.4",
+		"@fontsource-variable/jetbrains-mono": "5.2.5",
 		"@fontsource-variable/manrope": "5.2.5",
 		"d3-interpolate": "3.0.1",
 		"reveal.js": "5.1.0"

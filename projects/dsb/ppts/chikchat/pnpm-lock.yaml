@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@fontsource-variable/jetbrains-mono':
-        specifier: 5.2.4
-        version: 5.2.4
+        specifier: 5.2.5
+        version: 5.2.5
       '@fontsource-variable/manrope':
         specifier: 5.2.5
         version: 5.2.5
@@ -229,8 +229,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@fontsource-variable/jetbrains-mono@5.2.4':
-    resolution: {integrity: sha512-zh8socqj45198HToQEeGmteMxAFfJSF8dnp1CYEPOEwm2GFJ1kT1nN2f6KQe+2D4O6LiOG4a74ud8SgkxO6cig==}
+  '@fontsource-variable/jetbrains-mono@5.2.5':
+    resolution: {integrity: sha512-G3sN1xq1moZd0JL+hFaA4MEdsiQS+JXC/z7m+EqA5/Fzn5CQlXGUaaNKFGQdDsFuLTnCfW0KOOSWHjygNfjEPw==}
 
   '@fontsource-variable/manrope@5.2.5':
     resolution: {integrity: sha512-6Mo3ldtgAhxvSSyy+bLbFRjkiYhVo6RLcasJfj9Du5k2nX16/RwjQdBbZJfvsofVt6GqQ+O6AVkazmS3Xw5R9A==}
@@ -793,7 +793,7 @@ snapshots:
   '@esbuild/win32-x64@0.25.0':
     optional: true
 
-  '@fontsource-variable/jetbrains-mono@5.2.4': {}
+  '@fontsource-variable/jetbrains-mono@5.2.5': {}
 
   '@fontsource-variable/manrope@5.2.5': {}
 
