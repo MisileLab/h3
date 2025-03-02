@@ -9,11 +9,11 @@ importers:
   .:
     dependencies:
       '@fontsource-variable/jetbrains-mono':
-        specifier: 5.2.0
-        version: 5.2.0
+        specifier: 5.2.4
+        version: 5.2.4
       '@fontsource-variable/manrope':
-        specifier: 5.2.0
-        version: 5.2.0
+        specifier: 5.2.5
+        version: 5.2.5
       d3-interpolate:
         specifier: 3.0.1
         version: 3.0.1
@@ -229,11 +229,11 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@fontsource-variable/jetbrains-mono@5.2.0':
-    resolution: {integrity: sha512-lADaBQjb74/qSw2y4skhPhuz2OJvAdsrO5EkRnRTjkIBNwOryI4bskaDtDRVOCYggvcYAzGgEgG73DFX8LrgZg==}
+  '@fontsource-variable/jetbrains-mono@5.2.4':
+    resolution: {integrity: sha512-zh8socqj45198HToQEeGmteMxAFfJSF8dnp1CYEPOEwm2GFJ1kT1nN2f6KQe+2D4O6LiOG4a74ud8SgkxO6cig==}
 
-  '@fontsource-variable/manrope@5.2.0':
-    resolution: {integrity: sha512-Hxa0Rx4lM+RBTGsHS8qxrTcuW6LkcJm6wPM9r778I4brxmuuYUkdTn6jow4pC0bIc1A+xIl5qPWswRmGd05J3Q==}
+  '@fontsource-variable/manrope@5.2.5':
+    resolution: {integrity: sha512-6Mo3ldtgAhxvSSyy+bLbFRjkiYhVo6RLcasJfj9Du5k2nX16/RwjQdBbZJfvsofVt6GqQ+O6AVkazmS3Xw5R9A==}
 
   '@jridgewell/gen-mapping@0.3.8':
     resolution: {integrity: sha512-imAbBGkb+ebQyxKgzv5Hu2nmROxoDOXHh80evxdoXNOrvAnVx7zimzc1Oo5h9RlfV4vPXaE2iM5pOFbvOCClWA==}
@@ -793,9 +793,9 @@ snapshots:
   '@esbuild/win32-x64@0.25.0':
     optional: true
 
-  '@fontsource-variable/jetbrains-mono@5.2.0': {}
+  '@fontsource-variable/jetbrains-mono@5.2.4': {}
 
-  '@fontsource-variable/manrope@5.2.0': {}
+  '@fontsource-variable/manrope@5.2.5': {}
 
   '@jridgewell/gen-mapping@0.3.8':
     dependencies:
