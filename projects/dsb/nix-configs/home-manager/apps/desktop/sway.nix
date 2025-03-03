@@ -24,7 +24,6 @@ blur enable
 blur_xray enable
 blur_radius 10
 blur_passes 4
-shadows enable
 
 for_window [instance="GalaxyBudsClient"] floating enable
 
