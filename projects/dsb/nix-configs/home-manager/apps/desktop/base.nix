@@ -13,6 +13,7 @@
       imagemagick virt-manager xfce.thunar
       galaxy-buds-client kdePackages.filelight (stablep.firefoxpwa) gparted
       gimp (stablep.telegram-desktop) xournalpp (kdePackages.okular) zotero
+      headsetcontrol
     ];
     pointerCursor = {
       name = "Adwaita";
