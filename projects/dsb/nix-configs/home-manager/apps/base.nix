@@ -58,6 +58,9 @@ in
           ssh = "kitten ssh";
         };
         extraConfig = ''
+# plugins
+plugin add ${pkgs.nushellPlugins.polars}/bin/nu_plugin_polars
+plugin use polars
 # completion that command name and program different
 source ${pkgs.nu_scripts}/share/nu_scripts/custom-completions/tealdeer/tldr-completions.nu
 ${lib.concatStringsSep "\n" (map (name: "source ${pkgs.nu_scripts}/share/nu_scripts/custom-completions/${name}/${name}-completions.nu") completions)}
