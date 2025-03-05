@@ -1,4 +1,4 @@
-{pkgs, ...}:
+{pkgs, stablep, ...}:
 {
   imports = [
     ./security.nix
@@ -11,10 +11,9 @@
     packages = with pkgs; [
       brightnessctl clipman wl-clipboard pavucontrol
       imagemagick virt-manager xfce.thunar
-      galaxy-buds-client kdePackages.filelight firefoxpwa gparted
-      gimp telegram-desktop xournalpp (kdePackages.okular) zotero
-      headsetcontrol
-    ];
+      galaxy-buds-client kdePackages.filelight (stablep.firefoxpwa) gparted
+      gimp telegram-desktop xournalpp zotero headsetcontrol
+    ] ++ (with pkgs.kdePackages; [okular merkuro]);
     pointerCursor = {
       name = "Adwaita";
       package = pkgs.adwaita-icon-theme;
@@ -24,21 +23,18 @@
   catppuccin.enable = true;
   programs = {
     obs-studio.enable = true;
-    kitty = {
+    ghostty = {
       enable = true;
-      settings.shell = "${pkgs.nushell}/bin/nu";
-      font = {
-        name = "FiraCode Nerd Font Mono";
-        size = 11.25;
-      };
-      keybindings = {
-        "ctrl+shift+plus" = "change_font_size all +1.0";
-        "ctrl+shift+minus" = "change_font_size all -1.0";
+      settings = {
+        command = "${pkgs.nushell}/bin/nu";
+        font-family = "FiraCode Nerd Font Mono";
+        font-size = 12;
       };
     };
     firefox = {
       enable = true;
-      nativeMessagingHosts = with pkgs; [firefoxpwa];
+      package = stablep.firefox;
+      nativeMessagingHosts = with stablep; [firefoxpwa];
     };
   };
   xdg = {

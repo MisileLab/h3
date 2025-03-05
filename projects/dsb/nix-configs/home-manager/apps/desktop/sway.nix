@@ -67,7 +67,7 @@ titlebar_padding 1
         {command = "${pkgs.avizo}/bin/avizo-service";}
       ];
       menu = "${pkgs.rofi-wayland}/bin/rofi -show drun";
-      terminal = "${pkgs.kitty}/bin/kitty";
+      terminal = "${pkgs.ghostty}/bin/ghostty";
       fonts = {
         names = ["FiraCode Nerd Font Mono" "NanumSquare"];
         style = "Regular";
@@ -90,7 +90,7 @@ titlebar_padding 1
         modi = "run,drun,window";
         icon-theme = "Oranchelo";
         show-icons = true;
-        terminal = "kitty";
+        terminal = "ghostty";
         drun-display-format = "{icon} {name}";
         location = 0;
         hide-scrollbar = true;
