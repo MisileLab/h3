@@ -9,15 +9,14 @@
 
       # Development
       edgedb d2 pre-commit just
-      # https://github.com/NixOS/nixpkgs/issues/380074
-      /*snyk*/ radicle-node infisical pnpm_9 poop binsider
+      snyk radicle-node infisical pnpm_9 poop binsider
 
       # Language tools
       ghc cabal-install
       rustup cargo-update
       python313Full uv mypy
       nasm
-      deno
+      deno bun
       hvm bend
       clang-tools lldb pkg-config
       niv nixpkgs-fmt nix-tree hub fh nixfmt-rfc-style
@@ -33,7 +32,7 @@
       marksman zls
     ]
     ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
-    ++ (with nodePackages_latest; [nodejs typescript typescript-language-server svelte-language-server]) # nodejs
+    ++ (with nodePackages_latest; [nodejs typescript typescript-language-server svelte-language-server prettier]) # nodejs
     ++ (with python313Packages; [pip virtualenv mitmproxy]); # python thing
     file = {
       ".config/process-compose/theme.yaml".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
