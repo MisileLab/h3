@@ -8,7 +8,7 @@
       neovim wakatime
 
       # Development
-      edgedb d2 pre-commit just
+      edgedb d2 pre-commit just mongosh
       snyk radicle-node infisical pnpm_9 poop binsider
 
       # Language tools
