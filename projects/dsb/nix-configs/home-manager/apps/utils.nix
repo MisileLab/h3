@@ -30,7 +30,7 @@
       enableNushellIntegration = true;
       settings = {
         history_filter = [
-          "ls" "clear" "cd *" "manual" "poweroff" "zellij *" "exit" "topgrade" "zellij *" "lzg"
+          "ls" "clear" "cd *" "manual" "poweroff" "exit" "topgrade" "zellij *" "lzg"
           "navi*" "mullvad*"
         ];
       };

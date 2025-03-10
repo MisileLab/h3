@@ -86,21 +86,6 @@ titlebar_padding 1
   programs = {
     rofi = {
       enable = true;
-      extraConfig = {
-        modi = "run,drun,window";
-        icon-theme = "Oranchelo";
-        show-icons = true;
-        terminal = "ghostty";
-        drun-display-format = "{icon} {name}";
-        location = 0;
-        hide-scrollbar = true;
-        display-drun = "   Apps ";
-        display-run = "   Run ";
-        display-window = " 﩯  Window";
-        disable-history = false;
-        display-Network = " 󰤨  Network";
-        sidebar-mode = true;
-      };
       package = pkgs.rofi-wayland;
     };
     swaylock.enable = true;

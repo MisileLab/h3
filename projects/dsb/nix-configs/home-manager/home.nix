@@ -15,7 +15,10 @@
     };
   };
 
-  catppuccin.flavor = "mocha";
+  catppuccin = {
+    flavor = "mocha";
+    enable = true;
+  };
   nixpkgs.config.allowUnfree = true;
   gtk.enable = true;
 

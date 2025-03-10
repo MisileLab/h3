@@ -20,7 +20,6 @@
       size = 32;
     };
   };
-  catppuccin.enable = true;
   programs = {
     obs-studio.enable = true;
     ghostty = {
