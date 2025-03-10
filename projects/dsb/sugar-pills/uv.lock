@@ -129,7 +129,7 @@ wheels = [
 
 [[package]]
 name = "keras"
-version = "3.8.0"
+version = "3.9.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "absl-py" },
@@ -141,9 +141,9 @@ dependencies = [
     { name = "packaging" },
     { name = "rich" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/cd/97/8b0b420e14008100a330d30e78df9bce04fd1845edc5d29b0a6f4d8ad061/keras-3.8.0.tar.gz", hash = "sha256:6289006e6f6cb2b68a563b58cf8ae5a45569449c5a791df6b2f54c1877f3f344", size = 975959 }
+sdist = { url = "https://files.pythonhosted.org/packages/2b/be/046bcee14c337620bc5ae18a114e3e5e8cede0bd4b188990ab6b31823259/keras-3.9.0.tar.gz", hash = "sha256:b5bf04e7c64c3176eda5124d035005bb7a676fb505f42496c7b03a99d5683652", size = 1005058 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/fe/cf/aea9087c4d7fafe956a0cc0ff6c3327d10fb8442cda50f992a2186921fa0/keras-3.8.0-py3-none-any.whl", hash = "sha256:b65d125976b0f8bf8ad1e93311a98e7dfb334ff6023627a59a52b35499165ec3", size = 1301880 },
+    { url = "https://files.pythonhosted.org/packages/2b/98/e81c6b2cb522f0eadcc8e16f3cabaccd5462bff6cf52194acfed4a031d3f/keras-3.9.0-py3-none-any.whl", hash = "sha256:71078e833994384f45d5ea192d18f0969a12bd2572a5d15968c755945ad91d1c", size = 1341511 },
 ]
 
 [[package]]
@@ -345,11 +345,11 @@ wheels = [
 
 [[package]]
 name = "setuptools"
-version = "75.8.2"
+version = "76.0.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/d1/53/43d99d7687e8cdef5ab5f9ec5eaf2c0423c2b35133a2b7e7bc276fc32b21/setuptools-75.8.2.tar.gz", hash = "sha256:4880473a969e5f23f2a2be3646b2dfd84af9028716d398e46192f84bc36900d2", size = 1344083 }
+sdist = { url = "https://files.pythonhosted.org/packages/32/d2/7b171caf085ba0d40d8391f54e1c75a1cda9255f542becf84575cfd8a732/setuptools-76.0.0.tar.gz", hash = "sha256:43b4ee60e10b0d0ee98ad11918e114c70701bc6051662a9a675a0496c1a158f4", size = 1349387 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a9/38/7d7362e031bd6dc121e5081d8cb6aa6f6fedf2b67bf889962134c6da4705/setuptools-75.8.2-py3-none-any.whl", hash = "sha256:558e47c15f1811c1fa7adbd0096669bf76c1d3f433f58324df69f3f5ecac4e8f", size = 1229385 },
+    { url = "https://files.pythonhosted.org/packages/37/66/d2d7e6ad554f3a7c7297c3f8ef6e22643ad3d35ef5c63bf488bc89f32f31/setuptools-76.0.0-py3-none-any.whl", hash = "sha256:199466a166ff664970d0ee145839f5582cb9bca7a0a3a2e795b6a9cb2308e9c6", size = 1236106 },
 ]
 
 [[package]]
