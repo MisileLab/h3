@@ -8,12 +8,18 @@
       neovim wakatime
 
       # Development
-      gel d2 pre-commit just mongosh
+      gel d2 pre-commit just mongosh tabnine
       snyk radicle-node infisical pnpm poop binsider
 
       # Language tools
-      ghc cabal-install
-      rustup cargo-update
+      ruby_3_4 rubyPackages_3_4.ruby-lsp
+      ghc cabal-install haskell-language-server
+      cargo-update rustc cargo clippy rust-analyzer
+      metals scala-next
+      taplo
+      yaml-language-server
+      kotlin kotlin-language-server
+      go gopls
       python313Full uv mypy
       nasm
       deno bun
