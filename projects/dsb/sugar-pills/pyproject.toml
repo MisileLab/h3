@@ -6,5 +6,5 @@ readme = "README.md"
 # https://github.com/pytorch/pytorch/issues/130249
 requires-python = ">=3.12,<3.13"
 dependencies = [
-  "tensorflow==2.18.0"
+  "tensorflow==2.19.0"
 ]
