@@ -18,7 +18,7 @@
       nasm
       deno bun
       # https://github.com/NixOS/nixpkgs/issues/389150
-      /*hvm */bend
+      /*hvm bend*/
       clang-tools lldb pkg-config
       niv nixpkgs-fmt nix-tree hub fh nixfmt-rfc-style
       packwiz ccemux
