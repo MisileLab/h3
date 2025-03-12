@@ -9,7 +9,7 @@
 
       # Development
       gel d2 pre-commit just mongosh
-      snyk radicle-node infisical pnpm_9 poop binsider
+      snyk radicle-node infisical pnpm poop binsider
 
       # Language tools
       ghc cabal-install
