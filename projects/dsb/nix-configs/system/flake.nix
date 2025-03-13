@@ -2,7 +2,9 @@
   description = "A simple NixOS flake";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs";
+    # nixpkgs.url = "github:nixos/nixpkgs";
+    # quick fix for bash error
+    nixpkgs.url = "github:misilelab/nixpkgs/bash";
     # stablep.url = "github:nixos/nixpkgs/nixos-unstable";
     # lanzaboote = {
     #   url = "github:nix-community/lanzaboote/v0.4.1";
