@@ -1,4 +1,4 @@
-{lib, pkgs, zigpkgs, secrets, ...}:
+{lib, config, pkgs, zigpkgs, ...}:
 let
   writeScript = name: content: pkgs.writeShellScriptBin name "${content} $@";
   completions = [
@@ -20,7 +20,7 @@ in
       packages = with pkgs; [
         sbctl bluez cryptsetup smartmontools borgbackup rclone pulsemixer
         portablemc miniserve openssl transmission attic-client
-        yt-dlp magic-wormhole ansifilter b3sum git-crypt inxi
+        yt-dlp magic-wormhole ansifilter b3sum git-crypt inxi age sops
         (writeScript "manual" ''
           ${pkgs.glow}/bin/glow -p ~/.config/home-manager/manual.md
         '')
@@ -35,6 +35,14 @@ in
         installCompletions = lib.hm.dag.entryAfter ["writeBoundary"] ''
           ${pkgs.uv}/bin/uv generate-shell-completion nushell > /home/misile/non-nixos-things/scripts/uv-completions.nu
         '';
+      };
+    };
+    sops = {
+      age.keyFile = "/home/misile/.config/sops/age/keys.txt";
+      defaultSopsFile = ../secrets.yaml;
+      defaultSecretsMountPoint = "/run/user/1000/secrets.d";
+      secrets = {
+        uv_pypi_token.path = "${config.sops.defaultSymlinkPath}/uv_pypi_token";
       };
     };
     programs = {
@@ -67,7 +75,7 @@ ${lib.concatStringsSep "\n" (map (name: "source ${pkgs.nu_scripts}/share/nu_scri
 # custom completions
 source ~/non-nixos-things/scripts/uv-completions.nu
 use std/util "path add"
-$env.UV_PUBLISH_TOKEN = "${secrets.UV_PUBLISH_TOKEN or "you_need_to_change_in_secrets_nix"}"
+$env.UV_PUBLISH_TOKEN = (cat ${config.sops.secrets.uv_pypi_token.path})
 $env.config.hooks.command_not_found = {
   |x|
   print (command-not-found $x | str trim)

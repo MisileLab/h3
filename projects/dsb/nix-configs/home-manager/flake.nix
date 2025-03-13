@@ -21,15 +21,17 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
-  outputs = { nixpkgs, /*stable, */home-manager, catppuccin, zig, nix-index-database, ... }:
+  outputs = { nixpkgs, /*stable, */home-manager, catppuccin, zig, nix-index-database, sops-nix, ... }:
     let
       system = "x86_64-linux"; # replace with your system
       pkgs = import nixpkgs {inherit system;};
       zigpkgs = zig.packages."${system}";
       c = import ./config.nix;
-      _secrets = builtins.tryEval (import ./secrets.nix);
-      secrets = if _secrets.success then _secrets.value else {};
       # stablep = import stable {inherit system;config = {allowUnfree = true;};};
     in {
       homeConfigurations."misile" = home-manager.lib.homeManagerConfiguration {
@@ -38,10 +40,10 @@
           ./home.nix
           catppuccin.homeManagerModules.catppuccin
           nix-index-database.hmModules.nix-index
+          sops-nix.homeManagerModules.sops
         ];
         extraSpecialArgs = {
           inherit c;
-          inherit secrets;
           # inherit stablep;
           inherit zigpkgs;
         };

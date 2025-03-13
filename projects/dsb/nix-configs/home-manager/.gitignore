@@ -1,4 +1,3 @@
-
 # Zig.gitignore by ignofierplus
 .zig-cache/
 zig-out/
