@@ -12,6 +12,7 @@
       snyk radicle-node infisical pnpm poop binsider
 
       # Language tools
+      vscode-langservers-extracted
       ruby_3_4 rubyPackages_3_4.ruby-lsp
       ghc cabal-install haskell-language-server
       cargo-update rustc cargo clippy rust-analyzer
