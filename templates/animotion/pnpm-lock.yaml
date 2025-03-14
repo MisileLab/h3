@@ -55,8 +55,8 @@ importers:
         specifier: 3.2.1
         version: 3.2.1
       shiki-magic-move:
-        specifier: 1.0.1
-        version: 1.0.1(shiki@3.2.1)(svelte@5.23.0)
+        specifier: 1.1.0
+        version: 1.1.0(shiki@3.2.1)(svelte@5.23.0)
       svelte:
         specifier: 5.23.0
         version: 5.23.0
@@ -853,8 +853,8 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  ohash@1.1.6:
-    resolution: {integrity: sha512-TBu7PtV8YkAZn0tSxobKY2n2aAQva936lhRrj6957aDaCf9IEtqsKbgMzXE/F/sjqYOwmrukeORHNLe5glk7Cg==}
+  ohash@2.0.11:
+    resolution: {integrity: sha512-RdR9FQrFwNBNXAr4GixM8YaRZRJ5PUWbKYbE5eOsrwAjJW0q2REGcf79oYPsLyskQCZG1PLN+S/K1V00joZAoQ==}
 
   oniguruma-parser@0.5.4:
     resolution: {integrity: sha512-yNxcQ8sKvURiTwP0mV6bLQCYE7NKfKRRWunhbZnXgxSmB1OXa1lHrN3o4DZd+0Si0kU5blidK7BcROO8qv5TZA==}
@@ -970,8 +970,8 @@ packages:
   set-cookie-parser@2.7.1:
     resolution: {integrity: sha512-IOc8uWeOZgnb3ptbCURJWNjWUPcO3ZnTTdzsurqERrP6nPyv+paC55vJM0LpOlT2ne+Ix+9+CRG1MNLlyZ4GjQ==}
 
-  shiki-magic-move@1.0.1:
-    resolution: {integrity: sha512-mrSTGTq2jcr9vbu/S0Lpt/gSnni2iQvAlSFiTyM8ePumPX4zrValkfUNYgyESkhqt8RqecQZXERzcY8VglSbEA==}
+  shiki-magic-move@1.1.0:
+    resolution: {integrity: sha512-EdP+0dYXfmyhg6R6O7tpc9CFz+1+WdOkXdsQSbboIEZBtbvYOW20p/7MkdsK7JP24dAG6Mag3qdIcT7fUFtTZw==}
     peerDependencies:
       react: ^18.2.0 || ^19.0.0
       shiki: ^1.0.0 || ^2.0.0 || ^3.0.0
@@ -1140,7 +1140,7 @@ snapshots:
       '@tailwindcss/vite': 4.0.0(vite@6.2.2(jiti@2.4.2)(lightningcss@1.29.2))
       reveal.js: 5.1.0
       shiki: 2.5.0
-      shiki-magic-move: 1.0.1(shiki@2.5.0)(svelte@5.23.0)
+      shiki-magic-move: 1.1.0(shiki@2.5.0)(svelte@5.23.0)
       svelte: 5.23.0
       tailwindcss: 4.0.0
     transitivePeerDependencies:
@@ -1779,7 +1779,7 @@ snapshots:
 
   nanoid@3.3.9: {}
 
-  ohash@1.1.6: {}
+  ohash@2.0.11: {}
 
   oniguruma-parser@0.5.4: {}
 
@@ -1864,18 +1864,18 @@ snapshots:
 
   set-cookie-parser@2.7.1: {}
 
-  shiki-magic-move@1.0.1(shiki@2.5.0)(svelte@5.23.0):
+  shiki-magic-move@1.1.0(shiki@2.5.0)(svelte@5.23.0):
     dependencies:
       diff-match-patch-es: 1.0.1
-      ohash: 1.1.6
+      ohash: 2.0.11
     optionalDependencies:
       shiki: 2.5.0
       svelte: 5.23.0
 
-  shiki-magic-move@1.0.1(shiki@3.2.1)(svelte@5.23.0):
+  shiki-magic-move@1.1.0(shiki@3.2.1)(svelte@5.23.0):
     dependencies:
       diff-match-patch-es: 1.0.1
-      ohash: 1.1.6
+      ohash: 2.0.11
     optionalDependencies:
       shiki: 3.2.1
       svelte: 5.23.0
