@@ -18,7 +18,7 @@
       metals scala-next
       taplo
       yaml-language-server
-      kotlin kotlin-language-server
+      kotlin kotlin-language-server android-studio gradle
       go gopls
       python313Full uv mypy
       nasm
