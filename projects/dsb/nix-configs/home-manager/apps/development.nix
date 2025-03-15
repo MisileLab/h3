@@ -40,7 +40,7 @@
       marksman zls
     ]
     ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
-    ++ (with nodePackages_latest; [(stablep.nodejs) typescript typescript-language-server svelte-language-server (stablep.prettier)]) # nodejs
+    ++ (with nodePackages_latest; [(stablep.nodePackages_latest.nodejs) typescript typescript-language-server svelte-language-server (stablep.nodePackages_latest.prettier)]) # nodejs
     ++ (with python313Packages; [pip virtualenv mitmproxy]); # python thing
     file = {
       ".config/process-compose/theme.yaml".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
