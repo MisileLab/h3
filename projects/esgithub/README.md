@@ -20,8 +20,6 @@ and I thought, `what if we can search issues for specific error or response?`
 TODO: add preview for all features.
 
 - [ ] build embedding for one repository
-  - [ ] add keyword and limit features
-  - [ ] select embedding
 - [ ] embedding search
 
 ## Installation

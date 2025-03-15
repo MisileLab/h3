@@ -5,8 +5,11 @@ description = "Search your issues and pull requests with embedding."
 readme = "README.md"
 requires-python = "==3.13.2"
 dependencies = [
-  "embed-anything==0.5.3",
+  "numpy==2.2.3",
+  "openai==1.66.3",
+  "platformdirs==4.3.6",
   "pygithub==2.6.1",
+  "tomli==2.2.1",
   "tqdm==4.67.1",
   "typer==0.15.2",
 ]
