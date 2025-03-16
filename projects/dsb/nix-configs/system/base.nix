@@ -48,9 +48,10 @@
   time.timeZone = "Asia/Seoul";
 
   users = {
+    groups.plugdev = {};
     users.misile = {
       isNormalUser = true;
-      extraGroups = ["wheel" "docker"];
+      extraGroups = ["wheel" "docker" "adbusers" "plugdev"];
       shell = pkgs.nushell;
     };
     extraGroups.vboxusers.members = [ "user-with-access-to-virtualbox" ];
@@ -67,7 +68,11 @@
       trusted-users = ["root" "misile"];
     };
   };
-  programs.appimage.binfmt = true;
+  programs = {
+    appimage.binfmt = true;
+    adb.enable = true;
+  };
+  services.udev.packages = [ pkgs.android-udev-rules ];
 
   system.stateVersion = "24.11";
 }
