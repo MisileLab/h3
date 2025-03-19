@@ -24,8 +24,8 @@ importers:
         specifier: 4.0.14
         version: 4.0.14(vite@6.2.2(jiti@2.4.2)(lightningcss@1.29.3))
       reveal.js:
-        specifier: 5.1.0
-        version: 5.1.0
+        specifier: 5.2.0
+        version: 5.2.0
       tailwindcss:
         specifier: 4.0.14
         version: 4.0.14
@@ -949,6 +949,10 @@ packages:
     resolution: {integrity: sha512-KDt7m0+xwKV6nAZt4CNPVFBf42sTKRQapg0bGGKB5PKO5XvChnMfwlZkybydHiQJ7p5+6LbHKRGrhXODdoNIaA==}
     engines: {node: '>=18.0.0'}
 
+  reveal.js@5.2.0:
+    resolution: {integrity: sha512-TWd9VVYZZW/MGlm5arVPbN5ne49GXrTpil8KFOBOOfHWS4GjSCpSaHfj3iB+Rh0rJTQGbkrQr66l6R3bnElXBw==}
+    engines: {node: '>=18.0.0'}
+
   rollup@4.35.0:
     resolution: {integrity: sha512-kg6oI4g+vc41vePJyO6dHt/yl0Rz3Thv0kJeVQ3D1kS3E5XSuKbPc29G4IpT/Kv1KQwgHVcN+HtyS+HYLNSvQg==}
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
@@ -1812,6 +1816,8 @@ snapshots:
       regex-utilities: 2.3.0
 
   reveal.js@5.1.0: {}
+
+  reveal.js@5.2.0: {}
 
   rollup@4.35.0:
     dependencies:
