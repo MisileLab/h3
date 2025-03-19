@@ -1,4 +1,4 @@
-{pkgs, config, ...}:
+{pkgs, stablep, config, ...}:
 {
   home = {
     sessionVariables = {
@@ -8,7 +8,7 @@
       neovim wakatime
 
       # Development
-      gel d2 pre-commit just mongosh tabnine
+      gel d2 (stablep.pre-commit) just mongosh tabnine
       snyk radicle-node infisical pnpm poop binsider
 
       # Language tools
@@ -29,7 +29,7 @@
       clang-tools lldb pkg-config
       niv nixpkgs-fmt nix-tree hub fh nixfmt-rfc-style
       packwiz ccemux
-      unityhub dotnet-sdk_8
+      unityhub (stablep.dotnet-sdk_8)
       lua (writeShellScriptBin "luajit" "${luajit}/bin/lua") luarocks
       vala
       zig
@@ -37,7 +37,7 @@
       # lsp
       basedpyright nil vala-language-server bash-language-server
       tailwindcss-language-server astro-language-server ruff lua-language-server
-      marksman zls
+      (stablep.marksman) zls
     ]
     ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
     ++ (with nodePackages_latest; [nodejs typescript typescript-language-server svelte-language-server prettier]) # nodejs
