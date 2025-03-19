@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = "==3.13.2"
 dependencies = [
   "numpy==2.2.4",
-  "openai==1.66.3",
+  "openai==1.66.5",
   "platformdirs==4.3.6",
   "pygithub==2.6.1",
   "tomli==2.2.1",
