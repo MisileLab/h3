@@ -6,5 +6,5 @@ readme = "README.md"
 requires-python = "==3.13.2"
 dependencies = [
   "httpx==0.28.1",
-  "selenium==4.29.0",
+  "selenium==4.30.0",
 ]
