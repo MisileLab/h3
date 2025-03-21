@@ -1,100 +1,17 @@
 ---
 import Base from "../components/base.astro"
 
-interface CPair {
-  type: string,
-  address: string
-}
-
-const addresses: Array<CPair> = [{
-  "type": "btc",
-  "address": "bc1q875agr0vzc9xdatuytegntravvaxv6rctp6939"
-}, {
-  "type": "eth",
-  "address": "0x9e26AaEDb917B549e8102C74167E62b21f5BBF76"
-}, {
-  "type": "xrp",
-  "address": "r9TNvCgR4tyXi7Fvi4YSV8z9zAxq3xM4Q9"
-}, {
-  "type": "usdt(eth)",
-  "address": "0x9e26AaEDb917B549e8102C74167E62b21f5BBF76"
-}, {
-  "type": "sol",
-  "address": "AcAkGZHnejp5NHRgtUEruVEczYc59mSpa2ghDY9ABKss"
-}, {
-  "type": "doge",
-  "address": "DGh23NFUC8ZypFh1kH8fJ4A8isygPp4LBh"
-}, {
-  "type": "ada",
-  "address": "addr1q9nzmvz3dpmn3hh7m5gsuyhklky0valmlnfrmw3z908xl4f580kw83smt26mz5d9dts8fdgfd4qwqndya9azj9cnyyxsr0ekfc"
-}, {
-  "type": "usdc(eth)",
-  "address": "0x9e26AaEDb917B549e8102C74167E62b21f5BBF76"
-}, {
-  "type": "avax",
-  "address": "0x294F01732E7b0D111cB29F9B62f326c6670a84F3"
-}, {
-  "type": "trx",
-  "address": "TQ9r7whuNgjoVhNXpwww1AcuooeCqwPr36"
-}, {
-  "type": "ton",
-  "address": "UQDv8JiPkpwqNDoxS82a3X1zQz1cSGuxwvJ4702bTwXYxkSV"
-}, {
-  "type": "xlm",
-  "address": "GCJG377OULC7DN6L6D3GNMT5UESVU2VYBTGLDSOHDTRV3RX35IIFHMRC"
-}, {
-  "type": "bch",
-  "address": "qp6wwnvl3q6lly03nkftuczj5szuwuryv5u0zgvhhy"
-}, {
-  "type": "ltc",
-  "address": "ltc1q2272gqnelv9gycpcz8amsa2mhqfpgluwemd2wt"
-}, {
-  "type": "pol",
-  "address": "0xb1304235e7E766Fd56375Cda8F0aaDa5918c7048"
-}, {
-  "type": "etc",
-  "address": "0xAAE31Ff66C0DC1282C9D72CC3f05C3a92774683a"
-}, {
-  "type": "atom(eth)",
-  "address": "0x9e26AaEDb917B549e8102C74167E62b21f5BBF76"
-}, {
-  "type": "xmr",
-  "address": "46CxXAFCqdeBhGv1AjUN6UYUQoJ7iEkQmf4vtta8oVkLVHJQypLV5EDcy6D3hELfaETZ432MNE61VhutESQgdM7s23k3wW6"
-}, {
-  "type": "btt(eth)",
-  "address": "0x9e26AaEDb917B549e8102C74167E62b21f5BBF76"
-}, {
-  "type": "xaut(eth)",
-  "address": "0x9e26AaEDb917B549e8102C74167E62b21f5BBF76"
-}, {
-  "type": "dash",
-  "address": "XpnftY1s24YnoWRB6cNkQMtKt13WX2oKB4"
-}, {
-  "type": "dydx(eth)",
-  "address": "0x9e26AaEDb917B549e8102C74167E62b21f5BBF76"
-}, {
-  "type": "eurc(eth)",
-  "address": "0x9e26AaEDb917B549e8102C74167E62b21f5BBF76"
-}];
 ---
 
 <Base>
   <Fragment slot="head">
     <title>Misile</title>
     <script>
-      import { atom } from "nanostores"
-      import { queryAll, queryId, nullVerify } from "@misile/satellite"
+      import { queryId } from "@misile/satellite"
 
-      const cryptoAddr = atom<string>((queryAll("option")[0] as HTMLOptionElement).value);
-      cryptoAddr.subscribe((v)=>{
-        queryId("crypto-placeholder").innerText = v.slice(0, 4) + "..." + v.slice(-4)
-      })
-      queryId("crypto-placeholder").addEventListener("click", ()=>{
-        navigator.clipboard.writeText(cryptoAddr.get())
+      queryId("crypto").addEventListener("click", ()=>{
+        navigator.clipboard.writeText("42VhRaWNzVxH3xzREovoarcAzJ4AFYFj26DK6nG8Hx3vB5ZzVWcZw2KEX4oWTyQStb7jz2sH8Gfzh9861SQb2gV4R4unT45")
         alert("Copied!")
-      })
-      queryId("crypto-select").addEventListener("change", (e)=>{
-        cryptoAddr.set((nullVerify(e.target) as HTMLSelectElement).value);
       })
     </script>
   </Fragment>
@@ -118,15 +35,10 @@ const addresses: Array<CPair> = [{
           <span class="text-indigo-300">|</span>
           <a href="https://mail.misile.xyz">Subscribe</a>
         </div>
-        <div class="flex flex-row gap-x-2 items-center text-sm sm:text-xl md:text-2xl lg:text-4xl text-indigo-200">
+        <div class="flex flex-row gap-x-2 items-center text-sm sm:text-xl md:text-2xl lg:text-4xl text-indigo-200 cursor-pointer" id="crypto">
           <span>Donate</span>
-          <select class="w-auto max-w-1/2 bg-gray-950 text-indigo-300" id="crypto-select">
-            {addresses.toSorted((a, b)=>a.type.localeCompare(b.type)).map((v)=>{
-              return <option value={v.address}>{v.type}</option>
-            })}
-          </select>
-          <span>(Click to Copy) -></span>
-          <span class="text-indigo-300" id="crypto-placeholder">None</span>
+          <p class="bg-gray-950 text-indigo-300 w-auto max-w-1/2">XMR</p>
+          <span>(Click to Copy)</span>
         </div>
       </div>
     </div>
