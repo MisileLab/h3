@@ -69,7 +69,7 @@ kotlin {
 
     protobuf {
         protoc {
-            artifact = "com.google.protobuf:protoc:3.21.7"
+            artifact = "com.google.protobuf:protoc:3.25.6"
         }
 
         generateProtoTasks {
