@@ -68,8 +68,8 @@
       options = "--delete-older-than 1d";
     };
     settings = {
-      substituters = ["http://192.168.0.159:2000/cache" "https://cache.misile.xyz/cache"];
-      trusted-public-keys = ["cache:zNeEp8cQiXd3s4UrwBgZQq5/9SnX4W/n06/lsxMzPug=" "cache:wSNO/GYt2YlXOv2MUrgAtCXLEL4NCvVSlfRutnMGZdE="];
+      substituters = ["https://cache.misile.xyz/cache"];
+      trusted-public-keys = ["cache:zNeEp8cQiXd3s4UrwBgZQq5/9SnX4W/n06/lsxMzPug="];
       experimental-features = ["nix-command" "flakes"];
       trusted-users = ["misile"];
     };
