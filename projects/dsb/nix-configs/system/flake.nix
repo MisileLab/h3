@@ -15,9 +15,10 @@
       system = "x86_64-linux";
       modules = [
         ./configuration.nix
+        {_module.args = {stablep = import stablep { system = "x86_64-linux"; };};}
         # https://github.com/NixOS/nixpkgs/issues/392278
         ({ stablep, ... }: {
-          nixpkgs.overlays = [ (final: prev: {final.auto-cpufreq = stablep.auto-cpufreq;}) ];
+          nixpkgs.overlays = [ (final: prev: {auto-cpufreq = stablep.auto-cpufreq;}) ];
         })
         # lanzaboote.nixosModules.lanzaboote
         ({ pkgs, lib, ... }: {
