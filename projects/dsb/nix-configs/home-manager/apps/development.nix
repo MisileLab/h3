@@ -27,7 +27,7 @@
       # https://github.com/NixOS/nixpkgs/issues/389150
       /*hvm bend*/
       clang-tools lldb pkg-config
-      niv nixpkgs-fmt nix-tree hub fh nixfmt-rfc-style
+      niv nixpkgs-fmt nix-tree hub fh nixfmt-rfc-style nurl
       packwiz ccemux
       unityhub dotnet-sdk_8
       lua (writeShellScriptBin "luajit" "${luajit}/bin/lua") luarocks
