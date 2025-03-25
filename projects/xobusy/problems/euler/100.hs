@@ -1,18 +1,22 @@
-import Control.Monad (when)
+import Data.Maybe
+import Data.List
+
+sol :: Integer -> (Integer, Integer)
+sol 1 = (1, 1)
+sol 2 = (7, 5)
+sol n = (n_next, b_next)
+  where
+    (m_prev, x_prev) = sol (n - 2)
+    (m_last, x_last) = sol (n - 1)
+    m_next = 6 * m_last - m_prev
+    x_next = 6 * x_last - x_prev
+    n_next = (m_next + 1) `div` 2
+    b_next = (x_next + 1) `div` 2
+
+res = [sol n | n <- [1..]]
 
 main :: IO ()
 main = do
-    let sol = [(1,1), (7,5)]
-    let loop sol = do
-            let (m_prev, x_prev) = sol !! (length sol - 2)
-            let (m_last, x_last) = sol !! (length sol - 1)
-            let m_next = 6 * m_last - m_prev
-            let x_next = 6 * x_last - x_prev
-            let sol' = sol ++ [(m_next, x_next)]
-            let n = (m_next + 1) `div` 2
-            let b = (x_next + 1) `div` 2
-            when (n > 10^12) $ do
-                putStrLn $ "n = " ++ show n
-                putStrLn $ "b = " ++ show b
-            when (n <= 10^12) $ loop sol'
-    loop sol
+  let answer = find ((> 10^12) . fst) $ map sol [1..]
+  print $ fst <$> answer
+
