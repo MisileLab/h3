@@ -12,10 +12,10 @@
   "dependencies": {
     "@astrojs/check": "0.9.4",
     "@misile/satellite": "0.0.5",
-    "@tailwindcss/vite": "4.0.15",
+    "@tailwindcss/vite": "4.0.16",
     "astro": "5.5.4",
     "nanostores": "0.11.4",
-    "tailwindcss": "4.0.15",
+    "tailwindcss": "4.0.16",
     "typescript": "5.8.2"
   }
 }
