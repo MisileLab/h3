@@ -1,27 +1,11 @@
-@file:UseSerializers(
-    EitherSerializer::class
-)
-
 package xyz.misile.lunch.apis
 
-import arrow.core.Either
-import arrow.core.serialization.EitherSerializer
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.UseSerializers
-import xyz.misile.lunch.client
 import xyz.misile.lunch.getData
 import xyz.misile.lunch.putData
-
-@Serializable
-data class School(
-    val schoolName: String,
-    val schoolCode: Either<UInt, String>,
-    val region: String,
-    val regionCode: UInt?
-)
 
 @Serializable
 data class ClassList(
@@ -68,7 +52,12 @@ suspend fun getClassList(schoolCode: UInt): Array<ClassList> {
     }.body()
 }
 
-suspend fun getTimetable(context: Any?, schoolCode: UInt, grade: UInt, classNum: UInt): Array<Array<Timetable>> {
+suspend fun getTimetable(
+    context: Any?,
+    schoolCode: UInt,
+    grade: UInt,
+    classNum: UInt
+): Array<Array<Timetable>> {
     val cacheKey = "timetable_${schoolCode}_${grade}_${classNum}"
     val cached = getData<Array<Array<Timetable>>>(context, cacheKey)
     if (cached != null) {
