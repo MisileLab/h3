@@ -67,6 +67,10 @@
       userName = "misilelab";
       userEmail = "misileminecord@gmail.com";
       extraConfig = {
+        tag = {
+          gpgSign = true;
+          forceSignAnnotated = true;
+        };
         pull.rebase = false;
         safe.directory = "*";
         init.defaultBranch = "main";
