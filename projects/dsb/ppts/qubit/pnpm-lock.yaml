@@ -18,8 +18,8 @@ importers:
         specifier: 3.0.1
         version: 3.0.1
       reveal.js:
-        specifier: 5.2.0
-        version: 5.2.0
+        specifier: 5.2.1
+        version: 5.2.1
     devDependencies:
       '@sveltejs/vite-plugin-svelte':
         specifier: 5.0.3
@@ -611,8 +611,8 @@ packages:
     resolution: {integrity: sha512-GDhwkLfywWL2s6vEjyhri+eXmfH6j1L7JE27WhqLeYzoh/A3DBaYGEj2H/HFZCn/kMfim73FXxEJTw06WtxQwg==}
     engines: {node: '>= 14.18.0'}
 
-  reveal.js@5.2.0:
-    resolution: {integrity: sha512-TWd9VVYZZW/MGlm5arVPbN5ne49GXrTpil8KFOBOOfHWS4GjSCpSaHfj3iB+Rh0rJTQGbkrQr66l6R3bnElXBw==}
+  reveal.js@5.2.1:
+    resolution: {integrity: sha512-r7//6mIM5p34hFiDMvYfXgyjXqGRta+/psd9YtytsgRlrpRzFv4RbH76TXd2qD+7ZPZEbpBDhdRhJaFgfQ7zNQ==}
     engines: {node: '>=18.0.0'}
 
   rollup@4.35.0:
@@ -1056,7 +1056,7 @@ snapshots:
 
   readdirp@4.1.2: {}
 
-  reveal.js@5.2.0: {}
+  reveal.js@5.2.1: {}
 
   rollup@4.35.0:
     dependencies:
