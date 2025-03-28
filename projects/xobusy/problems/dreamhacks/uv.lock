@@ -467,6 +467,7 @@ dependencies = [
     { name = "lxml" },
     { name = "numpy" },
     { name = "pwntools" },
+    { name = "requests" },
     { name = "tqdm" },
 ]
 
@@ -478,6 +479,7 @@ requires-dist = [
     { name = "lxml", specifier = "==5.3.1" },
     { name = "numpy", specifier = "==2.2.4" },
     { name = "pwntools", specifier = "==4.14.1" },
+    { name = "requests", specifier = "==2.32.3" },
     { name = "tqdm", specifier = "==4.67.1" },
 ]
 
