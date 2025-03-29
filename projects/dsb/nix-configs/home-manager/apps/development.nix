@@ -1,4 +1,4 @@
-{pkgs, config, ...}:
+{pkgs, stablep, config, ...}:
 {
   home = {
     sessionVariables = {
@@ -35,7 +35,7 @@
       zig
 
       # lsp
-      basedpyright nil vala-language-server bash-language-server
+      basedpyright nil (stablep.vala-language-server) bash-language-server
       tailwindcss-language-server astro-language-server ruff lua-language-server
       marksman zls
     ]

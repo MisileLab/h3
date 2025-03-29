@@ -1,4 +1,4 @@
-{pkgs, ...}:
+{pkgs, stablep, ...}:
 {
   imports = [
     ./security.nix
@@ -12,7 +12,7 @@
       brightnessctl clipman wl-clipboard pavucontrol
       imagemagick virt-manager xfce.thunar
       galaxy-buds-client kdePackages.filelight firefoxpwa gparted
-      gimp telegram-desktop xournalpp zotero headsetcontrol
+      gimp (stablep.telegram-desktop) xournalpp zotero headsetcontrol
     ] ++ (with pkgs.kdePackages; [okular merkuro]);
     pointerCursor = {
       name = "Adwaita";
