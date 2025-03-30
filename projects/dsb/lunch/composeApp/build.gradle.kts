@@ -66,25 +66,6 @@ kotlin {
             implementation(libs.ktor.client.cio)
         }
     }
-
-    protobuf {
-        protoc {
-            artifact = "com.google.protobuf:protoc:4.30.2"
-        }
-
-        generateProtoTasks {
-            all().forEach {
-                it.builtins {
-                    create("kotlin") {
-                        option("lite")
-                    }
-                    create("java") {
-                        option("lite")
-                    }
-                }
-            }
-        }
-    }
 }
 
 android {
@@ -105,8 +86,7 @@ android {
     }
     buildTypes {
         release {
-            isMinifyEnabled = true;
-            isShrinkResources = true;
+            isMinifyEnabled = false;
         }
     }
     buildFeatures {
