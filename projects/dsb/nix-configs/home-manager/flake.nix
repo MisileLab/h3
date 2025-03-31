@@ -7,7 +7,7 @@
       url = "github:mitchellh/zig-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # stable.url = "github:nixos/nixpkgs/nixos-unstable";
+    stable.url = "github:nixos/nixpkgs/nixos-unstable";
     # nur.url = "github:nix-community/NUR";
     catppuccin = {
       url = "github:catppuccin/nix";
@@ -26,25 +26,25 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs = { nixpkgs, /*stable, */home-manager, catppuccin, zig, nix-index-database, sops-nix, ... }:
+  outputs = { nixpkgs, stable, home-manager, catppuccin, zig, nix-index-database, sops-nix, ... }:
     let
       system = "x86_64-linux"; # replace with your system
       pkgs = import nixpkgs {inherit system;};
       zigpkgs = zig.packages."${system}";
       c = import ./config.nix;
-      # stablep = import stable {inherit system;config = {allowUnfree = true;};};
+      stablep = import stable {inherit system;config = {allowUnfree = true;};};
     in {
       homeConfigurations."misile" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
         modules = [
           ./home.nix
-          catppuccin.homeManagerModules.catppuccin
+          catppuccin.homeModules.catppuccin
           nix-index-database.hmModules.nix-index
           sops-nix.homeManagerModules.sops
         ];
         extraSpecialArgs = {
           inherit c;
-          # inherit stablep;
+          inherit stablep;
           inherit zigpkgs;
         };
       };
