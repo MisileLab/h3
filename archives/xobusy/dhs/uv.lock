@@ -98,20 +98,20 @@ wheels = [
 
 [[package]]
 name = "capstone"
-version = "5.0.5"
+version = "5.0.6"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/a4/23/759da7f13c2ce29ffe90ccb45eb61ffcd310b436bfb489f3dbd11fba8776/capstone-5.0.5.tar.gz", hash = "sha256:32346f6019d5351adaaf584ffc60c1e40db6b47d1d049eb924f903eb2b073e87", size = 2944153 }
+sdist = { url = "https://files.pythonhosted.org/packages/d5/b0/1f126035a4cbc6f488b97e4bd57a46a28b6ba29ca8b938cbda840601a18a/capstone-5.0.6.tar.gz", hash = "sha256:b11a87d67751b006b9b44428d59c99512e6d6c89cf7dff8cdd92d9065628b5a0", size = 2945704 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/54/4a/4eb99fa4daf4d3035cfd52790b2ae67810e5663f71797ee5025977464c13/capstone-5.0.5-py3-none-macosx_10_9_universal2.whl", hash = "sha256:24db89d74b571659fe6212e756795cd5d394378c50e19e41dbcfb6c087c2f87d", size = 2177052 },
-    { url = "https://files.pythonhosted.org/packages/2f/cc/c7e6a8fef919b28fbfe8a5c8955b40bbe998f84f791699246d7e70f5cdb6/capstone-5.0.5-py3-none-macosx_10_9_x86_64.whl", hash = "sha256:15f4b85df176999bbf7eb3f53f0cf2cee728254600c1be21442e2581189309e9", size = 1180188 },
-    { url = "https://files.pythonhosted.org/packages/1a/5b/e7ee66ebec55da1e0ea841de62ba5e971fb8fe7b12a49215fdaa15d1b9f9/capstone-5.0.5-py3-none-macosx_11_0_arm64.whl", hash = "sha256:5416621ac2d243d89b788f1309b143ea1f400da3eb5c47c6a87f1add99732a83", size = 1192762 },
-    { url = "https://files.pythonhosted.org/packages/fb/42/a68064f021d55be5079c21da963f3347d0979476da268b61cb80a7527229/capstone-5.0.5-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:6ef47da78f44de1cdff1519b360186681fca0097e92046a7d7203d56364f99da", size = 1458295 },
-    { url = "https://files.pythonhosted.org/packages/9b/b4/05263fe61b2a8d8211783f911283d1bd296d74bbbd6e9a1e48f6dadb76c9/capstone-5.0.5-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:754968f057d9e5d9c383f2918a1d56d455bfb274bbf307f219180b16e6d5aaeb", size = 1481602 },
-    { url = "https://files.pythonhosted.org/packages/67/7b/4c21ee2001b110182326dd10b30f1a6f2c9227e28e9714145e473d397de8/capstone-5.0.5-py3-none-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:933797f7e2a257a77c3a699316deea92efa120a10d41e22725a96fc82f0a769e", size = 1480729 },
-    { url = "https://files.pythonhosted.org/packages/45/8b/9ad9a8c337d2276b25d71aabc6096243a57246bb9f16431f52c25fa70597/capstone-5.0.5-py3-none-musllinux_1_2_aarch64.whl", hash = "sha256:50b646f0c56b0cac5c993dde08b5e5eacf8b1f66031ec8d60154eae6e3c0645e", size = 1458038 },
-    { url = "https://files.pythonhosted.org/packages/fd/a2/9fe3a14bb6c397d072ca8332b93b7b63c57bb9c0361c8fa3a8260efd5d90/capstone-5.0.5-py3-none-musllinux_1_2_i686.whl", hash = "sha256:cd35b666739d7b79066fc69fd0c145d5ceb6a4131df3db1225ec6dcfa3fe322f", size = 1484181 },
-    { url = "https://files.pythonhosted.org/packages/65/08/6a65de9ab23ce726b680c0e75a064406d4bd2738640fc47a2a6aa679f1d0/capstone-5.0.5-py3-none-musllinux_1_2_x86_64.whl", hash = "sha256:89dac65a1c84670ee30ccaf2ae688c4b27ad514d9dc8738a9826579051e29ecb", size = 1485340 },
-    { url = "https://files.pythonhosted.org/packages/fd/77/be4185108d31137e8bb536d6dc3a9222dbc15bd1e84787a3bdec9108fcb9/capstone-5.0.5-py3-none-win_amd64.whl", hash = "sha256:a03b6b42b33bb0739b2436a555e699ac91cd1d1891134269b04e359b607e50e8", size = 1271239 },
+    { url = "https://files.pythonhosted.org/packages/cd/9a/d9c11e090fa03dfc61a03a57ba44c6a07370f4ac5814f2a5804bfd40ee8b/capstone-5.0.6-py3-none-macosx_10_9_universal2.whl", hash = "sha256:0bca16e1c3ca1b928df6103b3889dcb6df7b05392d75a0b7af3508798148b899", size = 2177082 },
+    { url = "https://files.pythonhosted.org/packages/66/28/72a0be2325e6ee459f27cdcd835d3eee6fed5136321b5f7be41b41dc8656/capstone-5.0.6-py3-none-macosx_10_9_x86_64.whl", hash = "sha256:539191906a34ad1c573ec12b787b2caf154ea41175db6ded9def00aea8151099", size = 1180215 },
+    { url = "https://files.pythonhosted.org/packages/54/93/7b8fb02661d47a2822d5b640df804ef310417144af02e6db3446f174c4b5/capstone-5.0.6-py3-none-macosx_11_0_arm64.whl", hash = "sha256:e0b87b283905e4fc43635ca04cf26f4a5d9e8375852e5464d38938f3a28c207a", size = 1192757 },
+    { url = "https://files.pythonhosted.org/packages/ba/a2/d1bdb7260ade8165182979ea16098ef3a37c01316140511a611e549dbfe3/capstone-5.0.6-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:fa7892f0c89455078c18f07d2d309fb07baa53061b8f9a63db1ea00d41a46726", size = 1458413 },
+    { url = "https://files.pythonhosted.org/packages/78/7f/ec0687bbe8f6b128f1d41d90ec7cedfd1aaaa4ecb1ae8d334acc7dad8013/capstone-5.0.6-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:0358855773100bb91ae6681fabce7299df83156945ba943f6211061a592c54a6", size = 1481605 },
+    { url = "https://files.pythonhosted.org/packages/fc/1d/77bb0f79e1dacdfdcc0679c747d9ca24cc621095e09bdb665e7dd0c580ae/capstone-5.0.6-py3-none-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:667d6466dab1522fa5e9659be5cf1aca83e4fc3da7d15d0e5e6047f71fb46c4a", size = 1480730 },
+    { url = "https://files.pythonhosted.org/packages/72/63/07437972f68d0b2ba13e1705a6994404c9c961afbadc342c5b6fcf1de652/capstone-5.0.6-py3-none-musllinux_1_2_aarch64.whl", hash = "sha256:45c0e25500dd8d283d3b70f2e10cebfec93ab8bdaf6af9a763a0a999b4705891", size = 1457992 },
+    { url = "https://files.pythonhosted.org/packages/0c/53/f371e86493a2ae659b5a493c3cc23122974e83a1f53d3a5638d7bb7ac371/capstone-5.0.6-py3-none-musllinux_1_2_i686.whl", hash = "sha256:22f1f2f118f8fa1d1c5c90bca90e75864d55e16349b3c03aaea0e86b4a45d2a9", size = 1484184 },
+    { url = "https://files.pythonhosted.org/packages/df/c3/8b842ae32949c3570581164619c2f69001c6d8da566dc2e490372032b0d6/capstone-5.0.6-py3-none-musllinux_1_2_x86_64.whl", hash = "sha256:bc23cf634f51d0e53bdd04ea53ccfff7fc9060dfe58dff1e1b260ce40e5538ff", size = 1485357 },
+    { url = "https://files.pythonhosted.org/packages/da/72/ff7894c2fb5716d9a3ce9c27ba34b29d991a11d8442d2ef0fcdc5564ba7e/capstone-5.0.6-py3-none-win_amd64.whl", hash = "sha256:761c3deae00b22ac697081cdae1383bb90659dd0d79387a09cf5bdbb22b17064", size = 1271345 },
 ]
 
 [[package]]
@@ -812,11 +812,11 @@ wheels = [
 
 [[package]]
 name = "typing-extensions"
-version = "4.12.2"
+version = "4.13.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/df/db/f35a00659bc03fec321ba8bce9420de607a1d37f8342eee1863174c69557/typing_extensions-4.12.2.tar.gz", hash = "sha256:1a7ead55c7e559dd4dee8856e3a88b41225abfe1ce8df57b7c13915fe121ffb8", size = 85321 }
+sdist = { url = "https://files.pythonhosted.org/packages/0e/3e/b00a62db91a83fff600de219b6ea9908e6918664899a2d85db222f4fbf19/typing_extensions-4.13.0.tar.gz", hash = "sha256:0a4ac55a5820789d87e297727d229866c9650f6521b64206413c4fbada24d95b", size = 106520 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/26/9f/ad63fc0248c5379346306f8668cda6e2e2e9c95e01216d2b8ffd9ff037d0/typing_extensions-4.12.2-py3-none-any.whl", hash = "sha256:04e5ca0351e0f3f85c6853954072df659d0d13fac324d0072316b67d7794700d", size = 37438 },
+    { url = "https://files.pythonhosted.org/packages/e0/86/39b65d676ec5732de17b7e3c476e45bb80ec64eb50737a8dce1a4178aba1/typing_extensions-4.13.0-py3-none-any.whl", hash = "sha256:c8dd92cc0d6425a97c18fbb9d1954e5ff92c1ca881a309c45f06ebc0b79058e5", size = 45683 },
 ]
 
 [[package]]
