@@ -10,7 +10,7 @@
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-netlify": "5.0.0",
-		"@sveltejs/kit": "2.20.2",
+		"@sveltejs/kit": "2.20.3",
 		"@sveltejs/vite-plugin-svelte": "5.0.3",
 		"@types/reveal.js": "5.0.5",
 		"prettier": "3.5.3",
