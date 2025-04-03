@@ -5,6 +5,6 @@ description = "utils for project"
 readme = "README.md"
 requires-python = "==3.13.2"
 dependencies = [
-  "pydantic==2.11.1",
+  "pydantic==2.11.2",
 ]
 
