@@ -22,7 +22,7 @@ importers:
         version: 1.9.5
       tailwindcss-animate:
         specifier: 1.0.7
-        version: 1.0.7(tailwindcss@4.1.1)
+        version: 1.0.7(tailwindcss@4.1.2)
       vite-tsconfig-paths:
         specifier: 5.1.4
         version: 5.1.4(typescript@5.8.2)(vite@6.2.5)
@@ -43,8 +43,8 @@ importers:
         specifier: 3.1.0
         version: 3.1.0
       tailwindcss:
-        specifier: 4.1.1
-        version: 4.1.1
+        specifier: 4.1.2
+        version: 4.1.2
       typescript:
         specifier: 5.8.2
         version: 5.8.2
@@ -751,8 +751,8 @@ packages:
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders'
 
-  tailwindcss@4.1.1:
-    resolution: {integrity: sha512-QNbdmeS979Efzim2g/bEvfuh+fTcIdp1y7gA+sb6OYSW74rt7Cr7M78AKdf6HqWT3d5AiTb7SwTT3sLQxr4/qw==}
+  tailwindcss@4.1.2:
+    resolution: {integrity: sha512-VCsK+fitIbQF7JlxXaibFhxrPq4E2hDcG8apzHUdWFMCQWD8uLdlHg4iSkZ53cgLCCcZ+FZK7vG8VjvLcnBgKw==}
 
   tsconfck@3.1.5:
     resolution: {integrity: sha512-CLDfGgUp7XPswWnezWwsCRxNmgQjhYq3VXHM0/XIRxhVrKw0M1if9agzryh1QS3nxjCROvV+xWxoJO1YctzzWg==}
@@ -1525,11 +1525,11 @@ snapshots:
 
   tailwind-merge@3.1.0: {}
 
-  tailwindcss-animate@1.0.7(tailwindcss@4.1.1):
+  tailwindcss-animate@1.0.7(tailwindcss@4.1.2):
     dependencies:
-      tailwindcss: 4.1.1
+      tailwindcss: 4.1.2
 
-  tailwindcss@4.1.1: {}
+  tailwindcss@4.1.2: {}
 
   tsconfck@3.1.5(typescript@5.8.2):
     optionalDependencies:
