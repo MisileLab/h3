@@ -31,7 +31,7 @@ in
       systemd.services.slunchv2 = lib.mkIf (cfg.enable) {
         description = "Backend of slunchv2";
         wantedBy = [ "multi-user.target" "network-online.target" ];
-        script = "exec steam-run ${lib.getExe cfg.package} --port ${cfg.port} ${cfg.envFile}";
+        script = "exec ${pkgs.steam-run}/bin/steam-run ${lib.getExe cfg.package} --port ${cfg.port} ${cfg.envFile}";
         serviceConfig = {
           Restart = "always";
           RestartSec = 5;
