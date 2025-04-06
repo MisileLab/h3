@@ -49,6 +49,7 @@
   # Configure keymap in X11
   services = {
     openssh.enable = true;
+    slunchv2.enable = true;
   };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
@@ -57,15 +58,19 @@
       isNormalUser = true;
       description = "avg blue archive enjoyer";
       extraGroups = [ "networkmanager" "wheel" ];
+      shell = pkgs.fish;
     };
   };
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    git wget
+    wget
   ];
 
-  programs.nh.enable = true;
+  programs = {
+    git.enable = true;
+    fish.enable = true;
+  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
