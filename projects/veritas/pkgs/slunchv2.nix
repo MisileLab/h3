@@ -3,14 +3,16 @@
   lib,
   fetchFromGitHub,
   bun,
-  makeBinaryWrapper
+  makeBinaryWrapper,
+  autoPatchelfHook,
+  libgcc,
 }:
 let
   version = "0.1.0";
   src = fetchFromGitHub {
     owner = "ny0510";
     repo = "slunchv2-backend";
-    rev = version;
+    rev = "v${version}";
     hash = "sha256-kmkSaRBwiWLATLPRFTKo6WdYM2RhJJWPrS6yFNeJXlQ=";
   };
   node_modules = stdenv.mkDerivation {
@@ -18,17 +20,23 @@ let
     inherit src;
     version = version;
     impureEnvVars = lib.fetchers.proxyImpureEnvVars;
-    nativeBuildInputs = [ bun ];
+    nativeBuildInputs = [ bun autoPatchelfHook stdenv.cc.cc ];
     dontConfigure = true;
+    dontFixup = true;
+    dontPatchShebangs = true;
     buildPhase = ''
-      bun install --no-progress --frozen-lockfile
+      bun install --no-progress --frozen-lockfile --production --ignore-scripts
+
+      autoPatchelf /build/source/node_modules/.bin/node-gyp-build-optional-packages
+
+      bun install --production
     '';
     installPhase = ''
       mkdir -p $out/node_modules
 
       cp -R ./node_modules $out
     '';
-    outputHash = lib.fakeHash;
+    outputHash = "sha256-6Lia8m3GM3QE4XBb5v9YM97KIx9aPFNd8Apn/cTRgRM=";
     outputHashAlgo = "sha256";
     outputHashMode = "recursive";
   };
@@ -51,9 +59,10 @@ stdenv.mkDerivation {
     cp -R ./* $out
 
     # bun is referenced naked in the package.json generated script
-    makeBinaryWrapper ${bun}/bin/bun $out/bin/helix-gpt \
+    makeBinaryWrapper ${bun}/bin/bun $out/bin/slunchv2 \
       --prefix PATH : ${lib.makeBinPath [ bun ]} \
-      --add-flags "run --prefer-offline --no-install --cwd $out ./src/app.ts"
+      --prefix LD_LIBRARY_PATH : ${libgcc.lib}/lib \
+      --add-flags "run --prefer-offline --no-install --cwd $out ./src/index.ts"
 
     runHook postInstall
   '';
