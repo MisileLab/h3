@@ -1,13 +1,15 @@
-{pkgs, ...}:
+{pkgs, config, ...}:
 {
   imports = [
     ./disks.nix
+    ./secret.nix
   ];
 
   nix = {
     package = pkgs.lix;
     settings.experimental-features = [ "nix-command" "flakes" ];
   };
+
   boot = {
     loader = {
       systemd-boot.enable = true;
@@ -22,7 +24,7 @@
     hostName = "veritas"; # Define your hostname.
     networkmanager.enable = true;
     firewall = {
-      allowedTCPPorts = [ 22 ];
+      allowedTCPPorts = [ 22 80 ];
     };
   };
 
@@ -49,7 +51,11 @@
   # Configure keymap in X11
   services = {
     openssh.enable = true;
-    slunchv2.enable = true;
+    slunchv2 = {
+      enable = true;
+      neisApiKeyPath = config.sops.secrets.neisApiKey.path;
+      adminKeyPath = config.sops.secrets.adminKey.path;
+    };
   };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.

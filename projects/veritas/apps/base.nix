@@ -1,4 +1,4 @@
-{config, pkgs, ...}:
+{pkgs, ...}:
 let
   writeScript = name: content: pkgs.writeShellScriptBin name "${content} $@";
 in
@@ -13,15 +13,6 @@ in
         ansifilter b3sum age sops
         (writeScript "nix-clean" "nix-collect-garbage -d && sudo nix-collect-garbage -d && sudo nix store optimise")
       ];
-    };
-    sops = {
-      age.keyFile = "/home/veritas/.config/sops/age/keys.txt";
-      defaultSopsFile = ../secrets.yaml;
-      defaultSecretsMountPoint = "/run/user/1000/secrets.d";
-      secrets = {
-        NEIS_API_KEY.path = "${config.sops.defaultSymlinkPath}/neis_api_key";
-        ADMIN_KEY.path = "${config.sops.defaultSymlinkPath}/admin_key";
-      };
     };
     programs = {
       bash.enable = true;

@@ -1,3 +1,3 @@
 self: super: {
-  slunchv2 = self.callPackage ./slunchv2 {};
+  slunchv2 = self.callPackage ./slunchv2.nix {};
 }

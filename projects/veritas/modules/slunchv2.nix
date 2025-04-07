@@ -12,34 +12,31 @@ in
         default = 80;
       };
 
-      neis_api_key = lib.mkOption {
-        type = lib.types.str;
-        default = "";
+      neisApiKeyPath = lib.mkOption {
+        type = lib.types.path;
+        default = null;
       };
 
-      admin_key = lib.mkOption {
-        type = lib.types.str;
-        default = "";
+      adminKeyPath = lib.mkOption {
+        type = lib.types.path;
+        default = null;
       };
     };
 
     config = lib.mkIf cfg.enable {
-      assertions = [{
-        assertion = cfg.admin_key != "" && cfg.neis_api_key != "";
-        message = "keys not configured";
-      }];
       systemd.services.slunchv2 = lib.mkIf (cfg.enable) {
         description = "Backend of slunchv2";
         wantedBy = [ "multi-user.target" "network-online.target" ];
-        script = "exec ${pkgs.steam-run}/bin/steam-run ${lib.getExe cfg.package} --port ${cfg.port} ${cfg.envFile}";
+        script = "
+          #!/bin/sh
+          export NEIS_API_KEY=$(cat ${cfg.neisApiKeyPath})
+          export ADMIN_KEY=$(cat ${cfg.adminKeyPath})
+          export PORT=${toString cfg.port}
+          exec ${pkgs.steam-run}/bin/steam-run ${lib.getExe cfg.package}
+        ";
         serviceConfig = {
           Restart = "always";
           RestartSec = 5;
-          Environment = lib.mkMerge [
-            "NEIS_API_KEY=${cfg.neis_api_key}"
-            "ADMIN_KEY=${cfg.admin_key}"
-            "PORT=${cfg.port}"
-          ];
         };
       };
     };

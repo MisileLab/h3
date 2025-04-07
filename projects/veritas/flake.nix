@@ -20,14 +20,20 @@
       inputs.nixpkgs.follows = "pkgs";
     };
   };
-  outputs = { pkgs, home-manager, disko, ... }:
+  outputs = { pkgs, home-manager, disko, sops-nix, ... }:
     {
       nixosConfigurations.veritas = pkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
-          ({...}: {
-           nixpkgs.overlays = [ (import ./pkgs) ];
+          ({lib, ...}: {
+            nixpkgs = {
+              overlays = [ (import ./pkgs) ];
+              config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+                "steam-unwrapped"
+              ];
+            };
           })
+          sops-nix.nixosModules.sops
           disko.nixosModules.disko
           home-manager.nixosModules.home-manager
           {
