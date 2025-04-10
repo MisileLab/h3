@@ -1,12 +1,11 @@
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
-from libraries.pow import generate_challenge, verify_challenge
+from libraries.pow import generate_challenge, verify_challenge, difficulty
 
 from jwt import decode
 
 from time import perf_counter
 from threading import Thread
-from multiprocessing import cpu_count
 
 challenge = generate_challenge("")
 jwt_decoded: dict[str, list[str]] = decode(challenge, options={"verify_signature": False})
@@ -25,7 +24,7 @@ def solve(index: int):
 
 start = perf_counter()
 threads: list[Thread] = []
-for i in range(cpu_count()):
+for i in range(difficulty):
   threads = []
   thread = Thread(target=solve, args=(i,))
   thread.start()
