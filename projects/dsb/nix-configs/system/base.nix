@@ -4,7 +4,6 @@
 
 { pkgs, ... }:
 {
-  # https://github.com/NixOS/nixpkgs/issues/377844
   # https://github.com/NixOS/nix/issues/12420
   nix.package = pkgs.lix;
 
