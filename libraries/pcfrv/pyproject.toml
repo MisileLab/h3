@@ -5,7 +5,7 @@ description = "PyComcigan Forked with Runtime Validation"
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
-  "fake-useragent==2.1.0",
+  "fake-useragent==2.2.0",
   "httpx==0.28.1",
   "pydantic==2.11.3",
 ]
