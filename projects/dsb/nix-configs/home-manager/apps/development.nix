@@ -1,4 +1,4 @@
-{pkgs, config, ...}:
+{pkgs, stablep, config, ...}:
 {
   home = {
     sessionVariables = {
@@ -22,7 +22,7 @@
       yaml-language-server
       kotlin kotlin-language-server android-studio gradle
       go gopls
-      python313Full uv mypy
+      (stablep.python313Full) uv mypy
       nasm
       deno bun
       # https://github.com/NixOS/nixpkgs/issues/389150
