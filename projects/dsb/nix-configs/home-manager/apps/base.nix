@@ -42,6 +42,7 @@ in
       };
     };
     programs = {
+      command-not-found.enable = false;
       gpg = {
         enable = true;
         mutableTrust = true;

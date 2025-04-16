@@ -6,6 +6,7 @@
     ./fonts.nix
     ./compatibility.nix
     ./sway.nix
+    ./niri.nix
   ];
   home = {
     packages = with pkgs; [
@@ -13,6 +14,7 @@
       imagemagick virt-manager xfce.thunar
       galaxy-buds-client kdePackages.filelight firefoxpwa gparted
       gimp telegram-desktop xournalpp zotero headsetcontrol
+      jq libnotify
     ] ++ (with pkgs.kdePackages; [okular merkuro]);
     pointerCursor = {
       name = "Adwaita";
