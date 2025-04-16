@@ -15,7 +15,7 @@
     "@astrojs/sitemap": "3.3.0",
     "@misile/satellite": "0.0.5",
     "@tailwindcss/vite": "4.1.4",
-    "astro": "5.7.1",
+    "astro": "5.7.2",
     "dayjs": "1.11.13",
     "mobile-device-detect": "0.4.3",
     "nanostores": "1.0.1",
