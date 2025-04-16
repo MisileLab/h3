@@ -71,10 +71,6 @@ ${lib.concatStringsSep "\n" (map (name: "source ${pkgs.nu_scripts}/share/nu_scri
 use std/util "path add"
 $env.UV_PUBLISH_TOKEN = (cat ${config.sops.secrets.uv_pypi_token.path})
 $env.DEVSHELL_NO_MOTD = 1;
-$env.config.hooks.command_not_found = {
-  |x|
-  print (command-not-found $x | str trim)
-}
 def bulk-run [paths: list<string>, command: string, ...args] {
   mut output = {}
   for $dir in $paths {

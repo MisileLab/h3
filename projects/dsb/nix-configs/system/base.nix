@@ -74,6 +74,7 @@
     };
   };
   programs = {
+    command-not-found.enable = false;
     appimage.binfmt = true;
     adb.enable = true;
   };
