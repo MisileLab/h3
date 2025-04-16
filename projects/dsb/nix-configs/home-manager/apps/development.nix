@@ -1,4 +1,4 @@
-{pkgs, stablep, config, ...}:
+{pkgs, config, ...}:
 {
   home = {
     sessionVariables = {
@@ -9,8 +9,7 @@
 
       # Development
       gel d2 pre-commit just mongosh tabnine
-      # https://github.com/NixOS/nixpkgs/issues/398761
-      snyk (stablep.radicle-node) infisical pnpm poop binsider
+      snyk radicle-node infisical pnpm poop binsider
       typst
 
       # Language tools
@@ -23,7 +22,7 @@
       yaml-language-server
       kotlin kotlin-language-server android-studio gradle
       go gopls
-      (stablep.python313Full) uv mypy
+      python313Full uv mypy
       nasm
       deno bun
       # https://github.com/NixOS/nixpkgs/issues/389150
