@@ -14,6 +14,7 @@
       ];
       prefer-no-csd = true;
       spawn-at-startup = [
+        { command = ["${pkgs.xwayland-satellite}/bin/xwayland-satellite"]; }
         { command = ["${pkgs.waybar}/bin/waybar"]; }
         { command = ["${pkgs.swaybg}/bin/swaybg" "--image" "~/.config/home-manager/bg.png"]; }
         { command = ["${pkgs.wl-clipboard}/bin/wl-paste" "-t" "text" "--watch" "${pkgs.clipman}/bin/clipman" "store" "--no-persist"]; }
