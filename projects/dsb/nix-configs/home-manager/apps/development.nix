@@ -40,7 +40,7 @@
       tailwindcss-language-server astro-language-server ruff lua-language-server
       marksman zls
     ]
-    ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
+    ++ (with stablep.llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
     ++ (with nodePackages_latest; [nodejs typescript typescript-language-server svelte-language-server prettier]) # nodejs
     ++ (with python313Packages; [pip virtualenv mitmproxy]); # python thing
     file = {
