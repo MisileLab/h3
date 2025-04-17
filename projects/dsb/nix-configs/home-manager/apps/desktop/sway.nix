@@ -182,6 +182,7 @@ titlebar_padding 1
     style = ''
       * {
         font-family: 'FiraCode Nerd Font Mono', monospace;
+        font-size: 12;
       }
       window#waybar {${returnColorCSS({r=108;g=112;b=134;a=0.4;})}}
       #workspaces button {

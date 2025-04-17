@@ -6,6 +6,7 @@
     ./fonts.nix
     ./compatibility.nix
     ./sway.nix
+    ./niri.nix
   ];
   home = {
     packages = with pkgs; [

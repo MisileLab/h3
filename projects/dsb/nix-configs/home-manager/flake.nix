@@ -25,8 +25,12 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    niri = {
+      url = "github:sodiboo/niri-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
-  outputs = { nixpkgs, stable, home-manager, catppuccin, zig, nix-index-database, sops-nix, ... }:
+  outputs = { nixpkgs, stable, home-manager, catppuccin, zig, nix-index-database, sops-nix, niri, ... }:
     let
       system = "x86_64-linux"; # replace with your system
       pkgs = import nixpkgs {inherit system;};
@@ -41,6 +45,7 @@
           catppuccin.homeModules.catppuccin
           nix-index-database.hmModules.nix-index
           sops-nix.homeManagerModules.sops
+          niri.homeModules.niri
         ];
         extraSpecialArgs = {
           inherit c;
