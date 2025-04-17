@@ -1,4 +1,4 @@
-{pkgs, ...}:
+{pkgs, stablep, ...}:
 {
   imports = [
     ./security.nix
@@ -14,7 +14,7 @@
       imagemagick virt-manager xfce.thunar
       galaxy-buds-client kdePackages.filelight firefoxpwa gparted
       gimp telegram-desktop xournalpp zotero headsetcontrol
-    ] ++ (with pkgs.kdePackages; [okular merkuro]);
+    ] ++ (with stablep.kdePackages; [okular merkuro]);
     pointerCursor = {
       name = "Adwaita";
       package = pkgs.adwaita-icon-theme;
@@ -22,7 +22,10 @@
     };
   };
   programs = {
-    obs-studio.enable = true;
+    obs-studio = {
+      enable = true;
+      package = stablep.obs-studio;
+    };
     ghostty = {
       enable = true;
       settings = {
