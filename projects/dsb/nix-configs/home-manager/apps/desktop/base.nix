@@ -12,9 +12,9 @@
     packages = with pkgs; [
       brightnessctl clipman wl-clipboard pavucontrol
       imagemagick virt-manager xfce.thunar
-      galaxy-buds-client kdePackages.filelight firefoxpwa gparted
+      galaxy-buds-client firefoxpwa gparted
       gimp telegram-desktop xournalpp zotero headsetcontrol
-    ] ++ (with stablep.kdePackages; [okular merkuro]);
+    ] ++ (with stablep.kdePackages; [filelight okular merkuro]);
     pointerCursor = {
       name = "Adwaita";
       package = pkgs.adwaita-icon-theme;
