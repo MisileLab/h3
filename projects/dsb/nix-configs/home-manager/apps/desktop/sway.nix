@@ -107,13 +107,17 @@ titlebar_padding 1
     waybar = {
       enable = true;
       settings = [{
-        modules-left = [ "custom/clock" "custom/utc-clock" "sway/workspaces" ];
-        modules-center = [ "sway/window" ];
-        modules-right = [ "idle_inhibitor" "pulseaudio" "battery" "cpu" "memory" "custom/gpu-usage" "temperature" ];
-        "idle_inhibitor" = {
-          "format" = "{icon}";
-          "format-icons" = {activated = "󰅶"; deactivated = "󰾪";};
-          on-click = "$HOME/.config/home-manager/idle-handler.sh";
+        modules-left = [ "custom/clock" "custom/utc-clock" "custom/workspaces" ];
+        modules-center = [ "custom/window" ];
+        modules-right = [ "pulseaudio" "battery" "cpu" "memory" "custom/gpu-usage" "temperature" ];
+        "custom/workspaces" = {
+          exec = "$HOME/.config/home-manager/niri-workspaces.sh \"$WAYBAR_OUTPUT_NAME\"";
+          interval = 1;
+          signal = 8;
+        };
+        "custom/window" = {
+          exec = "$HOME/.config/home-manager/niri-windowtitle.sh";
+          interval = 1;
         };
         "custom/clock" = {
           exec = "$HOME/.config/home-manager/clock.sh local";
@@ -182,7 +186,7 @@ titlebar_padding 1
     style = ''
       * {
         font-family: 'FiraCode Nerd Font Mono', monospace;
-        font-size: 12;
+        font-size: 16px;
       }
       window#waybar {${returnColorCSS({r=108;g=112;b=134;a=0.4;})}}
       #workspaces button {

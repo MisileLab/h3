@@ -7,7 +7,7 @@ let
   # chromium-waylandify
   cwl = name: binaryPath: base name "" binaryPath "--enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform-hint=auto --ozone-platform=wayland --enable-wayland-ime";
   # java-waylandify
-  jwl = name: binaryPath: base name "" binaryPath "-Dawt.toolkit.name=WLToolkit";
+  jwl = name: binaryPath: base name "DISPLAY=':0'" binaryPath "-Dawt.toolkit.name=WLToolkit";
   # qt-waylandify
   qwl = name: binaryPath: base name "QT_QPA_PLATFORM=wayland" binaryPath "";
   electrons = with pkgs; [
