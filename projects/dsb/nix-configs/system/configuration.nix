@@ -7,6 +7,7 @@
   ];
 
   services = {
+    fstrim.enable = true;
     locate = {
       enable = true;
       package = pkgs.plocate;
