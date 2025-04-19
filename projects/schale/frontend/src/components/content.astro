@@ -22,7 +22,7 @@ if (import.meta.env.PROD && date === 0) {throw Error("It is just draft.")}
       <h1 class="text-4xl md:text-5xl text-indigo-100">{title}</h1>
       <p class="text-gray text-3xl md:text-4xl">{description}</p>
       <p class="text-gray text-2xl md:text-3xl">{dayjs.unix(date).toString().replace('GMT', 'UTC')}</p>
-      {isnews && <p class="text-gray text-xl md:text-2xl">Summarized with Jessica, based on gpt4o-mini</p>}
+      {isnews && <p class="text-gray text-xl md:text-2xl">Summarized with gpt4o-mini</p>}
     </div>
     <slot />
   </div>
