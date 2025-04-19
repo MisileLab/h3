@@ -1,4 +1,4 @@
-{pkgs, stablep, config, ...}:
+{pkgs, config, ...}:
 {
   home = {
     sessionVariables = {
@@ -16,13 +16,13 @@
       vscode-langservers-extracted
       ruby_3_4 rubyPackages_3_4.ruby-lsp
       ghc cabal-install haskell-language-server
-      cargo-update rustc cargo clippy (stablep.rust-analyzer)
+      cargo-update rustc cargo clippy rust-analyzer
       metals scala-next
       taplo
       yaml-language-server
       kotlin kotlin-language-server android-studio gradle
       go gopls
-      (stablep.python313Full) uv mypy
+      python313Full uv mypy
       nasm
       deno bun
       # https://github.com/NixOS/nixpkgs/issues/389150
@@ -40,9 +40,9 @@
       tailwindcss-language-server astro-language-server ruff lua-language-server
       marksman zls
     ]
-    ++ (with stablep.llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
+    ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
     ++ (with nodePackages_latest; [nodejs typescript typescript-language-server svelte-language-server prettier]) # nodejs
-    ++ (with python313Packages; [pip virtualenv (stablep.python313Packages.mitmproxy)]); # python thing
+    ++ (with python313Packages; [pip virtualenv python313Packages.mitmproxy]); # python thing
     file = {
       ".config/process-compose/theme.yaml".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
         url="https://github.com/catppuccin/process-compose";
