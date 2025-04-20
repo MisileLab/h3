@@ -36,26 +36,29 @@ def generate_challenge(info: str) -> str:
     "exp": int((datetime.now() - datetime(1970, 1, 1)).total_seconds()) + exptime
   }, key=jwt_key, algorithm=alg)
 
-def verify_challenge(payload: str, answer: list[bool], info: str) -> str:
+def verify_challenge(payload: str, answer: list[bool] | None, info: str) -> str:
   try:
     decoded = decode_jwt(payload)
-    if decoded["info"] != info:
+    if decoded.get("info", "") != info:
+      return ""
+    if decoded.get("confirmed", ""):
+      return payload
+    if answer is None:
       return ""
     _answer: list[bool] = []
-    for k, v in zip(decoded["payload"], decoded["original"]): # pyright: ignore[reportArgumentType, reportUnknownVariableType]
+    for k, v in zip(decoded.get("payload", []), decoded.get("original", [])): # pyright: ignore[reportArgumentType, reportUnknownVariableType]
       try:
         _ = ph.verify(k, v) # pyright: ignore[reportUnknownArgumentType]
         _answer.append(True)
       except VerifyMismatchError:
         _answer.append(False)
-    print(_answer, answer)
     decoded["confirmed"] = True
     return encode(decoded, key=jwt_key, algorithm=alg)
   except (
     ex.InvalidSignatureError,
     ex.ExpiredSignatureError,
-    ex.MissingRequiredClaimError
-  ) as e:
-    print(e)
+    ex.MissingRequiredClaimError,
+    ex.DecodeError
+  ):
     return ""
 

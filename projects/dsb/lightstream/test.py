@@ -8,7 +8,7 @@ from time import perf_counter
 from threading import Thread
 
 challenge = generate_challenge("")
-jwt_decoded: dict[str, list[str]] = decode(challenge, options={"verify_signature": False})
+jwt_decoded: dict[str, list[str]] = decode(challenge, options={"verify_signature": False}) # pyright: ignore[reportAny]
 print(jwt_decoded)
 original: list[str] = jwt_decoded["original"]
 payload: list[str] = jwt_decoded["payload"]
@@ -25,12 +25,11 @@ def solve(index: int):
 start = perf_counter()
 threads: list[Thread] = []
 for i in range(difficulty):
-  threads = []
   thread = Thread(target=solve, args=(i,))
   thread.start()
   threads.append(thread)
-  for thread in threads:
-    thread.join()
+for thread in threads:
+  thread.join()
 print(verify_challenge(challenge, [result[i] for i in range(len(original))], ""))
 print(perf_counter() - start)
 
