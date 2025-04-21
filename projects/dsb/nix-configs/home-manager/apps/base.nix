@@ -89,7 +89,7 @@ def bulk-run [paths: list<string>, command: string, ...args] {
 path add "~/.cargo/bin"
 path add "~/.local/bin"
 if $env.TERM == "linux" {
-  niri
+  niri --session
 }
         '';
       };
