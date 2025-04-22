@@ -1,4 +1,0 @@
-# xorasm
-
-Assembly with python
-

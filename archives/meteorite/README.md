@@ -1,4 +1,0 @@
-# Meteorite
-
-Unified school api
-

@@ -1,5 +1,0 @@
-a = int(input())
-b = int(input())
-c = int(input())
-d = int(input())
-print(4 + 2 * max(a, c) + 2 * (b + d))

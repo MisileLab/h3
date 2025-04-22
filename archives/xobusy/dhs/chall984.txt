@@ -1,2 +1,0 @@
-uid: ' union select all svalue,sflag,1,sclose from onlyflag#
-upw: asd
