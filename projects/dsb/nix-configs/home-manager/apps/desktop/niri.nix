@@ -26,7 +26,7 @@
         "Mod+T".action.spawn = ["${pkgs.ghostty}/bin/ghostty"];
         "Mod+D".action.spawn = ["${pkgs.rofi-wayland}/bin/rofi" "-show" "drun"];
         "Mod+Y".action.spawn = ["${pkgs.clipman}/bin/clipman" "pick" "--tool=rofi" "--max-items=30"];
-        "Shift+Y".action.spawn = ["${pkgs.clipman}/bin/clipman" "clear" "--tool=rofi" "--max-items=30"];
+        "Mod+Shift+Y".action.spawn = ["${pkgs.clipman}/bin/clipman" "clear" "--tool=rofi" "--max-items=30"];
         "Ctrl+Shift+Y".action.spawn = ["${pkgs.clipman}/bin/clipman" "clear" "--all"];
         "Super+Alt+L".action.spawn = "${pkgs.swaylock}/bin/swaylock";
 
