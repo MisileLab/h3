@@ -1,4 +1,5 @@
 token.txt
+config.toml
 
 # Zig.gitignore
 .zig-cache/
