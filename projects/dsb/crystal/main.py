@@ -8,7 +8,6 @@ from pydantic_ai.common_tools.duckduckgo import duckduckgo_search_tool
 from pydantic_ai.messages import ModelMessage
 from rich.console import Console, ConsoleOptions, RenderResult
 from rich.markdown import CodeBlock, Markdown
-from rich.live import Live
 from rich.syntax import Syntax
 from rich.text import Text
 
