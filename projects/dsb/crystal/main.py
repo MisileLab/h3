@@ -3,7 +3,7 @@ from typing import override
 from pathlib import Path
 
 from httpx import get
-from pydantic_ai import Agent, RunContext
+from pydantic_ai import Agent
 from pydantic_ai.common_tools.duckduckgo import duckduckgo_search_tool
 from pydantic_ai.messages import ModelMessage
 from rich.console import Console, ConsoleOptions, RenderResult
@@ -19,30 +19,17 @@ agent = Agent(
   ]
 )
 
-summarize_agent = Agent(
-  'google-gla:gemini-2.0-flash',
-  deps_type = str
-)
-
 console = Console()
 
-@summarize_agent.system_prompt(dynamic=True)
-async def summarize_agent_prompt(ctx: RunContext[str]):
-  return f'summarize HTML document, context: {ctx.deps}'
-
 @agent.tool_plain
-async def request(url: str, context: str = '') -> str:
+async def request(url: str) -> str:
   """
-  request to url and summarize text with LLM
-  if LLM needs to know something, add it to context.
+  request to url and get text
   """
-  console.print(f'request {url} with {context}', style='blue')
+  console.print(f'request {url}', style='blue')
   page = get(url)
   console.print(page.status_code, style='magenta')
-  response = page.text if not page.is_error else f"status: {page.status_code}, text: {page.text}"
-  result = await summarize_agent.run(response, deps=context)
-  console.print(result.usage(), style='blue')
-  return result.output
+  return page.text if not page.is_error else f"status: {page.status_code}, text: {page.text}"
 
 def prettier_code_blocks():
   """Make rich code blocks prettier and easier to copy.
