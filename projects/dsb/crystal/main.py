@@ -10,6 +10,7 @@ from rich.console import Console, ConsoleOptions, RenderResult
 from rich.markdown import CodeBlock, Markdown
 from rich.syntax import Syntax
 from rich.text import Text
+from inquirer import prompt, Editor
 
 agent = Agent(
   'google-gla:gemini-2.5-pro-exp-03-25',
@@ -59,7 +60,7 @@ async def main():
   prettier_code_blocks()
   history: list[ModelMessage] = []
   while True:
-    inp = input("user: ")
+    inp = prompt([Editor("input", message="user")])["input"]
     response = await agent.run(inp, message_history=history)
     history = response.all_messages()
     console.print(Markdown(response.output))
