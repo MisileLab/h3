@@ -6,6 +6,6 @@ readme = "README.md"
 requires-python = "==3.13.2"
 dependencies = [
   "inquirer==3.4.0",
-  "pydantic-ai-slim[duckduckgo,logfire,vertexai]==0.1.6",
+  "pydantic-ai-slim[duckduckgo,logfire,vertexai]==0.1.8",
   "rich==14.0.0",
 ]
