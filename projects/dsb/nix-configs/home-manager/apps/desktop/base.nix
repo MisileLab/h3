@@ -14,7 +14,6 @@
       imagemagick virt-manager xfce.thunar
       galaxy-buds-client firefoxpwa gparted
       gimp telegram-desktop xournalpp zotero headsetcontrol
-      amnezia-vpn
     ] ++ (with kdePackages; [filelight okular merkuro]);
     pointerCursor = {
       name = "Adwaita";
