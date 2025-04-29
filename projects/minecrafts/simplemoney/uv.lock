@@ -140,18 +140,18 @@ wheels = [
 
 [[package]]
 name = "gel"
-version = "3.0.1"
+version = "3.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "certifi", marker = "sys_platform == 'win32'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/8d/70/fc0742a98ffb6b3af50d4a3de6cad8a5e62b0b6d7e6c1dc96f5ea1db8e5f/gel-3.0.1.tar.gz", hash = "sha256:3f97aced58040f51b3c766e4065745f3bfa435aed5c9db2e30908701b64244b7", size = 1316312, upload-time = "2025-02-28T05:42:16.395Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/9c/70/84cee8eb48a2760893e60e8267502bc16ddef2197dd41f20c103a3f04e01/gel-3.1.0.tar.gz", hash = "sha256:3bb0b21167e00c976675a7d5dd73c21002e659651bf9de7fa46cd418bfa3eb85", size = 1331332, upload-time = "2025-04-29T20:44:49.659Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/02/22/429598c9f9c200eeeadaa710b5aff574d8d13f207626dad1a16b1587146e/gel-3.0.1-cp313-cp313-macosx_10_13_x86_64.whl", hash = "sha256:cad334a1ad20c4d0d2a1340e2d874584106d80eb73029d0d3b89a5f694d826c2", size = 2121997, upload-time = "2025-02-28T05:41:44.339Z" },
-    { url = "https://files.pythonhosted.org/packages/6d/07/db639cc6f2e2e8adefe3393159f2a3a36f5ccb1d9ccb9706092f19fd4c29/gel-3.0.1-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:551577592c16a69954ebc7635a491b832831c5960ed69ceef55cf6c444e219c6", size = 2078536, upload-time = "2025-02-28T05:41:46.825Z" },
-    { url = "https://files.pythonhosted.org/packages/29/eb/6cd222e99781a5e7cd52c9505c7bcb4dab490f2349058a5bc4a6322bbfb7/gel-3.0.1-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:7573ff7ad692776b73067df9d0a95baf13e15f970d2689695a73b2f65342fc5c", size = 5780338, upload-time = "2025-02-28T05:41:48.708Z" },
-    { url = "https://files.pythonhosted.org/packages/f9/7f/aab1b4c1edb0e1204a874f94a6ad47285e663bfe0067c6ec94acc708c914/gel-3.0.1-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2a5118a29773ad85ad288347463fc303b6dbefaaf48ca90f6f7e26c5bfff8c01", size = 5886642, upload-time = "2025-02-28T05:41:50.821Z" },
-    { url = "https://files.pythonhosted.org/packages/14/59/e9d56be3a6a373ec6c27159b87da02ef90efdf9824d20936eef0acdc027d/gel-3.0.1-cp313-cp313-win_amd64.whl", hash = "sha256:201259baf231a4d9610dd2fdb558ed7f35a6b9d9afe467f3628d93498504b8f2", size = 2048479, upload-time = "2025-02-28T05:41:52.586Z" },
+    { url = "https://files.pythonhosted.org/packages/d1/f4/69cf0d0753e93526659d4810d7816d33a6c72f2934b26d14da283602d175/gel-3.1.0-cp313-cp313-macosx_10_13_x86_64.whl", hash = "sha256:f5e41f4ddc86e054256e81302905e671647577c1aed7249e1781aee1e0cb2f7c", size = 907956, upload-time = "2025-04-29T20:44:28.285Z" },
+    { url = "https://files.pythonhosted.org/packages/4f/1b/88cc28e5c58e912b9d74f5b27bb41203af88cac9ea6cf329ccb9f4a23fab/gel-3.1.0-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:cd20c45beec358197293ad5c1fcf7fd383153e0d8d7038322085cf27436dc975", size = 863463, upload-time = "2025-04-29T20:44:29.906Z" },
+    { url = "https://files.pythonhosted.org/packages/e2/52/57ce33203a606dac51abf16aaa2388d31a4efac434bb3730dc22494cea13/gel-3.1.0-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:8a526e11ba696d1cf6c876c08afe6ab5f762a227faaa3b78523ebc2511567609", size = 4619168, upload-time = "2025-04-29T20:44:32.895Z" },
+    { url = "https://files.pythonhosted.org/packages/eb/ad/eb7958f8197ba763054a706892c4948753f210c6f82ce46f7de9d13d4f94/gel-3.1.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c06f11fcde231d6264dbe0b19d7b2942767a196e9c6f2cabf22fbb04094134af", size = 4729625, upload-time = "2025-04-29T20:44:34.747Z" },
+    { url = "https://files.pythonhosted.org/packages/cd/62/7b89eb81430f5714bf56f257679998a9a09f327f60d3c061dece5b5b2797/gel-3.1.0-cp313-cp313-win_amd64.whl", hash = "sha256:48235a5082f03d7eccbcaa4255260c8a3cdb2cfd123f121dd6b0d3ebc51421ac", size = 831743, upload-time = "2025-04-29T20:44:36.992Z" },
 ]
 
 [[package]]
@@ -305,7 +305,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "disnake", specifier = "==2.10.1" },
-    { name = "gel", specifier = "==3.0.1" },
+    { name = "gel", specifier = "==3.1.0" },
     { name = "pydantic", specifier = "==2.11.4" },
     { name = "tomli", specifier = "==2.2.1" },
     { name = "tomli-w", specifier = "==1.2.0" },
