@@ -1,6 +1,6 @@
 version = 1
 revision = 2
-requires-python = "==3.13.3"
+requires-python = "==3.13.2"
 
 [[package]]
 name = "home-manager"
@@ -17,7 +17,7 @@ requires-dist = [{ name = "pyperclipfix", specifier = "==1.9.4" }]
 name = "pyperclipfix"
 version = "1.9.4"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/bb/cd/f4e48c462a8b686cf24c1ff20f8ab9b0a390c4517ef520f01b1f181e79ad/pyperclipfix-1.9.4.tar.gz", hash = "sha256:a6c1bbe582190f0e141d338cd33bebf707aa782cdc5b93df140b142b52747da1", size = 21112, upload-time = "2024-01-24T03:56:28.388Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/bb/cd/f4e48c462a8b686cf24c1ff20f8ab9b0a390c4517ef520f01b1f181e79ad/pyperclipfix-1.9.4.tar.gz", hash = "sha256:a6c1bbe582190f0e141d338cd33bebf707aa782cdc5b93df140b142b52747da1", size = 21112, upload_time = "2024-01-24T03:56:28.388Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e8/73/8a8a044b4d5ede957d7edc1f2706f0e566ea7474bf66883f798b97d5f6ce/pyperclipfix-1.9.4-py3-none-any.whl", hash = "sha256:345260636d601f291278c91728f52a87cc5eeb9f26a432d858abebac41f56dbf", size = 11181, upload-time = "2024-01-24T03:56:27.006Z" },
+    { url = "https://files.pythonhosted.org/packages/e8/73/8a8a044b4d5ede957d7edc1f2706f0e566ea7474bf66883f798b97d5f6ce/pyperclipfix-1.9.4-py3-none-any.whl", hash = "sha256:345260636d601f291278c91728f52a87cc5eeb9f26a432d858abebac41f56dbf", size = 11181, upload_time = "2024-01-24T03:56:27.006Z" },
 ]
