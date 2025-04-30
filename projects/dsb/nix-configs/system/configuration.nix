@@ -99,7 +99,6 @@
       };
     };
     virtualbox.host.enable = true;
-    waydroid.enable = true;
   };
 
   nixpkgs.config.allowUnfree = true;

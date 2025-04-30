@@ -14,14 +14,6 @@
       enable = true;
       client.enable = true;
     };
-    tailscale = {
-      enable = true;
-      useRoutingFeatures = "client";
-    };
-    mullvad-vpn = {
-      enable = true;
-      package = pkgs.mullvad-vpn;
-    };
   };
 
   networking = {
