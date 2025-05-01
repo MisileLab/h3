@@ -99,7 +99,7 @@ if $env.TERM == "linux" {
       gpg-agent = {
         enable = true;
         enableSshSupport = true;
-        pinentryPackage = pkgs.pinentry.curses;
+        pinentry.package = pkgs.pinentry.curses;
       };
     };
   }
