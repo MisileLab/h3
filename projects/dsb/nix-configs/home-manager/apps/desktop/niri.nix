@@ -16,8 +16,8 @@
       spawn-at-startup = [
         { command = ["${pkgs.xwayland-satellite}/bin/xwayland-satellite"]; }
         { command = ["${pkgs.waybar}/bin/waybar"]; }
-        { command = ["${pkgs.swaybg}/bin/swaybg --image ~/.config/home-manager/bg.png"]; }
-        { command = [''${pkgs.wl-clipboard}/bin/wl-paste -t text --watch "${pkgs.clipman}/bin/clipman store --no-persist"'']; }
+        { command = ["${pkgs.swaybg}/bin/swaybg" "--image" "~/.config/home-manager/bg.png"]; }
+        { command = ["${pkgs.wl-clipboard}/bin/wl-paste" "--watch" "${pkgs.cliphist}/bin/cliphist" "store"]; }
         { command = ["${pkgs.avizo}/bin/avizo-service"]; }
       ];
       binds = {
@@ -25,9 +25,9 @@
 
         "Mod+T".action.spawn = ["${pkgs.ghostty}/bin/ghostty"];
         "Mod+D".action.spawn = ["${pkgs.rofi-wayland}/bin/rofi" "-show" "drun"];
-        "Mod+Y".action.spawn = ["${pkgs.clipman}/bin/clipman" "pick" "--tool=rofi" "--max-items=30"];
-        "Mod+Shift+Y".action.spawn = ["${pkgs.clipman}/bin/clipman" "clear" "--tool=rofi" "--max-items=30"];
-        "Ctrl+Shift+Y".action.spawn = ["${pkgs.clipman}/bin/clipman" "clear" "--all"];
+        "Mod+Y".action.spawn = ["sh" "-c" "${pkgs.cliphist}/bin/cliphist list | ${pkgs.rofi-wayland}/bin/rofi -dmenu | ${pkgs.cliphist}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy"];
+        "Mod+Shift+Y".action.spawn = ["sh" "-c" "${pkgs.cliphist}/bin/cliphist list | ${pkgs.rofi-wayland}/bin/rofi -dmenu | ${pkgs.cliphist}/bin/cliphist delete"];
+        "Ctrl+Shift+Y".action.spawn = ["${pkgs.cliphist}/bin/cliphist" "wipe"];
         "Super+Alt+L".action.spawn = "${pkgs.swaylock}/bin/swaylock";
 
         "XF86AudioRaiseVolume" = {
