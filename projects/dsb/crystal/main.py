@@ -1,24 +1,39 @@
 from asyncio import run
 from typing import override
 from pathlib import Path
+from os import getenv
 
 from httpx import get
 from pydantic_ai import Agent
+from pydantic_ai.models.openai import OpenAIModel
+from pydantic_ai.providers.openai import OpenAIProvider
 from pydantic_ai.common_tools.duckduckgo import duckduckgo_search_tool
 from pydantic_ai.messages import ModelMessage
 from rich.console import Console, ConsoleOptions, RenderResult
 from rich.markdown import CodeBlock, Markdown
 from rich.syntax import Syntax
 from rich.text import Text
-from inquirer import prompt, Editor
+from inquirer import prompt, Editor # pyright: ignore[reportMissingTypeStubs, reportUnknownVariableType]
+from logfire import configure, instrument_openai
+
+model = OpenAIModel(
+  'google/gemini-2.5-pro-preview-03-25',
+  provider=OpenAIProvider(
+    base_url='https://openrouter.ai/api/v1',
+    api_key=getenv('OPENROUTER_KEY')
+  )
+)
 
 agent = Agent(
-  'google-gla:gemini-2.5-pro-exp-03-25',
+  model,
   system_prompt = (Path("./prompt").read_text()),
   tools = [
     duckduckgo_search_tool()
   ]
 )
+
+_ = configure(token=getenv('LOGFIRE_KEY'))
+_ = instrument_openai()
 
 console = Console()
 
@@ -60,7 +75,10 @@ async def main():
   prettier_code_blocks()
   history: list[ModelMessage] = []
   while True:
-    inp = prompt([Editor("input", message="user")])["input"]
+    _inp: dict[str, str] | None = prompt([Editor("input", message="user")]) # pyright: ignore[reportUnknownVariableType]
+    if _inp is None:
+      exit()
+    inp = _inp["input"]
     response = await agent.run(inp, message_history=history)
     history = response.all_messages()
     console.print(Markdown(response.output))
