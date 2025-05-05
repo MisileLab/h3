@@ -16,6 +16,8 @@ from rich.text import Text
 from inquirer import prompt, Editor # pyright: ignore[reportMissingTypeStubs, reportUnknownVariableType]
 from logfire import configure, instrument_openai
 
+from tools.memory import tools as memory_tools
+
 model = OpenAIModel(
   'google/gemini-2.5-pro-preview-03-25',
   provider=OpenAIProvider(
@@ -28,8 +30,9 @@ agent = Agent(
   model,
   system_prompt = (Path("./prompt").read_text()),
   tools = [
-    duckduckgo_search_tool()
-  ]
+    duckduckgo_search_tool(),
+    *memory_tools
+  ] # pyright: ignore[reportUnknownArgumentType]
 )
 
 _ = configure(token=getenv('LOGFIRE_KEY'))
