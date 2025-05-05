@@ -3,7 +3,7 @@ name = "crystal"
 version = "0.1.0"
 description = "LLM that do things"
 readme = "README.md"
-requires-python = "==3.13.3"
+requires-python = ">=3.13.2"
 dependencies = [
   "inquirer==3.4.0",
   "pydantic-ai-slim[duckduckgo,logfire,openai]==0.1.9",
