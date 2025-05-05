@@ -2,7 +2,7 @@
 name = "home-manager"
 version = "0.1.0"
 description = "home-manager utils"
-requires-python = "==3.13.2"
+requires-python = "==3.13.3"
 dependencies = [
   "pyperclipfix==1.9.4",
 ]
