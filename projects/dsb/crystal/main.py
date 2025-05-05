@@ -16,10 +16,10 @@ from rich.text import Text
 from inquirer import prompt, Editor # pyright: ignore[reportMissingTypeStubs, reportUnknownVariableType]
 from logfire import configure, instrument_openai
 
-from tools.memory import tools as memory_tools
+from tools.memory import tools as memory_tools # pyright: ignore[reportUnknownVariableType]
 
 model = OpenAIModel(
-  'google/gemini-2.5-pro-preview-03-25',
+  'google/gemini-2.5-flash-preview',
   provider=OpenAIProvider(
     base_url='https://openrouter.ai/api/v1',
     api_key=getenv('OPENROUTER_KEY')
@@ -28,7 +28,7 @@ model = OpenAIModel(
 
 agent = Agent(
   model,
-  system_prompt = (Path("./prompt").read_text()),
+  system_prompt = (Path("./prompt").read_text().replace('<Username />', getenv("USER_ID", "misile"))),
   tools = [
     duckduckgo_search_tool(),
     *memory_tools
