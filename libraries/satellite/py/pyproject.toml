@@ -3,7 +3,7 @@ name = "satellite_py"
 version = "0.1.6"
 description = "utils for project"
 readme = "README.md"
-requires-python = "==3.13.2"
+requires-python = "==3.13.3"
 dependencies = [
   "pydantic==2.11.4",
 ]

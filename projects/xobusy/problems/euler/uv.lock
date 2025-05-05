@@ -1,6 +1,6 @@
 version = 1
 revision = 2
-requires-python = "==3.13.2"
+requires-python = "==3.13.3"
 
 [[package]]
 name = "euler"
@@ -11,7 +11,7 @@ dependencies = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "z3-solver", specifier = ">=4.14.1.0" }]
+requires-dist = [{ name = "z3-solver", specifier = "==4.14.1.0" }]
 
 [[package]]
 name = "z3-solver"
