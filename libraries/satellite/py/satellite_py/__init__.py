@@ -1,5 +1,5 @@
-from dataclasses import dataclass # noqa: E402
-from typing import final  # noqa: E402
+from dataclasses import dataclass
+from typing import final
 
 @final
 @dataclass
