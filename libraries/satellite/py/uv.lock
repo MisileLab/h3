@@ -56,14 +56,14 @@ wheels = [
 
 [[package]]
 name = "satellite-py"
-version = "0.1.6"
+version = "0.1.7"
 source = { virtual = "." }
 dependencies = [
     { name = "pydantic" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "pydantic", specifier = "==2.11.4" }]
+requires-dist = [{ name = "pydantic", specifier = ">=2.11.4" }]
 
 [[package]]
 name = "typing-extensions"
