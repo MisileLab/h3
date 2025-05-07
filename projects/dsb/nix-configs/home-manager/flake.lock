@@ -7,11 +7,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1746574091,
-        "narHash": "sha256-BsEAqHB2rLqzCsfRoH88h980me8Jrc8OpR7isYKLJE4=",
+        "lastModified": 1746590611,
+        "narHash": "sha256-4+pxk1KcSH8ww3tgN808nNJ3E7Q8gNWI+U0sesW7mBQ=",
         "owner": "misilelab",
         "repo": "nix",
-        "rev": "763a2b5eec3fd195a290c65917a0948213ac4de8",
+        "rev": "8f2459416dc7fc5c7b521a1c5515fd9ceb75db8f",
         "type": "github"
       },
       "original": {
