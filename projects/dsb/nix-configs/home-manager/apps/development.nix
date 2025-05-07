@@ -36,7 +36,7 @@
 
       # lsp
       basedpyright nil vala-language-server bash-language-server
-      tailwindcss-language-server astro-language-server ruff lua-language-server
+      (stablep.tailwindcss-language-server) astro-language-server ruff lua-language-server
       marksman zls
     ]
     ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
