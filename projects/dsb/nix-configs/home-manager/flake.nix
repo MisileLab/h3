@@ -9,9 +9,8 @@
     };
     stable.url = "github:nixos/nixpkgs/nixos-unstable";
     # nur.url = "github:nix-community/NUR";
-    # https://github.com/catppuccin/nix/issues/552
     catppuccin = {
-      url = "github:misilelab/nix";
+      url = "github:catppuccin/nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-index-database = {
