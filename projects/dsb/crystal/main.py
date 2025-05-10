@@ -2,9 +2,10 @@ from asyncio import run
 from typing import override
 from pathlib import Path
 from os import getenv
+from puremagic import from_file # pyright: ignore[reportUnknownVariableType]
 
 from httpx import get
-from pydantic_ai import Agent
+from pydantic_ai import Agent, BinaryContent
 from pydantic_ai.models.openai import OpenAIModel
 from pydantic_ai.providers.openai import OpenAIProvider
 from pydantic_ai.common_tools.duckduckgo import duckduckgo_search_tool
@@ -78,11 +79,24 @@ async def main():
   prettier_code_blocks()
   history: list[ModelMessage] = []
   while True:
-    _inp: dict[str, str] | None = prompt([Editor("input", message="user")]) # pyright: ignore[reportUnknownVariableType]
+    _inp: dict[str, str] | None = prompt( # pyright: ignore[reportUnknownVariableType]
+      [
+        Editor("input", message="user"),
+        Editor("files", message="files (seperated by newline)")
+      ]
+    )
     if _inp is None:
       exit()
     inp = _inp["input"]
-    response = await agent.run(inp, message_history=history)
+    files: list[BinaryContent] = []
+    if not _inp["files"] == "":
+      for i in _inp["files"].split("\n"):
+        p = Path(i)
+        _ = files.append(BinaryContent(data=p.read_bytes(), media_type=from_file(p, True)))
+    response = await agent.run([
+      inp,
+      *files
+    ], message_history=history)
     history = response.all_messages()
     console.print(Markdown(response.output))
     console.print(response.usage())
