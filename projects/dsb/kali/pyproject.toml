@@ -1,0 +1,9 @@
+[project]
+name = "kali"
+version = "0.1.0"
+description = "Game Translation Layer"
+readme = "README.md"
+requires-python = "==3.13.3"
+dependencies = [
+  "pydantic-ai-slim[logfire,openai]==0.1.10"
+]
