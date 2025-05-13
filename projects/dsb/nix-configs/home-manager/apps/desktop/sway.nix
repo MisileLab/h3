@@ -120,16 +120,16 @@ titlebar_padding 1
           interval = 1;
         };
         "custom/clock" = {
-          exec = "$HOME/.config/home-manager/clock.sh local";
-          on-click = "$HOME/.config/home-manager/clock.sh local copy";
-          on-click-right = "$HOME/.config/home-manager/clock.sh local copyf";
+          exec = "$HOME/.config/home-manager/clock.nu true";
+          on-click = "$HOME/.config/home-manager/clock.nu true copy";
+          on-click-right = "$HOME/.config/home-manager/clock.nu true copyf";
           return-type = "json";
           restart-interval = 1;
         };
         "custom/utc-clock" = {
-          exec = "$HOME/.config/home-manager/clock.sh utc";
-          on-click = "$HOME/.config/home-manager/clock.sh utc copy";
-          on-click-right = "$HOME/.config/home-manager/clock.sh utc copyf";
+          exec = "$HOME/.config/home-manager/clock.nu false";
+          on-click = "$HOME/.config/home-manager/clock.nu false copy";
+          on-click-right = "$HOME/.config/home-manager/clock.nu false copyf";
           return-type = "json";
           restart-interval = 1;
         };
