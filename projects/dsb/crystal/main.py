@@ -18,6 +18,8 @@ from inquirer import prompt, Editor # pyright: ignore[reportMissingTypeStubs, re
 from logfire import configure, instrument_openai
 
 from tools.memory import tools as memory_tools # pyright: ignore[reportUnknownVariableType]
+from tools.feedback import tools as feedback_tools # pyright: ignore[reportUnknownVariableType]
+from prompts import prompts
 
 model = OpenAIModel(
   'google/gemini-2.5-flash-preview',
@@ -29,17 +31,19 @@ model = OpenAIModel(
 
 agent = Agent(
   model,
-  system_prompt = (Path("./prompt").read_text().replace('<Username />', getenv("USER_ID", "misile"))),
   tools = [
     duckduckgo_search_tool(),
-    *memory_tools
-  ] # pyright: ignore[reportUnknownArgumentType]
+    *memory_tools,
+    *feedback_tools
+  ], # pyright: ignore[reportUnknownArgumentType]
 )
 
 _ = configure(token=getenv('LOGFIRE_KEY'))
 _ = instrument_openai()
 
-console = Console()
+@agent.system_prompt
+def system_prompt():
+  return prompts["main"]
 
 @agent.tool_plain
 async def request(url: str) -> str:
@@ -51,6 +55,7 @@ async def request(url: str) -> str:
   console.print(page.status_code, style='magenta')
   return page.text if not page.is_error else f"status: {page.status_code}, text: {page.text}"
 
+console = Console()
 def prettier_code_blocks():
   """Make rich code blocks prettier and easier to copy.
 
