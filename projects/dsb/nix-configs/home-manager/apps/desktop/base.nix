@@ -24,6 +24,7 @@
   programs = {
     obs-studio = {
       enable = true;
+      package = stablep.obs-studio;
     };
     ghostty = {
       enable = true;
