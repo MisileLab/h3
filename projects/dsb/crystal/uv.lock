@@ -197,7 +197,7 @@ requires-dist = [
     { name = "gradio", specifier = "==5.29.1" },
     { name = "inquirer", specifier = "==3.4.0" },
     { name = "langchain-memgraph", specifier = "==0.1.1" },
-    { name = "mem0ai", extras = ["graph"], specifier = "==0.1.98" },
+    { name = "mem0ai", extras = ["graph"], specifier = "==0.1.99" },
     { name = "puremagic", specifier = "==1.29" },
     { name = "pydantic-ai-slim", extras = ["duckduckgo", "logfire", "openai", "mcp"], specifier = "==0.2.4" },
     { name = "rich", specifier = "==14.0.0" },
@@ -267,20 +267,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/91/50/a9d80c47ff289c611ff12e63f7c5d13942c65d68125160cefd768c73e6e4/executing-2.2.0.tar.gz", hash = "sha256:5d108c028108fe2551d1a7b2e8b713341e2cb4fc0aa7dcf966fa4327a5226755", size = 978693, upload-time = "2025-01-22T15:41:29.403Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/7b/8f/c4d9bafc34ad7ad5d8dc16dd1347ee0e507a52c3adb6bfa8887e1c6a26ba/executing-2.2.0-py2.py3-none-any.whl", hash = "sha256:11387150cad388d62750327a53d3339fad4888b39a6fe233c3afbb54ecffd3aa", size = 26702, upload-time = "2025-01-22T15:41:25.929Z" },
-]
-
-[[package]]
-name = "fasta2a"
-version = "0.2.3"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "opentelemetry-api" },
-    { name = "pydantic" },
-    { name = "starlette" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/be/b7/be0e366fcf17d71159db1ff3e4b683e9266461fd167796b8273eddca32eb/fasta2a-0.2.3.tar.gz", hash = "sha256:742270038e478dad34b07f2cb8bee006b893c33eec8048485ffd6467e38c01c4", size = 11556, upload-time = "2025-05-13T14:01:58.104Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/61/34/8d7901ddb2e394619c0ea59bd885ca551dcbd91679e2cf189eb560b4fbc1/fasta2a-0.2.3-py3-none-any.whl", hash = "sha256:b8020bfb1b9e2f3d2b5ae71268e59ae3a508cded0bdf24c25e981a30eb49c6ef", size = 14371, upload-time = "2025-05-13T14:01:46.233Z" },
 ]
 
 [[package]]
@@ -886,7 +872,7 @@ wheels = [
 
 [[package]]
 name = "mem0ai"
-version = "0.1.98"
+version = "0.1.99"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "openai" },
@@ -896,9 +882,9 @@ dependencies = [
     { name = "qdrant-client" },
     { name = "sqlalchemy" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/d7/c3/5897b91eccf85340fc15e2b07bf88eaffb9a450a351931a023f61e3e407c/mem0ai-0.1.98.tar.gz", hash = "sha256:a46b77bdfa5997844f164715393be3707489d7d11c0a97d513c03cabe43f9013", size = 93468, upload-time = "2025-05-09T14:16:35.718Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/16/72/dfd7304576144fda3b73dd74bbf40b4a525f4430a83977a2330df5d585fe/mem0ai-0.1.99.tar.gz", hash = "sha256:15910160dd535d46db917dd81a615fd9503f592573c054b3df781fa5c7e34dd4", size = 95234, upload-time = "2025-05-15T23:21:04.203Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/3a/d5/03ee4910b017a552db4811ba160952df3372da07fef449f74161bb0ef618/mem0ai-0.1.98-py3-none-any.whl", hash = "sha256:c53b8113c2430ed46327f0ce38febd096cd76ff778ecd43764df9adba5c4f6e7", size = 144191, upload-time = "2025-05-09T14:16:33.964Z" },
+    { url = "https://files.pythonhosted.org/packages/e0/b8/339931b72a11830b88eda34242ade04a5bbe32f2f10607401ced6c1f4c6f/mem0ai-0.1.99-py3-none-any.whl", hash = "sha256:778f880c468d43f77bbd2185b4501ded69eebde595ed642c35058bd88d8678b2", size = 145889, upload-time = "2025-05-15T23:21:02.363Z" },
 ]
 
 [package.optional-dependencies]
