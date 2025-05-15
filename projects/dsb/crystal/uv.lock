@@ -196,7 +196,7 @@ dependencies = [
 requires-dist = [
     { name = "gradio", specifier = "==5.29.1" },
     { name = "inquirer", specifier = "==3.4.0" },
-    { name = "langchain-memgraph", specifier = "==0.1.1" },
+    { name = "langchain-memgraph", specifier = "==0.1.2" },
     { name = "mem0ai", extras = ["graph"], specifier = "==0.1.98" },
     { name = "puremagic", specifier = "==1.29" },
     { name = "pydantic-ai-slim", extras = ["duckduckgo", "logfire", "openai", "mcp"], specifier = "==0.2.4" },
@@ -267,20 +267,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/91/50/a9d80c47ff289c611ff12e63f7c5d13942c65d68125160cefd768c73e6e4/executing-2.2.0.tar.gz", hash = "sha256:5d108c028108fe2551d1a7b2e8b713341e2cb4fc0aa7dcf966fa4327a5226755", size = 978693, upload-time = "2025-01-22T15:41:29.403Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/7b/8f/c4d9bafc34ad7ad5d8dc16dd1347ee0e507a52c3adb6bfa8887e1c6a26ba/executing-2.2.0-py2.py3-none-any.whl", hash = "sha256:11387150cad388d62750327a53d3339fad4888b39a6fe233c3afbb54ecffd3aa", size = 26702, upload-time = "2025-01-22T15:41:25.929Z" },
-]
-
-[[package]]
-name = "fasta2a"
-version = "0.2.3"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "opentelemetry-api" },
-    { name = "pydantic" },
-    { name = "starlette" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/be/b7/be0e366fcf17d71159db1ff3e4b683e9266461fd167796b8273eddca32eb/fasta2a-0.2.3.tar.gz", hash = "sha256:742270038e478dad34b07f2cb8bee006b893c33eec8048485ffd6467e38c01c4", size = 11556, upload-time = "2025-05-13T14:01:58.104Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/61/34/8d7901ddb2e394619c0ea59bd885ca551dcbd91679e2cf189eb560b4fbc1/fasta2a-0.2.3-py3-none-any.whl", hash = "sha256:b8020bfb1b9e2f3d2b5ae71268e59ae3a508cded0bdf24c25e981a30eb49c6ef", size = 14371, upload-time = "2025-05-13T14:01:46.233Z" },
 ]
 
 [[package]]
@@ -707,15 +693,16 @@ wheels = [
 
 [[package]]
 name = "langchain-memgraph"
-version = "0.1.1"
+version = "0.1.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "langchain-core" },
+    { name = "memgraph-toolbox" },
     { name = "neo4j" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/eb/5e/00c9c542f44a68be30ec7a9575bcd0744bb6b82ba8a99ec10930a0a21367/langchain_memgraph-0.1.1.tar.gz", hash = "sha256:64e8560720a4382db230bcbc45d9e5dcbd329da4ea1c192ab867dc0157724554", size = 15670, upload-time = "2025-03-20T14:49:15.459Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/4f/57/6b724adbada4ec6310fcdd2014544efbb290c3e72242b4f734b6539a4374/langchain_memgraph-0.1.2.tar.gz", hash = "sha256:1b2b272f39e1486786bc9978d1e4876ae18a86ff12e162ed193bcee656adcb01", size = 146140, upload-time = "2025-05-14T08:58:29.098Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5f/ce/3f6f2f8472ad1f1f9a9e3b0a3ba6a505a62687a3aac24a9a77cb00c30df9/langchain_memgraph-0.1.1-py3-none-any.whl", hash = "sha256:656e272a317d596c01016210fe5adb7ca5a9485cf733bdfe65e23cb80c360b52", size = 19635, upload-time = "2025-03-20T14:49:14.479Z" },
+    { url = "https://files.pythonhosted.org/packages/55/33/a737ca69a2a9fd63ca264a7f8568775af4efafb25b79bc012492f366820b/langchain_memgraph-0.1.2-py3-none-any.whl", hash = "sha256:3dd2ee1c38359a1915d634f2ec3e90b6a8f840c97c17a5f26c0d0103588e5005", size = 19868, upload-time = "2025-05-14T08:58:27.695Z" },
 ]
 
 [[package]]
@@ -906,6 +893,15 @@ graph = [
     { name = "langchain-neo4j" },
     { name = "neo4j" },
     { name = "rank-bm25" },
+]
+
+[[package]]
+name = "memgraph-toolbox"
+version = "0.1.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/a4/df/b419cbdfd986c3c9af0322ce54ac5eb105759d84db2325bf564e3504664d/memgraph_toolbox-0.1.0.tar.gz", hash = "sha256:8aa37ff4229c24e7f2059b7473f65b14965e20125ce99b057cd579de2d83f3d8", size = 10117, upload-time = "2025-04-24T10:50:34.471Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/db/bd/f83b1982eb891dc07980907694899351f5569bca80f1dc9aaf2a06e5e0c9/memgraph_toolbox-0.1.0-py3-none-any.whl", hash = "sha256:99b0b639b57a40a22778550b53f3c9a4e4e18aeb56ad69c65e82ee020a8d16f5", size = 13936, upload-time = "2025-04-24T10:50:32.663Z" },
 ]
 
 [[package]]
