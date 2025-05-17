@@ -13,6 +13,8 @@
       EDITOR = "nvim";
       XDG_SCREENSHOTS_DIR = "/home/misile/screenshots";
     };
+    # disable nixpkgs for now because home-manager doesn't support 25.11
+    enableNixpkgsReleaseCheck = false;
   };
 
   catppuccin = {
