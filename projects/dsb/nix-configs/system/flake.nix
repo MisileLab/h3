@@ -10,12 +10,12 @@
     # };
   };
 
-  outputs = { self, nixpkgs, /*stablep, *//*lanzaboote*/... }@_: {
+  outputs = { self, nixpkgs, stablep, /*lanzaboote*/... }@_: {
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
         ./configuration.nix
-        # {_module.args = {stablep = import stablep { system = "x86_64-linux"; };};}
+        {_module.args = {stablep = import stablep { system = "x86_64-linux"; };};}
         ({ stablep, ... }: {
           nixpkgs.overlays = [(final: prev: {
             webkitgtk_4_1 = stablep.webkitgtk_4_1;
