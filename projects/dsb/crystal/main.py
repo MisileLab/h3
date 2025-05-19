@@ -1,6 +1,6 @@
 import gradio as gr
 import asyncio
-import json
+import pickle
 from os import getenv, path
 from puremagic import from_stream  # pyright: ignore[reportUnknownVariableType]
 
@@ -18,44 +18,44 @@ from prompts import prompts
 from logfire import configure, instrument_openai
 
 # Path to store chat history
-HISTORY_FILE = "chat_history.json"
+HISTORY_FILE = "chat_history.pkl"
 
 # ========== Persistence Helpers ==========
 def load_history_from_disk() -> list[tuple[str, str]]:
   if path.exists(HISTORY_FILE):
-    with open(HISTORY_FILE, "r", encoding="utf-8") as f:
-      return json.load(f) # pyright: ignore[reportAny]
+      with open(HISTORY_FILE, "rb") as f:
+        return pickle.load(f) # pyright: ignore[reportAny]
   return []
 
 def save_history_to_disk(chat: list[tuple[str, str]]):
-  with open(HISTORY_FILE, "w", encoding="utf-8") as f:
-    json.dump(chat, f, ensure_ascii=False, indent=2)
+  with open(HISTORY_FILE, "wb") as f:
+      pickle.dump(chat, f)
 
 # ========== Setup ==========
 model = OpenAIModel(
   'google/gemini-2.5-flash-preview',
   provider=OpenAIProvider(
-    base_url='https://openrouter.ai/api/v1',
-    api_key=getenv('OPENROUTER_KEY')
+      base_url='https://openrouter.ai/api/v1',
+      api_key=getenv('OPENROUTER_KEY')
   )
 )
 
 agent = Agent(
   model,
   tools=[
-    duckduckgo_search_tool(),
-    *memory_tools,
-    *feedback_tools
+      duckduckgo_search_tool(),
+      *memory_tools,
+      *feedback_tools
   ],  # pyright: ignore[reportUnknownArgumentType]
   mcp_servers=[
-    MCPServerStdio(
-      "pnpx",
-      args=["mcp-neovim-server"],
-      env={
-        "ALLOW_SHELL_COMMANDS": "True",
-        "NVIM_SOCKET_PATH": "/tmp/nvim"
-      }
-    )
+      MCPServerStdio(
+          "pnpx",
+          args=["mcp-neovim-server"],
+          env={
+              "ALLOW_SHELL_COMMANDS": "True",
+              "NVIM_SOCKET_PATH": "/tmp/nvim"
+          }
+      )
   ]
 )
 
@@ -78,20 +78,20 @@ async def respond(message: str, files: list[bytes], chat: list[tuple[str, str]])
 
   bin_files: list[BinaryContent] = []
   if files:
-    for f in files:
-      media_type = from_stream(f, mime=True)
-      bin_files.append(BinaryContent(data=f, media_type=media_type))
+      for f in files:
+          media_type = from_stream(f, mime=True)
+          bin_files.append(BinaryContent(data=f, media_type=media_type))
 
   # Build agent context from previous chat
   for user_msg, bot_msg in chat:
-    if bot_msg is None:
-      history.append(ModelMessage(role="user", content=user_msg))
-    else:
-      history.append(ModelMessage(role="assistant", content=bot_msg))
+      if bot_msg is None:
+          history.append(ModelMessage(role="user", content=user_msg))
+      else:
+          history.append(ModelMessage(role="assistant", content=bot_msg))
 
   async with agent.run_mcp_servers():
-    response = await agent.run([message, *bin_files], message_history=history)
-    output = response.output
+      response = await agent.run([message, *bin_files], message_history=history)
+      output = response.output
 
   # Replace placeholder None with actual bot message
   chat[-1] = (message, output)
@@ -109,48 +109,48 @@ with gr.Blocks() as demo:
   chat_state = gr.State(initial_chat)
 
   with gr.Row():
-    send_btn = gr.Button("Send")
-    undo_btn = gr.Button("↩️ Undo")
-    reset_btn = gr.Button("🔄 Reset")
+      send_btn = gr.Button("Send")
+      undo_btn = gr.Button("↩️ Undo")
+      reset_btn = gr.Button("🔄 Reset")
 
   # Send button logic
   def sync_respond(message: str, files: list[bytes], chat: list[tuple[str, str]]):
-    return asyncio.run(respond(message, files, chat))
+      return asyncio.run(respond(message, files, chat))
 
   _ = send_btn.click(
-    fn=sync_respond,
-    inputs=[msg, file_upload, chat_state],
-    outputs=[chatbot, chat_state]
+      fn=sync_respond,
+      inputs=[msg, file_upload, chat_state],
+      outputs=[chatbot, chat_state]
   ).then(
-    fn=lambda: "",
-    inputs=None,
-    outputs=msg
+      fn=lambda: "",
+      inputs=None,
+      outputs=msg
   )
 
   # Undo button logic
   def undo(chat: list[tuple[str, str]]):
-    if chat:
-      chat = chat[:-1]
-      save_history_to_disk(chat)
-    return chat, chat
+      if chat:
+          chat = chat[:-1]
+          save_history_to_disk(chat)
+      return chat, chat
 
   _ = undo_btn.click(
-    fn=undo,
-    inputs=[chat_state],
-    outputs=[chatbot, chat_state]
+      fn=undo,
+      inputs=[chat_state],
+      outputs=[chatbot, chat_state]
   )
 
   # Reset button logic
   def reset_all() -> tuple[list[str], list[str], None]:
-    # Clear disk and in-memory
-    save_history_to_disk([])
-    history.clear()
-    return [], [], None
+      # Clear disk and in-memory
+      save_history_to_disk([])
+      history.clear()
+      return [], [], None
 
   _ = reset_btn.click(
-    fn=reset_all,
-    inputs=[],
-    outputs=[chatbot, chat_state, file_upload]
+      fn=reset_all,
+      inputs=[],
+      outputs=[chatbot, chat_state, file_upload]
   )
 
 if __name__ == "__main__":
