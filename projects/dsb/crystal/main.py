@@ -1,7 +1,6 @@
 import gradio as gr
 import asyncio
-import json
-from os import getenv, path
+from os import getenv
 from puremagic import from_stream  # pyright: ignore[reportUnknownVariableType]
 
 from pydantic_ai import Agent, BinaryContent
@@ -16,20 +15,6 @@ from tools.feedback import tools as feedback_tools  # pyright: ignore[reportUnkn
 from prompts import prompts
 
 from logfire import configure, instrument_openai
-
-# Path to store chat history
-HISTORY_FILE = "chat_history.json"
-
-# ========== Persistence Helpers ==========
-def load_history_from_disk() -> list[tuple[str, str]]:
-  if path.exists(HISTORY_FILE):
-    with open(HISTORY_FILE, "r", encoding="utf-8") as f:
-      return json.load(f) # pyright: ignore[reportAny]
-  return []
-
-def save_history_to_disk(chat: list[tuple[str, str]]):
-  with open(HISTORY_FILE, "w", encoding="utf-8") as f:
-    json.dump(chat, f, ensure_ascii=False, indent=2)
 
 # ========== Setup ==========
 model = OpenAIModel(
@@ -66,47 +51,29 @@ _ = instrument_openai()
 def system_prompt():
   return prompts["main"]
 
-# Load persisted chat state
-initial_chat = load_history_from_disk()
-history: list[ModelMessage] = []  # used for agent context
+history: list[ModelMessage] = []
 
 # ========== Async Chat Function ==========
 async def respond(message: str, files: list[bytes], chat: list[tuple[str, str]]):
-  # Append user message
-  chat.append((message, None))
-  save_history_to_disk(chat)
-
   bin_files: list[BinaryContent] = []
   if files:
     for f in files:
       media_type = from_stream(f, mime=True)
       bin_files.append(BinaryContent(data=f, media_type=media_type))
 
-  # Build agent context from previous chat
-  for user_msg, bot_msg in chat:
-    if bot_msg is None:
-      history.append(ModelMessage(role="user", content=user_msg))
-    else:
-      history.append(ModelMessage(role="assistant", content=bot_msg))
-
   async with agent.run_mcp_servers():
     response = await agent.run([message, *bin_files], message_history=history)
-    output = response.output
-
-  # Replace placeholder None with actual bot message
-  chat[-1] = (message, output)
-  save_history_to_disk(chat)
-
-  # Clear in-memory history for next call
-  history.clear()
-  return chat, chat
+    history.clear()
+    history.extend(response.all_messages())
+    chat.append((message, response.output))
+    return chat, chat
 
 # ========== Gradio Interface ==========
 with gr.Blocks() as demo:
-  chatbot = gr.Chatbot(value=initial_chat)
+  chatbot = gr.Chatbot()
   msg = gr.Textbox(label="Message", placeholder="Type your message and press Enter")
   file_upload = gr.File(label="Upload files", file_types=[".txt", ".py", ".md", ".json"], file_count="multiple")
-  chat_state = gr.State(initial_chat)
+  chat_state = gr.State([])
 
   with gr.Row():
     send_btn = gr.Button("Send")
@@ -129,9 +96,10 @@ with gr.Blocks() as demo:
 
   # Undo button logic
   def undo(chat: list[tuple[str, str]]):
-    if chat:
+    if len(chat) >= 1:
+      _ = history.pop()
+      _ = history.pop()
       chat = chat[:-1]
-      save_history_to_disk(chat)
     return chat, chat
 
   _ = undo_btn.click(
@@ -142,8 +110,6 @@ with gr.Blocks() as demo:
 
   # Reset button logic
   def reset_all() -> tuple[list[str], list[str], None]:
-    # Clear disk and in-memory
-    save_history_to_disk([])
     history.clear()
     return [], [], None
 
