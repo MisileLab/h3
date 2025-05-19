@@ -72,7 +72,7 @@ async def respond(message: str, files: list[bytes], chat: list[tuple[str, str]])
 with gr.Blocks() as demo:
   chatbot = gr.Chatbot()
   msg = gr.Textbox(label="Message", placeholder="Type your message and press Enter")
-  file_upload = gr.File(label="Upload files", file_types=[".txt", ".py", ".md", ".json"], file_count="multiple")
+  file_upload = gr.File(label="Upload files", file_count="multiple")
   chat_state = gr.State([])
 
   with gr.Row():
