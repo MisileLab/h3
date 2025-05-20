@@ -197,7 +197,7 @@ requires-dist = [
     { name = "gradio", specifier = "==5.30.0" },
     { name = "inquirer", specifier = "==3.4.0" },
     { name = "langchain-memgraph", specifier = "==0.1.1" },
-    { name = "mem0ai", extras = ["graph"], specifier = "==0.1.100" },
+    { name = "mem0ai", extras = ["graph"], specifier = "==0.1.101" },
     { name = "puremagic", specifier = "==1.29" },
     { name = "pydantic-ai-slim", extras = ["duckduckgo", "logfire", "openai", "mcp"], specifier = "==0.2.4" },
     { name = "rich", specifier = "==14.0.0" },
@@ -885,7 +885,7 @@ wheels = [
 
 [[package]]
 name = "mem0ai"
-version = "0.1.100"
+version = "0.1.101"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "openai" },
@@ -895,9 +895,9 @@ dependencies = [
     { name = "qdrant-client" },
     { name = "sqlalchemy" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/0e/cb/0cc870c22b4de26286ffdd38ee14b3278b7baf20e7c388fac1072dcca10d/mem0ai-0.1.100.tar.gz", hash = "sha256:976369ed00729b207b7a6619108877046adf764127569e41e3904e7e1031a2fe", size = 100813, upload-time = "2025-05-19T06:58:54.359Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/9e/39/c95c72a406e5f5091966af195aab275007a6e3bedd544bf14a0a0fa14f3c/mem0ai-0.1.101.tar.gz", hash = "sha256:d5f284348585774e5f1417dd208b6d3a5ef2c6e2887868442905320d81ebb906", size = 99600, upload-time = "2025-05-20T17:30:08.28Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/57/33/b88b10fe2336477047a3f36c8531f97a87c96a64b2eb1fda3abb21dd4fd6/mem0ai-0.1.100-py3-none-any.whl", hash = "sha256:63a9719444928f6dbbf30729764d0711b679f5086055b5e00e4dfcc9fb865005", size = 151505, upload-time = "2025-05-19T06:58:52.691Z" },
+    { url = "https://files.pythonhosted.org/packages/5f/38/d12e05aff1736cb0f3d615b0e47df23fe79ba6d376122c7f250b8e8418b9/mem0ai-0.1.101-py3-none-any.whl", hash = "sha256:05b716c1048253fbb2159b417ae7f236775799c6df1fcbf4fb028205a4e43fd5", size = 154924, upload-time = "2025-05-20T17:30:06.29Z" },
 ]
 
 [package.optional-dependencies]
