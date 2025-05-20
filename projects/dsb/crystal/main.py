@@ -59,12 +59,13 @@ def system_prompt():
 if Path("data.pkl").exists():
   initial = loads(Path("data.pkl").read_bytes()) # pyright: ignore[reportAny]
 else:
-  initial: tuple[list[ModelMessage], list[str]] = ([], [])
+  initial: tuple[list[ModelMessage], list[tuple[str, str]]] = ([], [])
 
-history: list[ModelMessage] = initial[0]
+history = initial[0]
+chat_state = initial[1]
 
 # ========== Async Chat Function ==========
-async def respond(message: str, files: list[bytes], chat: list[tuple[str, str]]):
+async def respond(message: str, files: list[bytes]):
   bin_files: list[BinaryContent] = []
   if files:
     for f in files:
@@ -75,17 +76,16 @@ async def respond(message: str, files: list[bytes], chat: list[tuple[str, str]])
     response = await agent.run([message, *bin_files], message_history=history)
     history.clear()
     history.extend(response.all_messages())
-    chat.append((message, response.output))
-    return chat, chat
+    chat_state.append((message, response.output))
+    return chat_state
 
 # ========== Gradio Interface ==========
 with gr.Blocks() as demo:
   chatbot = gr.Chatbot()
   msg = gr.Textbox(label="Message", placeholder="Type your message and press Enter")
   file_upload = gr.File(label="Upload files", file_count="multiple", file_types=["file"])
-  chat_state = gr.State(initial[1])
   
-  def save(chat_state: list[tuple[str]]):
+  def save():
     _ = Path("data.pkl").write_bytes(dumps([history, chat_state])) 
 
   with gr.Row():
@@ -94,57 +94,58 @@ with gr.Blocks() as demo:
     reset_btn = gr.Button("🔄 Reset")
 
   # Send button logic
-  def sync_respond(message: str, files: list[bytes], chat: list[tuple[str, str]]):
-    return asyncio.run(respond(message, files, chat))
+  def sync_respond(message: str, files: list[bytes]):
+    return asyncio.run(respond(message, files))
 
   _ = send_btn.click(
     fn=sync_respond,
-    inputs=[msg, file_upload, chat_state],
-    outputs=[chatbot, chat_state]
+    inputs=[msg, file_upload],
+    outputs=[chatbot]
   ).then(
     fn=lambda: "",
     inputs=None,
     outputs=msg
   ).then(
     fn=save,
-    inputs=[chat_state],
+    inputs=[],
     outputs=None
   )
 
   # Undo button logic
-  def undo(chat: list[tuple[str, str]]):
-    if len(chat) >= 1:
+  def undo():
+    if len(chat_state) >= 1:
       _ = history.pop()
       _ = history.pop()
-      chat = chat[:-1]
-    return chat, chat
+      _ = chat_state.pop()
+    return chat_state
 
   _ = undo_btn.click(
     fn=undo,
-    inputs=[chat_state],
-    outputs=[chatbot, chat_state]
+    inputs=[],
+    outputs=[chatbot]
   ).then(
     fn=save,
-    inputs=[chat_state],
+    inputs=[],
     outputs=None
   )
 
   # Reset button logic
-  def reset_all() -> tuple[list[str], list[str], None]:
+  def reset_all() -> tuple[list[str], None]:
     history.clear()
-    return [], [], None
+    chat_state.clear()
+    return [], None
 
   _ = reset_btn.click(
     fn=reset_all,
     inputs=[],
-    outputs=[chatbot, chat_state, file_upload]
+    outputs=[chatbot, file_upload]
   ).then(
     fn=save,
-    inputs=[chat_state],
+    inputs=[],
     outputs=None
   )
 
-  _ = demo.load(fn=lambda x: x, inputs=[chat_state], outputs=[chatbot]) # pyright: ignore[reportUnknownArgumentType, reportUnknownLambdaType]
+  _ = demo.load(fn=lambda: chat_state, outputs=[chatbot])
 
 if __name__ == "__main__":
   _ = demo.launch()
