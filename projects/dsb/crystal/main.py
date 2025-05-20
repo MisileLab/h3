@@ -1,20 +1,25 @@
-import gradio as gr
 import asyncio
 from os import getenv
-from puremagic import from_stream  # pyright: ignore[reportUnknownVariableType]
+from pathlib import Path
+from pickle import dumps, loads
 
+import gradio as gr
+from logfire import configure, instrument_openai
+from puremagic import from_stream  # pyright: ignore[reportUnknownVariableType]
 from pydantic_ai import Agent, BinaryContent
+from pydantic_ai.common_tools.duckduckgo import duckduckgo_search_tool
+from pydantic_ai.mcp import MCPServerStdio
+from pydantic_ai.messages import ModelMessage
 from pydantic_ai.models.openai import OpenAIModel
 from pydantic_ai.providers.openai import OpenAIProvider
-from pydantic_ai.common_tools.duckduckgo import duckduckgo_search_tool
-from pydantic_ai.messages import ModelMessage
-from pydantic_ai.mcp import MCPServerStdio
 
-from tools.memory import tools as memory_tools  # pyright: ignore[reportUnknownVariableType]
-from tools.feedback import tools as feedback_tools  # pyright: ignore[reportUnknownVariableType]
 from prompts import prompts
-
-from logfire import configure, instrument_openai
+from tools.feedback import (
+  tools as feedback_tools,  # pyright: ignore[reportUnknownVariableType]
+)
+from tools.memory import (
+  tools as memory_tools,  # pyright: ignore[reportUnknownVariableType]
+)
 
 # ========== Setup ==========
 model = OpenAIModel(
@@ -51,7 +56,12 @@ _ = instrument_openai()
 def system_prompt():
   return prompts["main"]
 
-history: list[ModelMessage] = []
+if Path("data.pkl").exists():
+  initial = loads(Path("data.pkl").read_bytes()) # pyright: ignore[reportAny]
+else:
+  initial: tuple[list[ModelMessage], list[str]] = ([], [])
+
+history: list[ModelMessage] = initial[0]
 
 # ========== Async Chat Function ==========
 async def respond(message: str, files: list[bytes], chat: list[tuple[str, str]]):
@@ -73,7 +83,10 @@ with gr.Blocks() as demo:
   chatbot = gr.Chatbot()
   msg = gr.Textbox(label="Message", placeholder="Type your message and press Enter")
   file_upload = gr.File(label="Upload files", file_count="multiple", file_types=["file"])
-  chat_state = gr.State([])
+  chat_state = gr.State(initial[1])
+  
+  def save(chat_state: list[tuple[str]]):
+    _ = Path("data.pkl").write_bytes(dumps([history, chat_state])) 
 
   with gr.Row():
     send_btn = gr.Button("Send")
@@ -92,6 +105,10 @@ with gr.Blocks() as demo:
     fn=lambda: "",
     inputs=None,
     outputs=msg
+  ).then(
+    fn=save,
+    inputs=[chat_state],
+    outputs=None
   )
 
   # Undo button logic
@@ -106,6 +123,10 @@ with gr.Blocks() as demo:
     fn=undo,
     inputs=[chat_state],
     outputs=[chatbot, chat_state]
+  ).then(
+    fn=save,
+    inputs=[chat_state],
+    outputs=None
   )
 
   # Reset button logic
@@ -117,7 +138,13 @@ with gr.Blocks() as demo:
     fn=reset_all,
     inputs=[],
     outputs=[chatbot, chat_state, file_upload]
+  ).then(
+    fn=save,
+    inputs=chat_state,
+    outputs=None
   )
+
+  _ = demo.load(fn=lambda: chat_state, outputs=[chatbot])
 
 if __name__ == "__main__":
   _ = demo.launch()
