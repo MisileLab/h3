@@ -140,11 +140,11 @@ with gr.Blocks() as demo:
     outputs=[chatbot, chat_state, file_upload]
   ).then(
     fn=save,
-    inputs=chat_state,
+    inputs=[chat_state],
     outputs=None
   )
 
-  _ = demo.load(fn=lambda: chat_state, outputs=[chatbot])
+  _ = demo.load(fn=lambda: x, inputs=[chat_state], outputs=[chatbot])
 
 if __name__ == "__main__":
   _ = demo.launch()
