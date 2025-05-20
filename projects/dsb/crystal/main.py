@@ -144,7 +144,7 @@ with gr.Blocks() as demo:
     outputs=None
   )
 
-  _ = demo.load(fn=lambda: x, inputs=[chat_state], outputs=[chatbot])
+  _ = demo.load(fn=lambda x: x, inputs=[chat_state], outputs=[chatbot]) # pyright: ignore[reportUnknownArgumentType, reportUnknownLambdaType]
 
 if __name__ == "__main__":
   _ = demo.launch()
