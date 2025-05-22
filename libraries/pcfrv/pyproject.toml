@@ -7,7 +7,7 @@ requires-python = ">=3.9"
 dependencies = [
   "fake-useragent==2.2.0",
   "httpx==0.28.1",
-  "pydantic==2.11.4",
+  "pydantic==2.11.5",
 ]
 
 [tool.basedpyright]
