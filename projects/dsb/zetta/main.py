@@ -47,7 +47,7 @@ async def get_page(ctx: RunContext[str], url: str) -> str:
     "Authorization": f"Bearer {getenv('JINA_API_KEY')}",
     "X-Engine": "Browser",
     "Accept": "text/event-stream"
-  }, timeout=20.0).raise_for_status().text
+  }, timeout=None).raise_for_status().text
 
 class Metadata(BaseModel):
   topic: str
