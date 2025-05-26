@@ -1,6 +1,7 @@
 from os import getenv
 from pathlib import Path
 from pickle import dumps, loads
+from time import sleep
 
 import polars as pl
 from blake3 import blake3
@@ -8,7 +9,7 @@ from dotenv import load_dotenv
 from httpx import get
 from logfire import configure, instrument_openai
 from openai import BaseModel
-from pydantic_ai import Agent, RunContext
+from pydantic_ai import Agent, ModelHTTPError, RunContext
 from pydantic_ai.models.openai import OpenAIModel, OpenAIModelSettings
 from pydantic_ai.providers.openai import OpenAIProvider
 
@@ -76,11 +77,19 @@ for i in df.iter_rows(named=True):
     continue
   i["metadata"] = eval(i["metadata"]) # pyright: ignore[reportAny]
   data = Data.model_validate(i)
-  df_test.append(agent.run_sync(f"""
-  topic: {data.metadata.topic}
-  answer_type: {data.metadata.answer_type}
-  urls: {data.metadata.urls}
-  question: {data.problem}
-  """, message_history=[], deps='\n'.join(data.metadata.urls)).output) # pyright: ignore[reportArgumentType]
-  _ = Path("test_result.pkl").write_bytes(dumps(df_test))
+  try:
+    df_test.append(agent.run_sync(f"""
+    topic: {data.metadata.topic}
+    answer_type: {data.metadata.answer_type}
+    urls: {data.metadata.urls}
+    question: {data.problem}
+    """, message_history=[], deps='\n'.join(data.metadata.urls)).output) # pyright: ignore[reportArgumentType]
+  except ModelHTTPError as e:
+    if e.status_code == 429:
+      print("Rate limit exceeded, waiting for 60 seconds...")
+      print(e.body)
+      sleep(60)
+      continue
+    raise e
+  _ = Path("tEest_result.pkl").write_bytes(dumps(df_test))
 
