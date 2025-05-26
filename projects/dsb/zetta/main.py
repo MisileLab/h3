@@ -1,6 +1,6 @@
 from os import getenv
 from pathlib import Path
-from pickle import dumps
+from pickle import dumps, loads
 
 import polars as pl
 from dotenv import load_dotenv
@@ -59,9 +59,13 @@ class Data(BaseModel):
   problem: str
   answer: str
 
-df_test: list[str] = []
+df_test: list[str] = loads(Path("./test_result.pkl").read_bytes()) if Path("test_result.pkl").exists() else []
+j = 1
 
 for i in df.iter_rows(named=True):
+  if len(df_test) >= j:
+    j += 1
+    continue
   i["metadata"] = eval(i["metadata"]) # pyright: ignore[reportAny]
   data = Data.model_validate(i)
   df_test.append(agent.run_sync(f"""
@@ -70,6 +74,5 @@ for i in df.iter_rows(named=True):
   urls: {data.metadata.urls}
   question: {data.problem}
   """, message_history=[], deps='\n'.join(data.metadata.urls)).output) # pyright: ignore[reportArgumentType]
-
-_ = Path("test_result.pkl").write_bytes(dumps(df_test))
+  _ = Path("test_result.pkl").write_bytes(dumps(df_test))
 
