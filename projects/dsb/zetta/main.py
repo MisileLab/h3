@@ -36,6 +36,8 @@ _ = instrument_openai()
 def system_prompt():
   return prompt
 
+Path("./cache").mkdir(exist_ok=True)
+
 history = []
 
 @agent.tool # pyright: ignore[reportArgumentType]
@@ -43,11 +45,15 @@ async def get_page(ctx: RunContext[str], url: str) -> str:
   print(url)
   if url not in ctx.deps.split('\n'):
     return "This url doesn't allowed."
-  return get(f"https://r.jina.ai/{url}", headers={
+  if Path(f"./cache/{url}").exists():
+    return Path(f"./cache/{url}").read_text()
+  resp = get(f"https://r.jina.ai/{url}", headers={
     "Authorization": f"Bearer {getenv('JINA_API_KEY')}",
     "X-Engine": "Browser",
     "Accept": "text/event-stream"
   }, timeout=None).raise_for_status().text
+  _ = Path(f"./cache/{url}").write_text(resp)
+  return resp
 
 class Metadata(BaseModel):
   topic: str
