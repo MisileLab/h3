@@ -1,12 +1,10 @@
 [project]
 name = "zetta"
 version = "0.1.0"
-description = "Breakthrough of SimpleQA"
+description = "Verify diff with LLM"
 readme = "README.md"
 requires-python = "==3.13.3"
 dependencies = [
-  "httpx==0.28.1",
-  "polars==1.30.0",
   "pydantic-ai-slim[logfire,openai]==0.2.9",
   "python-dotenv==1.1.0",
 ]
