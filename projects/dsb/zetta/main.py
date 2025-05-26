@@ -89,7 +89,13 @@ for i in df.iter_rows(named=True):
       print("Rate limit exceeded, waiting for 60 seconds...")
       print(e.body)
       sleep(60)
-      continue
-    raise e
+      df_test.append(agent.run_sync(f"""
+      topic: {data.metadata.topic}
+      answer_type: {data.metadata.answer_type}
+      urls: {data.metadata.urls}
+      question: {data.problem}
+      """, message_history=[], deps='\n'.join(data.metadata.urls)).output) # pyright: ignore[reportArgumentType]
+    else:
+      raise e
   _ = Path("tEest_result.pkl").write_bytes(dumps(df_test))
 
