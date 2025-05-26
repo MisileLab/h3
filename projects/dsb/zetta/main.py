@@ -2,12 +2,16 @@ from os import getenv
 from pathlib import Path
 from pickle import dumps
 
+import polars as pl
 from dotenv import load_dotenv
+from httpx import get
 from logfire import configure, instrument_openai
 from openai import BaseModel
 from pydantic_ai import Agent, RunContext
 from pydantic_ai.models.openai import OpenAIModel, OpenAIModelSettings
 from pydantic_ai.providers.openai import OpenAIProvider
+
+df = pl.read_csv('hf://datasets/basicv8vc/SimpleQA/simple_qa_test_set.csv')
 
 _ = load_dotenv()
 
