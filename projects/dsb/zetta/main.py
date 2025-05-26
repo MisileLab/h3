@@ -3,6 +3,7 @@ from pathlib import Path
 from pickle import dumps, loads
 
 import polars as pl
+from blake3 import blake3
 from dotenv import load_dotenv
 from httpx import get
 from logfire import configure, instrument_openai
@@ -45,14 +46,15 @@ async def get_page(ctx: RunContext[str], url: str) -> str:
   print(url)
   if url not in ctx.deps.split('\n'):
     return "This url doesn't allowed."
-  if Path(f"./cache/{url}").exists():
-    return Path(f"./cache/{url}").read_text()
+  blake3_hash = blake3(url.encode()).hexdigest()
+  if Path(f"./cache/{blake3_hash}").exists():
+    return Path(f"./cache/{blake3_hash}").read_text()
   resp = get(f"https://r.jina.ai/{url}", headers={
     "Authorization": f"Bearer {getenv('JINA_API_KEY')}",
     "X-Engine": "Browser",
     "Accept": "text/event-stream"
   }, timeout=None).raise_for_status().text
-  _ = Path(f"./cache/{url}").write_text(resp)
+  _ = Path(f"./cache/{blake3_hash}").write_text(resp)
   return resp
 
 class Metadata(BaseModel):
