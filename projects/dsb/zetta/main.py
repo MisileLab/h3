@@ -69,13 +69,13 @@ async def get_page(ctx: RunContext[str], url: str) -> str:
     "Accept": "text/event-stream"
   }, timeout=None).raise_for_status().text
   try:
-    resp = summarize_agent.run_sync(resp, message_history=[]).output
+    resp = (await summarize_agent.run(resp, message_history=[])).output
   except ModelHTTPError as e:
     if e.status_code == 429:
       print("Rate limit exceeded, waiting for 60 seconds...")
       print(e.body)
       sleep(60)
-      resp = summarize_agent.run_sync(resp, message_history=[]).output
+      resp = (await summarize_agent.run(resp, message_history=[])).output
     else:
       raise e
   _ = Path(f"./cache/{blake3_hash}").write_text(resp)
