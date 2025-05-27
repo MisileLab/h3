@@ -8,6 +8,7 @@
         {
           matches = [
             {app-id = "GalaxyBudsClient";}
+            {app-id = "org.gnome.Loupe";}
           ];
           open-floating = true;
         }
