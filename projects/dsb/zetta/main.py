@@ -32,7 +32,7 @@ summarize_model = OpenAIModel(
   'mistralai/mistral-nemo',
   provider=OpenAIProvider(
     api_key=getenv('OPENROUTER_KEY'),
-    base_url='https://api.openrouter.ai/v1'
+    base_url='https://openrouter.ai/api/v1'
   )
 )
 
