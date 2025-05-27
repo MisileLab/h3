@@ -6,7 +6,7 @@ from time import sleep
 import polars as pl
 from blake3 import blake3
 from dotenv import load_dotenv
-from httpx import get
+from httpx import post
 from logfire import configure, instrument_openai
 from pydantic import BaseModel
 from pydantic_ai import Agent, ModelHTTPError, RunContext
@@ -63,10 +63,12 @@ async def get_page(ctx: RunContext[str], url: str) -> str:
   blake3_hash = blake3(url.encode()).hexdigest()
   if Path(f"./cache/{blake3_hash}").exists():
     return Path(f"./cache/{blake3_hash}").read_text()
-  resp = get(f"https://r.jina.ai/{url}", headers={
+  resp = post("https://r.jina.ai", headers={
     "Authorization": f"Bearer {getenv('JINA_API_KEY')}",
     "X-Engine": "Browser",
     "Accept": "text/event-stream"
+  }, data={
+    "url": url
   }, timeout=None).raise_for_status().text
   try:
     resp = (await summarize_agent.run(resp, message_history=[])).output
