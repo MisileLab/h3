@@ -12,6 +12,7 @@ from pydantic_ai.mcp import MCPServerStdio
 from pydantic_ai.messages import ModelMessage
 from pydantic_ai.models.openai import OpenAIModel
 from pydantic_ai.providers.openai import OpenAIProvider
+from httpx import HTTPError, post
 
 from prompts import prompts
 from tools.feedback import (
@@ -28,6 +29,11 @@ model = OpenAIModel(
     base_url='https://openrouter.ai/api/v1',
     api_key=getenv('OPENROUTER_KEY')
   )
+)
+
+web_model = OpenAIModel(
+  'gpt-4.1-nano',
+  provider=OpenAIProvider(api_key=getenv("OPENAI_KEY"))
 )
 
 agent = Agent(
@@ -49,12 +55,43 @@ agent = Agent(
   ]
 )
 
+web_agent = Agent(
+  web_model,
+  instructions=prompts["web"]
+)
+
 _ = configure(token=getenv('LOGFIRE_KEY'))
 _ = instrument_openai()
 
 @agent.system_prompt
 def system_prompt():
   return prompts["main"]
+
+@agent.tool_plain
+async def get_page(query: str, url: str):
+  """
+  get page of url and get answer using LLM
+
+  Args:
+    query: query string that will be send to LLM
+    url: url of page
+  """
+  resp = post("https://r.jina.ai", headers={
+    "Authorization": f"Bearer {getenv('JINA_API_KEY')}",
+    "X-Engine": "Browser",
+    "Accept": "text/event-stream"
+  }, data={
+    "url": url
+  }, timeout=None)
+  try:
+    resp = resp.raise_for_status()
+  except HTTPError:
+    return f"""
+    status_code: {resp.status_code}
+    text: {resp.text}
+    """
+  history = (await web_agent.run(resp.text, message_history=[])).all_messages()
+  return await web_agent.run(query, message_history=history)
 
 if Path("data.pkl").exists():
   initial = loads(Path("data.pkl").read_bytes()) # pyright: ignore[reportAny]
