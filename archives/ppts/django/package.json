@@ -25,7 +25,7 @@
 		"vite": "6.3.5"
 	},
 	"dependencies": {
-		"@animotion/core": "1.1.7",
+		"@animotion/core": "1.1.8",
 		"@animotion/motion": "2.0.1",
 		"@fontsource-variable/jetbrains-mono": "5.2.5",
 		"@fontsource-variable/manrope": "5.2.5",
