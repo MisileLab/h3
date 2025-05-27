@@ -17,9 +17,8 @@ df = pl.read_csv('hf://datasets/basicv8vc/SimpleQA/simple_qa_test_set.csv')
 
 _ = load_dotenv()
 
-prompt = """
-Answer based on urls of pages (not other urls).
-"""
+prompt = Path("./prompt.txt").read_text()
+summarize_prompt = Path("./summarize_prompt.txt").read_text()
 
 # ========== Setup ==========
 model = OpenAIModel(
@@ -29,14 +28,28 @@ model = OpenAIModel(
   )
 )
 
-agent = Agent(model, model_settings=OpenAIModelSettings(temperature=0.0))
+summarize_model = OpenAIModel(
+  'mistralai/mistral-nemo',
+  provider=OpenAIProvider(
+    api_key=getenv('OPENROUTER_KEY'),
+    base_url='https://api.openrouter.ai/v1'
+  )
+)
+
+agent = Agent(
+  model,
+  model_settings=OpenAIModelSettings(temperature=0.0),
+  instructions=prompt
+)
+
+summarize_agent = Agent(
+  summarize_model,
+  model_settings=OpenAIModelSettings(temperature=0.0),
+  instructions=summarize_prompt
+)
 
 _ = configure(token=getenv('LOGFIRE_KEY'))
 _ = instrument_openai()
-
-@agent.system_prompt
-def system_prompt():
-  return prompt
 
 Path("./cache").mkdir(exist_ok=True)
 
@@ -55,6 +68,16 @@ async def get_page(ctx: RunContext[str], url: str) -> str:
     "X-Engine": "Browser",
     "Accept": "text/event-stream"
   }, timeout=None).raise_for_status().text
+  try:
+    resp = summarize_agent.run_sync(resp, message_history=[]).output
+  except ModelHTTPError as e:
+    if e.status_code == 429:
+      print("Rate limit exceeded, waiting for 60 seconds...")
+      print(e.body)
+      sleep(60)
+      resp = summarize_agent.run_sync(resp, message_history=[]).output
+    else:
+      raise e
   _ = Path(f"./cache/{blake3_hash}").write_text(resp)
   return resp
 
