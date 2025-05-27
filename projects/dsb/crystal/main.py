@@ -31,7 +31,7 @@ model = OpenAIModel(
   )
 )
 
-web_model = OpenAIModel(
+summarize_model = OpenAIModel(
   'gpt-4.1-nano',
   provider=OpenAIProvider(api_key=getenv("OPENAI_KEY"))
 )
@@ -55,9 +55,9 @@ agent = Agent(
   ]
 )
 
-web_agent = Agent(
-  web_model,
-  instructions=prompts["web"]
+summarize_agent = Agent(
+  summarize_model,
+  instructions=prompts["summarize"]
 )
 
 _ = configure(token=getenv('LOGFIRE_KEY'))
@@ -68,13 +68,9 @@ def system_prompt():
   return prompts["main"]
 
 @agent.tool_plain
-async def get_page(query: str, url: str):
+async def get_page(url: str):
   """
-  get page of url and get answer using LLM
-
-  Args:
-    query: query string that will be send to LLM
-    url: url of page
+  get page of url and summarize using LLM
   """
   resp = post("https://r.jina.ai", headers={
     "Authorization": f"Bearer {getenv('JINA_API_KEY')}",
@@ -90,8 +86,7 @@ async def get_page(query: str, url: str):
     status_code: {resp.status_code}
     text: {resp.text}
     """
-  history = (await web_agent.run(resp.text, message_history=[])).all_messages()
-  return await web_agent.run(query, message_history=history)
+  return await summarize_agent.run(resp.text, message_history=[])
 
 if Path("data.pkl").exists():
   initial = loads(Path("data.pkl").read_bytes()) # pyright: ignore[reportAny]
