@@ -86,7 +86,7 @@ async def get_page(url: str):
     status_code: {resp.status_code}
     text: {resp.text}
     """
-  return await summarize_agent.run(resp.text, message_history=[])
+  return (await summarize_agent.run(resp.text, message_history=[])).output
 
 if Path("data.pkl").exists():
   initial = loads(Path("data.pkl").read_bytes()) # pyright: ignore[reportAny]
