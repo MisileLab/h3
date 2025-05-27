@@ -29,7 +29,7 @@ model = OpenAIModel(
 )
 
 summarize_model = OpenAIModel(
-  'meta-llama/llama-4-scout',
+  'mistralai/mistral-nemo',
   provider=OpenAIProvider(
     api_key=getenv('OPENROUTER_KEY'),
     base_url='https://api.openrouter.ai/v1'
