@@ -60,6 +60,11 @@ summarize_agent = Agent(
   instructions=prompts["summarize"]
 )
 
+conversation_agent = Agent(
+  summarize_model,
+  instructions=prompts["conversation"]
+)
+
 _ = configure(token=getenv('LOGFIRE_KEY'))
 _ = instrument_openai()
 
@@ -111,6 +116,14 @@ async def respond(message: str, files: list[bytes]):
     chat_state.append((message, response.output))
     return chat_state
 
+async def summarize():
+  output = conversation_agent.run_sync(message_history=history)
+  history.clear()
+  history.extend(output.new_messages())
+  chat_state.clear()
+  chat_state.append(("", output.output))
+  return chat_state
+
 # ========== Gradio Interface ==========
 with gr.Blocks() as demo:
   chatbot = gr.Chatbot()
@@ -124,6 +137,7 @@ with gr.Blocks() as demo:
     send_btn = gr.Button("Send")
     undo_btn = gr.Button("↩️ Undo")
     reset_btn = gr.Button("🔄 Reset")
+    summarize_btn = gr.Button("summarize")
 
   # Send button logic
   def sync_respond(message: str, files: list[bytes]):
@@ -171,6 +185,16 @@ with gr.Blocks() as demo:
     fn=reset_all,
     inputs=[],
     outputs=[chatbot, file_upload]
+  ).then(
+    fn=save,
+    inputs=[],
+    outputs=None
+  )
+
+  _ = summarize_btn.click(
+    fn=summarize,
+    inputs=[],
+    outputs=[chatbot]
   ).then(
     fn=save,
     inputs=[],
