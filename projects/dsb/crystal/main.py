@@ -8,7 +8,6 @@ from logfire import configure, instrument_openai
 from puremagic import from_stream  # pyright: ignore[reportUnknownVariableType]
 from pydantic_ai import Agent, BinaryContent
 from pydantic_ai.common_tools.duckduckgo import duckduckgo_search_tool
-from pydantic_ai.mcp import MCPServerStdio
 from pydantic_ai.messages import ModelMessage
 from pydantic_ai.models.openai import OpenAIModel
 from pydantic_ai.providers.openai import OpenAIProvider
@@ -36,23 +35,15 @@ summarize_model = OpenAIModel(
   provider=OpenAIProvider(api_key=getenv("OPENAI_KEY"))
 )
 
+tools = [ # pyright: ignore[reportUnknownVariableType]
+  duckduckgo_search_tool(),
+  *memory_tools,
+  *feedback_tools
+]
+
 agent = Agent(
   model,
-  tools=[
-    duckduckgo_search_tool(),
-    *memory_tools,
-    *feedback_tools
-  ],  # pyright: ignore[reportUnknownArgumentType]
-  mcp_servers=[
-    MCPServerStdio(
-      "pnpx",
-      args=["mcp-neovim-server"],
-      env={
-        "ALLOW_SHELL_COMMANDS": "True",
-        "NVIM_SOCKET_PATH": "/tmp/nvim"
-      }
-    )
-  ]
+  tools=tools # pyright: ignore[reportUnknownArgumentType]
 )
 
 summarize_agent = Agent(
@@ -60,16 +51,11 @@ summarize_agent = Agent(
   instructions=prompts["summarize"]
 )
 
-conversation_agent = Agent(
-  summarize_model,
-  instructions=prompts["conversation"]
-)
-
 _ = configure(token=getenv('LOGFIRE_KEY'))
 _ = instrument_openai()
 
 @agent.system_prompt
-def system_prompt():
+def system_prompt() -> str:
   return prompts["main"]
 
 @agent.tool_plain
@@ -109,15 +95,14 @@ async def respond(message: str, files: list[bytes]):
       media_type = from_stream(f, mime=True)
       bin_files.append(BinaryContent(data=f, media_type=media_type))
 
-  async with agent.run_mcp_servers():
-    response = await agent.run([message, *bin_files], message_history=history)
-    history.clear()
-    history.extend(response.all_messages())
-    chat_state.append((message, response.output))
-    return chat_state
+  response = await agent.run([message, *bin_files], message_history=history)
+  history.clear()
+  history.extend(response.all_messages())
+  chat_state.append((message, response.output))
+  return chat_state
 
 async def summarize():
-  output = await conversation_agent.run(message_history=history)
+  output = await agent.run(message_history=history, )
   history.clear()
   history.extend(output.new_messages())
   chat_state.clear()
