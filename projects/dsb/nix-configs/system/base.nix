@@ -69,7 +69,7 @@
     settings = {
       substituters = ["https://cache.misile.xyz/cache"];
       trusted-public-keys = ["cache:zNeEp8cQiXd3s4UrwBgZQq5/9SnX4W/n06/lsxMzPug="];
-      experimental-features = ["nix-command" "flakes"];
+      experimental-features = ["nix-command" "flakes" "repl-flake"];
       trusted-users = ["misile"];
     };
   };
