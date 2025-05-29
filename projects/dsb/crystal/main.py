@@ -47,12 +47,6 @@ agent = Agent(
   instructions=prompts["main"]
 )
 
-summarize_agent = Agent(
-  summarize_model,
-  instructions=prompts["summarize"],
-  tools=tools # pyright: ignore[reportUnknownArgumentType]
-)
-
 web_agent = Agent(
   summarize_model,
   instructions=prompts["web"]
@@ -105,7 +99,7 @@ async def respond(message: str, files: list[bytes]):
   return chat_state
 
 async def summarize():
-  output = await summarize_agent.run(message_history=history)
+  output = await agent.run(prompts["summarize"], message_history=history)
   history.clear()
   history.extend(output.new_messages())
   chat_state.clear()
