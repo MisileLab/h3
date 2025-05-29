@@ -99,7 +99,10 @@ async def respond(message: str, files: list[bytes]):
   return chat_state
 
 async def summarize():
-  output = await agent.run(prompts["summarize"], message_history=history)
+  output = await agent.run(
+    "summarize our conversation to optimize message history!",
+    message_history=history
+  )
   history.clear()
   history.extend(output.new_messages())
   chat_state.clear()
