@@ -43,20 +43,23 @@ tools = [ # pyright: ignore[reportUnknownVariableType]
 
 agent = Agent(
   model,
-  tools=tools # pyright: ignore[reportUnknownArgumentType]
+  tools=tools, # pyright: ignore[reportUnknownArgumentType]
+  instructions=prompts["main"]
 )
 
 summarize_agent = Agent(
   summarize_model,
-  instructions=prompts["summarize"]
+  instructions=prompts["summarize"],
+  tools=tools # pyright: ignore[reportUnknownArgumentType]
+)
+
+web_agent = Agent(
+  summarize_model,
+  instructions=prompts["web"]
 )
 
 _ = configure(token=getenv('LOGFIRE_KEY'))
 _ = instrument_openai()
-
-@agent.system_prompt
-def system_prompt() -> str:
-  return prompts["main"]
 
 @agent.tool_plain
 async def get_page(url: str):
@@ -77,7 +80,7 @@ async def get_page(url: str):
     status_code: {resp.status_code}
     text: {resp.text}
     """
-  return (await summarize_agent.run(resp.text, message_history=[])).output
+  return (await web_agent.run(resp.text, message_history=[])).output
 
 if Path("data.pkl").exists():
   initial = loads(Path("data.pkl").read_bytes()) # pyright: ignore[reportAny]
@@ -102,7 +105,7 @@ async def respond(message: str, files: list[bytes]):
   return chat_state
 
 async def summarize():
-  output = await agent.run(message_history=history, )
+  output = await summarize_agent.run(message_history=history)
   history.clear()
   history.extend(output.new_messages())
   chat_state.clear()
