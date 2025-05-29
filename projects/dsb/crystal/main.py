@@ -117,7 +117,7 @@ async def respond(message: str, files: list[bytes]):
     return chat_state
 
 async def summarize():
-  output = conversation_agent.run_sync(message_history=history)
+  output = await conversation_agent.run(message_history=history)
   history.clear()
   history.extend(output.new_messages())
   chat_state.clear()
