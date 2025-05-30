@@ -21,7 +21,7 @@
     "vite-plugin-solid": "2.11.6"
   },
   "dependencies": {
-    "@kobalte/core": "0.13.9",
+    "@kobalte/core": "0.13.10",
     "clsx": "2.1.1",
     "mobile-device-detect": "0.4.3",
     "solid-js": "1.9.7",
