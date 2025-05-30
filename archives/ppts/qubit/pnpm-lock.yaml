@@ -23,7 +23,7 @@ importers:
     devDependencies:
       '@sveltejs/vite-plugin-svelte':
         specifier: 5.0.3
-        version: 5.0.3(svelte@5.33.10)(vite@6.3.5(@types/node@22.15.24))
+        version: 5.0.3(svelte@5.33.10)(vite@6.3.5(@types/node@22.15.26))
       '@tsconfig/svelte':
         specifier: 5.0.4
         version: 5.0.4
@@ -31,8 +31,8 @@ importers:
         specifier: 3.0.4
         version: 3.0.4
       '@types/node':
-        specifier: 22.15.24
-        version: 22.15.24
+        specifier: 22.15.26
+        version: 22.15.26
       '@types/reveal.js':
         specifier: 5.0.5
         version: 5.0.5
@@ -71,7 +71,7 @@ importers:
         version: 5.8.3
       vite:
         specifier: 6.3.5
-        version: 6.3.5(@types/node@22.15.24)
+        version: 6.3.5(@types/node@22.15.26)
 
 packages:
 
@@ -385,8 +385,8 @@ packages:
   '@types/estree@1.0.7':
     resolution: {integrity: sha512-w28IoSUCJpidD/TGviZwwMJckNESJZXFu7NBZ5YJ4mEUnNraUn9Pm8HSZm/jDF1pDWYKspWE7oVphigUPRakIQ==}
 
-  '@types/node@22.15.24':
-    resolution: {integrity: sha512-w9CZGm9RDjzTh/D+hFwlBJ3ziUaVw7oufKA3vOFSOZlzmW9AkZnfjPb+DLnrV6qtgL/LNmP0/2zBNCFHL3F0ng==}
+  '@types/node@22.15.26':
+    resolution: {integrity: sha512-lgISkNrqdQ5DAzjBhnDNGKDuXDNo7/1V4FhNzsKREhWLZTOELQAptuAnJMzHtUl1qyEBBy9lNBKQ9WjyiSloTw==}
 
   '@types/reveal.js@5.0.5':
     resolution: {integrity: sha512-+8OFb1RlB69dZT1laNDq+xDSGrPY/VYARSSTxSC/rMl8s9X+W4dr7gHmoKRR9yu20JU8gvp18g9SVxvouk7SiQ==}
@@ -891,25 +891,25 @@ snapshots:
     dependencies:
       acorn: 8.14.1
 
-  '@sveltejs/vite-plugin-svelte-inspector@4.0.1(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.33.10)(vite@6.3.5(@types/node@22.15.24)))(svelte@5.33.10)(vite@6.3.5(@types/node@22.15.24))':
+  '@sveltejs/vite-plugin-svelte-inspector@4.0.1(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.33.10)(vite@6.3.5(@types/node@22.15.26)))(svelte@5.33.10)(vite@6.3.5(@types/node@22.15.26))':
     dependencies:
-      '@sveltejs/vite-plugin-svelte': 5.0.3(svelte@5.33.10)(vite@6.3.5(@types/node@22.15.24))
+      '@sveltejs/vite-plugin-svelte': 5.0.3(svelte@5.33.10)(vite@6.3.5(@types/node@22.15.26))
       debug: 4.4.1
       svelte: 5.33.10
-      vite: 6.3.5(@types/node@22.15.24)
+      vite: 6.3.5(@types/node@22.15.26)
     transitivePeerDependencies:
       - supports-color
 
-  '@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.33.10)(vite@6.3.5(@types/node@22.15.24))':
+  '@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.33.10)(vite@6.3.5(@types/node@22.15.26))':
     dependencies:
-      '@sveltejs/vite-plugin-svelte-inspector': 4.0.1(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.33.10)(vite@6.3.5(@types/node@22.15.24)))(svelte@5.33.10)(vite@6.3.5(@types/node@22.15.24))
+      '@sveltejs/vite-plugin-svelte-inspector': 4.0.1(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.33.10)(vite@6.3.5(@types/node@22.15.26)))(svelte@5.33.10)(vite@6.3.5(@types/node@22.15.26))
       debug: 4.4.1
       deepmerge: 4.3.1
       kleur: 4.1.5
       magic-string: 0.30.17
       svelte: 5.33.10
-      vite: 6.3.5(@types/node@22.15.24)
-      vitefu: 1.0.6(vite@6.3.5(@types/node@22.15.24))
+      vite: 6.3.5(@types/node@22.15.26)
+      vitefu: 1.0.6(vite@6.3.5(@types/node@22.15.26))
     transitivePeerDependencies:
       - supports-color
 
@@ -923,7 +923,7 @@ snapshots:
 
   '@types/estree@1.0.7': {}
 
-  '@types/node@22.15.24':
+  '@types/node@22.15.26':
     dependencies:
       undici-types: 6.21.0
 
@@ -1158,7 +1158,7 @@ snapshots:
       escalade: 3.2.0
       picocolors: 1.1.1
 
-  vite@6.3.5(@types/node@22.15.24):
+  vite@6.3.5(@types/node@22.15.26):
     dependencies:
       esbuild: 0.25.4
       fdir: 6.4.4(picomatch@4.0.2)
@@ -1167,11 +1167,11 @@ snapshots:
       rollup: 4.41.1
       tinyglobby: 0.2.14
     optionalDependencies:
-      '@types/node': 22.15.24
+      '@types/node': 22.15.26
       fsevents: 2.3.3
 
-  vitefu@1.0.6(vite@6.3.5(@types/node@22.15.24)):
+  vitefu@1.0.6(vite@6.3.5(@types/node@22.15.26)):
     optionalDependencies:
-      vite: 6.3.5(@types/node@22.15.24)
+      vite: 6.3.5(@types/node@22.15.26)
 
   zimmerframe@1.1.2: {}
