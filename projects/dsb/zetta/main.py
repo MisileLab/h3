@@ -39,7 +39,8 @@ summarize_model = OpenAIModel(
 agent = Agent(
   model,
   model_settings=OpenAIModelSettings(temperature=0.0),
-  instructions=prompt
+  instructions=prompt,
+  deps_type=str
 )
 
 summarize_agent = Agent(
@@ -55,7 +56,7 @@ Path("./cache").mkdir(exist_ok=True)
 
 history = []
 
-@agent.tool # pyright: ignore[reportArgumentType]
+@agent.tool
 async def get_page(ctx: RunContext[str], url: str) -> str:
   print(url)
   if url not in ctx.deps.split('\n'):
@@ -108,7 +109,7 @@ for i in df.iter_rows(named=True):
     answer_type: {data.metadata.answer_type}
     urls: {data.metadata.urls}
     question: {data.problem}
-    """, message_history=[], deps='\n'.join(data.metadata.urls)).output) # pyright: ignore[reportArgumentType]
+    """, message_history=[], deps='\n'.join(data.metadata.urls)).output)
   except ModelHTTPError as e:
     if e.status_code == 429:
       print("Rate limit exceeded, waiting for 60 seconds...")
@@ -119,7 +120,7 @@ for i in df.iter_rows(named=True):
       answer_type: {data.metadata.answer_type}
       urls: {data.metadata.urls}
       question: {data.problem}
-      """, message_history=[], deps='\n'.join(data.metadata.urls)).output) # pyright: ignore[reportArgumentType]
+      """, message_history=[], deps='\n'.join(data.metadata.urls)).output)
     else:
       raise e
   _ = Path("test_result.pkl").write_bytes(dumps(df_test))
