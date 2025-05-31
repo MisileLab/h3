@@ -1,6 +1,6 @@
 from os import getenv
 from pathlib import Path
-from pickle import loads, dumps
+from pickle import dumps
 
 import polars as pl
 from dotenv import load_dotenv
@@ -9,8 +9,6 @@ from pydantic import BaseModel
 from pydantic_ai import Agent
 from pydantic_ai.models.openai import OpenAIModel, OpenAIModelSettings
 from pydantic_ai.providers.openai import OpenAIProvider
-
-df = pl.read_csv('hf://datasets/basicv8vc/SimpleQA/simple_qa_test_set.csv')
 
 _ = load_dotenv()
 
@@ -42,29 +40,23 @@ Path("./cache").mkdir(exist_ok=True)
 
 history = []
 
-class Metadata(BaseModel):
-  topic: str
-  answer_type: str
-  urls: list[str]
-
 class Data(BaseModel):
-  metadata: Metadata
-  problem: str
+  question: str
   answer: str
+  generated: str
 
 def percentage(part: int, whole: int):
   return 100 * float(part)/float(whole)
 
-df_test: list[str] = loads(Path("./test_result.pkl").read_bytes()) # pyright: ignore[reportAny]
+df = pl.read_avro("./zetta.avro")
 answers: list[bool | None] = []
 
-for generated, answer in zip(df_test, df.iter_rows(named=True)):
-  answer["metadata"] = eval(answer["metadata"]) # pyright: ignore[reportAny]
-  data = Data.model_validate(answer)
+for i in df.iter_rows(named=True):
+  data = Data.model_validate(i)
   result = agent.run_sync(f"""
-    question: {data.problem}
+    question: {data.question}
     original: {data.answer}
-    generated: {generated}
+    generated: {data.generated}
   """).output
   _ = answers.append(result.correct)
 

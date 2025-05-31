@@ -1,6 +1,5 @@
 from os import getenv
 from pathlib import Path
-from pickle import dumps, loads
 from time import sleep
 
 import polars as pl
@@ -94,8 +93,23 @@ class Data(BaseModel):
   problem: str
   answer: str
 
-df_test: list[str] = loads(Path("./test_result.pkl").read_bytes()) if Path("test_result.pkl").exists() else []
+df_test = pl.DataFrame() if not Path("zetta.avro").exists() else pl.read_avro("zetta.avro")
 j = 1
+
+def append(df: pl.DataFrame, question: str, answer: str, generated: str) -> pl.DataFrame:
+  return pl.concat([df, pl.DataFrame({
+    "question": question,
+    "answer": answer,
+    "generated": generated
+  })], rechunk=True)
+
+def evaluate(df: pl.DataFrame, data: Data) -> pl.DataFrame:
+  return append(df, data.problem, data.answer, agent.run_sync(f"""
+    topic: {data.metadata.topic}
+    answer_type: {data.metadata.answer_type}
+    urls: {data.metadata.urls}
+    question: {data.problem}
+  """, message_history=[], deps='\n'.join(data.metadata.urls)).output)
 
 for i in df.iter_rows(named=True):
   if len(df_test) >= j:
@@ -104,24 +118,14 @@ for i in df.iter_rows(named=True):
   i["metadata"] = eval(i["metadata"]) # pyright: ignore[reportAny]
   data = Data.model_validate(i)
   try:
-    df_test.append(agent.run_sync(f"""
-    topic: {data.metadata.topic}
-    answer_type: {data.metadata.answer_type}
-    urls: {data.metadata.urls}
-    question: {data.problem}
-    """, message_history=[], deps='\n'.join(data.metadata.urls)).output)
+    df_test = evaluate(df_test, data)
   except ModelHTTPError as e:
     if e.status_code == 429:
       print("Rate limit exceeded, waiting for 60 seconds...")
       print(e.body)
       sleep(60)
-      df_test.append(agent.run_sync(f"""
-      topic: {data.metadata.topic}
-      answer_type: {data.metadata.answer_type}
-      urls: {data.metadata.urls}
-      question: {data.problem}
-      """, message_history=[], deps='\n'.join(data.metadata.urls)).output)
+      df_test = evaluate(df_test, data)
     else:
       raise e
-  _ = Path("test_result.pkl").write_bytes(dumps(df_test))
+  df_test.write_avro("zetta.avro")
 
