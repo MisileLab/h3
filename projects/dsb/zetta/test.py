@@ -26,6 +26,7 @@ model = OpenAIModel(
 
 class TestResult(BaseModel):
   correct: bool | None
+  reasoning: str
 
 agent = Agent(
   model,
