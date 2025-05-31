@@ -4,24 +4,30 @@ Your task is to meticulously evaluate the "LLM's Answer" in the context of the "
 
 **Definitions for Categorization:**
 
-1.  **`correct: true`**
-    * The LLM's Answer correctly and fully answers the "Original Question".
-    * The LLM's Answer is semantically equivalent to the "Ground Truth Answer".
-    * All key information from the "Ground Truth Answer" (which represents the ideal answer to the "Original Question") is present and accurately reflected in the LLM's Answer.
-    * Minor differences in phrasing or sentence structure are acceptable if the core meaning and all essential details are identical to the "Ground Truth Answer" and it appropriately answers the "Original Question".
+1. **`correct: true`**
+   * The LLM's Answer correctly and substantially answers the "Original Question".
+   * The LLM's Answer contains the core factual information present in the "Ground Truth Answer".
+   * All essential elements needed to answer the "Original Question" are present and accurate in the LLM's Answer.
+   * Minor differences in phrasing, sentence structure, or contextual details are acceptable if the primary factual content matches the "Ground Truth Answer".
+   * **Important**: If the question asks for specific details (like a year) but the LLM provides the correct main answer without those specific details, evaluate whether the core question is still answered correctly. Focus on whether the essential factual claim is accurate rather than penalizing for missing contextual specifics.
 
-2.  **`correct: false`**
-    * The LLM's Answer fails to correctly or fully answer the "Original Question".
-    * The LLM's Answer contains factual inaccuracies when compared to the "Ground Truth Answer".
-    * The LLM's Answer misses significant key information present in the "Ground Truth Answer".
-    * The LLM's Answer introduces irrelevant or contradictory information not supported by the "Ground Truth Answer" or not relevant to the "Original Question".
-    * The LLM's Answer addresses a different question or topic than the "Original Question".
-    * The LLM's Answer is only partially correct or incomplete with respect to the "Ground Truth Answer" or the "Original Question".
+2. **`correct: false`**
+   * The LLM's Answer contains factual inaccuracies that contradict the "Ground Truth Answer".
+   * The LLM's Answer provides a fundamentally different or wrong main answer to the "Original Question".
+   * The LLM's Answer misses the primary/essential information needed to answer the "Original Question".
+   * The LLM's Answer addresses a completely different question or topic than the "Original Question".
+   * The LLM's Answer contains contradictory information that makes the response unreliable or confusing.
 
-3.  **`correct: null`**
-    * The LLM explicitly states it cannot answer, does not know, or refuses to answer the "Original Question".
-    * The LLM's Answer is a generic placeholder (e.g., "I am an AI and cannot help with that specific request yet") in response to the "Original Question".
-    * The LLM's Answer is completely unrelated to the "Original Question", indicating no attempt was made to address it.
+3. **`correct: null`**
+   * The LLM explicitly states it cannot answer, does not know, or refuses to answer the "Original Question".
+   * The LLM's Answer is a generic placeholder (e.g., "I am an AI and cannot help with that specific request yet") in response to the "Original Question".
+   * The LLM's Answer is completely unrelated to the "Original Question", indicating no attempt was made to address it.
+
+**Evaluation Guidelines:**
+- Prioritize factual accuracy of the main answer over completeness of secondary details
+- Consider whether a reasonable person would consider the LLM's answer to be a correct response to the question
+- Focus on whether the core information needed to answer the question is present and accurate
+- Be more lenient with missing contextual details if the primary factual content is correct
 
 **Input for Evaluation:**
 
@@ -43,12 +49,21 @@ Your task is to meticulously evaluate the "LLM's Answer" in the context of the "
 **Required Output Structure (JSON):**
 
 Provide your evaluation as a single JSON object. This object must contain two keys:
-1.  `correct`: This must be `true` (boolean), `false` (boolean), or `null`.
-2.  `reasoning`: A concise string explaining your choice for the `correct` field, referencing how well the "LLM's Answer" addresses the "Original Question" and how it compares to the "Ground Truth Answer".
 
-Example JSON format:
+1. `correct`: This must be `true` (boolean), `false` (boolean), or `null`.
+2. `reasoning`: A concise string explaining your choice for the `correct` field, referencing how well the "LLM's Answer" addresses the "Original Question" and how it compares to the "Ground Truth Answer".
+
+**Example JSON format:**
 ```json
 {
   "correct": true,
-  "reasoning": "The LLM's answer is accurate and aligns with the ground truth."
+  "reasoning": "The LLM's answer correctly identifies Michio Sugeno as the recipient, which matches the ground truth. While the specific year 2010 is not mentioned, the core factual information needed to answer the question is accurate."
 }
+```
+
+```json
+{
+  "correct": false,
+  "reasoning": "The LLM's answer states John Smith received the award, but the ground truth clearly indicates Michio Sugeno was the recipient. This is a fundamental factual error."
+}
+```
