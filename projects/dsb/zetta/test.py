@@ -58,6 +58,7 @@ df_test: list[str] = loads(Path("./test_result.pkl").read_bytes()) # pyright: ig
 answers: list[bool | None] = []
 
 for generated, answer in zip(df_test, df.iter_rows(named=True)):
+  answer["metadata"] = eval(answer["metadata"]) # pyright: ignore[reportAny]
   data = Data.model_validate(answer)
   result = agent.run_sync(f"""
     original: {data.answer}
