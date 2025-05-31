@@ -10,7 +10,7 @@
       # Development
       # https://github.com/NixOS/nixpkgs/issues/411947
       gel d2 pre-commit just mongosh tabnine
-      snyk (stablep.radicle-node) infisical pnpm poop binsider
+      snyk /*radicle-node*/ infisical pnpm poop binsider
       typst
 
       # Language tools
