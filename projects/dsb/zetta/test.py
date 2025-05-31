@@ -1,6 +1,6 @@
 from os import getenv
 from pathlib import Path
-from pickle import loads
+from pickle import loads, dumps
 
 import polars as pl
 from dotenv import load_dotenv
@@ -55,7 +55,7 @@ def percentage(part: int, whole: int):
   return 100 * float(part)/float(whole)
 
 df_test: list[str] = loads(Path("./test_result.pkl").read_bytes()) # pyright: ignore[reportAny]
-answers: list[bool | None] = loads(Path("./test_answers.pkl").read_bytes()) # pyright: ignore[reportAny]
+answers: list[bool | None] = []
 
 for generated, answer in zip(df_test, df.iter_rows(named=True)):
   data = Data.model_validate(answer)
@@ -64,6 +64,8 @@ for generated, answer in zip(df_test, df.iter_rows(named=True)):
     generated: {generated}
   """).output
   _ = answers.append(result.correct)
+
+_ = Path("./test.pkl").write_bytes(dumps(answers))
 
 print("correct:", percentage(answers.count(True), len(answers)))
 print("incorrect:", percentage(answers.count(False), len(answers)))
