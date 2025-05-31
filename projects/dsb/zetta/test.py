@@ -61,6 +61,7 @@ for generated, answer in zip(df_test, df.iter_rows(named=True)):
   answer["metadata"] = eval(answer["metadata"]) # pyright: ignore[reportAny]
   data = Data.model_validate(answer)
   result = agent.run_sync(f"""
+    question: {data.problem}
     original: {data.answer}
     generated: {generated}
   """).output
