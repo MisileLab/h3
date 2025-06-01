@@ -77,6 +77,7 @@ async def get_jina_page(url: str) -> str:
   return resp
 
 # Let's try without summarizing first, since we fixed jina.ai
+@agent.tool
 async def get_page(ctx: RunContext[str], url: str) -> str:
   print(url)
   if url not in ctx.deps.split('\n'):
