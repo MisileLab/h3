@@ -121,10 +121,7 @@ def evaluate(df: pl.DataFrame, data: Data) -> pl.DataFrame:
   """, message_history=[], deps='\n'.join(data.metadata.urls)).output)
 
 for i in df.iter_rows(named=True):
-  if (
-    len(df_test) != 0 and
-    df_test.filter(pl.col("question") == i["question"]).shape[0] > 0 # pyright: ignore[reportAny, reportUnknownMemberType]
-  ):
+  if df_test.filter(pl.col("question") == i["question"]).shape[0] > 0: # pyright: ignore[reportAny, reportUnknownMemberType]
     continue
   i["metadata"] = eval(i["metadata"]) # pyright: ignore[reportAny]
   data = Data.model_validate(i)
