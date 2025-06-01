@@ -51,25 +51,35 @@ summarize_agent = Agent(
 _ = configure(token=getenv('LOGFIRE_KEY'))
 _ = instrument_openai()
 
-Path("./cache").mkdir(exist_ok=True)
+Path("./cache/jinaai").mkdir(exist_ok=True, parents=True)
+Path("./cache/summarized").mkdir(exist_ok=True, parents=True)
 
 history = []
+
+async def get_jina_page(url: str) -> str:
+  cache = Path(f"./cache/jinaai/{blake3(url.encode()).hexdigest()}")
+  if cache.exists():
+    return cache.read_text()
+  resp = post("https://r.jina.ai", headers={
+    "Authorization": f"Bearer {getenv('JINA_API_KEY')}",
+    "X-Engine": "Browser",
+    "Accept": "text/event-stream",
+    "X-Respond-With": "readerlm-v2"
+  }, data={
+    "url": url
+  }, timeout=None).raise_for_status().text
+  _ = cache.write_text(resp)
+  return resp
 
 @agent.tool
 async def get_page(ctx: RunContext[str], url: str) -> str:
   print(url)
   if url not in ctx.deps.split('\n'):
     return "This url doesn't allowed."
-  blake3_hash = blake3(url.encode()).hexdigest()
-  if Path(f"./cache/{blake3_hash}").exists():
-    return Path(f"./cache/{blake3_hash}").read_text()
-  resp = post("https://r.jina.ai", headers={
-    "Authorization": f"Bearer {getenv('JINA_API_KEY')}",
-    "X-Engine": "Browser",
-    "Accept": "text/event-stream"
-  }, data={
-    "url": url
-  }, timeout=None).raise_for_status().text
+  cache  = Path(f"./cache/summarized/{blake3(url.encode()).hexdigest()}")
+  if cache.exists():
+    return cache.read_text()
+  resp = await get_jina_page(url)
   try:
     resp = (await summarize_agent.run(resp, message_history=[])).output
   except ModelHTTPError as e:
@@ -80,7 +90,7 @@ async def get_page(ctx: RunContext[str], url: str) -> str:
       resp = (await summarize_agent.run(resp, message_history=[])).output
     else:
       raise e
-  _ = Path(f"./cache/{blake3_hash}").write_text(resp)
+  _ = cache.write_text(resp)
   return resp
 
 class Metadata(BaseModel):
