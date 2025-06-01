@@ -121,10 +121,10 @@ def evaluate(df: pl.DataFrame, data: Data) -> pl.DataFrame:
   """, message_history=[], deps='\n'.join(data.metadata.urls)).output)
 
 for i in df.iter_rows(named=True):
-  if df_test.filter(pl.col("question") == i["question"]).shape[0] > 0: # pyright: ignore[reportAny, reportUnknownMemberType]
-    continue
   i["metadata"] = eval(i["metadata"]) # pyright: ignore[reportAny]
   data = Data.model_validate(i)
+  if df_test.filter(pl.col("question") == data.problem).shape[0] > 0: # pyright: ignore[reportUnknownMemberType]
+    continue
   try:
     df_test = evaluate(df_test, data)
   except ModelHTTPError as e:
