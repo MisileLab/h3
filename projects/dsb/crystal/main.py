@@ -1,4 +1,5 @@
 import asyncio
+from json import JSONDecodeError
 from os import getenv
 from pathlib import Path
 from pickle import dumps, loads
@@ -11,7 +12,7 @@ from pydantic_ai.common_tools.duckduckgo import duckduckgo_search_tool
 from pydantic_ai.messages import ModelMessage
 from pydantic_ai.models.openai import OpenAIModel
 from pydantic_ai.providers.openai import OpenAIProvider
-from httpx import HTTPError, post
+from httpx import AsyncClient, HTTPError, post
 
 from prompts import prompts
 from tools.feedback import (
@@ -56,25 +57,21 @@ _ = configure(token=getenv('LOGFIRE_KEY'))
 _ = instrument_openai()
 
 @agent.tool_plain
-async def get_page(url: str):
-  """
-  get page of url and summarize using LLM
-  """
-  resp = post("https://r.jina.ai", headers={
-    "Authorization": f"Bearer {getenv('JINA_API_KEY')}",
-    "X-Engine": "Browser",
-    "Accept": "text/event-stream"
-  }, data={
-    "url": url
-  }, timeout=None)
-  try:
-    resp = resp.raise_for_status()
-  except HTTPError:
-    return f"""
-    status_code: {resp.status_code}
-    text: {resp.text}
-    """
-  return (await web_agent.run(resp.text, message_history=[])).output
+async def get_page(url: str) -> str:
+  resp = ""
+  async with AsyncClient(timeout=None) as client:
+    async with client.stream("POST", "https://r.jina.ai", headers={
+      "Authorization": f"Bearer {getenv('JINA_API_KEY')}",
+      "X-Engine": "Browser",
+      "Accept": "text/event-stream"
+      }, data={
+        "url": url
+      }, timeout=None) as response:
+        async for line in response.aiter_lines():
+          if line.startswith("data:"):
+            data_line = line.removeprefix("data:").strip()
+            resp = data_line 
+  return resp
 
 if Path("data.pkl").exists():
   initial = loads(Path("data.pkl").read_bytes()) # pyright: ignore[reportAny]

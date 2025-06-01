@@ -5,7 +5,7 @@ from time import sleep
 import polars as pl
 from blake3 import blake3
 from dotenv import load_dotenv
-from httpx import post
+from httpx import AsyncClient
 from logfire import configure, instrument_openai
 from pydantic import BaseModel
 from pydantic_ai import Agent, ModelHTTPError, RunContext
@@ -60,37 +60,42 @@ async def get_jina_page(url: str) -> str:
   cache = Path(f"./cache/jinaai/{blake3(url.encode()).hexdigest()}")
   if cache.exists():
     return cache.read_text()
-  resp = post("https://r.jina.ai", headers={
-    "Authorization": f"Bearer {getenv('JINA_API_KEY')}",
-    "X-Engine": "Browser",
-    "Accept": "text/event-stream",
-    "X-Respond-With": "readerlm-v2"
-  }, data={
-    "url": url
-  }, timeout=None).raise_for_status().text
+  resp = ""
+  async with AsyncClient(timeout=None) as client:
+    async with client.stream("POST", "https://r.jina.ai", headers={
+      "Authorization": f"Bearer {getenv('JINA_API_KEY')}",
+      "X-Engine": "Browser",
+      "Accept": "text/event-stream"
+      }, data={
+        "url": url
+      }, timeout=None) as response:
+        async for line in response.aiter_lines():
+          if line.startswith("data:"):
+            data_line = line.removeprefix("data:").strip()
+            resp = data_line 
   _ = cache.write_text(resp)
   return resp
 
-@agent.tool
+# Let's try without summarizing first, since we fixed jina.ai
 async def get_page(ctx: RunContext[str], url: str) -> str:
   print(url)
   if url not in ctx.deps.split('\n'):
     return "This url doesn't allowed."
-  cache  = Path(f"./cache/summarized/{blake3(url.encode()).hexdigest()}")
-  if cache.exists():
-    return cache.read_text()
+  # cache  = Path(f"./cache/summarized/{blake3(url.encode()).hexdigest()}")
+  # if cache.exists():
+  #   return cache.read_text()
   resp = await get_jina_page(url)
-  try:
-    resp = (await summarize_agent.run(resp, message_history=[])).output
-  except ModelHTTPError as e:
-    if e.status_code == 429:
-      print("Rate limit exceeded, waiting for 60 seconds...")
-      print(e.body)
-      sleep(60)
-      resp = (await summarize_agent.run(resp, message_history=[])).output
-    else:
-      raise e
-  _ = cache.write_text(resp)
+  # try:
+  #   resp = (await summarize_agent.run(resp, message_history=[])).output
+  # except ModelHTTPError as e:
+  #   if e.status_code == 429:
+  #     print("Rate limit exceeded, waiting for 60 seconds...")
+  #     print(e.body)
+  #     sleep(60)
+  #     resp = (await summarize_agent.run(resp, message_history=[])).output
+  #   else:
+  #     raise e
+  # _ = cache.write_text(resp)
   return resp
 
 class Metadata(BaseModel):
