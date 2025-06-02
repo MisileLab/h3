@@ -28,10 +28,9 @@ model = OpenAIModel(
 )
 
 summarize_model = OpenAIModel(
-  'meta-llama/llama-4-scout',
+  'gpt-4.1-nano',
   provider=OpenAIProvider(
-    api_key=getenv('OPENROUTER_KEY'),
-    base_url='https://openrouter.ai/api/v1'
+    api_key=getenv('OPENAI_KEY')
   )
 )
 
@@ -82,21 +81,21 @@ async def get_page(ctx: RunContext[str], url: str) -> str:
   print(url)
   if url not in ctx.deps.split('\n'):
     return "This url doesn't allowed."
-  # cache  = Path(f"./cache/summarized/{blake3(url.encode()).hexdigest()}")
-  # if cache.exists():
-  #   return cache.read_text()
+  cache = Path(f"./cache/summarized/{blake3(url.encode()).hexdigest()}")
+  if cache.exists():
+    return cache.read_text()
   resp = await get_jina_page(url)
-  # try:
-  #   resp = (await summarize_agent.run(resp, message_history=[])).output
-  # except ModelHTTPError as e:
-  #   if e.status_code == 429:
-  #     print("Rate limit exceeded, waiting for 60 seconds...")
-  #     print(e.body)
-  #     sleep(60)
-  #     resp = (await summarize_agent.run(resp, message_history=[])).output
-  #   else:
-  #     raise e
-  # _ = cache.write_text(resp)
+  try:
+    resp = (await summarize_agent.run(resp, message_history=[])).output
+  except ModelHTTPError as e:
+    if e.status_code == 429:
+      print("Rate limit exceeded, waiting for 60 seconds...")
+      print(e.body)
+      sleep(60)
+      resp = (await summarize_agent.run(resp, message_history=[])).output
+    else:
+      raise e
+  _ = cache.write_text(resp)
   return resp
 
 class Metadata(BaseModel):
