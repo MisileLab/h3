@@ -8,7 +8,7 @@ dependencies = [
   "gradio==5.32.0",
   "inquirer==3.4.0",
   "langchain-memgraph==0.1.1",
-  "mem0ai[graph]==0.1.102",
+  "mem0ai[graph]==0.1.103",
   "puremagic==1.29",
   "pydantic-ai-slim[duckduckgo,logfire,openai,mcp]==0.2.12",
   "rich==14.0.0",
