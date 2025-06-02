@@ -23,7 +23,7 @@ importers:
     devDependencies:
       '@sveltejs/vite-plugin-svelte':
         specifier: 5.0.3
-        version: 5.0.3(svelte@5.33.12)(vite@6.3.5(@types/node@22.15.29))
+        version: 5.0.3(svelte@5.33.13)(vite@6.3.5(@types/node@22.15.29))
       '@tsconfig/svelte':
         specifier: 5.0.4
         version: 5.0.4
@@ -50,16 +50,16 @@ importers:
         version: 3.5.3
       prettier-plugin-svelte:
         specifier: 3.4.0
-        version: 3.4.0(prettier@3.5.3)(svelte@5.33.12)
+        version: 3.4.0(prettier@3.5.3)(svelte@5.33.13)
       prettier-plugin-tailwindcss:
         specifier: 0.6.12
-        version: 0.6.12(prettier-plugin-svelte@3.4.0(prettier@3.5.3)(svelte@5.33.12))(prettier@3.5.3)
+        version: 0.6.12(prettier-plugin-svelte@3.4.0(prettier@3.5.3)(svelte@5.33.13))(prettier@3.5.3)
       svelte:
-        specifier: 5.33.12
-        version: 5.33.12
+        specifier: 5.33.13
+        version: 5.33.13
       svelte-check:
         specifier: 4.2.1
-        version: 4.2.1(picomatch@4.0.2)(svelte@5.33.12)(typescript@5.8.3)
+        version: 4.2.1(picomatch@4.0.2)(svelte@5.33.13)(typescript@5.8.3)
       tailwindcss:
         specifier: 4.1.8
         version: 4.1.8
@@ -645,8 +645,8 @@ packages:
       svelte: ^4.0.0 || ^5.0.0-next.0
       typescript: '>=5.0.0'
 
-  svelte@5.33.12:
-    resolution: {integrity: sha512-llNfGM0zePN8k2K63uLE2PwdeNa5DsBlbaXyjWzXtJF+EyOuaAgzVHnWzNAzOiyv9FZgFQfXK0LDDmaLSf1RJA==}
+  svelte@5.33.13:
+    resolution: {integrity: sha512-uT3BAPpHGaJqpOgdwJwIK7P4JkBkSS0vylbaRXxQjt1gr+DZ9BiPkhmbZw3ql8LJofUyz5XyrzzQDgQQdfP86Q==}
     engines: {node: '>=18'}
 
   tailwindcss@4.1.8:
@@ -891,23 +891,23 @@ snapshots:
     dependencies:
       acorn: 8.14.1
 
-  '@sveltejs/vite-plugin-svelte-inspector@4.0.1(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.33.12)(vite@6.3.5(@types/node@22.15.29)))(svelte@5.33.12)(vite@6.3.5(@types/node@22.15.29))':
+  '@sveltejs/vite-plugin-svelte-inspector@4.0.1(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.33.13)(vite@6.3.5(@types/node@22.15.29)))(svelte@5.33.13)(vite@6.3.5(@types/node@22.15.29))':
     dependencies:
-      '@sveltejs/vite-plugin-svelte': 5.0.3(svelte@5.33.12)(vite@6.3.5(@types/node@22.15.29))
+      '@sveltejs/vite-plugin-svelte': 5.0.3(svelte@5.33.13)(vite@6.3.5(@types/node@22.15.29))
       debug: 4.4.1
-      svelte: 5.33.12
+      svelte: 5.33.13
       vite: 6.3.5(@types/node@22.15.29)
     transitivePeerDependencies:
       - supports-color
 
-  '@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.33.12)(vite@6.3.5(@types/node@22.15.29))':
+  '@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.33.13)(vite@6.3.5(@types/node@22.15.29))':
     dependencies:
-      '@sveltejs/vite-plugin-svelte-inspector': 4.0.1(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.33.12)(vite@6.3.5(@types/node@22.15.29)))(svelte@5.33.12)(vite@6.3.5(@types/node@22.15.29))
+      '@sveltejs/vite-plugin-svelte-inspector': 4.0.1(@sveltejs/vite-plugin-svelte@5.0.3(svelte@5.33.13)(vite@6.3.5(@types/node@22.15.29)))(svelte@5.33.13)(vite@6.3.5(@types/node@22.15.29))
       debug: 4.4.1
       deepmerge: 4.3.1
       kleur: 4.1.5
       magic-string: 0.30.17
-      svelte: 5.33.12
+      svelte: 5.33.13
       vite: 6.3.5(@types/node@22.15.29)
       vitefu: 1.0.6(vite@6.3.5(@types/node@22.15.29))
     transitivePeerDependencies:
@@ -1061,16 +1061,16 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  prettier-plugin-svelte@3.4.0(prettier@3.5.3)(svelte@5.33.12):
+  prettier-plugin-svelte@3.4.0(prettier@3.5.3)(svelte@5.33.13):
     dependencies:
       prettier: 3.5.3
-      svelte: 5.33.12
+      svelte: 5.33.13
 
-  prettier-plugin-tailwindcss@0.6.12(prettier-plugin-svelte@3.4.0(prettier@3.5.3)(svelte@5.33.12))(prettier@3.5.3):
+  prettier-plugin-tailwindcss@0.6.12(prettier-plugin-svelte@3.4.0(prettier@3.5.3)(svelte@5.33.13))(prettier@3.5.3):
     dependencies:
       prettier: 3.5.3
     optionalDependencies:
-      prettier-plugin-svelte: 3.4.0(prettier@3.5.3)(svelte@5.33.12)
+      prettier-plugin-svelte: 3.4.0(prettier@3.5.3)(svelte@5.33.13)
 
   prettier@3.5.3: {}
 
@@ -1110,19 +1110,19 @@ snapshots:
 
   source-map-js@1.2.1: {}
 
-  svelte-check@4.2.1(picomatch@4.0.2)(svelte@5.33.12)(typescript@5.8.3):
+  svelte-check@4.2.1(picomatch@4.0.2)(svelte@5.33.13)(typescript@5.8.3):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.25
       chokidar: 4.0.3
       fdir: 6.4.4(picomatch@4.0.2)
       picocolors: 1.1.1
       sade: 1.8.1
-      svelte: 5.33.12
+      svelte: 5.33.13
       typescript: 5.8.3
     transitivePeerDependencies:
       - picomatch
 
-  svelte@5.33.12:
+  svelte@5.33.13:
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@jridgewell/sourcemap-codec': 1.5.0
