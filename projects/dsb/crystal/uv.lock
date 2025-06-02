@@ -197,7 +197,7 @@ requires-dist = [
     { name = "gradio", specifier = "==5.32.0" },
     { name = "inquirer", specifier = "==3.4.0" },
     { name = "langchain-memgraph", specifier = "==0.1.1" },
-    { name = "mem0ai", extras = ["graph"], specifier = "==0.1.102" },
+    { name = "mem0ai", extras = ["graph"], specifier = "==0.1.103" },
     { name = "puremagic", specifier = "==1.29" },
     { name = "pydantic-ai-slim", extras = ["duckduckgo", "logfire", "openai", "mcp"], specifier = "==0.2.12" },
     { name = "rich", specifier = "==14.0.0" },
@@ -901,7 +901,7 @@ wheels = [
 
 [[package]]
 name = "mem0ai"
-version = "0.1.102"
+version = "0.1.103"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "openai" },
@@ -911,9 +911,9 @@ dependencies = [
     { name = "qdrant-client" },
     { name = "sqlalchemy" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/6d/b3/27e34961b02ddb46d5d4d3ddb06dfeb76345656ac318db97c73a03b0bb7f/mem0ai-0.1.102.tar.gz", hash = "sha256:7358dba4fbe954b9c3f33204c14df7babaf9067e2eb48241d89a32e6bc774988", size = 100162, upload-time = "2025-05-26T17:56:43.845Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/11/3d/2d3772a79d00d12c9a62bee6cd3f404839ca9f9bfdc7dc57a8fa33e4cf2c/mem0ai-0.1.103.tar.gz", hash = "sha256:ce5c309d60592bdc2dab8f1dac6763efef3f8a7ab45050f923dbd72d228bb312", size = 100251, upload-time = "2025-06-02T16:59:08.27Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/8a/46/7e0f3b56b5275ac92285f4aa3f5ed32d5c489231fdfb30c4ca19975fd19d/mem0ai-0.1.102-py3-none-any.whl", hash = "sha256:1401ccfd2369e2182ce78abb61b817e739fe49508b5a8ad98abcd4f8ad4db0b4", size = 156042, upload-time = "2025-05-26T17:56:41.911Z" },
+    { url = "https://files.pythonhosted.org/packages/e9/37/9abc6a33b2e3b5f804eaded0cdbf52754a95a49ebca85fb14e06b85acd8b/mem0ai-0.1.103-py3-none-any.whl", hash = "sha256:4399631edfb230a895e019a729b4b22f60f1f4aa82df081fb68262b937dfd7c5", size = 156127, upload-time = "2025-06-02T16:59:06.158Z" },
 ]
 
 [package.optional-dependencies]
