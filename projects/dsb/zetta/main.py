@@ -10,7 +10,8 @@ from logfire import configure, instrument_openai
 from pydantic import BaseModel
 from pydantic_ai import Agent, ModelHTTPError, RunContext
 from pydantic_ai.models.openai import OpenAIModel, OpenAIModelSettings
-from pydantic_ai.providers.openai import OpenAIProvider
+from pydantic_ai.models.fallback import FallbackModel
+from pydantic_ai.providers.openrouter import OpenRouterProvider
 
 df = pl.read_csv('hf://datasets/basicv8vc/SimpleQA/simple_qa_test_set.csv')
 
@@ -19,31 +20,30 @@ _ = load_dotenv()
 prompt = Path("./prompt.txt").read_text()
 summarize_prompt = Path("./summarize_prompt.txt").read_text()
 
+provider = OpenRouterProvider(api_key=getenv('OPENROUTER_KEY', ''))
+setting = OpenAIModelSettings(temperature=0.0)
+
+model_free = OpenAIModel(
+  model_name='mistralai/mistral-nemo:free',
+  provider=provider
+)
+model_paid = OpenAIModel(
+  model_name='mistralai/mistral-nemo',
+  provider=provider
+)
+model = FallbackModel(model_free, model_paid)
+
 # ========== Setup ==========
-model = OpenAIModel(
-  'gpt-4.1-nano',
-  provider=OpenAIProvider(
-    api_key=getenv('OPENAI_KEY')
-  )
-)
-
-summarize_model = OpenAIModel(
-  'gpt-4.1-nano',
-  provider=OpenAIProvider(
-    api_key=getenv('OPENAI_KEY')
-  )
-)
-
 agent = Agent(
   model,
-  model_settings=OpenAIModelSettings(temperature=0.0),
+  model_settings=setting,
   instructions=prompt,
   deps_type=str
 )
 
 summarize_agent = Agent(
-  summarize_model,
-  model_settings=OpenAIModelSettings(temperature=0.0),
+  model,
+  model_settings=setting,
   instructions=summarize_prompt
 )
 
@@ -64,7 +64,8 @@ async def get_jina_page(url: str) -> str:
     async with client.stream("POST", "https://r.jina.ai", headers={
       "Authorization": f"Bearer {getenv('JINA_API_KEY')}",
       "X-Engine": "Browser",
-      "Accept": "text/event-stream"
+      "Accept": "text/event-stream",
+      # "X-Respond-With": "readerlm-v2"
       }, data={
         "url": url
       }, timeout=None) as response:
