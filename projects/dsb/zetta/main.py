@@ -10,7 +10,6 @@ from logfire import configure, instrument_openai
 from pydantic import BaseModel
 from pydantic_ai import Agent, ModelHTTPError, RunContext
 from pydantic_ai.models.openai import OpenAIModel, OpenAIModelSettings
-from pydantic_ai.models.fallback import FallbackModel
 from pydantic_ai.providers.openrouter import OpenRouterProvider
 
 df = pl.read_csv('hf://datasets/basicv8vc/SimpleQA/simple_qa_test_set.csv')
@@ -93,6 +92,13 @@ async def get_page(ctx: RunContext[str], url: str) -> str:
       raise e
   _ = cache.write_text(resp)
   return resp
+
+@agent.tool
+async def get_full_page(ctx: RunContext[str], url: str) -> str:
+  print(url)
+  if url not in ctx.deps.split('\n'):
+    return "This url doesn't allowed."
+  return await get_jina_page(url)
 
 class Metadata(BaseModel):
   topic: str
