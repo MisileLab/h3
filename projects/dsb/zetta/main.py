@@ -23,7 +23,12 @@ provider = OpenRouterProvider(api_key=getenv('OPENROUTER_KEY', ''))
 setting = OpenAIModelSettings(temperature=0.0)
 
 model = OpenAIModel(
-  model_name=getenv('MODEL_NAME_PAID', ''),
+  model_name=getenv('MODEL_NAME', ''),
+  provider=provider
+)
+
+summarize_model = OpenAIModel(
+  model_name=getenv('SUMMARIZE_MODEL_NAME', ''),
   provider=provider
 )
 
@@ -36,7 +41,7 @@ agent = Agent(
 )
 
 summarize_agent = Agent(
-  model,
+  summarize_model,
   model_settings=setting,
   instructions=summarize_prompt
 )
