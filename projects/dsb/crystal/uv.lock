@@ -197,7 +197,7 @@ requires-dist = [
     { name = "gradio", specifier = "==5.32.1" },
     { name = "inquirer", specifier = "==3.4.0" },
     { name = "langchain-memgraph", specifier = "==0.1.1" },
-    { name = "mem0ai", extras = ["graph"], specifier = "==0.1.103" },
+    { name = "mem0ai", extras = ["graph"], specifier = "==0.1.104" },
     { name = "puremagic", specifier = "==1.29" },
     { name = "pydantic-ai-slim", extras = ["duckduckgo", "logfire", "openai", "mcp"], specifier = "==0.2.12" },
     { name = "rich", specifier = "==14.0.0" },
@@ -901,7 +901,7 @@ wheels = [
 
 [[package]]
 name = "mem0ai"
-version = "0.1.103"
+version = "0.1.104"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "openai" },
@@ -911,9 +911,9 @@ dependencies = [
     { name = "qdrant-client" },
     { name = "sqlalchemy" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/11/3d/2d3772a79d00d12c9a62bee6cd3f404839ca9f9bfdc7dc57a8fa33e4cf2c/mem0ai-0.1.103.tar.gz", hash = "sha256:ce5c309d60592bdc2dab8f1dac6763efef3f8a7ab45050f923dbd72d228bb312", size = 100251, upload-time = "2025-06-02T16:59:08.27Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/49/d3/d2bbab0e505be71794bb5d53a67c740cf0ed8187d3965d68e317d7f3b208/mem0ai-0.1.104.tar.gz", hash = "sha256:4193bc2a2d5e9e299f3efb5ad80a9f3296e343b20e24cf2326c1ac7efdcfc773", size = 100245, upload-time = "2025-06-02T19:46:22.4Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e9/37/9abc6a33b2e3b5f804eaded0cdbf52754a95a49ebca85fb14e06b85acd8b/mem0ai-0.1.103-py3-none-any.whl", hash = "sha256:4399631edfb230a895e019a729b4b22f60f1f4aa82df081fb68262b937dfd7c5", size = 156127, upload-time = "2025-06-02T16:59:06.158Z" },
+    { url = "https://files.pythonhosted.org/packages/da/03/818b01ad786aeb719ca73408c9ceae9e8193bc1a6aaba86c11c8fdd002b8/mem0ai-0.1.104-py3-none-any.whl", hash = "sha256:7c1f7dd11dcfa8ce827a2911a9dceee98ec8e149a5454e3f8673504832a9186d", size = 156132, upload-time = "2025-06-02T19:46:20.841Z" },
 ]
 
 [package.optional-dependencies]
