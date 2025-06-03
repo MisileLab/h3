@@ -10,6 +10,6 @@ dependencies = [
   "langchain-memgraph==0.1.4",
   "mem0ai[graph]==0.1.104",
   "puremagic==1.29",
-  "pydantic-ai-slim[duckduckgo,logfire,openai,mcp]==0.2.12",
+  "pydantic-ai-slim[duckduckgo,logfire,openai,mcp]==0.2.14",
   "rich==14.0.0",
 ]
