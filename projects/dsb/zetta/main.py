@@ -23,17 +23,10 @@ summarize_prompt = Path("./summarize_prompt.txt").read_text()
 provider = OpenRouterProvider(api_key=getenv('OPENROUTER_KEY', ''))
 setting = OpenAIModelSettings(temperature=0.0)
 
-models: list[OpenAIModel] = []
-if getenv('MODEL_NAME', ''):
-  _ = models.append(OpenAIModel(
-    model_name=getenv('MODEL_NAME', ''),
-    provider=provider
-  ))
-_ = models.append(OpenAIModel(
+model = OpenAIModel(
   model_name=getenv('MODEL_NAME_PAID', ''),
   provider=provider
-))
-model = FallbackModel(*models)
+)
 
 # ========== Setup ==========
 agent = Agent(
