@@ -22,15 +22,10 @@ model = OpenAIModel(
   )
 )
 
-class TestResult(BaseModel):
-  correct: bool | None
-  reasoning: str
-
 agent = Agent(
   model,
   model_settings=OpenAIModelSettings(temperature=0.0),
-  instructions=prompt,
-  output_type=TestResult
+  instructions=prompt
 )
 
 _ = configure(token=getenv('LOGFIRE_KEY'))
@@ -54,11 +49,16 @@ answers: list[bool | None] = []
 for i in df.iter_rows(named=True):
   data = Data.model_validate(i)
   result = agent.run_sync(f"""
-    question: {data.question}
-    original: {data.answer}
-    generated: {data.generated}
+    Question: {data.question}
+    Gold target: {data.answer}
+    Predicted answer: {data.generated}
   """).output
-  _ = answers.append(result.correct)
+  if result == "A":
+    answers.append(True)
+  elif result == "B":
+    answers.append(False)
+  else:
+    answers.append(None)
 
 _ = Path("./test.pkl").write_bytes(dumps(answers))
 
