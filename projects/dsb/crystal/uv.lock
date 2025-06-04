@@ -196,7 +196,7 @@ dependencies = [
 requires-dist = [
     { name = "gradio", specifier = "==5.32.1" },
     { name = "inquirer", specifier = "==3.4.0" },
-    { name = "langchain-memgraph", specifier = "==0.1.4" },
+    { name = "langchain-memgraph", specifier = "==0.1.1" },
     { name = "mem0ai", extras = ["graph"], specifier = "==0.1.104" },
     { name = "puremagic", specifier = "==1.29" },
     { name = "pydantic-ai-slim", extras = ["duckduckgo", "logfire", "openai", "mcp"], specifier = "==0.2.14" },
@@ -722,17 +722,15 @@ wheels = [
 
 [[package]]
 name = "langchain-memgraph"
-version = "0.1.4"
+version = "0.1.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "langchain" },
     { name = "langchain-core" },
-    { name = "memgraph-toolbox" },
     { name = "neo4j" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/0f/98/ffc8d1b721fb8cf1257879a60ca1a2b4a9ce156bc3638c1e98fd75391c79/langchain_memgraph-0.1.4.tar.gz", hash = "sha256:4a91c6005318476e942d64cd5e086a956e27f1de834d56c2ccf0f704675e1b15", size = 146308, upload-time = "2025-06-03T09:03:51.922Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/eb/5e/00c9c542f44a68be30ec7a9575bcd0744bb6b82ba8a99ec10930a0a21367/langchain_memgraph-0.1.1.tar.gz", hash = "sha256:64e8560720a4382db230bcbc45d9e5dcbd329da4ea1c192ab867dc0157724554", size = 15670, upload-time = "2025-03-20T14:49:15.459Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/6b/13/7d117b9ecf60f10368aeb86662bf0fc940f43b960f5ad441b63b81e521be/langchain_memgraph-0.1.4-py3-none-any.whl", hash = "sha256:fb81c3cf483bbf37e321cba2de62a9af4b6a0d6a8bd888e9da53d1b133b167f9", size = 20051, upload-time = "2025-06-03T09:03:50.146Z" },
+    { url = "https://files.pythonhosted.org/packages/5f/ce/3f6f2f8472ad1f1f9a9e3b0a3ba6a505a62687a3aac24a9a77cb00c30df9/langchain_memgraph-0.1.1-py3-none-any.whl", hash = "sha256:656e272a317d596c01016210fe5adb7ca5a9485cf733bdfe65e23cb80c360b52", size = 19635, upload-time = "2025-03-20T14:49:14.479Z" },
 ]
 
 [[package]]
@@ -923,18 +921,6 @@ graph = [
     { name = "langchain-neo4j" },
     { name = "neo4j" },
     { name = "rank-bm25" },
-]
-
-[[package]]
-name = "memgraph-toolbox"
-version = "0.1.2"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "neo4j" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/08/d4/39f0dc4b168bf9e7c45f6774267a1ecd35b4437beeab3a320bac33784c9a/memgraph_toolbox-0.1.2.tar.gz", hash = "sha256:791567bdd2a72c11b6d7c3b72b1471f59835806c1295e58e1e56379c18e461e4", size = 15532, upload-time = "2025-06-03T09:03:05.016Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/e2/c1/2e2c92bb96f395c75085c89ef013471758dd7a3ed935fcacc29e6e5b2b0f/memgraph_toolbox-0.1.2-py3-none-any.whl", hash = "sha256:1616aa3820fcf8b8a5e4f49ab5df87f3a191d911047318990d2b0c6e1e18973f", size = 15569, upload-time = "2025-06-03T09:03:04.04Z" },
 ]
 
 [[package]]
