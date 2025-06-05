@@ -8,6 +8,7 @@ from logfire import configure, instrument_openai
 from puremagic import from_stream  # pyright: ignore[reportUnknownVariableType]
 from pydantic_ai import Agent, BinaryContent
 from pydantic_ai.common_tools.duckduckgo import duckduckgo_search_tool
+from pydantic_ai.mcp import MCPServerStdio
 from pydantic_ai.messages import ModelMessage
 from pydantic_ai.models.openai import OpenAIModel
 from pydantic_ai.providers.openai import OpenAIProvider
@@ -21,13 +22,31 @@ from tools.memory import (
   tools as memory_tools,  # pyright: ignore[reportUnknownVariableType]
 )
 
+github_mcp_server = MCPServerStdio(
+  'docker',
+  args=[
+    "run",
+    "-i",
+    "--rm",
+    "-e",
+    "GITHUB_PERSONAL_ACCESS_TOKEN",
+    "ghcr.io/github/github-mcp-server"
+  ],
+  env={
+    "GITHUB_PERSONAL_ACCESS_TOKEN": getenv("GITHUB_API_KEY", "")
+  }
+)
+
 # ========== Setup ==========
 model = OpenAIModel(
   'google/gemini-2.5-flash-preview',
   provider=OpenAIProvider(
     base_url='https://openrouter.ai/api/v1',
     api_key=getenv('OPENROUTER_KEY')
-  )
+  ),
+  mcp_servers=[
+    github_mcp_server
+  ]
 )
 
 summarize_model = OpenAIModel(
