@@ -1,5 +1,4 @@
 import asyncio
-from json import JSONDecodeError
 from os import getenv
 from pathlib import Path
 from pickle import dumps, loads
@@ -12,7 +11,7 @@ from pydantic_ai.common_tools.duckduckgo import duckduckgo_search_tool
 from pydantic_ai.messages import ModelMessage
 from pydantic_ai.models.openai import OpenAIModel
 from pydantic_ai.providers.openai import OpenAIProvider
-from httpx import AsyncClient, HTTPError, post
+from httpx import AsyncClient
 
 from prompts import prompts
 from tools.feedback import (
