@@ -11,6 +11,7 @@ from pydantic import BaseModel
 from pydantic_ai import Agent, ModelHTTPError, RunContext
 from pydantic_ai.models.openai import OpenAIModel, OpenAIModelSettings
 from pydantic_ai.providers.openrouter import OpenRouterProvider
+from pydantic_ai.providers.openai import OpenAIProvider
 
 df = pl.read_csv('hf://datasets/basicv8vc/SimpleQA/simple_qa_test_set.csv')
 
@@ -22,14 +23,30 @@ summarize_prompt = Path("./summarize_prompt.txt").read_text()
 provider = OpenRouterProvider(api_key=getenv('OPENROUTER_KEY', ''))
 setting = OpenAIModelSettings(temperature=0.0)
 
+if getenv('MODEL_NAME', '').startswith("openai/"):
+  print("bring your own key -> openai -> primary")
+  model_name = getenv('MODEL_NAME', '').removeprefix("openai/")
+  model_provider = OpenAIProvider(api_key=getenv('OPENAI_KEY', ''))
+else:
+  model_name = getenv('MODEL_NAME', '')
+  model_provider = provider
+
+if getenv('SUMMARIZE_MODEL_NAME', '').startswith("openai/"):
+  print("bring your own key -> openai -> summarize")
+  summarize_model_name = getenv('SUMMARIZE_MODEL_NAME', '').removeprefix("openai/")
+  summarize_model_provider = OpenAIProvider(api_key=getenv('OPENAI_KEY', ''))
+else:
+  summarize_model_name = getenv('SUMMARIZE_MODEL_NAME', '')
+  summarize_model_provider = provider
+
 model = OpenAIModel(
-  model_name=getenv('MODEL_NAME', ''),
-  provider=provider
+  model_name=model_name,
+  provider=model_provider
 )
 
 summarize_model = OpenAIModel(
-  model_name=getenv('SUMMARIZE_MODEL_NAME', ''),
-  provider=provider
+  model_name=summarize_model_name,
+  provider=summarize_model_provider
 )
 
 # ========== Setup ==========
