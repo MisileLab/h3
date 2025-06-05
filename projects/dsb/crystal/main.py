@@ -43,10 +43,7 @@ model = OpenAIModel(
   provider=OpenAIProvider(
     base_url='https://openrouter.ai/api/v1',
     api_key=getenv('OPENROUTER_KEY')
-  ),
-  mcp_servers=[
-    github_mcp_server
-  ]
+  )
 )
 
 summarize_model = OpenAIModel(
@@ -63,6 +60,7 @@ tools = [ # pyright: ignore[reportUnknownVariableType]
 agent = Agent(
   model,
   tools=tools, # pyright: ignore[reportUnknownArgumentType]
+  mcp_servers=[github_mcp_server],
   instructions=prompts["main"]
 )
 
