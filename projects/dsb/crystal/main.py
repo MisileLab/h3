@@ -201,6 +201,9 @@ with gr.Blocks() as demo:
 
   _ = demo.load(fn=lambda: chat_state, outputs=[chatbot])
 
-if __name__ == "__main__":
-  _ = demo.launch()
+async def main():
+  async with agent.run_mcp_servers():
+    _ = demo.launch()
 
+if __name__ == "__main__":
+  asyncio.run(main())
