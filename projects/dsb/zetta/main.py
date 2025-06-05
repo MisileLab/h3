@@ -81,7 +81,7 @@ async def get_jina_page(url: str) -> str:
       "Authorization": f"Bearer {getenv('JINA_API_KEY')}",
       "X-Engine": "Browser",
       "Accept": "text/event-stream",
-      # "X-Respond-With": "readerlm-v2"
+      "X-Respond-With": getenv("JINA_MODEL", "")
       }, data={
         "url": url
       }, timeout=None) as response:
