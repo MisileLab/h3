@@ -105,17 +105,19 @@ async def respond(message: str, files: list[bytes]):
       media_type = from_stream(f, mime=True)
       bin_files.append(BinaryContent(data=f, media_type=media_type))
 
-  response = await agent.run([message, *bin_files], message_history=history)
+  async with agent.run_mcp_servers():
+    response = await agent.run([message, *bin_files], message_history=history)
   history.clear()
   history.extend(response.all_messages())
   chat_state.append((message, response.output))
   return chat_state
 
 async def summarize():
-  output = await agent.run(
-    "summarize our conversation to optimize message history!",
-    message_history=history
-  )
+  async with agent.run_mcp_servers():
+    output = await agent.run(
+      "summarize our conversation to optimize message history!",
+      message_history=history
+    )
   history.clear()
   history.extend(output.new_messages())
   chat_state.clear()
@@ -202,8 +204,7 @@ with gr.Blocks() as demo:
   _ = demo.load(fn=lambda: chat_state, outputs=[chatbot])
 
 async def main():
-  async with agent.run_mcp_servers():
-    _ = demo.launch()
+  _ = demo.launch()
 
 if __name__ == "__main__":
   asyncio.run(main())
