@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from pyyoutube import Api, Comment, CommentThread # pyright: ignore[reportMissingTypeStubs]
-from polars import DataFrame, read_avro, concat, col
+from polars import DataFrame, read_avro, concat, col, String
 from os import getenv
 from pathlib import Path
 
@@ -8,16 +8,22 @@ client = Api(api_key=getenv("YOUTUBE_API_KEY"))
 videos = read_avro("videos.avro")
 df = read_avro("comments.avro") if Path("comments.avro").exists() else DataFrame()
 
-class Author(BaseModel):
-  name: str
-  image_url: str
-
 class Data(BaseModel):
   comment_id: str
   content: str
-  author: Author
+  author_name: str
+  author_image_url: str
   video_id: str
   parent_id: str | None = None
+
+schema = {
+  "comment_id": String,
+  "content": String,
+  "author_name": String,
+  "author_image_url": String,
+  "video_id": String,
+  "parent_id": String
+}
 
 def append(df: DataFrame, data: Data) -> DataFrame:
   return concat([df, DataFrame(data.model_dump())], how="vertical", rechunk=True)
@@ -41,10 +47,8 @@ def append_comment(df: DataFrame, comment: Comment, video_id: str) -> DataFrame:
   return append(df, Data(
     comment_id=comment_id,
     content=content,
-    author=Author(
-      name=authorDisplayName,
-      image_url=authorImageUrl
-    ),
+    author_name=authorDisplayName,
+    author_image_url=authorImageUrl,
     parent_id=snippet.parentId,
     video_id=video_id
   ))
