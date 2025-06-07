@@ -48,8 +48,11 @@ google_calendar_mcp = MCPServerStdio(
 )
 
 arxiv_mcp_server = MCPServerStdio(
-  'arxiv-mcp-server',
+  'uv',
   args=[
+    "tool",
+    "run",
+    "arxiv-mcp-server",
     "--storage-path",
     "./cache"
   ],
