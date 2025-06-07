@@ -34,7 +34,8 @@ github_mcp_server = MCPServerStdio(
   ],
   env={
     "GITHUB_PERSONAL_ACCESS_TOKEN": getenv("GITHUB_API_KEY", "")
-  }
+  },
+  timeout=20
 )
 
 google_calendar_mcp = MCPServerStdio(
@@ -42,7 +43,8 @@ google_calendar_mcp = MCPServerStdio(
   args=['@cocal/google-calendar-mcp'],
   env={
     "GOOGLE_OAUTH_CREDENTIALS": "./credentials.json"
-  }
+  },
+  timeout=20
 )
 
 arxiv_mcp_server = MCPServerStdio(
@@ -54,6 +56,7 @@ arxiv_mcp_server = MCPServerStdio(
     "--storage-path",
     "./cache"
   ],
+  timeout=20
 )
 
 mcp_servers = [
