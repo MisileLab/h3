@@ -37,6 +37,31 @@ github_mcp_server = MCPServerStdio(
   }
 )
 
+google_calendar_mcp = MCPServerStdio(
+  'pnpx',
+  args=['@cocal/google-calendar-mcp'],
+  env={
+    "GOOGLE_OAUTH_CREDENTIALS": "./credentials.json"
+  }
+)
+
+arxiv_mcp_server = MCPServerStdio(
+  'uv',
+  args=[
+    "tool",
+    "run",
+    "arxiv-mcp-server",
+    "--storage-path",
+    "./cache"
+  ],
+)
+
+mcp_servers = [
+  google_calendar_mcp,
+  arxiv_mcp_server,
+  github_mcp_server
+]
+
 # ========== Setup ==========
 model = OpenAIModel(
   'google/gemini-2.5-flash-preview',
@@ -60,7 +85,7 @@ tools = [ # pyright: ignore[reportUnknownVariableType]
 agent = Agent(
   model,
   tools=tools, # pyright: ignore[reportUnknownArgumentType]
-  mcp_servers=[github_mcp_server],
+  mcp_servers=mcp_servers,
   instructions=prompts["main"]
 )
 

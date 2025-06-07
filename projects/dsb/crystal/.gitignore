@@ -1,5 +1,6 @@
 # Custom
 data.pkl
+credentials.json
 
 # Python.gitignore by ignofierplus
 __pycache__/
