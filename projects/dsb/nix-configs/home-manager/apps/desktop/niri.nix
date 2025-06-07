@@ -20,6 +20,13 @@
         { command = ["${pkgs.swaybg}/bin/swaybg" "--image" "~/.config/home-manager/bg.png"]; }
         { command = ["${pkgs.wl-clipboard}/bin/wl-paste" "--watch" "${pkgs.cliphist}/bin/cliphist" "store"]; }
         { command = ["${pkgs.avizo}/bin/avizo-service"]; }
+        { command = [
+          "${pkgs.swayidle}/bin/swayidle"
+          "-w"
+          "timeout" "601" "niri msg action power-off-monitors"
+          "timeout" "600" "swaylock -f"
+          "before-sleep" "swaylock -f"
+        ]; }
       ];
       binds = {
         "Mod+Shift+Slash".action.show-hotkey-overlay = {};
