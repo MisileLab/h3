@@ -14,7 +14,7 @@ class Data(BaseModel):
   author_name: str
   author_image_url: str
   video_id: str
-  parent_id: str | None = None
+  parent_id: str = ""
 
 schema = {
   "comment_id": String,
@@ -49,7 +49,7 @@ def append_comment(df: DataFrame, comment: Comment, video_id: str) -> DataFrame:
     content=content,
     author_name=authorDisplayName,
     author_image_url=authorImageUrl,
-    parent_id=snippet.parentId,
+    parent_id=snippet.parentId if snippet.parentId else "",
     video_id=video_id
   ))
 
