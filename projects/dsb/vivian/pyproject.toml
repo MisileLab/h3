@@ -1,0 +1,10 @@
+[project]
+name = "vivian"
+version = "0.1.0"
+description = "Block youtube's bot comment with embedding"
+readme = "README.md"
+requires-python = ">=3.13.3"
+dependencies = [
+  "polars==1.30.0",
+  "python-youtube==0.9.7",
+]
