@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from pyyoutube import Api, Comment, CommentThread # pyright: ignore[reportMissingTypeStubs]
-from polars import DataFrame, read_avro, write_avro, concat, col, String
+from polars import DataFrame, read_avro, concat, col, String
 from os import getenv
 from pathlib import Path
 
@@ -52,7 +52,7 @@ def append_comment(df: DataFrame, comment: Comment, video_id: str) -> DataFrame:
     parent_id=snippet.parentId if snippet.parentId else "",
     video_id=video_id
   ))
-  write_avro(df, "comments.avro", schema=schema)
+  df.write_avro("comments.avro")
   return df
 
 def append_commentThreads(df: DataFrame, commentThread: CommentThread, video_id: str) -> DataFrame:
