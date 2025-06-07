@@ -52,6 +52,7 @@ arxiv_mcp_server = MCPServerStdio(
   args=[
     "exec",
     ".",
+    "uv",
     "tool",
     "run",
     "arxiv-mcp-server",
