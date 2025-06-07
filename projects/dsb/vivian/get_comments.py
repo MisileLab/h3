@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from pyyoutube import Api, Comment, CommentThread # pyright: ignore[reportMissingTypeStubs]
-from polars import DataFrame, read_avro, concat, col, String
+from polars import DataFrame, read_avro, write_avro, concat, col, String
 from os import getenv
 from pathlib import Path
 
@@ -44,7 +44,7 @@ def append_comment(df: DataFrame, comment: Comment, video_id: str) -> DataFrame:
   authorImageUrl = snippet.authorProfileImageUrl
   if authorImageUrl is None:
     raise ValueError("Comment has no author image URL")
-  return append(df, Data(
+  df = append(df, Data(
     comment_id=comment_id,
     content=content,
     author_name=authorDisplayName,
@@ -52,6 +52,8 @@ def append_comment(df: DataFrame, comment: Comment, video_id: str) -> DataFrame:
     parent_id=snippet.parentId if snippet.parentId else "",
     video_id=video_id
   ))
+  write_avro(df, "comments.avro", schema=schema)
+  return df
 
 def append_commentThreads(df: DataFrame, commentThread: CommentThread, video_id: str) -> DataFrame:
   snippet = commentThread.snippet
@@ -87,7 +89,7 @@ def append_commentThreads(df: DataFrame, commentThread: CommentThread, video_id:
 
 for i in videos.iter_rows(named=True):
   video_id: str = i["videoId"] # pyright: ignore[reportAny]
-  if len(df) != 0 and df.filter(col("videoId") == video_id).height > 0: # pyright: ignore[reportUnknownMemberType]
+  if len(df) != 0 and df.filter(col("video_id") == video_id).height > 0: # pyright: ignore[reportUnknownMemberType]
     continue
   print(video_id)
   comments = client.get_comment_threads( # pyright: ignore[reportUnknownVariableType, reportUnknownMemberType]
