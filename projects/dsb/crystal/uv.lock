@@ -196,7 +196,7 @@ dependencies = [
 requires-dist = [
     { name = "gradio", specifier = "==5.33.0" },
     { name = "inquirer", specifier = "==3.4.0" },
-    { name = "langchain-memgraph", specifier = "==0.1.4" },
+    { name = "langchain-memgraph", specifier = "==0.1.5" },
     { name = "mem0ai", extras = ["graph"], git = "https://github.com/misilelab/mem0" },
     { name = "puremagic", specifier = "==1.29" },
     { name = "pydantic-ai-slim", extras = ["duckduckgo", "logfire", "openai", "mcp"], specifier = "==0.2.14" },
@@ -722,7 +722,7 @@ wheels = [
 
 [[package]]
 name = "langchain-memgraph"
-version = "0.1.4"
+version = "0.1.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "langchain" },
@@ -730,9 +730,9 @@ dependencies = [
     { name = "memgraph-toolbox" },
     { name = "neo4j" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/0f/98/ffc8d1b721fb8cf1257879a60ca1a2b4a9ce156bc3638c1e98fd75391c79/langchain_memgraph-0.1.4.tar.gz", hash = "sha256:4a91c6005318476e942d64cd5e086a956e27f1de834d56c2ccf0f704675e1b15", size = 146308, upload-time = "2025-06-03T09:03:51.922Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/2d/0c/d6f8077d021844b3e4384d30886f652d0a3ae8234a6d1b50f667cca24684/langchain_memgraph-0.1.5.tar.gz", hash = "sha256:8b6c674d12024ae6752f049f7b079490e23cfc72f8f85af0fa1ad260460d1e55", size = 146332, upload-time = "2025-06-06T08:51:32.993Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/6b/13/7d117b9ecf60f10368aeb86662bf0fc940f43b960f5ad441b63b81e521be/langchain_memgraph-0.1.4-py3-none-any.whl", hash = "sha256:fb81c3cf483bbf37e321cba2de62a9af4b6a0d6a8bd888e9da53d1b133b167f9", size = 20051, upload-time = "2025-06-03T09:03:50.146Z" },
+    { url = "https://files.pythonhosted.org/packages/d7/08/a965c15fb9840155ce560322408cc77f3ac07627fcbb470c5829e8f57640/langchain_memgraph-0.1.5-py3-none-any.whl", hash = "sha256:793f2e004b4dd54670478e66a7160c8bcfb902dcd0598ddf3e67667b95c8acd7", size = 20057, upload-time = "2025-06-06T08:51:31.211Z" },
 ]
 
 [[package]]
