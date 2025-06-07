@@ -83,7 +83,7 @@ def append_commentThreads(df: DataFrame, commentThread: CommentThread, video_id:
 
 for i in videos.iter_rows(named=True):
   video_id: str = i["videoId"] # pyright: ignore[reportAny]
-  if df.filter(col("videoId") == video_id).height > 0: # pyright: ignore[reportUnknownMemberType]
+  if len(df) != 0 and df.filter(col("videoId") == video_id).height > 0: # pyright: ignore[reportUnknownMemberType]
     continue
   print(video_id)
   comments = client.get_comment_threads( # pyright: ignore[reportUnknownVariableType, reportUnknownMemberType]
