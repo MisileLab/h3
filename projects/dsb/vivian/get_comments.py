@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from pyyoutube import Api, Comment, CommentThread # pyright: ignore[reportMissingTypeStubs]
+from pyyoutube import Api, Comment, CommentThread, PyYouTubeException # pyright: ignore[reportMissingTypeStubs]
 from polars import DataFrame, read_avro, concat, col, String
 from os import getenv
 from pathlib import Path
@@ -92,12 +92,20 @@ for i in videos.iter_rows(named=True):
   if len(df) != 0 and df.filter(col("video_id") == video_id).height > 0: # pyright: ignore[reportUnknownMemberType]
     continue
   print(video_id)
-  comments = client.get_comment_threads( # pyright: ignore[reportUnknownVariableType, reportUnknownMemberType]
-    video_id=video_id,
-    count=None,
-    parts="replies,snippet,id",
-    order="relevance"
-  )
+  try:
+    comments = client.get_comment_threads( # pyright: ignore[reportUnknownVariableType, reportUnknownMemberType]
+      video_id=video_id,
+      count=None,
+      parts="replies,snippet,id",
+      order="relevance"
+    )
+  except PyYouTubeException as e:
+    if e.message is None:
+      raise e
+    if e.status_code == 403 and "disabled comments" in e.message:
+      print(f"Comments are disabled for video {video_id}. Skipping.")
+      continue
+    raise e
   if isinstance(comments, dict):
     exit(1)
 
