@@ -29,13 +29,18 @@ def comment_to_return(data: Data):
     )
   else:
     parent_comment = Data.model_validate(existing_comments.to_dicts()[0])
+  
+  # Ensure image URLs are valid or return None
+  parent_image = parent_comment.author_image_url if parent_comment.author_image_url else None
+  current_image = data.author_image_url if data.author_image_url else None
+  
   return [
     data.video_id,
     parent_comment.author_name,
-    parent_comment.author_image_url,
+    parent_image,
     parent_comment.content,
     data.author_name,
-    data.author_image_url,
+    current_image,
     data.content
   ]
 
