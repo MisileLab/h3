@@ -11,18 +11,18 @@ dependencies = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "z3-solver", specifier = "==4.15.0.0" }]
+requires-dist = [{ name = "z3-solver", specifier = "==4.15.1.0" }]
 
 [[package]]
 name = "z3-solver"
-version = "4.15.0.0"
+version = "4.15.1.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/dc/ea/d44ca4e86a186b76e2f7787ba2a68e15ee1ab9e66262575e0f4d2aa95560/z3_solver-4.15.0.0.tar.gz", hash = "sha256:31012fdbaceb92667fd7e338de8b06b41d60c99bf6a3b8ec197de352372f05f1", size = 5036122, upload-time = "2025-05-10T01:15:48.056Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a1/96/c5481ef8e1fb64f398cb81caca0a808b4eee845091d41fb6e72bf06a9ee2/z3_solver-4.15.1.0.tar.gz", hash = "sha256:e8522602a76f6e45c45e78eec7bff5cbaa44fa51e94dce0d5432b0f9ab3f7064", size = 5054686, upload-time = "2025-06-08T18:54:41.118Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/30/f5/885e60f104fa9419812afee7b9db0805fd3b8c0fc1ba8783fef9a6c6e140/z3_solver-4.15.0.0-py3-none-macosx_13_0_arm64.whl", hash = "sha256:f39d07f6df4c8c09df594f1c9d2bb8b424805033a94725bfd535e7eca13eacfc", size = 37481256, upload-time = "2025-05-10T01:15:21.684Z" },
-    { url = "https://files.pythonhosted.org/packages/5c/bf/d5ee29b77f8a15c3f9b72c891766bb699ebc89883d25e0c49618c8f4081a/z3_solver-4.15.0.0-py3-none-macosx_13_0_x86_64.whl", hash = "sha256:83e82ed14073e72ca62bd3833866a9457df124448054a0c9d36db55e2f5baac6", size = 40300289, upload-time = "2025-05-10T01:15:27.572Z" },
-    { url = "https://files.pythonhosted.org/packages/9a/d3/bd7828479c0592280290a24b350a23abb460115824874adc3f902748b3dd/z3_solver-4.15.0.0-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:214d833c2c0959aed3387e35ca36a1bfdfc443f11403d6aaf61ba346b5e21ed3", size = 29491842, upload-time = "2025-05-10T01:15:30.283Z" },
-    { url = "https://files.pythonhosted.org/packages/2e/08/553023f73d5571f6d15d851621640bfc21103ac582845bb49c106fcc57e6/z3_solver-4.15.0.0-py3-none-manylinux_2_34_aarch64.whl", hash = "sha256:f90adbb6987493828c9b8381481eaa3eb3efcdc69d326d4dd341da20deaefd31", size = 27481981, upload-time = "2025-05-10T01:15:36.23Z" },
-    { url = "https://files.pythonhosted.org/packages/1d/d1/7b19c1a333c5f9d9d20d25833f670972f725a5c3449b87ce897c17a70d76/z3_solver-4.15.0.0-py3-none-win32.whl", hash = "sha256:cf119f1b95f0c0c6a82fce365336c8887e2f557c5b5b9f370a184aa80d164e1c", size = 13342345, upload-time = "2025-05-10T01:15:40.261Z" },
-    { url = "https://files.pythonhosted.org/packages/71/dc/fa9bf8cb5a10a108befd5818c9a76e06d7ef65af66493b616002110b66c9/z3_solver-4.15.0.0-py3-none-win_amd64.whl", hash = "sha256:f1d923506654f39834196908ff579c5555b65e2d6140e515dc2d0e43c9218b2f", size = 16405669, upload-time = "2025-05-10T01:15:42.632Z" },
+    { url = "https://files.pythonhosted.org/packages/bc/8b/e47ed5d6e3b565e400f2948549a9d633bdeea0eb081ddb3047bd04266d92/z3_solver-4.15.1.0-py3-none-macosx_13_0_arm64.whl", hash = "sha256:4fdf8675500f32b03114670a8c734fa9fc9f8c9bd1047d575449ca69fa397ac5", size = 37542839, upload-time = "2025-06-08T18:54:25.435Z" },
+    { url = "https://files.pythonhosted.org/packages/f0/10/b9828d71ac9a65f9ddf75a94b95f269c063dc052ccb200ecfcd81cf5557a/z3_solver-4.15.1.0-py3-none-macosx_13_0_x86_64.whl", hash = "sha256:878814bef41ca3d9957923d07fc3084967d14dff1a3c039d00f76324461bb11b", size = 40356020, upload-time = "2025-06-08T18:54:28.354Z" },
+    { url = "https://files.pythonhosted.org/packages/96/95/b37b98fa23811559987e8403729093b8fae1d0c5321286667768956e31da/z3_solver-4.15.1.0-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:0f1d15073c78d793be56ff334f3d4770fe66d57808fdad2780e25c936d8fab0a", size = 29530873, upload-time = "2025-06-08T18:54:31.026Z" },
+    { url = "https://files.pythonhosted.org/packages/54/c9/117858dc7396435026988fb3ab59c6634887488511cc1014007a81fa3b0e/z3_solver-4.15.1.0-py3-none-manylinux_2_34_aarch64.whl", hash = "sha256:1ac01865e9b07e35b8856157fa95259b1741529c05ef019f599675c7b0caab42", size = 27517613, upload-time = "2025-06-08T18:54:33.89Z" },
+    { url = "https://files.pythonhosted.org/packages/32/c2/1cb7df76d243f33f99416e9fcfefc76195cf9305e23fc9296edf6d5fb6be/z3_solver-4.15.1.0-py3-none-win32.whl", hash = "sha256:0b41c73ed6ea30514210853e31b432c3654b36e7e7a74db23906ddba345cb654", size = 13363408, upload-time = "2025-06-08T18:54:36.521Z" },
+    { url = "https://files.pythonhosted.org/packages/28/ee/110ee33282331c5dab4e63bb570b345d85b2ed5ee1d30a54a987903e22fe/z3_solver-4.15.1.0-py3-none-win_amd64.whl", hash = "sha256:1d858c5b7ecd60788576ec6ae62cc7b9ae142e9ed38dff3dfd415e2fe230c712", size = 16428380, upload-time = "2025-06-08T18:54:38.872Z" },
 ]
