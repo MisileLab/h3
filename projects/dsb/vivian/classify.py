@@ -29,11 +29,11 @@ def comment_to_return(data: Data):
     )
   else:
     parent_comment = Data.model_validate(existing_comments.to_dicts()[0])
-  
+
   # Ensure image URLs are valid or return None
   parent_image = parent_comment.author_image_url if parent_comment.author_image_url else None
   current_image = data.author_image_url if data.author_image_url else None
-  
+
   return [
     data.video_id,
     parent_comment.author_name,
@@ -69,47 +69,45 @@ def classify_as_human():
 with Blocks(title="Comment Classification Tool", theme="soft") as frontend:
   _ = Markdown("# Comment Classification Tool")
   _ = Markdown("Classify comments as **Bot** or **Human** based on the content and context.")
-  
+
   with Row():
     # Progress indicator
     progress_text = Textbox(
-      label="Progress", 
+      label="Progress",
       value=f"Comment {start_idx + 1} of {len(comments)}",
       interactive=False
     )
-  
+
   with Row():
     # Parent comment section
     with Column(scale=1):
       _ = Markdown("## Parent Comment")
       parent_author = Textbox(label="Parent Author", interactive=False)
-      parent_image = Image(label="Parent Author Image", height=60, width=60)
+      parent_image = Image(label="", height=60, width=60)
       parent_content = Textbox(
-        label="Parent Content", 
-        lines=4, 
+        label="Parent Content",
+        lines=4,
         interactive=False,
         placeholder="No parent comment"
       )
-    
-    # Current comment section  
+
+    # Current comment section
     with Column(scale=1):
       _ = Markdown("## Current Comment (Classify This)")
       current_author = Textbox(label="Current Author", interactive=False)
-      current_image = Image(label="Current Author Image", height=60, width=60)
+      current_image = Image(label="", height=60, width=60)
       current_content = Textbox(
-        label="Current Content", 
-        lines=4, 
+        label="Current Content",
+        lines=4,
         interactive=False
       )
       video_id = Textbox(label="Video ID", interactive=False)
-  
+
   with Row():
     # Classification buttons
     bot_button = Button("🤖 Bot Comment", variant="secondary", size="lg")
     human_button = Button("👤 Human Comment", variant="primary", size="lg")
-  
 
-  
   # Output components for updating the display
   outputs = [
     video_id,
@@ -120,20 +118,18 @@ with Blocks(title="Comment Classification Tool", theme="soft") as frontend:
     current_image,
     current_content
   ]
-  
+
   # Button event handlers
   _ = bot_button.click(
     fn=classify_as_bot,
     outputs=outputs
   )
-  
+
   _ = human_button.click(
     fn=classify_as_human,
     outputs=outputs
   )
-  
 
-  
   # Load initial data when the interface starts
   _ = frontend.load(
     fn=get_data,
