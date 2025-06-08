@@ -11,7 +11,7 @@ start_idx = 0
 def append(df: DataFrame, data: ProcessedData) -> DataFrame:
   return concat([df, DataFrame(data.model_dump())], how="vertical", rechunk=True)
 
-while not df.filter(col("comment_id") == comments[start_idx]["comment_id"][0]).is_empty(): # pyright: ignore[reportAny]
+while len(df) != 0 and not df.filter(col("comment_id") == comments[start_idx]["comment_id"][0]).is_empty(): # pyright: ignore[reportAny]
   start_idx += 1
 
 print(start_idx)
