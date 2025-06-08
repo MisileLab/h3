@@ -83,7 +83,7 @@ with Blocks(title="Comment Classification Tool", theme="soft") as frontend:
     with Column(scale=1):
       _ = Markdown("## Parent Comment")
       parent_author = Textbox(label="Parent Author", interactive=False)
-      parent_image = Image(label="", height=60, width=60)
+      parent_image = Image(show_label=False, height=60, width=60)
       parent_content = Textbox(
         label="Parent Content",
         lines=4,
@@ -95,7 +95,7 @@ with Blocks(title="Comment Classification Tool", theme="soft") as frontend:
     with Column(scale=1):
       _ = Markdown("## Current Comment (Classify This)")
       current_author = Textbox(label="Current Author", interactive=False)
-      current_image = Image(label="", height=60, width=60)
+      current_image = Image(show_label=False, height=60, width=60)
       current_content = Textbox(
         label="Current Content",
         lines=4,
