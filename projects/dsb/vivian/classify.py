@@ -1,7 +1,7 @@
 from polars import read_avro, col, DataFrame, concat
 from gradio import Blocks, Row, Textbox, Button, Markdown, Column, Image
 
-from .utils import Data, ProcessedData, read_cached_avro
+from utils import Data, ProcessedData, read_cached_avro
 
 comments = read_avro("comments.avro")
 df = read_cached_avro("processed.avro")
