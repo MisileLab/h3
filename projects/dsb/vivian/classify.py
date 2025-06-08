@@ -54,11 +54,13 @@ def classify_comments(is_bot: bool):
   df = append(df, processed_data)
   start_idx += 1
   df.write_avro("processed.avro")
-  return comment_to_return(Data.model_validate(comments[start_idx].to_dicts()[0]))
+  progress = f"Comment {start_idx + 1} of {len(comments)}"
+  next_data = Data.model_validate(comments[start_idx].to_dicts()[0])
+  return [*comment_to_return(next_data), progress]
 
 def get_data():
   data = Data.model_validate(comments[start_idx].to_dicts()[0])
-  return comment_to_return(data)
+  return [*comment_to_return(data), f"Comment {start_idx + 1} of {len(comments)}"]
 
 def classify_as_bot():
   return classify_comments(True)
@@ -116,7 +118,8 @@ with Blocks(title="Comment Classification Tool", theme="soft") as frontend:
     parent_content,
     current_author,
     current_image,
-    current_content
+    current_content,
+    progress_text
   ]
 
   # Button event handlers
