@@ -46,7 +46,7 @@ def comment_to_return(data: Data):
 
 def classify_comments(is_bot: bool):
   global df, start_idx
-  data = Data.model_validate(comments[start_idx])
+  data = Data.model_validate(comments[start_idx].to_dicts()[0])
   processed_data = ProcessedData(
     **data.model_dump(), # pyright: ignore[reportAny]
     is_bot_comment=is_bot
