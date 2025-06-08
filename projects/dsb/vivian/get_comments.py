@@ -1,29 +1,11 @@
-from pydantic import BaseModel
 from pyyoutube import Api, Comment, CommentThread, PyYouTubeException # pyright: ignore[reportMissingTypeStubs]
-from polars import DataFrame, read_avro, concat, col, String
+from polars import DataFrame, read_avro, concat, col
 from os import getenv
-from pathlib import Path
+from .utils import Data, read_cached_avro
 
 client = Api(api_key=getenv("YOUTUBE_API_KEY"))
 videos = read_avro("videos.avro")
-df = read_avro("comments.avro") if Path("comments.avro").exists() else DataFrame()
-
-class Data(BaseModel):
-  comment_id: str
-  content: str
-  author_name: str
-  author_image_url: str
-  video_id: str
-  parent_id: str = ""
-
-schema = {
-  "comment_id": String,
-  "content": String,
-  "author_name": String,
-  "author_image_url": String,
-  "video_id": String,
-  "parent_id": String
-}
+df = read_cached_avro("comments.avro")
 
 def append(df: DataFrame, data: Data) -> DataFrame:
   return concat([df, DataFrame(data.model_dump())], how="vertical", rechunk=True)
@@ -89,7 +71,7 @@ def append_commentThreads(df: DataFrame, commentThread: CommentThread, video_id:
 
 for i in videos.iter_rows(named=True):
   video_id: str = i["videoId"] # pyright: ignore[reportAny]
-  if len(df) != 0 and df.filter(col("video_id") == video_id).height > 0: # pyright: ignore[reportUnknownMemberType]
+  if len(df) != 0 and df.filter(col("video_id") == video_id).height > 0:
     continue
   print(video_id)
   try:

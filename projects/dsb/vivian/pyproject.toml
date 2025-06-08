@@ -3,9 +3,28 @@ name = "vivian"
 version = "0.1.0"
 description = "Block youtube's bot comment with embedding"
 readme = "README.md"
-requires-python = ">=3.13.3"
+requires-python = ">=3.11.3"
 dependencies = [
+  "keras==3.10.0",
   "polars==1.30.0",
   "pydantic==2.11.5",
   "python-youtube==0.9.7",
+  "voyageai==0.3.2",
+  "torch==2.7.1",
+  "pytorch-triton-rocm==3.3.1 ; sys_platform == 'linux'",
+  "gradio==5.33.0",
 ]
+
+[tool.uv.sources]
+torch = [
+  { index = "pytorch-rocm", marker = "sys_platform == 'linux'" },
+]
+pytorch-triton-rocm = [
+  { index = "pytorch-rocm", marker = "sys_platform == 'linux'" },
+]
+
+[[tool.uv.index]]
+name = "pytorch-rocm"
+url = "https://download.pytorch.org/whl/rocm6.3"
+explicit = true
+

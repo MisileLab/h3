@@ -1,6 +1,7 @@
 # Custom
 videos.avro
 comments.avro
+verified.avro
 
 # Python.gitignore by ignofierplus
 __pycache__/
