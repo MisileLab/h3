@@ -49,10 +49,10 @@ def classify_comments(is_bot: bool):
   df = append(df, processed_data)
   start_idx += 1
   df.write_avro("processed.avro")
-  return comment_to_return(Data.model_validate(comments[start_idx]))
+  return comment_to_return(Data.model_validate(comments[start_idx].to_dicts()[0]))
 
 def get_data():
-  data = Data.model_validate(comments[start_idx])
+  data = Data.model_validate(comments[start_idx].to_dicts()[0])
   return comment_to_return(data)
 
 def classify_as_bot():
