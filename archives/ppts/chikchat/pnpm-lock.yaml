@@ -34,8 +34,8 @@ importers:
         specifier: 22.15.30
         version: 22.15.30
       '@types/reveal.js':
-        specifier: 5.0.5
-        version: 5.0.5
+        specifier: 5.2.0
+        version: 5.2.0
       autoprefixer:
         specifier: 10.4.21
         version: 10.4.21(postcss@8.5.4)
@@ -391,8 +391,8 @@ packages:
   '@types/node@22.15.30':
     resolution: {integrity: sha512-6Q7lr06bEHdlfplU6YRbgG1SFBdlsfNC4/lX+SkhiTs0cpJkOElmWls8PxDFv4yY/xKb8Y6SO0OmSX4wgqTZbA==}
 
-  '@types/reveal.js@5.0.5':
-    resolution: {integrity: sha512-+8OFb1RlB69dZT1laNDq+xDSGrPY/VYARSSTxSC/rMl8s9X+W4dr7gHmoKRR9yu20JU8gvp18g9SVxvouk7SiQ==}
+  '@types/reveal.js@5.2.0':
+    resolution: {integrity: sha512-IHO3Nc0YjI4CKQHeK/2U+6SinAJCC8/xiKCIDQnlFCiq02GMag+WrveIszll033zyv/mtXoCnWmYZITUngE2pA==}
 
   acorn@8.15.0:
     resolution: {integrity: sha512-NZyJarBfL7nWwIq+FDL6Zp/yHEhePMNnnJ0y3qfieCrmNvYct8uvtiV41UvlSe6apAfk0fY1FbWx+NwfmpvtTg==}
@@ -932,7 +932,7 @@ snapshots:
     dependencies:
       undici-types: 6.21.0
 
-  '@types/reveal.js@5.0.5': {}
+  '@types/reveal.js@5.2.0': {}
 
   acorn@8.15.0: {}
 
