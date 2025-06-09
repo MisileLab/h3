@@ -11,8 +11,12 @@ start_idx = 0
 def append(df: DataFrame, data: ProcessedData) -> DataFrame:
   return concat([df, DataFrame(data.model_dump())], how="vertical", rechunk=True)
 
-while len(df) != 0 and not df.filter(col("comment_id") == comments[start_idx]["comment_id"][0]).is_empty(): # pyright: ignore[reportAny]
-  start_idx += 1
+def next_idx():
+  global start_idx
+  while len(df) != 0 and not df.filter(col("comment_id") == comments[start_idx]["comment_id"][0]).is_empty(): # pyright: ignore[reportAny]
+    start_idx += 1
+
+next_idx()
 
 print(start_idx)
 
@@ -52,7 +56,7 @@ def classify_comments(is_bot: bool):
     is_bot_comment=is_bot
   )
   df = append(df, processed_data)
-  start_idx += 1
+  next_idx()
   df.write_avro("processed.avro")
   progress = f"Comment {start_idx + 1} of {len(comments)}"
   next_data = Data.model_validate(comments[start_idx].to_dicts()[0])
