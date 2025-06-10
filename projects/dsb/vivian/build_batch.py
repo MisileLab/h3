@@ -3,6 +3,7 @@ from json import dumps
 from uuid import uuid4
 
 from polars import read_avro, col
+from tqdm import tqdm
 
 from utils import Data, read_cached_avro
 
