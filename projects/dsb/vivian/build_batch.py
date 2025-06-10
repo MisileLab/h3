@@ -14,7 +14,7 @@ prompt = Path("prompt").read_text()
 comments_iter = comments.iter_rows(named=True)
 batches: list[str] = []
 
-for k, i in enumerate(comments.iter_rows(named=True)):
+for k, i in tqdm(enumerate(comments.iter_rows(named=True))):
   data = Data.model_validate(i)
   if parent_id := data.parent_id:
     parent = Data.model_validate(comments.filter(col('comment_id') == parent_id).to_dicts()[0])
@@ -56,4 +56,6 @@ for k, i in enumerate(comments.iter_rows(named=True)):
   if k != 0 and k % 99 == 0:
     _ = Path(f"batches/{uuid4()}.jsonl").write_text("\n".join(batches))
     batches = []
+
+_ = Path(f"batches/{uuid4()}.json").write_text("\n".join(batches))
 

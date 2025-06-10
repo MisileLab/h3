@@ -1422,6 +1422,7 @@ dependencies = [
     { name = "pytorch-triton-rocm", marker = "sys_platform == 'linux'" },
     { name = "torch", version = "2.7.1", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'linux'" },
     { name = "torch", version = "2.7.1+rocm6.3", source = { registry = "https://download.pytorch.org/whl/rocm6.3" }, marker = "sys_platform == 'linux'" },
+    { name = "tqdm" },
     { name = "voyageai" },
 ]
 
@@ -1436,6 +1437,7 @@ requires-dist = [
     { name = "pytorch-triton-rocm", marker = "sys_platform == 'linux'", specifier = "==3.3.1", index = "https://download.pytorch.org/whl/rocm6.3" },
     { name = "torch", marker = "sys_platform != 'linux'", specifier = "==2.7.1" },
     { name = "torch", marker = "sys_platform == 'linux'", specifier = "==2.7.1", index = "https://download.pytorch.org/whl/rocm6.3" },
+    { name = "tqdm", specifier = ">=4.67.1" },
     { name = "voyageai", specifier = "==0.3.2" },
 ]
 

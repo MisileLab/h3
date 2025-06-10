@@ -5,6 +5,7 @@ from json import loads
 
 from openai import OpenAI
 from polars import DataFrame, read_avro, concat, col
+from tqdm import tqdm
 
 from utils import Data, ProcessedData
 
@@ -16,7 +17,7 @@ file_ids: list[str] = []
 df = DataFrame()
 comments = read_avro("comments.avro")
 
-for i in Path("./batches").glob("*.jsonl"):
+for i in tqdm(Path("./batches").glob("*.jsonl")):
   file_ids.append(
     o.files.create(
       file=i.open("rb"),
@@ -26,7 +27,7 @@ for i in Path("./batches").glob("*.jsonl"):
 
 batches: list[str] = []
 
-for i in file_ids:
+for i in tqdm(file_ids):
   batches.append(o.batches.create(
     completion_window='24h',
     endpoint='/v1/chat/completions',
