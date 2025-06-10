@@ -43,7 +43,8 @@ while batches:
       output = loads(o.files.content(output_file_id).text) # pyright: ignore[reportAny]
       comment_id: str = output["custom_id"] # pyright: ignore[reportAny]
       response: str = output['response']['body']['choices'][0]['message']['content'].strip() # pyright: ignore[reportAny]
-      if response != "C":
+      print(response)
+      if response in ["A", "B"]:
         is_bot = response == "A"
         data = Data.model_validate(
           df.filter(col("comment_id") == comment_id).to_dicts()[0]
