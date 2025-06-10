@@ -1,11 +1,12 @@
 from pathlib import Path
 from os import getenv
 from time import sleep
+from json import loads
 
 from openai import OpenAI
-from polars import DataFrame, read_avro, concat
+from polars import DataFrame, read_avro, concat, col
 
-from utils import ProcessedData
+from utils import Data, ProcessedData
 
 def append(df: DataFrame, data: ProcessedData) -> DataFrame:
   return concat([df, DataFrame(data.model_dump())], how="vertical", rechunk=True)
@@ -39,8 +40,19 @@ while batches:
     print(batch.status)
     output_file_id = batch.output_file_id
     if batch.status == "completed" and output_file_id is not None:
-      output = o.files.content(output_file_id).text
-      # TODO: split by '\n' and add data to df
+      output = loads(o.files.content(output_file_id).text) # pyright: ignore[reportAny]
+      comment_id: str = output["custom_id"] # pyright: ignore[reportAny]
+      response: str = output['response']['body']['choices'][0]['message']['content'].strip() # pyright: ignore[reportAny]
+      if response != "C":
+        is_bot = response == "A"
+        data = Data.model_validate(
+          df.filter(col("comment_id") == comment_id).to_dicts()[0]
+        )
+        df = append(df, ProcessedData(
+          is_bot_comment=is_bot, **data
+        ))
+      _ = o.files.delete(output_file_id)
+      _ = o.files.delete(batch.input_file_id)
   sleep(60)
 
 df.write_avro("processed.avro")
