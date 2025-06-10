@@ -54,7 +54,7 @@ for k, i in tqdm(enumerate(comments.iter_rows(named=True))):
       }, ensure_ascii=False
     )
   )
-  if k != 0 and k % 99 == 0:
+  if k != 0 and k % 49 == 0:
     _ = Path(f"batches/{uuid4()}.jsonl").write_text("\n".join(batches))
     batches = []
 
