@@ -31,7 +31,7 @@ for k, i in enumerate(comments.iter_rows(named=True)):
       "method": "POST", 
       "url": "/v1/chat/completions",
       "body": {
-        "model": "gpt4.1-nano",
+        "model": "gpt-4.1-nano",
         "messages": [
           {"role": "system", "content": prompt},
           {"role": "user", "content": [{
