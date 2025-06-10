@@ -16,7 +16,7 @@ o = OpenAI(api_key=getenv('OPENAI_KEY'))
 df = DataFrame()
 comments = read_avro("comments.avro")
 
-for i in tqdm(list(Path("./batches").glob("*.jsonl"))):
+for i in (progress_bar := tqdm(list(Path("./batches").glob("*.jsonl")))):
   file_id = o.files.create(
     file=i.open("rb"),
     purpose="batch"
@@ -28,7 +28,7 @@ for i in tqdm(list(Path("./batches").glob("*.jsonl"))):
   ).id
   batch = o.batches.retrieve(batch_id)
   while batch.status != "completed":
-    print(batch.status)
+    progress_bar.set_description_str(batch.status)
     sleep(60)
     batch = o.batches.retrieve(batch_id)
   output_file_id = batch.output_file_id
@@ -36,7 +36,6 @@ for i in tqdm(list(Path("./batches").glob("*.jsonl"))):
     output = loads(o.files.content(output_file_id).text) # pyright: ignore[reportAny]
     comment_id: str = output["custom_id"] # pyright: ignore[reportAny]
     response: str = output['response']['body']['choices'][0]['message']['content'].strip() # pyright: ignore[reportAny]
-    print(response)
     if response in ["A", "B"]:
       is_bot = response == "A"
       data = Data.model_validate(
