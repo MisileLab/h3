@@ -17,7 +17,7 @@ file_ids: list[str] = []
 df = DataFrame()
 comments = read_avro("comments.avro")
 
-for i in tqdm(Path("./batches").glob("*.jsonl")):
+for i in tqdm(list(Path("./batches").glob("*.jsonl"))):
   file_ids.append(
     o.files.create(
       file=i.open("rb"),
