@@ -14,12 +14,12 @@
     "@astrojs/node": "9.2.2",
     "@astrojs/sitemap": "3.4.1",
     "@misile/satellite": "0.0.5",
-    "@tailwindcss/vite": "4.1.9",
+    "@tailwindcss/vite": "4.1.10",
     "astro": "5.9.2",
     "dayjs": "1.11.13",
     "mobile-device-detect": "0.4.3",
     "nanostores": "1.0.1",
-    "tailwindcss": "4.1.9",
+    "tailwindcss": "4.1.10",
     "typescript": "5.8.3"
   }
 }
