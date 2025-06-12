@@ -35,7 +35,7 @@ for i in (progress_bar := tqdm(list(Path("./batches").glob("*.jsonl")))):
   if output_file_id is not None:
     outputs = [
       loads(i)
-      for i in o.files.content(output_file_id).text.split("\n")
+      for i in o.files.content(output_file_id).text.removesuffix('\n').split("\n")
     ]
     for output in outputs: # pyright: ignore[reportAny]
       comment_id: str = output["custom_id"] # pyright: ignore[reportAny]
