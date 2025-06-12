@@ -47,4 +47,7 @@ for i in (progress_bar := tqdm(list(Path("./batches").glob("*.jsonl")))):
     _ = o.files.delete(output_file_id)
     _ = o.files.delete(batch.input_file_id)
     df.write_avro("processed.avro")
+  else:
+    print("something wrong")
+    exit(1)
 

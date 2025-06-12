@@ -15,6 +15,17 @@ prompt = Path("prompt").read_text()
 comments_iter = comments.iter_rows(named=True)
 batches: list[str] = []
 
+def generate_image_urls(data: list[dict[str, dict[str, str] | str]], urls: list[str]):
+  for url in urls:
+    if url:
+      data.append({
+        "type": "image_url",
+        "image_url": {
+          "url": url
+        }
+      })
+  return data
+
 for k, i in tqdm(enumerate(comments.iter_rows(named=True))):
   data = Data.model_validate(i)
   if parent_id := data.parent_id:
@@ -35,24 +46,14 @@ for k, i in tqdm(enumerate(comments.iter_rows(named=True))):
         "model": "gpt-4.1-nano",
         "messages": [
           {"role": "system", "content": prompt},
-          {"role": "user", "content": [{
+          {"role": "user", "content": generate_image_urls([{
             "type": "text",
             "text": f"""
               first profile image is the current comment, second (if exist) is the parent comment.
               current comment: {current_string}
               parent comment: {parent_string}
               """
-            },{
-              "type": "image_url",
-              "image_url": {
-                "url": current_image_url
-              }
-            },{
-              "type": "image_url",
-              "image_url": {
-                "url": parent_image_url
-              }
-            }]
+            }], [parent_image_url, current_image_url])
           }
         ]}
       }, ensure_ascii=False
