@@ -16,14 +16,14 @@ comments_iter = comments.iter_rows(named=True)
 batches: list[str] = []
 
 def generate_image_urls(data: list[dict[str, dict[str, str] | str]], urls: list[str]):
-  for url in urls:
-    if url:
-      data.append({
-        "type": "image_url",
-        "image_url": {
-          "url": url
-        }
-      })
+  # for url in urls:
+  #   if url:
+  #     data.append({
+  #       "type": "image_url",
+  #       "image_url": {
+  #         "url": url
+  #       }
+  #     })
   return data
 
 for k, i in tqdm(enumerate(comments.iter_rows(named=True))):
@@ -59,9 +59,9 @@ for k, i in tqdm(enumerate(comments.iter_rows(named=True))):
       }, ensure_ascii=False
     )
   )
-  # if k != 0 and k % 9 == 0:
-  _ = Path(f"batches/{uuid4()}.jsonl").write_text("\n".join(batches))
-  batches = []
+  if k != 0 and k % 99 == 0:
+    _ = Path(f"batches/{uuid4()}.jsonl").write_text("\n".join(batches))
+    batches = []
 
 _ = Path(f"batches/{uuid4()}.json").write_text("\n".join(batches))
 

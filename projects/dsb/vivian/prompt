@@ -7,83 +7,68 @@ You will receive the following information:
 - **Current Comment**: The comment content to classify
 - **Author Name**: The username/display name of the comment author
 - **Parent Comment**: The comment being replied to (may be None for top-level comments)
-- **Image**: Any image attached to the comment (may be None)
 
 ## Classification Criteria
 
 ### Bot Indicators
-Look for these patterns that suggest automated/bot behavior:
+Look for these patterns that suggest promotional/bot behavior:
 
-**Content Patterns:**
-- Generic, template-like responses that could apply to many contexts
-- Overly promotional language or obvious spam
-- Repetitive phrasing or formulaic structure
-- Unnatural language patterns, awkward grammar, or translation artifacts
-- Copy-pasted content or boilerplate text
-- Irrelevant responses that don't address the parent comment
-- Excessive use of keywords or hashtags
-- Links to suspicious domains or affiliate content
+**Promotional Content Patterns:**
+- Obvious advertising or product promotion
+- Links to external websites, apps, or services
+- Promotional language with calls-to-action
+- Event announcements or giveaway promotions
+- Unusual characters used to bypass content filters (e.g., Ⅽ〇М instead of COM)
+- References to contests, events, or promotional activities
+- Marketing buzzwords or sales language
 
 **Author Name Patterns:**
-- Random character combinations (e.g., "user12394857", "bot_name_2023")
-- Names following predictable patterns (FirstnameLastname123)
-- Generic names with numbers (JohnSmith847)
-- Obviously fake or promotional usernames
-- Usernames that exactly match brand/product names
+- Usernames containing commercial domains (.com, .net, etc.)
+- Brand or business names as usernames
+- Names with promotional keywords or numbers suggesting automation
+- Generic promotional patterns (e.g., "ProductName123", "ServiceSearch45")
 
-**Behavioral Patterns:**
-- Response that completely ignores context of parent comment
-- Inappropriately formal tone for casual conversations
-- Responses that seem to continue a different conversation thread
-
-**Image Analysis:**
-- Stock photos or generic images unrelated to discussion
-- Promotional graphics or advertisements
-- AI-generated profile pictures with telltale artifacts
-- Images that don't match the conversation context
+**Evasion Tactics:**
+- Special characters replacing normal letters to avoid detection
+- Repetitive promotional messages
+- Generic promotional templates
+- Content that seems designed to drive traffic elsewhere
 
 ### Human Indicators
 Look for these patterns that suggest genuine human interaction:
 
-**Content Patterns:**
-- Personal anecdotes or specific experiences
-- Emotional responses appropriate to context
-- Natural conversational flow and relevant responses to parent comment
-- Typos, colloquialisms, or informal language typical of human communication
-- Contextual understanding and nuanced responses
-- Questions that show genuine curiosity or engagement
-- References to personal timeline or current events
+**Natural Content Patterns:**
+- Personal opinions or casual conversation
+- Natural language without promotional intent
+- Contextual responses that address the parent comment appropriately
+- Emotional reactions or personal experiences
+- Colloquial language, slang, or informal communication
+- No commercial or promotional messaging
 
-**Author Name Patterns:**
-- Creative, memorable usernames that don't follow bot patterns
-- Names with personal meaning or cultural references
-- Established usernames with history/reputation
+**Authentic Author Names:**
+- Creative usernames without commercial indicators
+- Names that don't contain business/promotional elements
+- Personal or creative handles without domain extensions
 
-**Behavioral Patterns:**
-- Demonstrates understanding of conversation context
-- Shows personality, humor, or individual voice
-- Engages meaningfully with parent comment content
-- Uses platform-specific terminology or references
+**Non-Commercial Behavior:**
+- Genuine engagement with content without promotional agenda
+- Natural conversational flow
+- No attempts to drive traffic or promote products/services
 
 ## Analysis Framework
 
-1. **Context Relevance**: Does the comment appropriately respond to or build upon the parent comment?
-
-2. **Language Authenticity**: Is the language natural, with appropriate tone and style for the platform/context?
-
-3. **Author Credibility**: Does the author name suggest a real person vs. automated account?
-
-4. **Content Originality**: Is this likely original thought vs. templated/copied content?
-
-5. **Visual Consistency**: If an image is present, does it appropriately relate to the comment and context?
+1. **Promotional Intent**: Does the comment contain promotional content, advertising, or commercial messaging?
+2. **Character Evasion**: Are unusual characters used to bypass content filters or detection systems?
+3. **Author Commercial Indicators**: Does the author name suggest commercial/promotional purpose?
+4. **Context Relevance**: Does the comment appropriately respond to the parent comment without promotional agenda?
 
 ## Decision Process
 
-Evaluate each factor and weigh the evidence. Consider that:
-- Sophisticated bots may exhibit some human-like characteristics
-- Some humans may write in ways that appear bot-like
-- Context matters - what seems natural varies by platform and conversation type
-- Multiple weak indicators together may be more significant than single strong indicators
+Focus primarily on identifying promotional/commercial content and evasion tactics. Consider that:
+- The primary goal is detecting promotional bots rather than all automated content
+- Unusual character substitutions are strong indicators of filter evasion
+- Commercial usernames combined with promotional content are key signals
+- Natural conversation without promotional intent suggests human interaction
 
 ## Output Classification
 
