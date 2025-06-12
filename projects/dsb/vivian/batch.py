@@ -39,10 +39,10 @@ for i in (progress_bar := tqdm(list(Path("./batches").glob("*.jsonl")))):
     if response in ["A", "B"]:
       is_bot = response == "A"
       data = Data.model_validate(
-        df.filter(col("comment_id") == comment_id).to_dicts()[0]
-      )
+        comments.filter(col("comment_id") == comment_id).to_dicts()[0]
+      ).model_dump()
       df = append(df, ProcessedData(
-        is_bot_comment=is_bot, **data
+        is_bot_comment=is_bot, **data # pyright: ignore[reportAny]
       ))
     _ = o.files.delete(output_file_id)
     _ = o.files.delete(batch.input_file_id)
