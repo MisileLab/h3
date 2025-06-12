@@ -36,18 +36,22 @@ for k, i in tqdm(enumerate(comments.iter_rows(named=True))):
         "messages": [
           {"role": "system", "content": prompt},
           {"role": "user", "content": [{
-            "type": "input_text",
-            "content": f"""
+            "type": "text",
+            "text": f"""
               first profile image is the current comment, second (if exist) is the parent comment.
               current comment: {current_string}
               parent comment: {parent_string}
               """
             },{
-              "type": "input_image",
-              "image_url": current_image_url
+              "type": "image_url",
+              "image_url": {
+                "url": current_image_url
+              }
             },{
-              "type": "input_image",
-              "image_url": parent_image_url
+              "type": "image_url",
+              "image_url": {
+                "url": parent_image_url
+              }
             }]
           }
         ]}
