@@ -104,7 +104,6 @@
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [kdiskmark auto-cpufreq];
   programs = {
-    amnezia-vpn.enable = true;
     nix-ld.enable = true;
     steam.enable = true;
     dconf.enable = true;
