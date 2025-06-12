@@ -29,7 +29,7 @@ for i in (progress_bar := tqdm(list(Path("./batches").glob("*.jsonl")))):
   batch = o.batches.retrieve(batch_id)
   while batch.status != "completed":
     progress_bar.set_description_str(batch.status)
-    sleep(60)
+    sleep(1)
     batch = o.batches.retrieve(batch_id)
   output_file_id = batch.output_file_id
   if output_file_id is not None:
