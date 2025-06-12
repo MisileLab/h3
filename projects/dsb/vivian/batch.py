@@ -48,9 +48,9 @@ for i in (progress_bar := tqdm(list(Path("./batches").glob("*.jsonl")))):
         df = append(df, ProcessedData(
           is_bot_comment=is_bot, **data # pyright: ignore[reportAny]
         ))
-      _ = o.files.delete(output_file_id)
-      _ = o.files.delete(batch.input_file_id)
-      df.write_avro("processed.avro")
+    _ = o.files.delete(output_file_id)
+    _ = o.files.delete(batch.input_file_id)
+    df.write_avro("processed.avro")
   else:
     print("something wrong")
     exit(1)
