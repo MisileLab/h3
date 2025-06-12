@@ -54,9 +54,9 @@ for k, i in tqdm(enumerate(comments.iter_rows(named=True))):
       }, ensure_ascii=False
     )
   )
-  if k != 0 and k % 9 == 0:
-    _ = Path(f"batches/{uuid4()}.jsonl").write_text("\n".join(batches))
-    batches = []
+  # if k != 0 and k % 9 == 0:
+  _ = Path(f"batches/{uuid4()}.jsonl").write_text("\n".join(batches))
+  batches = []
 
 _ = Path(f"batches/{uuid4()}.json").write_text("\n".join(batches))
 
