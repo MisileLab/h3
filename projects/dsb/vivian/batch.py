@@ -28,18 +28,20 @@ for i in (progress_bar := tqdm(list(Path("./batches").glob("*.jsonl")))):
   ).id
   batch = o.batches.retrieve(batch_id)
   while batch.status != "completed":
-    if batch.status == "failed":
-      print(batch.errors)
-      print("try again after sometime")
-      sleep(60)
-      batch_id = o.batches.create(
-        completion_window='24h',
-        endpoint='/v1/chat/completions',
-        input_file_id=file_id
-      ).id
     progress_bar.set_description_str(batch.status)
     sleep(1)
     batch = o.batches.retrieve(batch_id)
+    if batch.status == "failed":
+      errors = batch.errors
+      if errors is not None:
+        data = errors.data
+        if batch.status == "failed" and data is not None and data[0].code == "token_limit_exceeded":
+          sleep(60)
+          batch_id = o.batches.create(
+            completion_window='24h',
+            endpoint='/v1/chat/completions',
+            input_file_id=file_id
+          ).id
   output_file_id = batch.output_file_id
   if output_file_id is not None:
     outputs = [
