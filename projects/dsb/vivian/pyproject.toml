@@ -14,7 +14,8 @@ dependencies = [
   "pytorch-triton-rocm==3.3.1 ; sys_platform == 'linux'",
   "gradio==5.33.2",
   "openai==1.86.0",
-  "tqdm>=4.67.1",
+  "tqdm==4.67.1",
+  "tiktoken==0.9.0",
 ]
 
 [tool.uv.sources]
