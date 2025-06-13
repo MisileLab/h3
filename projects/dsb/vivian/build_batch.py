@@ -17,7 +17,6 @@ comments_iter = comments.iter_rows(named=True)
 batches: list[str] = []
 encoding = get_encoding("o200k_base")
 assert encoding.decode(encoding.encode('Hello world')) == 'Hello world'
-prompt_encoded = len(encoding.encode(prompt))
 encoded = 0
 
 # def generate_image_urls(data: list[dict[str, dict[str, str] | str]], urls: list[str]):
@@ -45,30 +44,32 @@ for k, i in tqdm(enumerate(comments.iter_rows(named=True))):
   content = f"""first profile image is the current comment, second (if exist) is the parent comment.
 current comment: {current_string}
 parent comment: {parent_string}"""
+  body = {
+    "model": "gpt-4.1-nano",
+    "messages": [
+    {"role": "system", "content": prompt},
+    {"role": "user", "content": [{
+      "type": "text",
+      "text": content
+    }]}
+  ]}
   batches.append(dumps(
     {
       "custom_id": data.comment_id,
       "method": "POST", 
       "url": "/v1/chat/completions",
-      "body": {
-        "model": "gpt-4.1-nano",
-        "messages": [
-          {"role": "system", "content": prompt},
-          {"role": "user", "content": [{
-            "type": "text",
-            "text": content
-          }]}
-        ]}
+      "body": body
       }, ensure_ascii=False
     )
   )
-  encoded += prompt_encoded + len(encoding.encode(content))
-  if encoded > 2000000:
+  encoded_body = len(encoding.encode(dumps(body, ensure_ascii=False)))
+  encoded += encoded_body
+  if encoded > 1800000:
     _ = Path(f"batches/{uuid4()}.jsonl").write_text("\n".join(batches[:-1]))
     batches = [batches[-1]]
-    encoded = prompt_encoded + len(encoding.encode(batches[0]))
-    if encoded > 2000000:
-      print("wait, singular batch has more than 2000000")
+    encoded = encoded_body
+    if encoded > 1800000:
+      print("wait, singular batch is too big")
       exit(1)
 
 _ = Path(f"batches/{uuid4()}.json").write_text("\n".join(batches))
