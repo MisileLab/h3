@@ -28,6 +28,15 @@ for i in (progress_bar := tqdm(list(Path("./batches").glob("*.jsonl")))):
   ).id
   batch = o.batches.retrieve(batch_id)
   while batch.status != "completed":
+    if batch.status == "failed":
+      print(batch.errors)
+      print("try again after sometime")
+      sleep(60)
+      batch_id = o.batches.create(
+        completion_window='24h',
+        endpoint='/v1/chat/completions',
+        input_file_id=file_id
+      ).id
     progress_bar.set_description_str(batch.status)
     sleep(1)
     batch = o.batches.retrieve(batch_id)
