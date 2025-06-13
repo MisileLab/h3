@@ -36,7 +36,8 @@ for i in (progress_bar := tqdm(list(Path("./batches").glob("*.jsonl")))):
       if errors is not None:
         data = errors.data
         if batch.status == "failed" and data is not None and data[0].code == "token_limit_exceeded":
-          sleep(60)
+          progress_bar.set_description_str('ratelimit hitted')
+          sleep(60 * 20)
           batch_id = o.batches.create(
             completion_window='24h',
             endpoint='/v1/chat/completions',
