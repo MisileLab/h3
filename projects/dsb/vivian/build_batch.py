@@ -62,7 +62,7 @@ parent comment: {parent_string}"""
       }, ensure_ascii=False
     )
   )
-  encoded_body = len(encoding.encode(dumps(body, ensure_ascii=False)))
+  encoded_body = len(encoding.encode(dumps(batches[-1], ensure_ascii=False)))
   encoded += encoded_body
   if encoded > 1800000:
     _ = Path(f"batches/{uuid4()}.jsonl").write_text("\n".join(batches[:-1]))
