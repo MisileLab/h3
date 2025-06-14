@@ -66,10 +66,6 @@ parent comment: {parent_string}"""
   if encoded > 2000000:
     _ = Path(f"batches/{uuid4()}.jsonl").write_text("\n".join(batches[:-1]))
     batches = [batches[-1]]
-    encoded = prompt_encoded + len(encoding.encode(batches[0]))
-    if encoded > 2000000:
-      print("wait, singular batch has more than 2000000")
-      exit(1)
 
 _ = Path(f"batches/{uuid4()}.json").write_text("\n".join(batches))
 
