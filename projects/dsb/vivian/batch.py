@@ -7,16 +7,19 @@ from openai import OpenAI
 from polars import DataFrame, read_avro, concat, col
 from tqdm import tqdm
 
-from utils import Data, ProcessedData
+from utils import Data, ProcessedData, read_cached_avro
 
 def append(df: DataFrame, data: ProcessedData) -> DataFrame:
   return concat([df, DataFrame(data.model_dump())], how="vertical", rechunk=True)
 
 o = OpenAI(api_key=getenv('OPENAI_KEY'))
-df = DataFrame()
 comments = read_avro("comments.avro")
+df = read_cached_avro("processed.avro")
+t = list(Path("./batches").glob("*.jsonl"))
+for _ in range(len(df.to_dicts())):
+  t = t[1:]
 
-for i in (progress_bar := tqdm(list(Path("./batches").glob("*.jsonl")))):
+for i in (progress_bar := tqdm(t)):
   file_id = o.files.create(
     file=i.open("rb"),
     purpose="batch"
