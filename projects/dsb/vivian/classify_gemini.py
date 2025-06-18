@@ -43,11 +43,12 @@ async def process_comment(agent: Agent, data: Data, comments_df: DataFrame) -> P
     )
   return None
 
-async def process_batch(batch: list[dict[str, str]], agent: Agent, comments_df: DataFrame) -> list[ProcessedData]:
+async def process_batch(batch: list[dict[str, str]], agent: Agent, comments_df: DataFrame, df: DataFrame) -> list[ProcessedData]:
   tasks: list[CoroutineType[None, None, ProcessedData | None]] = []
   for item in batch:
     data = Data.model_validate(item)
-    tasks.append(process_comment(agent, data, comments_df))
+    if len(df.filter(col("comment_id") == data.comment_id)) == 0:
+      tasks.append(process_comment(agent, data, comments_df))
 
   results = await asyncio.gather(*tasks)
   return [r for r in results if r is not None]
@@ -75,7 +76,7 @@ async def main():
       if not batch:
         break
 
-      processed_batch = await process_batch(batch, agent, comments)
+      processed_batch = await process_batch(batch, agent, comments, df)
       for processed in processed_batch:
         df = append(df, processed)
 
