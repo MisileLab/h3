@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.13.3"
 dependencies = [
   "keras==3.10.0",
-  "polars==1.30.0",
+  "polars==1.31.0",
   "pydantic==2.11.7",
   "python-youtube==0.9.7",
   "voyageai==0.3.2",
