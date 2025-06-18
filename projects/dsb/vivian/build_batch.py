@@ -5,10 +5,9 @@ from uuid import uuid4
 from polars import read_avro, col
 from tqdm import tqdm
 
-from utils import Data, read_cached_avro
+from utils import Data
 
 comments = read_avro("comments.avro")
-df = read_cached_avro("comments.avro")
 
 Path("batches").mkdir(exist_ok=True)
 prompt = Path("prompt").read_text()
