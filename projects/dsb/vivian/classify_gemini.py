@@ -54,7 +54,7 @@ async def process_batch(batch: list[dict[str, str]], agent: Agent, comments_df: 
 
 async def main():
   model = OpenAIModel(
-    'gemini-2.5-flash-lite-preview-06-17',
+    'google/gemini-2.5-flash-lite-preview-06-17',
     provider=OpenAIProvider(
       base_url='https://openrouter.ai/api/v1',
       api_key=getenv('OPENROUTER_KEY')
