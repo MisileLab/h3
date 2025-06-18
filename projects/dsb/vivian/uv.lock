@@ -319,7 +319,7 @@ wheels = [
 
 [[package]]
 name = "gradio"
-version = "5.34.0"
+version = "5.34.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -352,9 +352,9 @@ dependencies = [
     { name = "urllib3", marker = "sys_platform == 'emscripten'" },
     { name = "uvicorn", marker = "sys_platform != 'emscripten'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/60/c3/da66123482304744ca873ac71aef14aee79028b17d5d7a1b4f8ce9f455ea/gradio-5.34.0.tar.gz", hash = "sha256:7d150fe2c6cf7b4776ef61f318d531cfd653f028029287f3db3470936483b3cf", size = 63821757, upload-time = "2025-06-13T21:23:16.662Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f8/b9/e9c5113422eed97bb7692709775142e2f76259f0237652b544f459c503ef/gradio-5.34.1.tar.gz", hash = "sha256:26e3a01b0d3170e0ecc4757a0973aab78d5e1a15110b122c512ada116e137729", size = 65347644, upload-time = "2025-06-18T00:19:15.696Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/6f/0d/676653dd6cd8dca60ed253d93a29c6e769e55dccf40929ac4b127b7953ff/gradio-5.34.0-py3-none-any.whl", hash = "sha256:a5eeb9bd2db923fc4b39abceac27886e5e05f20e89c0026bbdd2e2be6d5fbe32", size = 54270681, upload-time = "2025-06-13T21:23:11.89Z" },
+    { url = "https://files.pythonhosted.org/packages/6e/4d/3883eaf9502c24a78f13ec755e28dc6e71f4f5b050cc9e04efecc5d2dcdd/gradio-5.34.1-py3-none-any.whl", hash = "sha256:399167c0dbf11abcbe6e281575614b105ff4bfaea9491aa2b06de64ffdd553c4", size = 54273535, upload-time = "2025-06-18T00:19:08.782Z" },
 ]
 
 [[package]]
@@ -1428,7 +1428,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "gradio", specifier = "==5.34.0" },
+    { name = "gradio", specifier = "==5.34.1" },
     { name = "keras", specifier = "==3.10.0" },
     { name = "openai", specifier = "==1.88.0" },
     { name = "polars", specifier = "==1.30.0" },
