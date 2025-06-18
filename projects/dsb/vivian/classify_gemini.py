@@ -1,11 +1,13 @@
-#!pip install polars pydantic pydantic-ai-slim[openai] tqdm
 from pathlib import Path
 from json import dumps
 from types import CoroutineType
 import asyncio
 from itertools import islice
+from os import getenv
 
 from pydantic_ai import Agent
+from pydantic_ai.models.openai import OpenAIModel
+from pydantic_ai.providers.openai import OpenAIProvider
 from polars import read_avro, col, DataFrame, concat
 from tqdm import tqdm
 
@@ -51,9 +53,17 @@ async def process_batch(batch: list[dict[str, str]], agent: Agent, comments_df: 
   return [r for r in results if r is not None]
 
 async def main():
+  model = OpenAIModel(
+    'gemini-2.5-flash-lite-preview-06-17',
+    provider=OpenAIProvider(
+      base_url='https://openrouter.ai/api/v1',
+      api_key=getenv('OPENROUTER_KEY')
+    )
+  )
+
   agent = Agent(
-    'ollama:phi4-reasoning:plus',
-    system_prompt=prompt
+    model=model,
+    instructions=prompt
   )
 
   batch_size = get_batch_size()
