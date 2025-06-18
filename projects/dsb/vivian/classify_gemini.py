@@ -5,7 +5,7 @@ import asyncio
 from itertools import islice
 from os import getenv
 
-from pydantic_ai import Agent
+from pydantic_ai import Agent, UnexpectedModelBehavior
 from pydantic_ai.models.openai import OpenAIModel
 from pydantic_ai.providers.openai import OpenAIProvider
 from polars import read_avro, col, DataFrame, concat
@@ -32,9 +32,14 @@ async def process_comment(agent: Agent, data: Data, comments_df: DataFrame) -> P
   else:
     parent_string = "" 
   current_string = dumps(data.model_dump(exclude={"comment_id", "parent_id", "author_image_url", "video_id"}), ensure_ascii=False)
-  response = await agent.run(f"""first profile image is the current comment, second (if exist) is the parent comment.
-  current comment: {current_string}
-  parent comment: {parent_string}""")
+  try:
+    response = await agent.run(f"""first profile image is the current comment, second (if exist) is the parent comment.
+    current comment: {current_string}
+    parent comment: {parent_string}""")
+  except UnexpectedModelBehavior as e:
+    if e.message == "Received empty model response":
+      return None
+    raise e
 
   if response.output in ["A", "B"]:
     return ProcessedData(
