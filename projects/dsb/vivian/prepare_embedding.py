@@ -35,5 +35,5 @@ for i in tqdm(processed.to_dicts()):
     is_bot_comment=data.is_bot_comment
   ))
 
-df.write_avro("embedding.avro")
+df.write_avro("embedding_data.avro")
 
