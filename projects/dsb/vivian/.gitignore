@@ -1,7 +1,8 @@
 # Custom
 videos.avro
 comments.avro
-verified.avro
+processed.avro
+embeddings.avro
 batches
 
 # Python.gitignore by ignofierplus
