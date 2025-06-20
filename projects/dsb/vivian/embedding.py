@@ -1,4 +1,6 @@
-#!pip install transformers sentence-transformers tqdm pydantic polars
+#!pip install -U transformers sentence-transformers tqdm pydantic polars accelerate
+#!apt install zstd
+#!zstd -d --rm embedding_data.avro.zst
 
 from pydantic import BaseModel
 from tqdm import tqdm
@@ -22,11 +24,7 @@ class Embedding(BaseModel):
   comment_content: list[float]
   is_bot_comment: int
 
-model = SentenceTransformer(
-  "Qwen/Qwen3-Embedding-8B",
-  model_kwargs={"attn_implementation": "flash_attention_2", "device_map": "auto"},
-  tokenizer_kwargs={"padding_side": "left"},
-)
+model = SentenceTransformer("Qwen/Qwen3-Embedding-8B")
 
 def append(df: DataFrame, data: Embedding) -> DataFrame:
   return concat([df, DataFrame(data.model_dump())], how="vertical", rechunk=True)

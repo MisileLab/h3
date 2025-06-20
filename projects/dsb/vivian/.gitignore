@@ -3,6 +3,8 @@ videos.avro
 comments.avro
 processed.avro
 embeddings.avro
+embedding_data.avro
+embedding_data.avro.zst
 batches
 
 # Python.gitignore by ignofierplus
