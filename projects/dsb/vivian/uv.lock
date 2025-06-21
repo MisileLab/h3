@@ -686,7 +686,7 @@ wheels = [
 
 [[package]]
 name = "marimo"
-version = "0.14.2"
+version = "0.14.3"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
@@ -706,9 +706,9 @@ dependencies = [
     { name = "uvicorn" },
     { name = "websockets" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/53/fa/6347a8a2632547a54da94106a10047967b13f4323ff1e0d0a416f1837b0c/marimo-0.14.2.tar.gz", hash = "sha256:6be9e261cad08002a477d99ba983eb419d8e016cfb1ce1592daec3e7ffa88767", size = 29112616, upload-time = "2025-06-21T04:28:29.287Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ed/e3/a6fba70c9f9fd89735e8894afbfb747dcb2ae9c00179da0cfca72fd03e8f/marimo-0.14.3.tar.gz", hash = "sha256:9e11bef2e2b90f9238158adc1dc4ef7ef4a3d762269c3d822a2853475ad33bdf", size = 29112722, upload-time = "2025-06-21T05:28:51.335Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/7d/b0/f62e0fda8cd428fabb569c3d9b7fd947bce018c858acedcb4f95b75fa6c2/marimo-0.14.2-py3-none-any.whl", hash = "sha256:66edcd58c3d758e19ff82c881cf67953b19546bd2767c340b145b3fde63cd681", size = 29585060, upload-time = "2025-06-21T04:28:24.207Z" },
+    { url = "https://files.pythonhosted.org/packages/9b/5c/c746a346e8a638ccd4937bdc311efb1c70f5fa9735f7d10261d3f4f354cb/marimo-0.14.3-py3-none-any.whl", hash = "sha256:be0f4ca055825ee722c6279040326cc062ec70231a1f85198fa86812519cd487", size = 29585110, upload-time = "2025-06-21T05:28:46.411Z" },
 ]
 
 [[package]]
@@ -1886,7 +1886,7 @@ requires-dist = [
     { name = "anthropic", specifier = "==0.54.0" },
     { name = "gradio", specifier = "==5.34.2" },
     { name = "keras", specifier = "==3.10.0" },
-    { name = "marimo", specifier = "==0.14.2" },
+    { name = "marimo", specifier = "==0.14.3" },
     { name = "openai", specifier = "==1.90.0" },
     { name = "plotly", specifier = "==6.1.2" },
     { name = "polars", specifier = "==1.31.0" },
