@@ -1,4 +1,4 @@
-{pkgs, stablep, config, ...}:
+{pkgs, config, ...}:
 {
   home = {
     sessionVariables = {
@@ -29,8 +29,8 @@
       clang-tools lldb pkg-config
       niv nixpkgs-fmt nix-tree hub fh nixfmt-rfc-style nurl
       packwiz ccemux
-      # https://github.com/NixOS/nixpkgs/issues/413845
-      (stablep.unityhub) dotnet-sdk_8
+      # https://github.com/NixOS/nixpkgs/issues/418451
+      /*unityhub*/ dotnet-sdk_8
       lua (writeShellScriptBin "luajit" "${luajit}/bin/lua") luarocks
       vala
       zig
