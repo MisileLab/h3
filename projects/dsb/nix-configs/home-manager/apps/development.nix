@@ -42,7 +42,6 @@
     ]
     ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
     ++ (with nodePackages_latest; [nodejs typescript svelte-language-server prettier]) # nodejs
-    # https://github.com/NixOS/nixpkgs/issues/418030
     ++ (with python313Packages; [pip virtualenv mitmproxy]); # python thing
     file = {
       ".config/process-compose/theme.yaml".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
