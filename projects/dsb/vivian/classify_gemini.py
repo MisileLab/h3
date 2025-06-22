@@ -1,19 +1,21 @@
-from pathlib import Path
-from json import dumps
-from types import CoroutineType
 import asyncio
+from copy import deepcopy
 from itertools import islice
+from json import dumps
 from os import getenv
+from pathlib import Path
+from types import CoroutineType
 
+from polars import DataFrame, col, concat, read_avro
 from pydantic_ai import Agent, UnexpectedModelBehavior
 from pydantic_ai.models.openai import OpenAIModel
 from pydantic_ai.providers.openai import OpenAIProvider
-from polars import read_avro, col, DataFrame, concat
 from tqdm import tqdm
 
-from utils import Data, read_cached_avro, ProcessedData
+from utils import Data, ProcessedData, read_cached_avro
 
 comments = read_avro("comments.avro")
+original_comments = deepcopy(comments)
 df = read_cached_avro("processed.avro")
 
 # Remove already processed comments from the comments DataFrame
@@ -29,9 +31,9 @@ def append(df: DataFrame, data: ProcessedData) -> DataFrame:
 def get_batch_size() -> int:
   return 1
 
-async def process_comment(agent: Agent, data: Data, comments_df: DataFrame) -> ProcessedData | None:
+async def process_comment(agent: Agent, data: Data) -> ProcessedData | None:
   if parent_id := data.parent_id:
-    parent = Data.model_validate(comments_df.filter(col('comment_id') == parent_id).to_dicts()[0])
+    parent = Data.model_validate(original_comments.filter(col('comment_id') == parent_id).to_dicts()[0])
     parent_string = dumps(parent.model_dump(exclude={"comment_id", "parent_id", "author_image_url", "video_id"}), ensure_ascii=False)
   else:
     parent_string = ""
@@ -52,11 +54,11 @@ async def process_comment(agent: Agent, data: Data, comments_df: DataFrame) -> P
     )
   return None
 
-async def process_batch(batch: list[dict[str, str]], agent: Agent, comments_df: DataFrame) -> list[ProcessedData]:
+async def process_batch(batch: list[dict[str, str]], agent: Agent) -> list[ProcessedData]:
   tasks: list[CoroutineType[None, None, ProcessedData | None]] = []
   for item in batch:
     data = Data.model_validate(item)
-    tasks.append(process_comment(agent, data, comments_df))
+    tasks.append(process_comment(agent, data))
 
   results = await asyncio.gather(*tasks)
   return [r for r in results if r is not None]
@@ -84,7 +86,7 @@ async def main():
       if not batch:
         break
 
-      processed_batch = await process_batch(batch, agent, comments)
+      processed_batch = await process_batch(batch, agent)
       for processed in processed_batch:
         df = append(df, processed)
 
