@@ -16,9 +16,12 @@ from utils import Data, read_cached_avro, ProcessedData
 comments = read_avro("comments.avro")
 df = read_cached_avro("processed.avro")
 
+# Remove already processed comments from the comments DataFrame
+processed_ids = set(df.select("comment_id").to_series().to_list())
+comments = comments.filter(~col("comment_id").is_in(processed_ids))
+
 prompt = Path("prompt").read_text()
 comments_iter = comments.iter_rows(named=True)
-processed_ids = set(df.select("comment_id").to_series().to_list())
 
 def append(df: DataFrame, data: ProcessedData) -> DataFrame:
   return concat([df, DataFrame(data.model_dump())], how="vertical", rechunk=True)
@@ -50,12 +53,10 @@ async def process_comment(agent: Agent, data: Data, comments_df: DataFrame) -> P
   return None
 
 async def process_batch(batch: list[dict[str, str]], agent: Agent, comments_df: DataFrame) -> list[ProcessedData]:
-  # Process only unprocessed comments
   tasks: list[CoroutineType[None, None, ProcessedData | None]] = []
   for item in batch:
     data = Data.model_validate(item)
-    if data.comment_id not in processed_ids:
-      tasks.append(process_comment(agent, data, comments_df))
+    tasks.append(process_comment(agent, data, comments_df))
 
   results = await asyncio.gather(*tasks)
   return [r for r in results if r is not None]
