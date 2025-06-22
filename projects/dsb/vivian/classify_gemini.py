@@ -24,7 +24,7 @@ def append(df: DataFrame, data: ProcessedData) -> DataFrame:
   return concat([df, DataFrame(data.model_dump())], how="vertical", rechunk=True)
 
 def get_batch_size() -> int:
-  return 1
+  return int(getenv('BATCH_SIZE', '10'))
 
 async def process_comment(agent: Agent, data: Data, comments_df: DataFrame) -> ProcessedData | None:
   if parent_id := data.parent_id:
