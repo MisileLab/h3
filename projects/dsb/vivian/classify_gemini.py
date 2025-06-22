@@ -18,6 +18,7 @@ df = read_cached_avro("processed.avro")
 
 prompt = Path("prompt").read_text()
 comments_iter = comments.iter_rows(named=True)
+processed_ids = set(df.select("comment_id").to_series().to_list())
 
 def append(df: DataFrame, data: ProcessedData) -> DataFrame:
   return concat([df, DataFrame(data.model_dump())], how="vertical", rechunk=True)
@@ -30,7 +31,7 @@ async def process_comment(agent: Agent, data: Data, comments_df: DataFrame) -> P
     parent = Data.model_validate(comments_df.filter(col('comment_id') == parent_id).to_dicts()[0])
     parent_string = dumps(parent.model_dump(exclude={"comment_id", "parent_id", "author_image_url", "video_id"}), ensure_ascii=False)
   else:
-    parent_string = "" 
+    parent_string = ""
   current_string = dumps(data.model_dump(exclude={"comment_id", "parent_id", "author_image_url", "video_id"}), ensure_ascii=False)
   try:
     response = await agent.run(f"""first profile image is the current comment, second (if exist) is the parent comment.
@@ -48,11 +49,12 @@ async def process_comment(agent: Agent, data: Data, comments_df: DataFrame) -> P
     )
   return None
 
-async def process_batch(batch: list[dict[str, str]], agent: Agent, comments_df: DataFrame, df: DataFrame) -> list[ProcessedData]:
+async def process_batch(batch: list[dict[str, str]], agent: Agent, comments_df: DataFrame) -> list[ProcessedData]:
+  # Process only unprocessed comments
   tasks: list[CoroutineType[None, None, ProcessedData | None]] = []
   for item in batch:
     data = Data.model_validate(item)
-    if len(df.filter(col("comment_id") == data.comment_id)) == 0:
+    if data.comment_id not in processed_ids:
       tasks.append(process_comment(agent, data, comments_df))
 
   results = await asyncio.gather(*tasks)
@@ -81,7 +83,7 @@ async def main():
       if not batch:
         break
 
-      processed_batch = await process_batch(batch, agent, comments, df)
+      processed_batch = await process_batch(batch, agent, comments)
       for processed in processed_batch:
         df = append(df, processed)
 
