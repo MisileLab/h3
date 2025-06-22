@@ -3,7 +3,7 @@ name = "zetta"
 version = "0.1.0"
 description = "Breakthrough of SimpleQA"
 readme = "README.md"
-requires-python = ">=3.13.3"
+requires-python = ">=3.13.4"
 dependencies = [
   "blake3==1.0.5",
   "httpx==0.28.1",
