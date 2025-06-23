@@ -22,6 +22,7 @@ dependencies = [
   "pyarrow==20.0.0",
   "transformers==4.52.4",
   "sentence-transformers==4.1.0",
+  "datasets==3.6.0",
 ]
 
 [tool.uv.sources]
