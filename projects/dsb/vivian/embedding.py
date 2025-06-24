@@ -24,7 +24,7 @@ class Embedding(BaseModel):
   comment_content: list[float]
   is_bot_comment: int
 
-model = SentenceTransformer("Qwen/Qwen3-Embedding-8B")
+model = SentenceTransformer("Qwen/Qwen3-Embedding-4B")
 
 def append(df: DataFrame, data: Embedding) -> DataFrame:
   return concat([df, DataFrame(data.model_dump())], how="vertical", rechunk=True)
