@@ -2,6 +2,7 @@
 #!apt install zstd
 #!zstd -d --rm embedding_data.avro.zst
 import gc
+from contextlib import suppress
 
 from polars import DataFrame, concat, read_avro
 from pydantic import BaseModel
@@ -116,45 +117,46 @@ total_batches = (len(data_list) + BATCH_SIZE - 1) // BATCH_SIZE
 
 print(f"Processing {len(data_list)} items in {total_batches} batches of size {BATCH_SIZE}")
 
+with suppress(KeyboardInterrupt):
 # Process in batches with memory management
-for batch_idx in tqdm(range(0, len(data_list), BATCH_SIZE), desc="Processing batches"):
-  batch_data = data_list[batch_idx:batch_idx + BATCH_SIZE]
-  
-  try:
-    # Process the batch
-    embeddings_batch = process_batch(batch_data, model)
+  for batch_idx in tqdm(range(0, len(data_list), BATCH_SIZE), desc="Processing batches"):
+    batch_data = data_list[batch_idx:batch_idx + BATCH_SIZE]
     
-    # Append to dataframe
-    df = append_batch(df, embeddings_batch)
-    
-    # Clear memory periodically
-    if (batch_idx // BATCH_SIZE + 1) % 10 == 0:
-      _ = gc.collect()
-    
-    # Periodic saving to avoid data loss
-    if (batch_idx // BATCH_SIZE + 1) % SAVE_INTERVAL == 0:
-      print(f"Saving checkpoint at batch {batch_idx // BATCH_SIZE + 1}")
-      df.write_avro(f"embedding_checkpoint_{batch_idx // BATCH_SIZE + 1}.avro")
+    try:
+      # Process the batch
+      embeddings_batch = process_batch(batch_data, model)
       
-  except Exception as e:
-    print(f"Error processing batch {batch_idx // BATCH_SIZE + 1}: {e}")
-    # Try with smaller batch if memory error
-    if "memory" in str(e).lower() or "cuda" in str(e).lower():
-      print("Memory error detected, trying smaller batch size")
-      BATCH_SIZE = max(4, BATCH_SIZE - 1) # pyright: ignore[reportConstantRedefinition]
-      print(f"New batch size: {BATCH_SIZE}")
-      _ = gc.collect()
+      # Append to dataframe
+      df = append_batch(df, embeddings_batch)
       
-      # Retry current batch with smaller size
-      batch_data = data_list[batch_idx:batch_idx + BATCH_SIZE]
-      try:
-        embeddings_batch = process_batch(batch_data, model)
-        df = append_batch(df, embeddings_batch)
-      except Exception as retry_e:
-        print(f"Retry failed: {retry_e}")
+      # Clear memory periodically
+      if (batch_idx // BATCH_SIZE + 1) % 10 == 0:
+        _ = gc.collect()
+      
+      # Periodic saving to avoid data loss
+      if (batch_idx // BATCH_SIZE + 1) % SAVE_INTERVAL == 0:
+        print(f"Saving checkpoint at batch {batch_idx // BATCH_SIZE + 1}")
+        df.write_avro(f"embedding_checkpoint_{batch_idx // BATCH_SIZE + 1}.avro")
+        
+    except Exception as e:
+      print(f"Error processing batch {batch_idx // BATCH_SIZE + 1}: {e}")
+      # Try with smaller batch if memory error
+      if "memory" in str(e).lower() or "cuda" in str(e).lower():
+        print("Memory error detected, trying smaller batch size")
+        BATCH_SIZE = max(4, BATCH_SIZE - 1) # pyright: ignore[reportConstantRedefinition]
+        print(f"New batch size: {BATCH_SIZE}")
+        _ = gc.collect()
+        
+        # Retry current batch with smaller size
+        batch_data = data_list[batch_idx:batch_idx + BATCH_SIZE]
+        try:
+          embeddings_batch = process_batch(batch_data, model)
+          df = append_batch(df, embeddings_batch)
+        except Exception as retry_e:
+          print(f"Retry failed: {retry_e}")
+          continue
+      else:
         continue
-    else:
-      continue
 
 # Final save
 df.write_avro("embedding.avro")
