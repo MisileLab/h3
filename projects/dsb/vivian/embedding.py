@@ -1,6 +1,7 @@
 #!pip install -U transformers sentence-transformers tqdm pydantic polars accelerate
 #!apt install zstd
 #!zstd -d --rm embedding_data.avro.zst
+
 import gc
 from contextlib import suppress
 
@@ -8,16 +9,17 @@ from polars import DataFrame, concat, read_avro
 from pydantic import BaseModel
 from sentence_transformers import SentenceTransformer
 from tqdm import tqdm
+
 # Configuration - Set your VRAM amount here (in GB)
 # Common GPU VRAM amounts:
 # RTX 4090: 24GB, RTX 4080: 16GB, RTX 4070 Ti: 12GB, RTX 4060 Ti: 8GB
 # RTX 3080: 10GB, RTX 3070: 8GB, RTX 3060: 6GB, RTX 3050: 4GB
 VRAM_GB = 12  # Change this to match your GPU's VRAM
 
-# Model requirements for Qwen3-Embedding-4B
-MODEL_BASE_MEMORY_GB = 8.5  # Model size + framework overhead
-MINIMUM_VRAM_GB = 10  # Minimum VRAM required to run the model
-VRAM_DIVISOR = 0.5  # Constant to calculate batch size from available VRAM
+# Model requirements for Qwen3-Embedding-0.6B
+MODEL_BASE_MEMORY_GB = 2.5  # Model size + framework overhead
+MINIMUM_VRAM_GB = 3  # Minimum VRAM required to run the model
+VRAM_DIVISOR = 0.15  # Constant to calculate batch size from available VRAM
 
 processed = read_avro("embedding_data.avro")
 df = DataFrame()
@@ -35,7 +37,7 @@ def get_optimal_batch_size(vram_gb: float) -> int:
   
   # Check minimum VRAM requirement
   if vram_gb < MINIMUM_VRAM_GB:
-    print(f"ERROR: Insufficient VRAM! Qwen3-Embedding-4B requires at least {MINIMUM_VRAM_GB}GB VRAM")
+    print(f"ERROR: Insufficient VRAM! Qwen3-Embedding-0.6B requires at least {MINIMUM_VRAM_GB}GB VRAM")
     print(f"Your configured VRAM: {vram_gb}GB")
     print("Please upgrade your GPU or use a smaller model like Qwen3-Embedding-0.6B")
     return 1  # Return minimal batch size but warn user
@@ -49,7 +51,7 @@ def get_optimal_batch_size(vram_gb: float) -> int:
   calculated_batch_size = int(available_vram / VRAM_DIVISOR)
   
   # Ensure minimum batch size of 1 and maximum reasonable limit
-  batch_size = max(1, min(calculated_batch_size, 512))
+  batch_size = max(1, min(calculated_batch_size, 1024))
   
   estimated_usage = MODEL_BASE_MEMORY_GB + (batch_size * VRAM_DIVISOR)
   
@@ -59,7 +61,7 @@ def get_optimal_batch_size(vram_gb: float) -> int:
   
   return batch_size
 
-model = SentenceTransformer("Qwen/Qwen3-Embedding-4B")
+model = SentenceTransformer("Qwen/Qwen3-Embedding-0.6B")
 
 def append_batch(df: DataFrame, embeddings_batch: list[Embedding]) -> DataFrame:
   """Append a batch of embeddings to the dataframe"""
