@@ -43,14 +43,14 @@ importers:
         specifier: 5.2.0
         version: 5.2.0
       prettier:
-        specifier: 3.6.0
-        version: 3.6.0
+        specifier: 3.6.1
+        version: 3.6.1
       prettier-plugin-svelte:
         specifier: 3.4.0
-        version: 3.4.0(prettier@3.6.0)(svelte@5.34.7)
+        version: 3.4.0(prettier@3.6.1)(svelte@5.34.7)
       prettier-plugin-tailwindcss:
         specifier: 0.6.13
-        version: 0.6.13(prettier-plugin-svelte@3.4.0(prettier@3.6.0)(svelte@5.34.7))(prettier@3.6.0)
+        version: 0.6.13(prettier-plugin-svelte@3.4.0(prettier@3.6.1)(svelte@5.34.7))(prettier@3.6.1)
       shiki:
         specifier: 3.7.0
         version: 3.7.0
@@ -1015,8 +1015,8 @@ packages:
       prettier-plugin-svelte:
         optional: true
 
-  prettier@3.6.0:
-    resolution: {integrity: sha512-ujSB9uXHJKzM/2GBuE0hBOUgC77CN3Bnpqa+g80bkv3T3A93wL/xlzDATHhnhkzifz/UE2SNOvmbTz5hSkDlHw==}
+  prettier@3.6.1:
+    resolution: {integrity: sha512-5xGWRa90Sp2+x1dQtNpIpeOQpTDBs9cZDmA/qs2vDNN2i18PdapqY7CmBeyLlMuGqXJRIOPaCaVZTLNQRWUH/A==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -1930,18 +1930,18 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  prettier-plugin-svelte@3.4.0(prettier@3.6.0)(svelte@5.34.7):
+  prettier-plugin-svelte@3.4.0(prettier@3.6.1)(svelte@5.34.7):
     dependencies:
-      prettier: 3.6.0
+      prettier: 3.6.1
       svelte: 5.34.7
 
-  prettier-plugin-tailwindcss@0.6.13(prettier-plugin-svelte@3.4.0(prettier@3.6.0)(svelte@5.34.7))(prettier@3.6.0):
+  prettier-plugin-tailwindcss@0.6.13(prettier-plugin-svelte@3.4.0(prettier@3.6.1)(svelte@5.34.7))(prettier@3.6.1):
     dependencies:
-      prettier: 3.6.0
+      prettier: 3.6.1
     optionalDependencies:
-      prettier-plugin-svelte: 3.4.0(prettier@3.6.0)(svelte@5.34.7)
+      prettier-plugin-svelte: 3.4.0(prettier@3.6.1)(svelte@5.34.7)
 
-  prettier@3.6.0: {}
+  prettier@3.6.1: {}
 
   property-information@7.1.0: {}
 
