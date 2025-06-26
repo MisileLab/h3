@@ -1173,7 +1173,7 @@ wheels = [
 
 [[package]]
 name = "openai"
-version = "1.92.0"
+version = "1.92.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
@@ -1185,9 +1185,9 @@ dependencies = [
     { name = "tqdm" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/37/3f/75ad8dfe1ee4e6daacebc5a8145878c00b22c4b89e3446228d3ffccbf726/openai-1.92.0.tar.gz", hash = "sha256:acaf4ee5fca8611a09035e37ceb69a352b4a84e25b103f0fc1ccc696bf9a16f0", size = 485264, upload-time = "2025-06-26T16:57:18.996Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/11/44/9dba6f521591c49d3ba70b6800b32cb3f8feec89648b27fcce766046c57c/openai-1.92.2.tar.gz", hash = "sha256:b571a79fc7e165e7d00e6963a8a95eb5f42b60ac89fd316f1dc0a2dac5c6fae1", size = 485428, upload-time = "2025-06-26T19:38:01.228Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/68/66/8f85019b7943e4976d931fdb0e2b973090b4dac999c3e90844d2336f1184/openai-1.92.0-py3-none-any.whl", hash = "sha256:99210715bad1a4de5a387993aca7e4e8e5a742f1e185eefe2f805001cc2c21f3", size = 753397, upload-time = "2025-06-26T16:57:17.038Z" },
+    { url = "https://files.pythonhosted.org/packages/3d/e4/e558d3049feedab15fabf3cb704837b21c8194c133b9fb9fe56b8b82ca30/openai-1.92.2-py3-none-any.whl", hash = "sha256:abb64bee7f2571709edf9a856f598ffe871730129a7d807a8a4d8d2958f5c842", size = 753297, upload-time = "2025-06-26T19:37:59.35Z" },
 ]
 
 [[package]]
@@ -2172,7 +2172,7 @@ requires-dist = [
     { name = "gradio", specifier = "==5.34.2" },
     { name = "keras", specifier = "==3.10.0" },
     { name = "marimo", specifier = "==0.14.8" },
-    { name = "openai", specifier = "==1.92.0" },
+    { name = "openai", specifier = "==1.92.2" },
     { name = "plotly", specifier = "==6.2.0" },
     { name = "polars", specifier = "==1.31.0" },
     { name = "protobuf", specifier = "==6.31.1" },
