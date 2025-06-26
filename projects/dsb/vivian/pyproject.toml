@@ -10,7 +10,6 @@ dependencies = [
   "pydantic==2.11.7",
   "python-youtube==0.9.7",
   "torch==2.7.1",
-  "pytorch-triton-rocm==3.3.1 ; sys_platform == 'linux'",
   "gradio==5.34.2",
   "openai==1.91.0",
   "tqdm==4.67.1",
@@ -27,17 +26,4 @@ dependencies = [
   "websockets==15.0.1",
   "python-lsp-ruff==2.2.2",
 ]
-
-[tool.uv.sources]
-torch = [
-  { index = "pytorch-rocm", marker = "sys_platform == 'linux'" },
-]
-pytorch-triton-rocm = [
-  { index = "pytorch-rocm", marker = "sys_platform == 'linux'" },
-]
-
-[[tool.uv.index]]
-name = "pytorch-rocm"
-url = "https://download.pytorch.org/whl/rocm6.3"
-explicit = true
 
