@@ -11,7 +11,7 @@ dependencies = [
   "python-youtube==0.9.7",
   "torch==2.7.1",
   "gradio==5.34.2",
-  "openai==1.91.0",
+  "openai==1.92.0",
   "tqdm==4.67.1",
   "pydantic-ai-slim[openai]==0.3.4",
   "marimo==0.14.8",
