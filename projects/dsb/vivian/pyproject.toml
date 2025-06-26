@@ -9,7 +9,6 @@ dependencies = [
   "polars==1.31.0",
   "pydantic==2.11.7",
   "python-youtube==0.9.7",
-  "voyageai==0.3.2",
   "torch==2.7.1",
   "pytorch-triton-rocm==3.3.1 ; sys_platform == 'linux'",
   "gradio==5.34.2",
@@ -21,9 +20,12 @@ dependencies = [
   "plotly==6.1.2",
   "pyarrow==20.0.0",
   "transformers==4.52.4",
-  "sentence-transformers==4.1.0",
   "datasets==3.6.0",
   "protobuf==6.31.1",
+  "altair==5.5.0",
+  "python-lsp-server==1.12.2",
+  "websockets==15.0.1",
+  "python-lsp-ruff==2.2.2",
 ]
 
 [tool.uv.sources]

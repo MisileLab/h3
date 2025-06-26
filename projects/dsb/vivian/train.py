@@ -6,6 +6,12 @@ app = marimo.App(width="medium")
 
 @app.cell
 def _():
+    import marimo as mo
+    return (mo,)
+
+
+@app.cell
+def _():
     import torch
     import torch.nn as nn
     from transformers import ElectraModel
@@ -42,8 +48,9 @@ def _():
             probs = self.softmax(logits)
             return probs
 
-    model = SpamUserClassifier().to('cuda')
-    return model, torch
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model = SpamUserClassifier().to(device)
+    return device, model, torch
 
 
 @app.cell
@@ -59,14 +66,16 @@ def _():
 
 
 @app.cell
-def _(model, test_dataset, torch, train_dataset, valid_dataset):
-    from transformers import ElectraTokenizerFast, AdamW
+def _(device, mo, model, test_dataset, torch, train_dataset, valid_dataset):
+    from transformers import AutoTokenizer
     from torch.utils.data import DataLoader, Dataset
     import torch.nn.functional as F
-    from tqdm.auto import tqdm
+    from torch.optim import AdamW
+    import altair as alt
+    import polars as pl
 
     # prepare tokenizer
-    tokenizer = ElectraTokenizerFast.from_pretrained("beomi/kcelectra-base")
+    tokenizer = AutoTokenizer.from_pretrained("beomi/KcELECTRA-base")
 
     # dataset wrapper
     class YTBotDataset(Dataset):
@@ -97,7 +106,7 @@ def _(model, test_dataset, torch, train_dataset, valid_dataset):
     valid_ds = YTBotDataset(valid_dataset, tokenizer)
     test_ds  = YTBotDataset(test_dataset, tokenizer)
 
-    batch_size = 16
+    batch_size = 128
     train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True)
     valid_loader = DataLoader(valid_ds, batch_size=batch_size)
     test_loader  = DataLoader(test_ds, batch_size=batch_size)
@@ -105,14 +114,32 @@ def _(model, test_dataset, torch, train_dataset, valid_dataset):
     # optimizer
     optimizer = AdamW(model.parameters(), lr=2e-5)
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model.to(device)
+    # training setup
+    num_epochs = 100
+    patience = 5
+    best_valid_acc = 0.0
+    no_improve_epochs = 0
 
-    num_epochs = 3
-    for epoch in range(1, num_epochs + 1):
+    # Initialize training history
+    training_history = {
+        'epochs': [],
+        'train_losses': [],
+        'valid_losses': []
+    }
+
+    # create a top-level progress bar for all epochs
+    for epoch in (progress_bar := mo.status.progress_bar(range(1, num_epochs + 1), show_eta=True, show_rate=True)):
+        # training
+        progress_bar.completion_title = f"epoch {epoch}"
         model.train()
         running_loss = 0.0
-        for batch in tqdm(train_loader, desc=f"Training Epoch {epoch}"):
+        for i, batch in enumerate(mo.status.progress_bar(
+            train_loader,
+            subtitle=f"Training Epoch {epoch}",
+            show_eta=True,
+            show_rate=True,
+            remove_on_exit=True
+        )):
             input_ids = batch["input_ids"].to(device)
             attention_mask = batch["attention_mask"].to(device)
             labels = batch["labels"].to(device)
@@ -129,24 +156,51 @@ def _(model, test_dataset, torch, train_dataset, valid_dataset):
         # validation
         model.eval()
         correct, total = 0, 0
-        with torch.no_grad():
-            for batch in valid_loader:
+        valid_running_loss = 0.0
+        for i, batch in enumerate(mo.status.progress_bar(
+            valid_loader,
+            subtitle=f"Validating Epoch {epoch}",
+            show_eta=True,
+            show_rate=True,
+            remove_on_exit=True
+        )):
+            with torch.no_grad():
                 input_ids = batch["input_ids"].to(device)
                 attention_mask = batch["attention_mask"].to(device)
                 labels = batch["labels"].to(device)
                 probs = model(input_ids=input_ids, attention_mask=attention_mask)
+                loss = F.nll_loss(torch.log(probs), labels)
+                valid_running_loss += loss.item()
                 preds = probs.argmax(dim=1)
                 correct += (preds == labels).sum().item()
                 total += labels.size(0)
         valid_acc = correct / total
+        avg_valid_loss = valid_running_loss / len(valid_loader)
 
-        print(f"Epoch {epoch} | Train Loss: {avg_train_loss:.4f} | Valid Acc: {valid_acc:.4f}")
+        # Store training history
+        training_history['epochs'].append(epoch)
+        training_history['train_losses'].append(1)
+        training_history['valid_losses'].append(2)
+
+        # early stopping check
+        if valid_acc > best_valid_acc:
+            best_valid_acc = valid_acc
+            no_improve_epochs = 0
+        else:
+            no_improve_epochs += 1
+            if no_improve_epochs >= patience:
+                break
 
     # final test evaluation
     model.eval()
     correct, total = 0, 0
-    with torch.no_grad():
-        for batch in test_loader:
+    for i, batch in enumerate(mo.status.progress_bar(
+        test_loader, 
+        title="Testing", 
+        show_eta=True, 
+        show_rate=True
+    )):
+        with torch.no_grad():
             input_ids = batch["input_ids"].to(device)
             attention_mask = batch["attention_mask"].to(device)
             labels = batch["labels"].to(device)
@@ -155,10 +209,43 @@ def _(model, test_dataset, torch, train_dataset, valid_dataset):
             correct += (preds == labels).sum().item()
             total += labels.size(0)
     test_acc = correct / total
-    print(f"Test Accuracy: {test_acc:.4f}")
+    print(test_acc)
 
+    # Create and display final training chart
+    if training_history['epochs']:
+        epochs = training_history['epochs']
+        train_losses = training_history['train_losses']
+        valid_losses = training_history['valid_losses']
+    
+        _df = pl.DataFrame({
+            'epoch': epochs * 2,
+            'loss': train_losses + valid_losses,
+            'type': ['Train Loss'] * len(train_losses) + ['Validation Loss'] * len(valid_losses)
+        })
+    
+        final_chart = alt.Chart(_df).mark_line(point=True).encode(
+            x=alt.X('epoch:Q', title='Epoch'),
+            y=alt.Y('loss:Q', title='Loss'),
+            color=alt.Color('type:N', 
+                           scale=alt.Scale(domain=['Train Loss', 'Validation Loss'], 
+                                           range=['firebrick', 'royalblue'])),
+            tooltip=['epoch:Q', 'loss:Q', 'type:N']
+        ).properties(
+            title='Training and Validation Loss Over Epochs',
+            width=700,
+            height=400
+        ).interactive()
+    return (final_chart,)
+
+
+@app.cell
+def _(final_chart):
+    final_chart
     return
 
 
 if __name__ == "__main__":
     app.run()
+
+
+
