@@ -2,6 +2,10 @@
 
 A YouTube bot comment detection system using embeddings and machine learning.
 
+## Versions
+
+- [v0](https://static.marimo.app/static/vivian-jcxs)
+
 ## Overview
 
 Vivian is a tool designed to identify and filter bot comments on YouTube videos. It uses embeddings and machine learning techniques to classify comments as either bot-generated or human-written.
