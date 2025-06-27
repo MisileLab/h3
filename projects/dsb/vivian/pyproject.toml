@@ -9,7 +9,7 @@ dependencies = [
   "polars==1.31.0",
   "pydantic==2.11.7",
   "python-youtube==0.9.7",
-  "gradio==5.34.2",
+  "gradio==5.35.0",
   "openai==1.93.0",
   "tqdm==4.67.1",
   "pydantic-ai-slim[openai]==0.3.4",
