@@ -13,7 +13,7 @@
 		"@sveltejs/kit": "2.22.2",
 		"@sveltejs/vite-plugin-svelte": "5.1.0",
 		"@types/reveal.js": "5.2.0",
-		"prettier": "3.6.1",
+		"prettier": "3.6.2",
 		"prettier-plugin-svelte": "3.4.0",
 		"prettier-plugin-tailwindcss": "0.6.13",
 		"shiki": "3.7.0",
