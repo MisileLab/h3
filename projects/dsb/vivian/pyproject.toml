@@ -13,7 +13,7 @@ dependencies = [
   "openai==1.93.0",
   "tqdm==4.67.1",
   "pydantic-ai-slim[openai]==0.3.4",
-  "marimo==0.14.8",
+  "marimo==0.14.9",
   "anthropic==0.55.0",
   "plotly==6.2.0",
   "pyarrow==20.0.0",
