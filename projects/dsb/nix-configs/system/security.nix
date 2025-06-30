@@ -4,6 +4,14 @@
     ./applications/yubikey.nix
   ];
 
+  programs.wireshark = {
+    enable = true;
+    package = pkgs.wireshark;
+    usbmon.enable = true;
+    dumpcap.enable = true;
+  };
+  users.groups.wireshark.members = [ "misile" ];
+
   services = {
     # fprintd.enable = true;
     clamav = {
