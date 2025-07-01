@@ -106,7 +106,7 @@ wheels = [
 
 [[package]]
 name = "anthropic"
-version = "0.55.0"
+version = "0.56.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
@@ -117,9 +117,9 @@ dependencies = [
     { name = "sniffio" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a4/19/e2e09bc7fc0c4562ae865b3e5d487931c254c517e1c739b0c8aef2cf3186/anthropic-0.55.0.tar.gz", hash = "sha256:61826efa1bda0e4c7dc6f6a0d82b7d99b3fda970cd048d40ef5fca08a5eabd33", size = 408192, upload-time = "2025-06-23T18:52:26.27Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/4d/40/0c4eb5728466849803782c8a86eb315af1a6eb0efea6a751de120ab845c9/anthropic-0.56.0.tar.gz", hash = "sha256:56fa9eb61afa004a1664bc85eed071e77b96c579b77395e9cc893097e599f72e", size = 421538, upload-time = "2025-07-01T19:39:10.805Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/b3/8f/ba982f539db40f49a610f61562e9b54fb9c85e7b9ede9a46ff6f9e79042f/anthropic-0.55.0-py3-none-any.whl", hash = "sha256:3518433fc0372a13f2b793b4cabecc7734ec9176e063a0f28dac19aa17c57f94", size = 289318, upload-time = "2025-06-23T18:52:24.478Z" },
+    { url = "https://files.pythonhosted.org/packages/e5/90/7f4d4084f9c35c3ea3e784646ec12f9b2c8cf8743b2bb5489252659b5bda/anthropic-0.56.0-py3-none-any.whl", hash = "sha256:91f1f74abdcf0958d3296b657304588cc244b1107b89f973ff6f511afdacfc56", size = 289603, upload-time = "2025-07-01T19:39:08.794Z" },
 ]
 
 [[package]]
@@ -2268,7 +2268,7 @@ rocm = [
 [package.metadata]
 requires-dist = [
     { name = "altair", specifier = "==5.5.0" },
-    { name = "anthropic", specifier = "==0.55.0" },
+    { name = "anthropic", specifier = "==0.56.0" },
     { name = "datasets", specifier = "==3.6.0" },
     { name = "gradio", specifier = "==5.35.0" },
     { name = "keras", specifier = "==3.10.0" },
