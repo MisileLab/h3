@@ -17,7 +17,7 @@ dependencies = [
   "anthropic==0.57.1",
   "plotly==6.2.0",
   "pyarrow==20.0.0",
-  "transformers==4.53.0",
+  "transformers==4.53.1",
   "datasets==3.6.0",
   "protobuf==6.31.1",
   "altair==5.5.0",
