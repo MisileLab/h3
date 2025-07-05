@@ -557,8 +557,6 @@ def _(device, mo, model, test_loader, torch):
 
         # Optional: Also create a probability distribution plot
         def plot_probability_distribution():
-            import numpy as np
-
             # Separate probabilities by true labels
             normal_probs = [prob for prob, label in zip(all_probs, all_labels) if label == 0]
             spam_probs = [prob for prob, label in zip(all_probs, all_labels) if label == 1]
