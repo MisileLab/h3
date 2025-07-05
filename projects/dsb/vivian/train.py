@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.14.8"
+__generated_with = "0.14.9"
 app = marimo.App(width="medium")
 
 
@@ -22,7 +22,7 @@ def _():
     import polars as pl
 
     class FocalLoss(nn.Module):
-        """Focal Loss for handling class imbalance"""
+        """Focal Loss for handling class imbalance - supports both binary and multi-class"""
         def __init__(self, alpha=1.0, gamma=2.0, reduction='mean'):
             super().__init__()
             self.alpha = alpha
@@ -30,9 +30,18 @@ def _():
             self.reduction = reduction
 
         def forward(self, inputs, targets):
-            ce_loss = F.cross_entropy(inputs, targets, reduction='none')
-            pt = torch.exp(-ce_loss)
-            focal_loss = self.alpha * (1 - pt) ** self.gamma * ce_loss
+            # Handle binary classification (single output) vs multi-class
+            if inputs.dim() == 2 and inputs.size(1) == 1:
+                # Binary classification: inputs shape [batch_size, 1]
+                inputs = inputs.squeeze(-1)  # [batch_size]
+                bce_loss = F.binary_cross_entropy_with_logits(inputs, targets.float(), reduction='none')
+                pt = torch.exp(-bce_loss)
+                focal_loss = self.alpha * (1 - pt) ** self.gamma * bce_loss
+            else:
+                # Multi-class classification: inputs shape [batch_size, num_classes]
+                ce_loss = F.cross_entropy(inputs, targets, reduction='none')
+                pt = torch.exp(-ce_loss)
+                focal_loss = self.alpha * (1 - pt) ** self.gamma * ce_loss
 
             if self.reduction == 'mean':
                 return focal_loss.mean()
@@ -54,7 +63,8 @@ def _():
                         param.requires_grad = False
 
             # Classification network optimized for imbalanced datasets
-            self.dense1 = nn.Linear(768, 512)
+            # Changed input dimension from 768 to 1536 (CLS + mean pooling)
+            self.dense1 = nn.Linear(1536, 512)
             self.layernorm1 = nn.LayerNorm(512)
             self.gelu1 = nn.GELU()
             self.dropout1 = nn.Dropout(0.4)
@@ -64,7 +74,8 @@ def _():
             self.gelu2 = nn.GELU()
             self.dropout2 = nn.Dropout(0.3)
 
-            self.output_layer = nn.Linear(256, 2)
+            self.output_layer = nn.Linear(256, 1)
+            self.sigmoid = nn.Sigmoid()
 
             # Initialize weights properly
             self._init_weights()
@@ -85,11 +96,21 @@ def _():
                 output_attentions=True
             )
 
-            # Use CLS token representation
+            # CLS token representation
             cls_output = outputs.last_hidden_state[:, 0, :]  # [batch, 768]
 
+            # Mean pooling with proper attention masking
+            token_embeddings = outputs.last_hidden_state  # [batch, seq_len, 768]
+            input_mask_expanded = attention_mask.unsqueeze(-1).expand(token_embeddings.size()).float()
+            sum_embeddings = torch.sum(token_embeddings * input_mask_expanded, 1)
+            sum_mask = torch.clamp(input_mask_expanded.sum(1), min=1e-9)
+            mean_pooled = sum_embeddings / sum_mask  # [batch, 768]
+
+            # Concatenate CLS + mean pooling
+            combined_output = torch.cat([cls_output, mean_pooled], dim=1)  # [batch, 1536]
+
             # Pass through classification network
-            x = self.dense1(cls_output)
+            x = self.dense1(combined_output)
             x = self.layernorm1(x)
             x = self.gelu1(x)
             x = self.dropout1(x)
@@ -104,8 +125,10 @@ def _():
             if return_logits:
                 return logits
             else:
-                # Return probabilities for inference
-                return F.softmax(logits, dim=1)
+                # Apply sigmoid and return probabilities or predictions
+                probs = self.sigmoid(logits)
+                # Return class predictions: 0 (not bot) or 1 (bot)
+                return (probs > 0.5).long().squeeze(-1)
 
         def get_attention_weights(self, input_ids, attention_mask=None, token_type_ids=None):
             """Extract attention weights for interpretability"""
@@ -191,7 +214,7 @@ def _(
     valid_ds = YTBotDataset(valid_dataset, tokenizer)
     test_ds  = YTBotDataset(test_dataset, tokenizer)
 
-    batch_size = 128
+    batch_size = 148
     train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True)
     valid_loader = DataLoader(valid_ds, batch_size=batch_size)
     test_loader  = DataLoader(test_ds, batch_size=batch_size)
@@ -254,7 +277,7 @@ def _(
                 return_logits=True
             )
 
-            # Use Focal Loss instead of NLL loss
+            # Use Focal Loss directly (now supports binary classification)
             loss = criterion(logits, labels)
             loss.backward()
 
@@ -298,8 +321,13 @@ def _(
                 loss = criterion(logits, labels)
                 valid_running_loss += loss.item()
 
-                # Get predictions from logits
-                preds = logits.argmax(dim=1)
+                # Get predictions from logits (use model's sigmoid)
+                preds = model(
+                    input_ids=input_ids, 
+                    attention_mask=attention_mask,
+                    token_type_ids=token_type_ids,
+                    return_logits=False
+                )
                 correct += (preds == labels).sum().item()
                 total += labels.size(0)
 
@@ -319,7 +347,7 @@ def _(
             best_valid_acc = valid_acc
             no_improve_epochs = 0
             # Save best model
-            torch.save(model.state_dict(), 'best_spam_classifier.pth')
+            torch.save(model.state_dict(), 'model.pth')
         else:
             no_improve_epochs += 1
             if no_improve_epochs >= patience:
@@ -369,15 +397,22 @@ def _(
                 token_type_ids = token_type_ids.to(device)
             labels = batch["labels"].to(device)
 
-            # Get probabilities for final predictions
-            probs = model(
+            # Get logits and convert to predictions
+            logits = model(
+                input_ids=input_ids, 
+                attention_mask=attention_mask,
+                token_type_ids=token_type_ids,
+                return_logits=True
+            )
+
+            # Get predictions using model's sigmoid
+            preds = model(
                 input_ids=input_ids, 
                 attention_mask=attention_mask,
                 token_type_ids=token_type_ids,
                 return_logits=False
             )
 
-            preds = probs.argmax(dim=1)
             test_correct += (preds == labels).sum().item()
             test_total += labels.size(0)
 
@@ -387,14 +422,15 @@ def _(
 
     test_acc = test_correct / test_total
     print(f"Test Accuracy: {test_acc:.4f}")
-
-    # Calculate additional metrics for imbalanced dataset evaluation
-    from sklearn.metrics import classification_report, confusion_matrix
-    print("\nDetailed Classification Report:")
-    print(classification_report(test_labels, test_predictions, target_names=['Normal', 'Spam']))
-    print("\nConfusion Matrix:")
-    print(confusion_matrix(test_labels, test_predictions))
-    return device, final_chart, model, test_loader, tokenizer
+    return (
+        device,
+        final_chart,
+        model,
+        test_labels,
+        test_loader,
+        test_predictions,
+        tokenizer,
+    )
 
 
 @app.cell
@@ -424,19 +460,32 @@ def _(mo):
 
 
 @app.cell
-def _(device, mo, model, model_save_path, test_loader, torch):
+def _(test_labels, test_predictions):
+    # Calculate additional metrics for imbalanced dataset evaluation
+    from sklearn.metrics import classification_report, confusion_matrix
+    print("\nDetailed Classification Report:")
+    print(classification_report(test_labels, test_predictions, target_names=['Normal', 'Spam']))
+    print("\nConfusion Matrix:")
+    print(confusion_matrix(test_labels, test_predictions))
+    return
+
+
+@app.cell
+def _(device, mo, model, test_loader, torch):
     def _():
         import seaborn as sns
         import matplotlib.pyplot as plt
         from sklearn.metrics import confusion_matrix, accuracy_score
 
         # Load saved model state
-        model.load_state_dict(torch.load(model_save_path, map_location=device))
+        model.load_state_dict(torch.load('model.pth', map_location=device))
         model.to(device)
         model.eval()
 
         all_preds = []
         all_labels = []
+        all_probs = []
+
         with torch.no_grad():
             for batch in mo.status.progress_bar(
                 test_loader,
@@ -446,36 +495,89 @@ def _(device, mo, model, model_save_path, test_loader, torch):
             ):
                 input_ids = batch["input_ids"].to(device)
                 attention_mask = batch["attention_mask"].to(device)
+                token_type_ids = batch.get("token_type_ids", None)
+                if token_type_ids is not None:
+                    token_type_ids = token_type_ids.to(device)
                 labels = batch["labels"].to(device)
-                probs = model(input_ids=input_ids, attention_mask=attention_mask)
 
-                # If bot probability > 90% then classify as bot (1), else user (0)
-                bot_probs = probs[:, 1]
-                preds = (bot_probs > 0.9).long()
+                # Get raw logits for probability calculation
+                logits = model(
+                    input_ids=input_ids, 
+                    attention_mask=attention_mask,
+                    token_type_ids=token_type_ids,
+                    return_logits=True
+                )
+
+                # Calculate probabilities using model's sigmoid
+                probs = torch.sigmoid(logits.squeeze(-1))  # Bot probability
+
+                # Use custom threshold (0.8 for high precision)
+                preds = (probs > 0.8).long()
 
                 all_preds.extend(preds.cpu().numpy())
                 all_labels.extend(labels.cpu().numpy())
+                all_probs.extend(probs.cpu().numpy())
 
         # Compute metrics
         cm = confusion_matrix(all_labels, all_preds)
         acc = accuracy_score(all_labels, all_preds)
-        print(f"Accuracy: {acc * 100:.2f}%")
+        print(f"Accuracy with 0.8 threshold: {acc * 100:.2f}%")
+
+        # Print additional metrics
+        tn, fp, fn, tp = cm.ravel()
+        precision = tp / (tp + fp) if (tp + fp) > 0 else 0
+        recall = tp / (tp + fn) if (tp + fn) > 0 else 0
+        f1 = 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
+
+        print(f"Precision: {precision * 100:.2f}%")
+        print(f"Recall: {recall * 100:.2f}%")
+        print(f"F1-Score: {f1 * 100:.2f}%")
+        print(f"True Negatives: {tn}, False Positives: {fp}")
+        print(f"False Negatives: {fn}, True Positives: {tp}")
 
         # Plot heatmap
-        plt.figure(figsize=(6, 5))
+        plt.figure(figsize=(8, 6))
         sns.heatmap(
             cm,
             annot=True,
             fmt='d',
             cmap='Blues',
-            xticklabels=['User', 'Bot'],
-            yticklabels=['User', 'Bot']
+            xticklabels=['Normal User', 'Bot/Spam'],
+            yticklabels=['Normal User', 'Bot/Spam'],
+            cbar_kws={'label': 'Count'}
         )
         plt.xlabel('Predicted Label')
         plt.ylabel('True Label')
-        plt.title('Confusion Matrix Heatmap')
+        plt.title('Confusion Matrix - Spam Detection (Threshold: 0.8)')
         plt.tight_layout()
-        return plt.gca()
+
+        # Add text annotations for better interpretation
+        plt.text(0.5, -0.1, f'Accuracy: {acc:.3f} | Precision: {precision:.3f} | Recall: {recall:.3f} | F1: {f1:.3f}', 
+                 ha='center', va='top', transform=plt.gca().transAxes, fontsize=10)
+
+        # Optional: Also create a probability distribution plot
+        def plot_probability_distribution():
+            import numpy as np
+
+            # Separate probabilities by true labels
+            normal_probs = [prob for prob, label in zip(all_probs, all_labels) if label == 0]
+            spam_probs = [prob for prob, label in zip(all_probs, all_labels) if label == 1]
+
+            plt.figure(figsize=(10, 6))
+            plt.hist(normal_probs, bins=50, alpha=0.7, label='Normal Users', color='blue', density=True)
+            plt.hist(spam_probs, bins=50, alpha=0.7, label='Bot/Spam', color='red', density=True)
+            plt.axvline(x=0.5, color='green', linestyle='--', label='Default Threshold (0.5)')
+            plt.axvline(x=0.8, color='orange', linestyle='--', label='Current Threshold (0.8)')
+            plt.xlabel('Predicted Bot Probability')
+            plt.ylabel('Density')
+            plt.title('Distribution of Predicted Probabilities by True Label')
+            plt.legend()
+            plt.grid(True, alpha=0.3)
+            plt.tight_layout()
+            return plt.gca()
+
+        # Uncomment to see probability distribution
+        return (plot_probability_distribution(), plt.gca())
 
     _()
     return
@@ -490,29 +592,33 @@ def _(mo):
 @app.cell
 def _(device, model, tokenizer, torch):
     def _():
-        # Evaluate a single user input comment
-        model.eval()
-        comment = input("Enter a YouTube comment to evaluate: ")
+       # Evaluate a single user input comment
+       model.eval()
+       comment = input("Enter a YouTube comment to evaluate: ")
 
-        # Tokenize and prepare tensors
-        encoding = tokenizer(
-            comment,
-            truncation=True,
-            padding="max_length",
-            max_length=128,
-            return_tensors="pt"
-        )
-        input_ids = encoding["input_ids"].to(device)
-        attention_mask = encoding["attention_mask"].to(device)
+       # Tokenize and prepare tensors
+       encoding = tokenizer(
+           comment,
+           truncation=True,
+           padding="max_length",
+           max_length=128,
+           return_tensors="pt"
+       )
+       input_ids = encoding["input_ids"].to(device)
+       attention_mask = encoding["attention_mask"].to(device)
 
-        # Predict probability of bot
-        with torch.no_grad():
-            probs = model(input_ids=input_ids, attention_mask=attention_mask)
-            bot_probability = probs[0, 1].item()
+       # Get prediction using model's built-in sigmoid and threshold
+       with torch.no_grad():
+           prediction = model(
+               input_ids=input_ids, 
+               attention_mask=attention_mask, 
+               return_logits=False
+           )
+           is_bot = prediction.item()
 
-        # Print the probability as a percentage
-        return print(f"Bot probability: {bot_probability * 100:.2f}%")
-
+       # Print result
+       result = "Bot" if is_bot == 1 else "Not Bot"
+       return print(f"Prediction: {result}")
 
     _()
     return

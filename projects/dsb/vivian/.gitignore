@@ -1,6 +1,7 @@
 # Custom
 
 processed.avro
+model.pth
 
 # Python.gitignore by ignofierplus
 __pycache__/
