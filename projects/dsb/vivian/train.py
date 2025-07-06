@@ -1,6 +1,6 @@
 import marimo
 
-__generated_with = "0.14.9"
+__generated_with = "0.14.10"
 app = marimo.App(width="medium")
 
 
@@ -30,18 +30,10 @@ def _():
             self.reduction = reduction
 
         def forward(self, inputs, targets):
-            # Handle binary classification (single output) vs multi-class
-            if inputs.dim() == 2 and inputs.size(1) == 1:
-                # Binary classification: inputs shape [batch_size, 1]
-                inputs = inputs.squeeze(-1)  # [batch_size]
-                bce_loss = F.binary_cross_entropy_with_logits(inputs, targets.float(), reduction='none')
-                pt = torch.exp(-bce_loss)
-                focal_loss = self.alpha * (1 - pt) ** self.gamma * bce_loss
-            else:
-                # Multi-class classification: inputs shape [batch_size, num_classes]
-                ce_loss = F.cross_entropy(inputs, targets, reduction='none')
-                pt = torch.exp(-ce_loss)
-                focal_loss = self.alpha * (1 - pt) ** self.gamma * ce_loss
+            inputs = inputs.squeeze(-1)  # [batch_size]
+            bce_loss = F.binary_cross_entropy_with_logits(inputs, targets.float(), reduction='none')
+            pt = torch.exp(-bce_loss)
+            focal_loss = self.alpha * (1 - pt) ** self.gamma * bce_loss
 
             if self.reduction == 'mean':
                 return focal_loss.mean()
@@ -50,17 +42,11 @@ def _():
             else:
                 return focal_loss
 
-    class SpamUserClassifier(nn.Module):
-        def __init__(self, pretrained_model_name="beomi/kcelectra-base"):
+    class SpamUserClassificationLayer(nn.Module):
+        def __init__(self, encoder: ElectraModel):
             super().__init__()
 
-            self.encoder = ElectraModel.from_pretrained(pretrained_model_name)
-
-            # Freeze first 2 layers for imbalanced dataset scenario
-            for i, layer in enumerate(self.encoder.encoder.layer):
-                if i < 2:
-                    for param in layer.parameters():
-                        param.requires_grad = False
+            self.encoder = encoder
 
             # Classification network optimized for imbalanced datasets
             # Changed input dimension from 768 to 1536 (CLS + mean pooling)
@@ -74,20 +60,17 @@ def _():
             self.gelu2 = nn.GELU()
             self.dropout2 = nn.Dropout(0.3)
 
-            self.output_layer = nn.Linear(256, 1)
-            self.sigmoid = nn.Sigmoid()
-
             # Initialize weights properly
             self._init_weights()
 
         def _init_weights(self):
             """Initialize weights using Xavier/Glorot initialization"""
-            for module in [self.dense1, self.dense2, self.output_layer]:
+            for module in [self.dense1, self.dense2]:
                 nn.init.xavier_uniform_(module.weight)
                 if module.bias is not None:
                     nn.init.constant_(module.bias, 0)
 
-        def forward(self, input_ids, attention_mask=None, token_type_ids=None, return_logits=False):
+        def forward(self, input_ids, attention_mask=None, token_type_ids=None):
             # Get encoder outputs
             outputs = self.encoder(
                 input_ids=input_ids,
@@ -120,15 +103,7 @@ def _():
             x = self.gelu2(x)
             x = self.dropout2(x)
 
-            logits = self.output_layer(x)
-
-            if return_logits:
-                return logits
-            else:
-                # Apply sigmoid and return probabilities or predictions
-                probs = self.sigmoid(logits)
-                # Return class predictions: 0 (not bot) or 1 (bot)
-                return (probs > 0.5).long().squeeze(-1)
+            return x
 
         def get_attention_weights(self, input_ids, attention_mask=None, token_type_ids=None):
             """Extract attention weights for interpretability"""
@@ -141,6 +116,61 @@ def _():
                 )
                 # Return attention weights from last layer
                 return outputs.attentions[-1]
+
+    class SpamUserClassifier(nn.Module):
+        def __init__(self, pretrained_model_name="beomi/kcelectra-base"):
+            super().__init__()
+
+            self.encoder = ElectraModel.from_pretrained(pretrained_model_name)
+
+            # Freeze first 2 layers for imbalanced dataset scenario
+            for i, layer in enumerate(self.encoder.encoder.layer):
+                if i < 2:
+                    for param in layer.parameters():
+                        param.requires_grad = False
+
+            self.nameLayer = SpamUserClassificationLayer(self.encoder)
+            self.contentLayer = SpamUserClassificationLayer(self.encoder)
+
+            self.dense = nn.Linear(512, 256)
+            self.layernorm = nn.LayerNorm(256)
+            self.gelu = nn.GELU()
+            self.dropout = nn.Dropout(0.3)
+
+            self.output_layer = nn.Linear(256, 1)
+            self.sigmoid = nn.Sigmoid()
+
+            # Initialize weights properly
+            self._init_weights()
+
+        def _init_weights(self):
+            """Initialize weights using Xavier/Glorot initialization"""
+            nn.init.xavier_uniform_(self.dense.weight)
+            if self.dense.bias is not None:
+                nn.init.constant_(self.dense.bias, 0)
+
+        # def forward(self, input_ids, attention_mask=None, token_type_ids=None, return_logits=False):
+        def forward(self, name_input_ids, content_input_ids, name_attention_mask=None, name_token_type_ids=None,
+                   content_attention_mask=None, content_token_type_ids=None, return_logits=False):
+
+            namePrediction = self.nameLayer(name_input_ids, name_attention_mask, name_token_type_ids)
+            contentPrediction = self.contentLayer(content_input_ids, content_attention_mask, content_token_type_ids)
+
+            # Pass through classification network
+            x = self.dense(torch.cat([namePrediction, contentPrediction], dim=1))
+            x = self.layernorm(x)
+            x = self.gelu(x)
+            x = self.dropout(x)
+
+            logits = self.output_layer(x)
+
+            if return_logits:
+                return logits
+            else:
+                # Apply sigmoid and return probabilities or predictions
+                probs = self.sigmoid(logits)
+                # Return class predictions: 0 (not bot) or 1 (bot)
+                return (probs > 0.5).long().squeeze(-1)
     return (
         AdamW,
         AutoTokenizer,
@@ -188,7 +218,8 @@ def _(
     # dataset wrapper
     class YTBotDataset(Dataset):
         def __init__(self, ds, tokenizer, max_length=128):
-            self.texts = ds["content"].to_list()
+            self.author_names = ds["author_name"].to_list()
+            self.contents = ds["content"].to_list()
             self.labels = [int(x) for x in ds["is_bot_comment"].to_list()]
             self.tokenizer = tokenizer
             self.max_length = max_length
@@ -197,15 +228,36 @@ def _(
             return len(self.labels)
 
         def __getitem__(self, idx):
-            text = self.texts[idx]
-            encoding = self.tokenizer(
-                text,
+            author_name = self.author_names[idx]
+            content = self.contents[idx]
+
+            # Tokenize author name
+            name_encoding = self.tokenizer(
+                author_name,
                 truncation=True,
                 padding="max_length",
                 max_length=self.max_length,
                 return_tensors="pt",
             )
-            item = {k: v.squeeze(0) for k, v in encoding.items()}
+
+            # Tokenize content
+            content_encoding = self.tokenizer(
+                content,
+                truncation=True,
+                padding="max_length",
+                max_length=self.max_length,
+                return_tensors="pt",
+            )
+
+            item = {}
+            # Add name encodings with prefix
+            for k, v in name_encoding.items():
+                item[f"name_{k}"] = v.squeeze(0)
+
+            # Add content encodings with prefix
+            for k, v in content_encoding.items():
+                item[f"content_{k}"] = v.squeeze(0)
+
             item["labels"] = torch.tensor(self.labels[idx], dtype=torch.long)
             return item
 
@@ -214,7 +266,7 @@ def _(
     valid_ds = YTBotDataset(valid_dataset, tokenizer)
     test_ds  = YTBotDataset(test_dataset, tokenizer)
 
-    batch_size = 148
+    batch_size = 74
     train_loader = DataLoader(train_ds, batch_size=batch_size, shuffle=True)
     valid_loader = DataLoader(valid_ds, batch_size=batch_size)
     test_loader  = DataLoader(test_ds, batch_size=batch_size)
@@ -260,20 +312,32 @@ def _(
             show_rate=True,
             remove_on_exit=True
         )):
-            input_ids = batch["input_ids"].to(device)
-            attention_mask = batch["attention_mask"].to(device)
-            token_type_ids = batch.get("token_type_ids", None)
-            if token_type_ids is not None:
-                token_type_ids = token_type_ids.to(device)
+            # Extract name inputs
+            name_input_ids = batch["name_input_ids"].to(device)
+            name_attention_mask = batch["name_attention_mask"].to(device)
+            name_token_type_ids = batch.get("name_token_type_ids", None)
+            if name_token_type_ids is not None:
+                name_token_type_ids = name_token_type_ids.to(device)
+
+            # Extract content inputs
+            content_input_ids = batch["content_input_ids"].to(device)
+            content_attention_mask = batch["content_attention_mask"].to(device)
+            content_token_type_ids = batch.get("content_token_type_ids", None)
+            if content_token_type_ids is not None:
+                content_token_type_ids = content_token_type_ids.to(device)
+
             labels = batch["labels"].to(device)
 
             optimizer.zero_grad()
 
             # Get logits for training (not probabilities)
             logits = model(
-                input_ids=input_ids, 
-                attention_mask=attention_mask,
-                token_type_ids=token_type_ids,
+                name_input_ids=name_input_ids,
+                content_input_ids=content_input_ids,
+                name_attention_mask=name_attention_mask,
+                name_token_type_ids=name_token_type_ids,
+                content_attention_mask=content_attention_mask,
+                content_token_type_ids=content_token_type_ids,
                 return_logits=True
             )
 
@@ -302,18 +366,30 @@ def _(
             remove_on_exit=True
         )):
             with torch.no_grad():
-                input_ids = batch["input_ids"].to(device)
-                attention_mask = batch["attention_mask"].to(device)
-                token_type_ids = batch.get("token_type_ids", None)
-                if token_type_ids is not None:
-                    token_type_ids = token_type_ids.to(device)
+                # Extract name inputs
+                name_input_ids = batch["name_input_ids"].to(device)
+                name_attention_mask = batch["name_attention_mask"].to(device)
+                name_token_type_ids = batch.get("name_token_type_ids", None)
+                if name_token_type_ids is not None:
+                    name_token_type_ids = name_token_type_ids.to(device)
+
+                # Extract content inputs
+                content_input_ids = batch["content_input_ids"].to(device)
+                content_attention_mask = batch["content_attention_mask"].to(device)
+                content_token_type_ids = batch.get("content_token_type_ids", None)
+                if content_token_type_ids is not None:
+                    content_token_type_ids = content_token_type_ids.to(device)
+
                 labels = batch["labels"].to(device)
 
                 # Get logits for loss calculation
                 logits = model(
-                    input_ids=input_ids, 
-                    attention_mask=attention_mask,
-                    token_type_ids=token_type_ids,
+                    name_input_ids=name_input_ids,
+                    content_input_ids=content_input_ids,
+                    name_attention_mask=name_attention_mask,
+                    name_token_type_ids=name_token_type_ids,
+                    content_attention_mask=content_attention_mask,
+                    content_token_type_ids=content_token_type_ids,
                     return_logits=True
                 )
 
@@ -323,9 +399,12 @@ def _(
 
                 # Get predictions from logits (use model's sigmoid)
                 preds = model(
-                    input_ids=input_ids, 
-                    attention_mask=attention_mask,
-                    token_type_ids=token_type_ids,
+                    name_input_ids=name_input_ids,
+                    content_input_ids=content_input_ids,
+                    name_attention_mask=name_attention_mask,
+                    name_token_type_ids=name_token_type_ids,
+                    content_attention_mask=content_attention_mask,
+                    content_token_type_ids=content_token_type_ids,
                     return_logits=False
                 )
                 correct += (preds == labels).sum().item()
@@ -390,26 +469,41 @@ def _(
 
     for batch in mo.status.progress_bar(test_loader, subtitle="Testing", show_eta=True, remove_on_exit=True):
         with torch.no_grad():
-            input_ids = batch["input_ids"].to(device)
-            attention_mask = batch["attention_mask"].to(device)
-            token_type_ids = batch.get("token_type_ids", None)
-            if token_type_ids is not None:
-                token_type_ids = token_type_ids.to(device)
+            # Extract name inputs
+            name_input_ids = batch["name_input_ids"].to(device)
+            name_attention_mask = batch["name_attention_mask"].to(device)
+            name_token_type_ids = batch.get("name_token_type_ids", None)
+            if name_token_type_ids is not None:
+                name_token_type_ids = name_token_type_ids.to(device)
+
+            # Extract content inputs
+            content_input_ids = batch["content_input_ids"].to(device)
+            content_attention_mask = batch["content_attention_mask"].to(device)
+            content_token_type_ids = batch.get("content_token_type_ids", None)
+            if content_token_type_ids is not None:
+                content_token_type_ids = content_token_type_ids.to(device)
+
             labels = batch["labels"].to(device)
 
             # Get logits and convert to predictions
             logits = model(
-                input_ids=input_ids, 
-                attention_mask=attention_mask,
-                token_type_ids=token_type_ids,
+                name_input_ids=name_input_ids,
+                content_input_ids=content_input_ids,
+                name_attention_mask=name_attention_mask,
+                name_token_type_ids=name_token_type_ids,
+                content_attention_mask=content_attention_mask,
+                content_token_type_ids=content_token_type_ids,
                 return_logits=True
             )
 
             # Get predictions using model's sigmoid
             preds = model(
-                input_ids=input_ids, 
-                attention_mask=attention_mask,
-                token_type_ids=token_type_ids,
+                name_input_ids=name_input_ids,
+                content_input_ids=content_input_ids,
+                name_attention_mask=name_attention_mask,
+                name_token_type_ids=name_token_type_ids,
+                content_attention_mask=content_attention_mask,
+                content_token_type_ids=content_token_type_ids,
                 return_logits=False
             )
 
@@ -557,8 +651,6 @@ def _(device, mo, model, test_loader, torch):
 
         # Optional: Also create a probability distribution plot
         def plot_probability_distribution():
-            import numpy as np
-
             # Separate probabilities by true labels
             normal_probs = [prob for prob, label in zip(all_probs, all_labels) if label == 0]
             spam_probs = [prob for prob, label in zip(all_probs, all_labels) if label == 1]
