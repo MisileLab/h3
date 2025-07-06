@@ -223,16 +223,16 @@ wheels = [
 
 [[package]]
 name = "duckduckgo-search"
-version = "8.0.5"
+version = "8.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
     { name = "lxml" },
     { name = "primp" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/46/2e/680bedb6c66f7de544eb92f8a369406c2671d9907a4ee51f79cffa7b6433/duckduckgo_search-8.0.5.tar.gz", hash = "sha256:a46f83a92d4666b823ac45abce1495573ec58d984c8d6d19368f850758c95456", size = 22101, upload-time = "2025-07-01T20:31:02.592Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/1a/24/a92f5151fb6a2b9be26f4c3c6c0a8114e99c9652e5c243c383d139074582/duckduckgo_search-8.1.0.tar.gz", hash = "sha256:3f0539d7fed453279c5c1cf0ed616a71b4a8880d6e0dc496b782913ad614c170", size = 22538, upload-time = "2025-07-06T00:07:07.967Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/6a/28/bd84c58623bc7a817b30ae8ba23356f8cfca8577969c15c7133ac29db1e4/duckduckgo_search-8.0.5-py3-none-any.whl", hash = "sha256:c9f18cb8f8311b9005c8f8f699216dd124b01a797d97a2df725942c1af4c16fa", size = 18228, upload-time = "2025-07-01T20:31:01.462Z" },
+    { url = "https://files.pythonhosted.org/packages/3a/d9/8bfaa34ac74ba263f75f7b947abd2fa657a7a1638da2286aa5d5c820d2b4/duckduckgo_search-8.1.0-py3-none-any.whl", hash = "sha256:48c0846e67db9965a35506221cc7e41c8bd8005320263917bd1a3edfa5578545", size = 18813, upload-time = "2025-07-06T00:07:05.318Z" },
 ]
 
 [[package]]
@@ -1813,14 +1813,14 @@ wheels = [
 
 [[package]]
 name = "sse-starlette"
-version = "2.3.6"
+version = "2.4.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/8c/f4/989bc70cb8091eda43a9034ef969b25145291f3601703b82766e5172dfed/sse_starlette-2.3.6.tar.gz", hash = "sha256:0382336f7d4ec30160cf9ca0518962905e1b69b72d6c1c995131e0a703b436e3", size = 18284, upload-time = "2025-05-30T13:34:12.914Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/07/3e/eae74d8d33e3262bae0a7e023bb43d8bdd27980aa3557333f4632611151f/sse_starlette-2.4.1.tar.gz", hash = "sha256:7c8a800a1ca343e9165fc06bbda45c78e4c6166320707ae30b416c42da070926", size = 18635, upload-time = "2025-07-06T09:41:33.631Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/81/05/78850ac6e79af5b9508f8841b0f26aa9fd329a1ba00bf65453c2d312bcc8/sse_starlette-2.3.6-py3-none-any.whl", hash = "sha256:d49a8285b182f6e2228e2609c350398b2ca2c36216c2675d875f81e93548f760", size = 10606, upload-time = "2025-05-30T13:34:11.703Z" },
+    { url = "https://files.pythonhosted.org/packages/e4/f1/6c7eaa8187ba789a6dd6d74430307478d2a91c23a5452ab339b6fbe15a08/sse_starlette-2.4.1-py3-none-any.whl", hash = "sha256:08b77ea898ab1a13a428b2b6f73cfe6d0e607a7b4e15b9bb23e4a37b087fd39a", size = 10824, upload-time = "2025-07-06T09:41:32.321Z" },
 ]
 
 [[package]]
