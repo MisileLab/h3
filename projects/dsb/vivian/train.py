@@ -151,7 +151,7 @@ def _():
 
         # def forward(self, input_ids, attention_mask=None, token_type_ids=None, return_logits=False):
         def forward(self, name_input_ids, content_input_ids, name_attention_mask=None, name_token_type_ids=None,
-                   content_attention_mask=None, content_token_type_ids=None, return_logits=False):
+                   content_attention_mask=None, content_token_type_ids=None, return_logits=False, return_probs=True):
 
             namePrediction = self.nameLayer(name_input_ids, name_attention_mask, name_token_type_ids)
             contentPrediction = self.contentLayer(content_input_ids, content_attention_mask, content_token_type_ids)
@@ -170,7 +170,7 @@ def _():
                 # Apply sigmoid and return probabilities or predictions
                 probs = self.sigmoid(logits)
                 # Return class predictions: 0 (not bot) or 1 (bot)
-                return (probs > 0.5).long().squeeze(-1)
+                return probs if return_probs else (probs > 0.9).long().squeeze(-1)
     return (
         AdamW,
         AutoTokenizer,
@@ -405,7 +405,8 @@ def _(
                     name_token_type_ids=name_token_type_ids,
                     content_attention_mask=content_attention_mask,
                     content_token_type_ids=content_token_type_ids,
-                    return_logits=False
+                    return_logits=False,
+                    return_probs=False
                 )
                 correct += (preds == labels).sum().item()
                 total += labels.size(0)
@@ -504,7 +505,8 @@ def _(
                 name_token_type_ids=name_token_type_ids,
                 content_attention_mask=content_attention_mask,
                 content_token_type_ids=content_token_type_ids,
-                return_logits=False
+                return_logits=False,
+                return_probs=False
             )
 
             test_correct += (preds == labels).sum().item()
@@ -730,13 +732,12 @@ def _(device, model, tokenizer, torch):
                content_input_ids=content_input_ids,
                name_attention_mask=name_attention_mask,
                content_attention_mask=content_attention_mask,
-               return_logits=False
+               return_logits=False,
+               return_probs=input("Return probabilities? (y/n): ") == "y"
            )
-           is_bot = prediction.item()
 
        # Print result
-       result = "Bot" if is_bot == 1 else "Not Bot"
-       return print(f"Prediction: {result}")
+       print(f"Prediction: {prediction}")
 
     _()
     return
