@@ -151,7 +151,7 @@ def _():
 
         # def forward(self, input_ids, attention_mask=None, token_type_ids=None, return_logits=False):
         def forward(self, name_input_ids, content_input_ids, name_attention_mask=None, name_token_type_ids=None,
-                   content_attention_mask=None, content_token_type_ids=None, return_logits=False):
+                   content_attention_mask=None, content_token_type_ids=None, return_logits=False, return_probs=True):
 
             namePrediction = self.nameLayer(name_input_ids, name_attention_mask, name_token_type_ids)
             contentPrediction = self.contentLayer(content_input_ids, content_attention_mask, content_token_type_ids)
@@ -170,7 +170,7 @@ def _():
                 # Apply sigmoid and return probabilities or predictions
                 probs = self.sigmoid(logits)
                 # Return class predictions: 0 (not bot) or 1 (bot)
-                return (probs > 0.5).long().squeeze(-1)
+                return probs if return_probs else (probs > 0.9).long().squeeze(-1)
     return (
         AdamW,
         AutoTokenizer,
@@ -405,7 +405,8 @@ def _(
                     name_token_type_ids=name_token_type_ids,
                     content_attention_mask=content_attention_mask,
                     content_token_type_ids=content_token_type_ids,
-                    return_logits=False
+                    return_logits=False,
+                    return_probs=False
                 )
                 correct += (preds == labels).sum().item()
                 total += labels.size(0)
@@ -504,7 +505,8 @@ def _(
                 name_token_type_ids=name_token_type_ids,
                 content_attention_mask=content_attention_mask,
                 content_token_type_ids=content_token_type_ids,
-                return_logits=False
+                return_logits=False,
+                return_probs=False
             )
 
             test_correct += (preds == labels).sum().item()
@@ -587,18 +589,30 @@ def _(device, mo, model, test_loader, torch):
                 show_eta=True,
                 show_rate=True
             ):
-                input_ids = batch["input_ids"].to(device)
-                attention_mask = batch["attention_mask"].to(device)
-                token_type_ids = batch.get("token_type_ids", None)
-                if token_type_ids is not None:
-                    token_type_ids = token_type_ids.to(device)
+                # Extract name inputs
+                name_input_ids = batch["name_input_ids"].to(device)
+                name_attention_mask = batch["name_attention_mask"].to(device)
+                name_token_type_ids = batch.get("name_token_type_ids", None)
+                if name_token_type_ids is not None:
+                    name_token_type_ids = name_token_type_ids.to(device)
+
+                # Extract content inputs
+                content_input_ids = batch["content_input_ids"].to(device)
+                content_attention_mask = batch["content_attention_mask"].to(device)
+                content_token_type_ids = batch.get("content_token_type_ids", None)
+                if content_token_type_ids is not None:
+                    content_token_type_ids = content_token_type_ids.to(device)
+
                 labels = batch["labels"].to(device)
 
                 # Get raw logits for probability calculation
                 logits = model(
-                    input_ids=input_ids, 
-                    attention_mask=attention_mask,
-                    token_type_ids=token_type_ids,
+                    name_input_ids=name_input_ids,
+                    content_input_ids=content_input_ids,
+                    name_attention_mask=name_attention_mask,
+                    name_token_type_ids=name_token_type_ids,
+                    content_attention_mask=content_attention_mask,
+                    content_token_type_ids=content_token_type_ids,
                     return_logits=True
                 )
 
@@ -686,31 +700,44 @@ def _(device, model, tokenizer, torch):
     def _():
        # Evaluate a single user input comment
        model.eval()
+       author_name = input("Enter the author name: ")
        comment = input("Enter a YouTube comment to evaluate: ")
 
-       # Tokenize and prepare tensors
-       encoding = tokenizer(
+       # Tokenize author name
+       name_encoding = tokenizer(
+           author_name,
+           truncation=True,
+           padding="max_length",
+           max_length=128,
+           return_tensors="pt"
+       )
+       name_input_ids = name_encoding["input_ids"].to(device)
+       name_attention_mask = name_encoding["attention_mask"].to(device)
+
+       # Tokenize content
+       content_encoding = tokenizer(
            comment,
            truncation=True,
            padding="max_length",
            max_length=128,
            return_tensors="pt"
        )
-       input_ids = encoding["input_ids"].to(device)
-       attention_mask = encoding["attention_mask"].to(device)
+       content_input_ids = content_encoding["input_ids"].to(device)
+       content_attention_mask = content_encoding["attention_mask"].to(device)
 
        # Get prediction using model's built-in sigmoid and threshold
        with torch.no_grad():
            prediction = model(
-               input_ids=input_ids, 
-               attention_mask=attention_mask, 
-               return_logits=False
+               name_input_ids=name_input_ids,
+               content_input_ids=content_input_ids,
+               name_attention_mask=name_attention_mask,
+               content_attention_mask=content_attention_mask,
+               return_logits=False,
+               return_probs=input("Return probabilities? (y/n): ") == "y"
            )
-           is_bot = prediction.item()
 
        # Print result
-       result = "Bot" if is_bot == 1 else "Not Bot"
-       return print(f"Prediction: {result}")
+       print(f"Prediction: {prediction}")
 
     _()
     return

@@ -5,7 +5,7 @@ A YouTube bot comment detection system using embeddings and machine learning.
 ## Versions
 
 - [v0](https://static.marimo.app/static/vivian-jcxs)
-- v1
+- [v1](https://static.marimo.app/static/vivian-44de)
 
 ## Overview
 
@@ -14,16 +14,16 @@ Vivian is a tool designed to identify and filter bot comments on YouTube videos.
 ## Features
 
 - YouTube comment collection and processing
-- Embedding generation for comment analysis
-- Bot comment classification using machine learning
-- Interactive UI for manual comment classification
-- Support for multiple AI models (Gemini, Ollama, etc.)
-- Data visualization tools
+- Bot comment classification using transformer-based models
+- Interactive UI for model training and evaluation using Marimo notebooks
+- Support for Korean text via KcELECTRA model
+- Data visualization tools for model performance analysis
 
 ## Requirements
 
 - Python 3.13.4 or higher
 - YouTube API key for comment collection
+- PyTorch (CPU or ROCm version available)
 
 ## Installation
 
@@ -49,77 +49,63 @@ Vivian is a tool designed to identify and filter bot comments on YouTube videos.
 
 1. Collect YouTube videos:
    ```
-   python get_videos.py
+   python data/get_videos.py
    ```
 
 2. Collect comments from videos:
    ```
-   python get_comments.py
-   ```
-
-### Data Processing
-
-1. Remove duplicate comments:
-   ```
-   python remove_duplicate.py
-   ```
-
-2. Prepare data for embedding:
-   ```
-   python prepare_embedding.py
-   ```
-
-3. Generate embeddings:
-   ```
-   python embedding.py
+   python data/get_comments.py
    ```
 
 ### Classification
 
-1. Manual classification using the UI:
+1. Run the classification model:
    ```
    python classify.py
    ```
 
-2. Using Gemini for classification:
+2. Train the model with custom data:
    ```
-   python classify_gemini.py
-   ```
-
-3. Using Ollama for classification:
-   ```
-   python run_ollama.py
+   python train.py
    ```
 
-### Data Analysis
+### Data Processing
 
 1. Split data into training and test sets:
    ```
-   python train_test_split.py
+   python data/train_test_split.py
    ```
 
-2. Visualize the data:
+2. Merge processed data:
    ```
-   python visualize.py
+   python merge.py
+   ```
+
+3. Clear temporary data:
+   ```
+   python clear.py
    ```
 
 ## Project Structure
 
-- `batch.py`: Batch processing utilities
-- `build_batch.py`: Builds batches for processing
-- `classify.py`: UI for manual comment classification
-- `classify_gemini.py`: Classification using Google's Gemini model
-- `clear.py`: Clears temporary data
-- `embedding.py`: Generates embeddings for comments
-- `get_comments.py`: Collects comments from YouTube videos
-- `get_videos.py`: Collects YouTube video information
-- `merge.py`: Merges processed data
-- `prepare_embedding.py`: Prepares data for embedding generation
-- `remove_duplicate.py`: Removes duplicate comments
-- `run_ollama.py`: Runs classification using Ollama
-- `train_test_split.py`: Splits data into training and test sets
-- `utils.py`: Utility functions
-- `visualize.py`: Data visualization tools
+- `classify.py`: Runs the bot comment classification model
+- `clear.py`: Clears temporary OpenAI files
+- `data/`: Directory containing data processing scripts
+  - `get_comments.py`: Collects comments from YouTube videos
+  - `get_videos.py`: Collects YouTube video information
+  - `train_test_split.py`: Splits data into training and test sets
+- `main.py`: Entry point for running modules
+- `merge.py`: Merges processed embedding data
+- `train.py`: Trains the bot detection model
+- `utils.py`: Utility functions and data models
+
+## Model Architecture
+
+The bot detection system uses a SpamUserClassifier based on the KcELECTRA model with:
+- Frozen initial transformer layers
+- Custom classification layers with dropout for regularization
+- Focal Loss to handle class imbalance
+- Combined CLS token and mean pooling for improved performance
 
 ## License
 
