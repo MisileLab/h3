@@ -5,7 +5,7 @@ A YouTube bot comment detection system using embeddings and machine learning.
 ## Versions
 
 - [v0](https://static.marimo.app/static/vivian-jcxs)
-- [v0a](https://minio.misile.xyz/noa/models/NoMoreSpamYT-v0a.pth.zst)
+- [v0a](https://minio.misile.xyz/noa/models/NoMoreSpamYT-v0a.pth.zst) (99% accuracy)
 
 ## Overview
 
