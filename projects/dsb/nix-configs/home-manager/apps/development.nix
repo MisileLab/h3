@@ -52,6 +52,7 @@
     };
   };
   programs = {
+    television.enable = true;
     java = {
       enable=true;
       package=pkgs.temurin-bin-21;
