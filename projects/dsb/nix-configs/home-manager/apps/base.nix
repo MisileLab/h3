@@ -4,7 +4,9 @@ let
   completions = [
     "dotnet" "docker" "gh" "git" "glow" "just" "less" "man"
     "nano" "nix" "npm" "pnpm" "pre-commit" "rustup" "rg" "ssh"
-    "tar" "vscode" "zellij" "curl" "bat" "cargo" "uv"
+    "tar" "vscode" "zellij" "curl" "bat" "cargo" "uv" "curl"
+    "dotnet" "gradlew" "less" "make" "man" "nano" "pytest"
+    "tar" "typst"
   ];
   aliases = ["docker" "git" "eza"];
 in
@@ -67,6 +69,7 @@ plugin add ${pkgs.nushellPlugins.polars}/bin/nu_plugin_polars
 plugin use polars
 # completion that command name and program different
 source ${pkgs.nu_scripts}/share/nu_scripts/custom-completions/tealdeer/tldr-completions.nu
+source ${pkgs.nu_scripts}/share/nu_scripts/custom-completions/bend/bend-completion.nu
 ${lib.concatStringsSep "\n" (map (name: "source ${pkgs.nu_scripts}/share/nu_scripts/custom-completions/${name}/${name}-completions.nu") completions)}
 ${lib.concatStringsSep "\n" (map (name: "source ${pkgs.nu_scripts}/share/nu_scripts/aliases/${name}/${name}-aliases.nu") aliases)}
 use std/util "path add"
