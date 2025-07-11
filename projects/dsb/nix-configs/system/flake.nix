@@ -3,19 +3,19 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs";
-    # stablep.url = "github:nixos/nixpkgs/nixos-unstable";
+    stablep.url = "github:nixos/nixpkgs/nixos-unstable";
     # lanzaboote = {
     #   url = "github:nix-community/lanzaboote/v0.4.1";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
   };
 
-  outputs = { self, nixpkgs, /*stablep, *//*lanzaboote*/... }@_: {
+  outputs = { self, nixpkgs, stablep, /*lanzaboote*/... }@_: {
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
         ./configuration.nix
-        # {_module.args = {stablep = import stablep { system = "x86_64-linux"; };};}
+        {_module.args = {stablep = import stablep { system = "x86_64-linux"; };};}
         # ({ stablep, ... }: {
         #   nixpkgs.overlays = [(final: prev: {
         #     virtualbox-modules = stablep.virtualbox-modules;
