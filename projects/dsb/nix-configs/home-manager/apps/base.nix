@@ -41,6 +41,8 @@ in
       defaultSecretsMountPoint = "/run/user/1000/secrets.d";
       secrets = {
         uv_pypi_token.path = "${config.sops.defaultSymlinkPath}/uv_pypi_token";
+        tavily_api_key.path = "${config.sops.defaultSymlinkPath}/tavily_api_key";
+        openai_api_key.path = "${config.sops.defaultSymlinkPath}/openai_api_key";
       };
     };
     programs = {
@@ -74,6 +76,8 @@ ${lib.concatStringsSep "\n" (map (name: "source ${pkgs.nu_scripts}/share/nu_scri
 ${lib.concatStringsSep "\n" (map (name: "source ${pkgs.nu_scripts}/share/nu_scripts/aliases/${name}/${name}-aliases.nu") aliases)}
 use std/util "path add"
 $env.UV_PUBLISH_TOKEN = (cat ${config.sops.secrets.uv_pypi_token.path})
+$env.TAVILY_API_KEY = (cat ${config.sops.secrets.tavily_api_key.path})
+$env.AVANTE_OPENAI_API_KEY = (cat ${config.sops.secrets.openai_api_key.path})
 $env.DEVSHELL_NO_MOTD = 1;
 $env.EDITOR = "nvim";
 def bulk-run [paths: list<string>, command: string, ...args] {
