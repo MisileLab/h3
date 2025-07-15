@@ -43,7 +43,7 @@
         modules = [
           ./home.nix
           catppuccin.homeModules.catppuccin
-          nix-index-database.hmModules.nix-index
+          nix-index-database.homeModules.nix-index
           sops-nix.homeManagerModules.sops
           niri.homeModules.niri
         ];
