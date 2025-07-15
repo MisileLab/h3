@@ -1,7 +1,8 @@
-{pkgs, ...}: {
+{pkgs, stablep, ...}: {
   home.packages = with pkgs; [
     # file
-    axel wget file wgetpaste convmv termscp ouch rhash duperemove
+    # https://github.com/NixOS/nixpkgs/issues/425275
+    (stablep.axel) wget file wgetpaste convmv termscp ouch rhash duperemove
     fd cloc
 
     # some fancy cli tools
