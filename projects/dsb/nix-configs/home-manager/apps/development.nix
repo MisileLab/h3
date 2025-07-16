@@ -1,4 +1,4 @@
-{pkgs, config, ...}:
+{pkgs, stablep, config, ...}:
 {
   home = {
     sessionVariables = {
@@ -14,7 +14,7 @@
 
       # Language tools
       vscode-langservers-extracted
-      ruby_3_4 rubyPackages_3_4.ruby-lsp
+      (stablep.ruby_3_4) (stablep.rubyPackages_3_4.ruby-lsp)
       ghc cabal-install haskell-language-server
       cargo-update rustc cargo clippy rust-analyzer
       metals scala-next

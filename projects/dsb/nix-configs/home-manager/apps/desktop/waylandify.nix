@@ -1,4 +1,4 @@
-{pkgs, config, ...}:
+{pkgs, stablep, config, ...}:
 let
   # base
   base = name: envs: binaryPath: args: (pkgs.writeShellScriptBin "${name}" ''
@@ -10,7 +10,7 @@ let
   jwl = name: binaryPath: base name "DISPLAY=':0'" binaryPath "-Dawt.toolkit.name=WLToolkit";
   # qt-waylandify
   qwl = name: binaryPath: base name "QT_QPA_PLATFORM=wayland" binaryPath "";
-  electrons = with pkgs; [
+  electrons = with stablep; [
     (cwl "figma" "${figma-linux}/bin/figma-linux")
     (cwl "discord" "${vesktop}/bin/vesktop")
     (cwl "vscode" "${vscodium}/bin/codium")
