@@ -2,7 +2,7 @@
   home.packages = with pkgs; [
     # file
     # https://github.com/NixOS/nixpkgs/issues/425275
-    axel wget file wgetpaste convmv termscp ouch rhash duperemove
+    /*axel*/ wget file wgetpaste convmv termscp ouch rhash duperemove
     fd cloc
 
     # some fancy cli tools
