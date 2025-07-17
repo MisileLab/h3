@@ -1,4 +1,7 @@
 import asyncio
+import signal
+import sys
+from contextlib import asynccontextmanager
 from os import getenv
 from pathlib import Path
 from pickle import dumps, loads
@@ -21,6 +24,9 @@ from tools.feedback import (
 from tools.memory import (
   tools as memory_tools,  # pyright: ignore[reportUnknownVariableType]
 )
+
+# Global shutdown flag
+shutdown_event = asyncio.Event()
 
 github_mcp_server = MCPServerStdio(
   'docker',
@@ -128,32 +134,92 @@ else:
 history = initial[0]
 chat_state = initial[1]
 
+# ========== Graceful Shutdown Handler ==========
+def signal_handler(signum, frame):
+  print(f"\nReceived signal {signum}. Initiating graceful shutdown...")
+  shutdown_event.set()
+
+async def cleanup_resources():
+  """Clean up resources during shutdown"""
+  print("Cleaning up resources...")
+  
+  # Save current state
+  try:
+    Path("data.pkl").write_bytes(dumps([history, chat_state]))
+    print("✓ Saved chat state")
+  except Exception as e:
+    print(f"✗ Error saving state: {e}")
+  
+  # Close MCP servers
+  for server in mcp_servers:
+    try:
+      # If the server has a close method, call it
+      if hasattr(server, 'close'):
+        await server.close()
+        print(f"✓ Closed MCP server: {server}")
+    except Exception as e:
+      print(f"✗ Error closing MCP server {server}: {e}")
+  
+  print("✓ Cleanup completed")
+
 # ========== Async Chat Function ==========
 async def respond(message: str, files: list[bytes]):
+  if shutdown_event.is_set():
+    return chat_state
+    
   bin_files: list[BinaryContent] = []
   if files:
     for f in files:
       media_type = from_stream(f, mime=True)
       bin_files.append(BinaryContent(data=f, media_type=media_type))
 
-  async with agent.run_mcp_servers():
-    response = await agent.run([message, *bin_files], message_history=history)
-  history.clear()
-  history.extend(response.all_messages())
-  chat_state.append((message, response.output))
+  try:
+    async with agent.run_mcp_servers():
+      response = await agent.run([message, *bin_files], message_history=history)
+    history.clear()
+    history.extend(response.all_messages())
+    chat_state.append((message, response.output))
+  except Exception as e:
+    print(f"Error in respond: {e}")
+    chat_state.append((message, f"Error: {str(e)}"))
+  
   return chat_state
 
 async def summarize():
-  async with agent.run_mcp_servers():
-    output = await agent.run(
-      "summarize our conversation to optimize message history!",
-      message_history=history
-    )
-  history.clear()
-  history.extend(output.new_messages())
-  chat_state.clear()
-  chat_state.append(("", output.output))
+  if shutdown_event.is_set():
+    return chat_state
+    
+  try:
+    async with agent.run_mcp_servers():
+      output = await agent.run(
+        "summarize our conversation to optimize message history!",
+        message_history=history
+      )
+    history.clear()
+    history.extend(output.new_messages())
+    chat_state.clear()
+    chat_state.append(("", output.output))
+  except Exception as e:
+    print(f"Error in summarize: {e}")
+    chat_state.append(("", f"Summarization error: {str(e)}"))
+  
   return chat_state
+
+# ========== Context Manager for Graceful Shutdown ==========
+@asynccontextmanager
+async def lifespan_context():
+  """Context manager for application lifespan"""
+  try:
+    # Setup signal handlers
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
+    
+    print("Application started. Press Ctrl+C for graceful shutdown.")
+    yield
+    
+  finally:
+    # Cleanup resources
+    await cleanup_resources()
 
 # ========== Gradio Interface ==========
 with gr.Blocks() as demo:
@@ -162,7 +228,11 @@ with gr.Blocks() as demo:
   file_upload = gr.File(label="Upload files", file_count="multiple", file_types=["file"])
   
   def save():
-    _ = Path("data.pkl").write_bytes(dumps([history, chat_state])) 
+    if not shutdown_event.is_set():
+      try:
+        Path("data.pkl").write_bytes(dumps([history, chat_state]))
+      except Exception as e:
+        print(f"Error saving state: {e}")
 
   with gr.Row():
     send_btn = gr.Button("Send")
@@ -172,6 +242,8 @@ with gr.Blocks() as demo:
 
   # Send button logic
   def sync_respond(message: str, files: list[bytes]):
+    if shutdown_event.is_set():
+      return chat_state
     return asyncio.run(respond(message, files))
 
   _ = send_btn.click(
@@ -190,6 +262,8 @@ with gr.Blocks() as demo:
 
   # Undo button logic
   def undo():
+    if shutdown_event.is_set():
+      return chat_state
     if len(chat_state) >= 1:
       _ = history.pop()
       _ = history.pop()
@@ -208,6 +282,8 @@ with gr.Blocks() as demo:
 
   # Reset button logic
   def reset_all() -> tuple[list[str], None]:
+    if shutdown_event.is_set():
+      return chat_state, None
     history.clear()
     chat_state.clear()
     return [], None
@@ -222,8 +298,13 @@ with gr.Blocks() as demo:
     outputs=None
   )
 
+  def sync_summarize():
+    if shutdown_event.is_set():
+      return chat_state
+    return asyncio.run(summarize())
+
   _ = summarize_btn.click(
-    fn=summarize,
+    fn=sync_summarize,
     inputs=[],
     outputs=[chatbot]
   ).then(
@@ -235,7 +316,28 @@ with gr.Blocks() as demo:
   _ = demo.load(fn=lambda: chat_state, outputs=[chatbot])
 
 async def main():
-  _ = demo.launch()
+  async with lifespan_context():
+    try:
+      # Run the demo with proper shutdown handling
+      await asyncio.create_task(
+        asyncio.to_thread(demo.launch, prevent_thread_lock=True)
+      )
+      
+      # Wait for shutdown signal
+      await shutdown_event.wait()
+      
+    except KeyboardInterrupt:
+      print("\nKeyboard interrupt received")
+    except Exception as e:
+      print(f"Unexpected error: {e}")
+    finally:
+      print("Application shutting down...")
 
 if __name__ == "__main__":
-  asyncio.run(main())
+  try:
+    asyncio.run(main())
+  except KeyboardInterrupt:
+    print("\nApplication terminated by user")
+  except Exception as e:
+    print(f"Fatal error: {e}")
+    sys.exit(1)
