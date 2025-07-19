@@ -14,7 +14,7 @@
 
       # Language tools
       vscode-langservers-extracted
-      (stablep.ruby_3_4) (stablep.rubyPackages_3_4.ruby-lsp)
+      ruby_3_4 rubyPackages_3_4.ruby-lsp
       ghc cabal-install haskell-language-server
       cargo-update rustc cargo clippy rust-analyzer
       metals scala-next
