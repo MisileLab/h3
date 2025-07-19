@@ -1,0 +1,6 @@
+[instance]
+server-version = "6.7"
+
+[hooks]
+schema.update.after = "geldb-py --dir queries --no-skip-pydantic-validation"
+
