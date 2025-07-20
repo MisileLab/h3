@@ -243,7 +243,7 @@ wheels = [
 
 [[package]]
 name = "logfire"
-version = "3.24.2"
+version = "3.25.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "executing" },
@@ -254,18 +254,18 @@ dependencies = [
     { name = "rich" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/bb/55/61c0146a413b1fdfa8ae2e9c97a4e62f799462f015ea49a697cf46281f0e/logfire-3.24.2.tar.gz", hash = "sha256:814533697890ac94b0669360e974e75f491bf5b2d9be7a1a5bbf5e1d66989d20", size = 504379, upload-time = "2025-07-14T16:04:32.89Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d6/a5/6543a1a035ca1bbec220911ccc3bb1720eb8fd2ca4ec9fcbc005489bb050/logfire-3.25.0.tar.gz", hash = "sha256:3d0b88c0c5a7f4fc27b7591341d4467af499c464c70e7a3784f1fa2751bf5151", size = 512029, upload-time = "2025-07-18T18:19:34.774Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/6e/f8/5d702656e45ec4a8cb6ac7adc2410fd0953e582c03baaeb45401c5cf830a/logfire-3.24.2-py3-none-any.whl", hash = "sha256:c3a119769f8f5f1fabb6f23722125b26f987d7adeecfa9c6a90265161e6f5597", size = 206258, upload-time = "2025-07-14T16:04:27.973Z" },
+    { url = "https://files.pythonhosted.org/packages/c3/e9/fc5eaf601cd50a5ec6412f0fa8a15f508f718086919aeef4e0be5ef1084d/logfire-3.25.0-py3-none-any.whl", hash = "sha256:d3cb8c078f3000923be347191466f47d836e9be7a47caedecd07527870ebc7ec", size = 211499, upload-time = "2025-07-18T18:19:31.054Z" },
 ]
 
 [[package]]
 name = "logfire-api"
-version = "3.24.2"
+version = "3.25.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/fe/9c/48de4d1869a3266d5d333fa699020b6197efe4c1b214a6411874c39aa708/logfire_api-3.24.2.tar.gz", hash = "sha256:13c913916d1f627b7155c898eac232bf60d9b927706b8fae05cbaf803ec1e9e5", size = 50767, upload-time = "2025-07-14T16:04:34.004Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/f3/e9/98a32001589dcd427e3be2ef1ed8dc3935f2542ecd387427b06e97539cae/logfire_api-3.25.0.tar.gz", hash = "sha256:d6aeeeb246cc8d7aeb14a503523422292047db5e7be35d47c8979f70b0962bb0", size = 52123, upload-time = "2025-07-18T18:19:36.237Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/db/45/37fb3a69ab24ede522304bad4d04dff94fbeb606df2b7a63062f634ee9b2/logfire_api-3.24.2-py3-none-any.whl", hash = "sha256:855fdffd9f1f20d054ac12064a773e0fd80f706dfcced8775a429c05dfade89a", size = 85381, upload-time = "2025-07-14T16:04:30.838Z" },
+    { url = "https://files.pythonhosted.org/packages/7b/91/68835bbe068d1042799821c147a24fb550b708b64b63117a8020778181ef/logfire_api-3.25.0-py3-none-any.whl", hash = "sha256:cc1c2482d6a738e15cd165c483577f8ef7a8a4c462eafa0f6129aa9077676a8d", size = 87459, upload-time = "2025-07-18T18:19:33.512Z" },
 ]
 
 [[package]]
@@ -291,7 +291,7 @@ wheels = [
 
 [[package]]
 name = "openai"
-version = "1.95.1"
+version = "1.97.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "anyio" },
@@ -303,9 +303,9 @@ dependencies = [
     { name = "tqdm" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a1/a3/70cd57c7d71086c532ce90de5fdef4165dc6ae9dbf346da6737ff9ebafaa/openai-1.95.1.tar.gz", hash = "sha256:f089b605282e2a2b6776090b4b46563ac1da77f56402a222597d591e2dcc1086", size = 488271, upload-time = "2025-07-11T20:47:24.437Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e0/c6/b8d66e4f3b95493a8957065b24533333c927dc23817abe397f13fe589c6e/openai-1.97.0.tar.gz", hash = "sha256:0be349569ccaa4fb54f97bb808423fd29ccaeb1246ee1be762e0c81a47bae0aa", size = 493850, upload-time = "2025-07-16T16:37:35.196Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/02/1d/0432ea635097f4dbb34641a3650803d8a4aa29d06bafc66583bf1adcceb4/openai-1.95.1-py3-none-any.whl", hash = "sha256:8bbdfeceef231b1ddfabbc232b179d79f8b849aab5a7da131178f8d10e0f162f", size = 755613, upload-time = "2025-07-11T20:47:22.629Z" },
+    { url = "https://files.pythonhosted.org/packages/8a/91/1f1cf577f745e956b276a8b1d3d76fa7a6ee0c2b05db3b001b900f2c71db/openai-1.97.0-py3-none-any.whl", hash = "sha256:a1c24d96f4609f3f7f51c9e1c2606d97cc6e334833438659cfd687e9c972c610", size = 764953, upload-time = "2025-07-16T16:37:33.135Z" },
 ]
 
 [[package]]
