@@ -21,8 +21,8 @@ importers:
         specifier: 11.1.5
         version: 11.1.5(@nestjs/common@11.1.5(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.5)
       openai:
-        specifier: 5.10.1
-        version: 5.10.1
+        specifier: 5.10.2
+        version: 5.10.2
       reflect-metadata:
         specifier: 0.2.2
         version: 0.2.2
@@ -2817,8 +2817,8 @@ packages:
     resolution: {integrity: sha512-1FlR+gjXK7X+AsAHso35MnyN5KqGwJRi/31ft6x0M194ht7S+rWAvd7PHss9xSKMzE0asv1pyIHaJYq+BbacAQ==}
     engines: {node: '>=12'}
 
-  openai@5.10.1:
-    resolution: {integrity: sha512-fq6xVfv1/gpLbsj8fArEt3b6B9jBxdhAK+VJ+bDvbUvNd+KTLlA3bnDeYZaBsGH9LUhJ1M1yXfp9sEyBLMx6eA==}
+  openai@5.10.2:
+    resolution: {integrity: sha512-n+vi74LzHtvlKcDPn9aApgELGiu5CwhaLG40zxLTlFQdoSJCLACORIPC2uVQ3JEYAbqapM+XyRKFy2Thej7bIw==}
     hasBin: true
     peerDependencies:
       ws: ^8.18.0
@@ -6686,7 +6686,7 @@ snapshots:
     dependencies:
       mimic-fn: 4.0.0
 
-  openai@5.10.1: {}
+  openai@5.10.2: {}
 
   optionator@0.9.4:
     dependencies:

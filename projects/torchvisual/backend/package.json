@@ -24,7 +24,7 @@
     "@nestjs/core": "11.1.5",
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "11.1.5",
-    "openai": "5.10.1",
+    "openai": "5.10.2",
     "reflect-metadata": "0.2.2",
     "rxjs": "7.8.2"
   },
