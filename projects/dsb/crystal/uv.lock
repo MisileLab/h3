@@ -251,7 +251,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "gradio", specifier = "==5.38.0" },
+    { name = "gradio", specifier = "==5.38.1" },
     { name = "inquirer", specifier = "==3.4.0" },
     { name = "langchain-memgraph", specifier = "==0.1.5" },
     { name = "mem0ai", extras = ["graph"], git = "https://github.com/misilelab/mem0" },
@@ -369,7 +369,7 @@ wheels = [
 
 [[package]]
 name = "gradio"
-version = "5.38.0"
+version = "5.38.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -403,9 +403,9 @@ dependencies = [
     { name = "urllib3", marker = "sys_platform == 'emscripten'" },
     { name = "uvicorn", marker = "sys_platform != 'emscripten'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a8/6c/3d31548f336b2efc3938dea4a714de173d5f1194876658674cc759bd1176/gradio-5.38.0.tar.gz", hash = "sha256:448f395bce46ae103da237647c5a44b2581570b5876957f8d2544b3b1351e495", size = 71626784, upload-time = "2025-07-17T02:02:36.8Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/d9/95/ebc5c939709c5553553d878ae8df7174b198c3ad336d000ff7225c4d4ae8/gradio-5.38.1.tar.gz", hash = "sha256:6385d29bd6fe90267bdd75a03f285b5ca0c8f23d32a557624a9e707a87aaa2a6", size = 71449915, upload-time = "2025-07-23T20:41:30.589Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f4/d6/1bc8f980f586cd56d6191da3eb93256225ef752e148d832fe450adabb442/gradio-5.38.0-py3-none-any.whl", hash = "sha256:d0ddd19986f66c91c07ba5706aeb74c83764c58e6892a363b249da1047cf4d9a", size = 59645499, upload-time = "2025-07-17T02:02:31.352Z" },
+    { url = "https://files.pythonhosted.org/packages/99/d0/6dcade8422d87d61a64894e08cee3acfa92f3eba925ca0219cb3a2ab2e0f/gradio-5.38.1-py3-none-any.whl", hash = "sha256:f3de9ee5646787e130dbf337c527dca9dbd686af412b538023cb602894ef296e", size = 59458448, upload-time = "2025-07-23T20:41:25.248Z" },
 ]
 
 [[package]]
