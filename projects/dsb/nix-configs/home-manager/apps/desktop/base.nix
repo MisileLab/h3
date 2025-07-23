@@ -1,4 +1,4 @@
-{pkgs, stablep, ...}:
+{pkgs, ...}:
 {
   imports = [
     ./security.nix
@@ -12,7 +12,7 @@
     packages = with pkgs; [
       brightnessctl clipman wl-clipboard pavucontrol
       imagemagick loupe xfce.thunar
-      galaxy-buds-client (stablep.firefoxpwa) gparted
+      galaxy-buds-client firefoxpwa gparted
       gimp3 telegram-desktop xournalpp zotero headsetcontrol
     ] ++ (with kdePackages; [filelight okular merkuro]);
     pointerCursor = {
@@ -36,8 +36,7 @@
     };
     firefox = {
       enable = true;
-      package = stablep.firefox;
-      nativeMessagingHosts = with stablep; [firefoxpwa];
+      nativeMessagingHosts = with pkgs; [firefoxpwa];
     };
   };
   xdg = {
