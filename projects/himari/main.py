@@ -1,4 +1,5 @@
 import modal
+from fastapi import Request, HTTPException, status
 from pydantic import BaseModel
 
 from evaluate import setup, evaluate
@@ -11,8 +12,10 @@ class EvaluateRequest(BaseModel):
   comment: str
 
 @app.function()
-@modal.fastapi_endpoint(method="POST", path="/evaluate")
-def evaluate_endpoint(item: EvaluateRequest):
-  model, tokenizer = setup()
-  return {"prob": evaluate(model, tokenizer, item.author_name, item.comment)}
+@modal.fastapi_endpoint(method="POST", docs=True) # pyright: ignore[reportUnknownMemberType]
+def evaluate_endpoint(request: Request, item: EvaluateRequest):
+  if not request.client or request.client.host != "211.219.106.17":
+    raise HTTPException(status.HTTP_403_FORBIDDEN, detail="Forbidden")
+  model, tokenizer = setup() # pyright: ignore[reportUnknownVariableType]
+  return {"prob": evaluate(model, tokenizer, item.author_name, item.comment)} # pyright: ignore[reportUnknownArgumentType]
 
