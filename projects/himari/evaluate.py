@@ -1,12 +1,12 @@
 import torch
 import torch.nn as nn
 from torch import Tensor
-from transformers import ElectraModel, ElectraTokenizer
+from transformers import AutoModel, AutoTokenizer
 from safetensors.torch import load_model
 
 # Model classes
 class SpamUserClassificationLayer(nn.Module):
-  def __init__(self, encoder: ElectraModel):
+  def __init__(self, encoder: AutoModel):
     super().__init__()
     self.encoder = encoder
     self.dense1 = nn.Linear(1536, 512)
@@ -52,7 +52,7 @@ class SpamUserClassificationLayer(nn.Module):
 class SpamUserClassifier(nn.Module):
   def __init__(self, pretrained_model_name="beomi/kcelectra-base"):
     super().__init__()
-    self.encoder = ElectraModel.from_pretrained(pretrained_model_name)
+    self.encoder = AutoModel.from_pretrained(pretrained_model_name)
     for i, layer in enumerate(self.encoder.encoder.layer):
       if i < 2:
         for param in layer.parameters():
@@ -89,12 +89,12 @@ class SpamUserClassifier(nn.Module):
 def setup():
   device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
   model = SpamUserClassifier().to(device)
-  tokenizer = ElectraTokenizer.from_pretrained("beomi/KcELECTRA-base")
-  load_model(model, 'data/model.safetensors', device=str(device))
+  tokenizer = AutoTokenizer.from_pretrained("beomi/KcELECTRA-base")
+  load_model(model, '/models/model.safetensors', device=str(device))
   _ = model.eval()
   return model, tokenizer
 
-def evaluate(model: SpamUserClassifier, tokenizer: ElectraTokenizer, author_name: str, comment: str, device: torch.device = torch.device('cuda')):
+def evaluate(model: SpamUserClassifier, tokenizer: AutoTokenizer, author_name: str, comment: str, device: torch.device = torch.device('cuda')):
   # Tokenize author name
   name_encoding = tokenizer(
     author_name,

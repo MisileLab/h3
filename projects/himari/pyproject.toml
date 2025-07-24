@@ -7,7 +7,6 @@ requires-python = "==3.13.5"
 dependencies = [
   "argon2-cffi==25.1.0",
   "fastapi[standard]==0.116.1",
-  "gel==3.1.0",
   "modal==1.1.0",
   # https://modallabscommunity.slack.com/archives/C069RAH7X4M/p1741644232430889
   "protobuf<5.0.0",

@@ -1,8 +1,0 @@
-module default {
-  type Data {
-    author_name: str;
-    content: str;
-    is_bot: bool;
-    constraint exclusive on ((.author_name, .content));
-  }
-}
