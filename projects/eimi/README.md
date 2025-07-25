@@ -1,6 +1,6 @@
 # YouTube Request Interceptor
 
-A Chrome extension that intercepts and monitors HTTP requests made to YouTube, with the ability to modify responses using custom functions or by fetching from an external server.
+A Chrome extension that intercepts and monitors HTTP requests made to YouTube, with the ability to modify responses using custom functions, fetch from an external server, or detect and mark bot comments.
 
 ## Features
 
@@ -10,8 +10,10 @@ A Chrome extension that intercepts and monitors HTTP requests made to YouTube, w
 - Color-coded status codes (green for success, red for errors)
 - Stores up to 100 recent requests
 - Click on a request to see detailed information
-- **NEW:** Modify responses using custom JavaScript functions
-- **NEW:** Dynamically fetch modified responses from an external server
+- Modify responses using custom JavaScript functions
+- Dynamically fetch modified responses from an external server
+- Detect and mark bot comments using an AI-powered API
+- **NEW:** Right-click on comments to report them as bots
 
 ## Installation
 
@@ -93,16 +95,118 @@ app.listen(port, () => {
 });
 ```
 
+## Bot Detection
+
+The extension can detect and mark bot comments in YouTube videos:
+
+1. Click the "Bot Detection" button in the panel
+2. Check "Enable Bot Detection" to activate the feature
+3. Enter your API key for the bot detection service
+4. Enter the API server URL
+5. Click "Test API Connection" to verify the connection
+6. Configure additional settings as needed:
+   - Mark bot names with [BOT] tag
+   - Enable right-click report menu
+7. Click "Save Settings" to apply your changes
+
+### Right-Click Report Menu
+
+You can manually report comments as bots:
+
+1. Enable the "Enable right-click report menu" option in Bot Detection settings
+2. Right-click on any YouTube comment
+3. Select "Report as Bot" from the context menu
+4. The comment will be sent to the API for reporting
+5. A "REPORTED" badge will be added to the comment
+
+### Bot Detection API
+
+The extension uses the following API endpoints:
+
+- `/evaluate`: Evaluates comments to determine if they are from bots
+  - Request: `{ evaluate: [{ author_name: string, content: string }], api_key: string }`
+  - Response: `{ result: number[], is_bot: boolean[] }`
+
+- `/report`: Reports a comment as a bot
+  - Request: `{ author_name: string, content: string, is_bot: boolean, api_key: string }`
+  - Response: `{ result: "success" }`
+
+Example API implementation (Python with FastAPI):
+
+```python
+@app.post("/evaluate")
+async def evaluate(item: EvaluateRequest) -> dict[str, Sequence[float | bool]]:
+  # Validate request
+  if not item.evaluate:
+    raise HTTPException(status.HTTP_400_BAD_REQUEST, detail="Author name and content are required")
+  
+  # Validate API key
+  try:
+    _ = ph.verify(api_key_hashed, item.api_key)
+  except VerifyMismatchError as e:
+    raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail="Invalid API key") from e
+  
+  # Extract data
+  author_names = [i.author_name for i in item.evaluate]
+  contents = [i.content for i in item.evaluate]
+  
+  # Evaluate using your bot detection model
+  result: list[float] = model.evaluate(author_names, contents)
+  is_bot = [result > 0.9 for result in result]
+  
+  return {"result": result, "is_bot": is_bot}
+
+@app.post("/report")
+async def report(item: ReportRequest):
+  # Validate API key
+  try:
+    _ = ph.verify(api_key_hashed, item.api_key)
+  except VerifyMismatchError as e:
+    raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail="Invalid API key") from e
+  
+  if not item.author_name or not item.content:
+    raise HTTPException(status.HTTP_400_BAD_REQUEST, detail="Author name and content are required")
+  
+  # Store in database
+  entry_id = str(uuid.uuid4())
+  kv_store[entry_id] = {
+    "author_name": item.author_name,
+    "content": item.content,
+    "is_bot": item.is_bot,
+    "timestamp": datetime.now().isoformat()
+  }
+  
+  return {"result": "success"}
+```
+
 ### Custom Function Example
 
 ```javascript
 function(response, url) {
   // Example: Modify a YouTube API response based on URL
   if (url.includes('/youtubei/v1/browse')) {
-    // Modify the data as needed
-    if (response && response.contents) {
-      response.contents.modified = true;
-      response.contents.timestamp = new Date().toISOString();
+    // Check if this is a comments response
+    if (response && response.frameworkUpdates && 
+        response.frameworkUpdates.entityBatchUpdate && 
+        response.frameworkUpdates.entityBatchUpdate.mutations) {
+      
+      // Process comment mutations
+      const mutations = response.frameworkUpdates.entityBatchUpdate.mutations;
+      
+      for (const mutation of mutations) {
+        if (mutation.payload && mutation.payload.commentEntityPayload) {
+          const payload = mutation.payload.commentEntityPayload;
+          
+          // Example: Mark comments with specific keywords as bots
+          if (payload.author && payload.properties && payload.properties.content) {
+            const content = payload.properties.content.content.toLowerCase();
+            if (content.includes('subscribe to my channel') || 
+                content.includes('check out my video')) {
+              payload.author.displayName += ' [BOT]';
+            }
+          }
+        }
+      }
     }
   }
   return response;
@@ -116,7 +220,7 @@ function(response, url) {
 The extension consists of these main files:
 
 - `manifest.json`: Extension configuration (Manifest V3 compliant)
-- `background.js`: Background script that intercepts requests
+- `background.js`: Background script that intercepts requests and processes responses
 - `content.js`: Content script that displays the UI on YouTube pages
 - `rules.json`: Declarative rules for network request handling
 
@@ -126,4 +230,5 @@ This extension requires the following permissions:
 - `webRequest`: To intercept web requests (non-blocking)
 - `storage`: To store intercepted requests and response modification settings
 - `declarativeNetRequest`: For limited response modification capabilities
+- `contextMenus`: For the right-click report menu
 - Host permissions for YouTube domains and external servers 

@@ -2,11 +2,12 @@
   "manifest_version": 3,
   "name": "YouTube Request Interceptor",
   "version": "1.0",
-  "description": "Intercepts and monitors YouTube requests with dynamic response modification",
+  "description": "Intercepts and monitors YouTube requests with dynamic response modification and bot detection",
   "permissions": [
     "webRequest",
     "storage",
-    "declarativeNetRequest"
+    "declarativeNetRequest",
+    "contextMenus"
   ],
   "host_permissions": [
     "*://www.youtube.com/*",

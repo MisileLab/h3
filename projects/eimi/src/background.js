@@ -12,6 +12,7 @@ let interceptedRequests = [];
 let responseModificationEnabled = false;
 let responseModificationFunction = null;
 let exampleServerUrl = "https://example.com/api"; // Default example server URL
+let apiKey = ""; // API key for the bot detection service
 
 // Function to intercept requests
 function interceptRequest(details) {
@@ -62,13 +63,21 @@ async function fetchModifiedResponse(originalUrl, requestId) {
     
     console.log(`Fetching modified response from: ${fetchUrl}`);
     
+    // Prepare headers
+    const headers = {
+      'Content-Type': 'application/json',
+      'X-Original-URL': originalUrl
+    };
+    
+    // Add API key if available
+    if (apiKey) {
+      headers['Authorization'] = `Bearer ${apiKey}`;
+    }
+    
     // Fetch from the example server
     const response = await fetch(fetchUrl, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Original-URL': originalUrl
-      }
+      headers: headers
     });
     
     if (!response.ok) {
@@ -107,11 +116,152 @@ function applyCustomFunction(response, url) {
   if (!responseModificationFunction) return response;
   
   try {
-    // Execute the custom function
     return responseModificationFunction(response, url);
   } catch (error) {
     console.error('Error applying custom function:', error);
     return response;
+  }
+}
+
+// Function to extract comments from YouTube response
+function extractCommentsFromResponse(responseData) {
+  try {
+    if (!responseData || !responseData.frameworkUpdates || 
+        !responseData.frameworkUpdates.entityBatchUpdate || 
+        !responseData.frameworkUpdates.entityBatchUpdate.mutations) {
+      return null;
+    }
+    
+    const comments = [];
+    const mutations = responseData.frameworkUpdates.entityBatchUpdate.mutations;
+    
+    for (const mutation of mutations) {
+      if (mutation.payload && mutation.payload.commentEntityPayload) {
+        const payload = mutation.payload.commentEntityPayload;
+        
+        if (payload.author && payload.author.displayName && 
+            payload.properties && payload.properties.content && 
+            payload.properties.content.content) {
+          const author = payload.author.displayName;
+          const content = payload.properties.content.content;
+          
+          comments.push({ author_name: author, content: content });
+        }
+      }
+    }
+    
+    return comments.length > 0 ? comments : null;
+  } catch (error) {
+    console.error('Error extracting comments:', error);
+    return null;
+  }
+}
+
+// Function to send comments to bot detection API
+async function detectBots(comments) {
+  if (!comments || comments.length === 0 || !apiKey) {
+    return null;
+  }
+  
+  try {
+    const response = await fetch(exampleServerUrl + '/evaluate', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        evaluate: comments,
+        api_key: apiKey
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error(`API responded with status: ${response.status}`);
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('Error detecting bots:', error);
+    return null;
+  }
+}
+
+// Function to modify YouTube response with bot detection results
+function modifyResponseWithBotDetection(responseData, botDetectionResults) {
+  if (!responseData || !botDetectionResults || 
+      !botDetectionResults.is_bot || botDetectionResults.is_bot.length === 0) {
+    return responseData;
+  }
+  
+  try {
+    if (!responseData.frameworkUpdates || 
+        !responseData.frameworkUpdates.entityBatchUpdate || 
+        !responseData.frameworkUpdates.entityBatchUpdate.mutations) {
+      return responseData;
+    }
+    
+    const mutations = responseData.frameworkUpdates.entityBatchUpdate.mutations;
+    let commentIndex = 0;
+    
+    for (let i = 0; i < mutations.length; i++) {
+      const mutation = mutations[i];
+      if (mutation.payload && mutation.payload.commentEntityPayload) {
+        const payload = mutation.payload.commentEntityPayload;
+        
+        if (payload.author && payload.author.displayName && 
+            commentIndex < botDetectionResults.is_bot.length) {
+          
+          // If the API identifies this as a bot, change the author name
+          if (botDetectionResults.is_bot[commentIndex]) {
+            payload.author.displayName = payload.author.displayName + " [BOT]";
+            
+            // Log the modification
+            console.log(`Modified author name for bot: ${payload.author.displayName}`);
+          }
+          
+          commentIndex++;
+        }
+      }
+    }
+    
+    return responseData;
+  } catch (error) {
+    console.error('Error modifying response with bot detection:', error);
+    return responseData;
+  }
+}
+
+// Function to process YouTube comment responses
+async function processYouTubeCommentResponse(responseData, url) {
+  // Check if this is a comments response
+  if (!url.includes('/youtubei/v1/next') && !url.includes('/youtubei/v1/browse')) {
+    return responseData;
+  }
+  
+  try {
+    // Extract comments from the response
+    const comments = extractCommentsFromResponse(responseData);
+    if (!comments) {
+      return responseData;
+    }
+    
+    console.log(`Extracted ${comments.length} comments from response`);
+    
+    // Send comments to bot detection API
+    const botDetectionResults = await detectBots(comments);
+    if (!botDetectionResults) {
+      return responseData;
+    }
+    
+    console.log('Bot detection results:', botDetectionResults);
+    
+    // Modify the response with bot detection results
+    const modifiedResponse = modifyResponseWithBotDetection(responseData, botDetectionResults);
+    
+    return modifiedResponse;
+  } catch (error) {
+    console.error('Error processing YouTube comment response:', error);
+    return responseData;
   }
 }
 
@@ -136,7 +286,7 @@ chrome.webRequest.onHeadersReceived.addListener(
       chrome.storage.local.set({ 'interceptedRequests': interceptedRequests });
     }
     
-    // If response modification is enabled and we have a function
+    // If response modification is enabled
     if (responseModificationEnabled) {
       try {
         // Start the dynamic response modification process
@@ -196,10 +346,27 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         chrome.storage.local.set({ 'exampleServerUrl': exampleServerUrl });
       }
       
+      // Save the API key if provided
+      if (message.apiKey !== undefined) {
+        apiKey = message.apiKey;
+        chrome.storage.local.set({ 'apiKey': apiKey });
+      }
+      
+      // Save the mark bot names setting if provided
+      if (message.markBotNames !== undefined) {
+        chrome.storage.local.set({ 'markBotNames': message.markBotNames });
+      }
+      
+      // Save the enable report menu setting if provided
+      if (message.enableReportMenu !== undefined) {
+        chrome.storage.local.set({ 'enableReportMenu': message.enableReportMenu });
+      }
+      
       sendResponse({ 
         success: true, 
         enabled: responseModificationEnabled,
-        serverUrl: exampleServerUrl
+        serverUrl: exampleServerUrl,
+        apiKey: apiKey
       });
     } catch (error) {
       sendResponse({ 
@@ -214,15 +381,30 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     sendResponse({
       enabled: responseModificationEnabled,
       hasFunction: responseModificationFunction !== null,
-      serverUrl: exampleServerUrl
+      serverUrl: exampleServerUrl,
+      apiKey: apiKey
     });
     return true;
   }
   
   if (message.action === 'testServerConnection') {
     const url = message.serverUrl || exampleServerUrl;
+    const key = message.apiKey || apiKey;
     
-    fetch(url, { method: 'GET' })
+    // Prepare headers
+    const headers = {
+      'Content-Type': 'application/json'
+    };
+    
+    // Add API key if available
+    if (key) {
+      headers['Authorization'] = `Bearer ${key}`;
+    }
+    
+    fetch(url, { 
+      method: 'GET',
+      headers: headers
+    })
       .then(response => {
         if (response.ok) {
           sendResponse({ success: true, status: response.status });
@@ -236,10 +418,96 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     
     return true; // Keep the message channel open for async response
   }
+  
+  if (message.action === 'testBotDetectionAPI') {
+    const url = message.serverUrl || exampleServerUrl;
+    const key = message.apiKey || apiKey;
+    
+    if (!key) {
+      sendResponse({ success: false, error: 'API key is required' });
+      return true;
+    }
+    
+    const testComment = {
+      author_name: "Test User",
+      content: "This is a test comment."
+    };
+    
+    fetch(`${url}/evaluate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        evaluate: [testComment],
+        api_key: key
+      })
+    })
+      .then(response => {
+        if (response.ok) {
+          return response.json().then(data => {
+            sendResponse({ success: true, data: data });
+          });
+        } else {
+          return response.text().then(text => {
+            sendResponse({ success: false, status: response.status, error: text });
+          });
+        }
+      })
+      .catch(error => {
+        sendResponse({ success: false, error: error.message });
+      });
+    
+    return true; // Keep the message channel open for async response
+  }
+  
+  if (message.action === 'reportComment') {
+    const url = message.serverUrl || exampleServerUrl;
+    const key = message.apiKey || apiKey;
+    
+    if (!key) {
+      sendResponse({ success: false, error: 'API key is required' });
+      return true;
+    }
+    
+    if (!message.comment) {
+      sendResponse({ success: false, error: 'Comment data is required' });
+      return true;
+    }
+    
+    fetch(`${url}/report`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        author_name: message.comment.author_name,
+        content: message.comment.content,
+        is_bot: true,
+        api_key: key
+      })
+    })
+      .then(response => {
+        if (response.ok) {
+          return response.json().then(data => {
+            sendResponse({ success: true, data: data });
+          });
+        } else {
+          return response.text().then(text => {
+            sendResponse({ success: false, status: response.status, error: text });
+          });
+        }
+      })
+      .catch(error => {
+        sendResponse({ success: false, error: error.message });
+      });
+    
+    return true; // Keep the message channel open for async response
+  }
 });
 
 // Initialize by loading any previously stored requests
-chrome.storage.local.get(['interceptedRequests', 'responseModificationEnabled', 'responseModificationFunction', 'exampleServerUrl'], (data) => {
+chrome.storage.local.get(['interceptedRequests', 'responseModificationEnabled', 'responseModificationFunction', 'exampleServerUrl', 'apiKey', 'modifyApiKey'], (data) => {
   if (data.interceptedRequests) {
     interceptedRequests = data.interceptedRequests;
   }
@@ -258,6 +526,15 @@ chrome.storage.local.get(['interceptedRequests', 'responseModificationEnabled', 
   
   if (data.exampleServerUrl) {
     exampleServerUrl = data.exampleServerUrl;
+  }
+  
+  if (data.apiKey) {
+    apiKey = data.apiKey;
+  }
+  
+  // If there's a specific API key for response modification, use that instead
+  if (data.modifyApiKey) {
+    apiKey = data.modifyApiKey;
   }
 });
 
