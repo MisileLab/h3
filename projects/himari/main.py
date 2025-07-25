@@ -3,6 +3,7 @@ from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, status
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 import uuid
@@ -17,6 +18,16 @@ _ = load_dotenv()
 # Modal setup
 app = modal.App(name="himari-api")
 web_app = FastAPI()
+
+# Add CORS middleware
+web_app.add_middleware(
+  CORSMiddleware,
+  allow_origins=["chrome-extension://pjahmjjajanjbkkekkiihmdkchkajjdp"],
+  allow_credentials=True,
+  allow_methods=["*"],
+  allow_headers=["*"],
+)
+
 ph = PasswordHasher()
 model = None
 
