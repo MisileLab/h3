@@ -94,10 +94,16 @@ def setup():
   _ = model.eval()
   return model, tokenizer
 
-def evaluate(model: SpamUserClassifier, tokenizer: AutoTokenizer, author_name: str, comment: str, device: torch.device = torch.device('cuda')):
-  # Tokenize author name
+def evaluate(
+  model: SpamUserClassifier,
+  tokenizer: AutoTokenizer,
+  author_names: list[str],
+  comments: list[str],
+  device: torch.device = torch.device('cuda')
+) -> list[float]:
+  # Tokenize author names in batch
   name_encoding = tokenizer(
-    author_name,
+    author_names,
     truncation=True,
     padding="max_length",
     max_length=128,
@@ -106,9 +112,9 @@ def evaluate(model: SpamUserClassifier, tokenizer: AutoTokenizer, author_name: s
   name_input_ids = name_encoding["input_ids"].to(device)
   name_attention_mask = name_encoding["attention_mask"].to(device)
 
-  # Tokenize content
+  # Tokenize comments in batch
   content_encoding = tokenizer(
-    comment,
+    comments,
     truncation=True,
     padding="max_length",
     max_length=128,
@@ -117,7 +123,7 @@ def evaluate(model: SpamUserClassifier, tokenizer: AutoTokenizer, author_name: s
   content_input_ids = content_encoding["input_ids"].to(device)
   content_attention_mask = content_encoding["attention_mask"].to(device)
 
-  # Get prediction
+  # Get predictions
   with torch.no_grad():
     logits = model(
       name_input_ids=name_input_ids,
@@ -126,6 +132,7 @@ def evaluate(model: SpamUserClassifier, tokenizer: AutoTokenizer, author_name: s
       content_attention_mask=content_attention_mask,
       return_logits=True
     )
-    
-    prob: Tensor = torch.sigmoid(logits.squeeze(-1))
-    return float(prob.item())
+    prob = torch.sigmoid(logits.squeeze(-1))
+    probs = prob.cpu().tolist()
+
+  return probs
