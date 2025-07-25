@@ -6,7 +6,7 @@ const youtubePatterns = [
 
 // Response modification settings
 let responseModificationEnabled = false;
-let serverUrl = "https://misilelab--himari-api-fastapi-app-dev.modal.run/";
+let serverUrl = "https://misilelab--himari-api-fastapi-app.modal.run/";
 let apiKey = "";
 
 // Store predefined response modification functions
