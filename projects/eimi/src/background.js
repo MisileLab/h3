@@ -4,149 +4,12 @@ const youtubePatterns = [
   "*://www.youtube.com/youtubei/v1/browse*"
 ];
 
-// Response modification settings
-let responseModificationEnabled = false;
+// Bot detection settings
+let botDetectionEnabled = true;
 let serverUrl = "https://misilelab--himari-api-fastapi-app.modal.run";
 let apiKey = "";
-
-// Store predefined response modification functions
-const predefinedFunctions = {
-  markBotComments: function(response, url) {
-    try {
-      if (!url.includes('/youtubei/v1/next') && !url.includes('/youtubei/v1/browse')) {
-        return response;
-      }
-      
-      if (!response || !response.frameworkUpdates || 
-          !response.frameworkUpdates.entityBatchUpdate || 
-          !response.frameworkUpdates.entityBatchUpdate.mutations) {
-        return response;
-      }
-      
-      const {mutations} = response.frameworkUpdates.entityBatchUpdate;
-      
-      for (const mutation of mutations) {
-        if (mutation.payload && mutation.payload.commentEntityPayload) {
-          const payload = mutation.payload.commentEntityPayload;
-          
-          if (payload.author && payload.author.displayName && 
-              payload.properties && payload.properties.content) {
-            const content = payload.properties.content.content.toLowerCase();
-            if (content.includes('subscribe to my channel') || 
-                content.includes('check out my video')) {
-              payload.author.displayName += " [BOT]";
-            }
-          }
-        }
-      }
-      
-      return response;
-    } catch (error) {
-      console.error('Error in markBotComments function:', error);
-      return response;
-    }
-  },
-  
-  // Add more predefined functions as needed
-  removeSpamLinks: function(response, url) {
-    try {
-      if (!url.includes('/youtubei/v1/next') && !url.includes('/youtubei/v1/browse')) {
-        return response;
-      }
-      
-      if (!response || !response.frameworkUpdates || 
-          !response.frameworkUpdates.entityBatchUpdate || 
-          !response.frameworkUpdates.entityBatchUpdate.mutations) {
-        return response;
-      }
-      
-      const {mutations} = response.frameworkUpdates.entityBatchUpdate;
-      
-      for (const mutation of mutations) {
-        if (mutation.payload && mutation.payload.commentEntityPayload) {
-          const payload = mutation.payload.commentEntityPayload;
-          
-          if (payload.properties && payload.properties.content) {
-            const {content} = payload.properties.content;
-            // Remove URLs from comments
-            payload.properties.content.content = content.replace(/https?:\/\/\S+/g, '[link removed]');
-          }
-        }
-      }
-      
-      return response;
-    } catch (error) {
-      console.error('Error in removeSpamLinks function:', error);
-      return response;
-    }
-  }
-};
-
-// Current active function
-let activeModificationFunction = predefinedFunctions.markBotComments;
-
-// Function to dynamically modify a response by fetching from example server
-async function fetchModifiedResponse(originalUrl, requestId) {
-  try {
-    // Only attempt if modification is enabled and we have a server URL
-    if (!responseModificationEnabled || !serverUrl) {
-      return null;
-    }
-
-    // Prepare the URL for the example server
-    const fetchUrl = `${serverUrl}/evaluate`;
-    
-    console.log(`Fetching modified response from: ${fetchUrl}`);
-    
-    // Prepare headers
-    const headers = {
-      'Content-Type': 'application/json'
-    };
-    
-    // Fetch from the example server
-    const response = await fetch(fetchUrl, {
-      method: 'POST', // Changed from GET to POST for proper JSON body
-      headers: headers,
-      body: JSON.stringify({
-        originalUrl: originalUrl,
-        api_key: apiKey
-      })
-    });
-    
-    if (!response.ok) {
-      throw new Error(`Server responded with status: ${response.status}`);
-    }
-    
-    // Get the response data
-    const responseData = await response.json();
-    
-    // Update our intercepted request with the modification info
-    const index = interceptedRequests.findIndex(req => req.requestId === requestId);
-    if (index !== -1) {
-      interceptedRequests[index].modified = true;
-      interceptedRequests[index].modifiedTimestamp = new Date().toISOString();
-      interceptedRequests[index].modificationSource = 'server';
-      interceptedRequests[index].processing = false;
-      
-      // Store the updated requests
-      chrome.storage.local.set({ 'interceptedRequests': interceptedRequests });
-    }
-    
-    return responseData;
-  } catch (error) {
-    console.error('Error fetching modified response:', error);
-    
-    // Update the request with the error if we can find it
-    const index = interceptedRequests.findIndex(req => req.requestId === requestId);
-    if (index !== -1) {
-      interceptedRequests[index].modificationError = error.message;
-      interceptedRequests[index].processing = false;
-      chrome.storage.local.set({ 'interceptedRequests': interceptedRequests });
-    }
-    
-    return null;
-  }
-}
+let markBotNames = true;
+let enableReportMenu = true;
 
 // Store intercepted requests
 let interceptedRequests = [];
@@ -188,20 +51,19 @@ function extractCommentsFromResponse(responseData) {
       return null;
     }
     
-    const comments = [];
     const {mutations} = responseData.frameworkUpdates.entityBatchUpdate;
+    const comments = [];
     
     for (const mutation of mutations) {
       if (mutation.payload && mutation.payload.commentEntityPayload) {
         const payload = mutation.payload.commentEntityPayload;
         
         if (payload.author && payload.author.displayName && 
-            payload.properties && payload.properties.content && 
-            payload.properties.content.content) {
-          const author = payload.author.displayName;
-          const {content} = payload.properties.content;
-          
-          comments.push({ author_name: author, content: content });
+            payload.properties && payload.properties.content) {
+          comments.push({
+            author: payload.author.displayName,
+            content: payload.properties.content.content
+          });
         }
       }
     }
@@ -213,15 +75,32 @@ function extractCommentsFromResponse(responseData) {
   }
 }
 
-// Function to send comments to bot detection API
+// Function to detect bots using the API
 async function detectBots(comments) {
-  if (!comments || comments.length === 0 || !apiKey) {
+  if (!comments || comments.length === 0) {
+    console.log("No comments to detect bots in");
+    return null;
+  }
+  
+  // Check if bot detection is enabled and we have necessary settings
+  if (!botDetectionEnabled) {
+    console.log("Bot detection is disabled");
+    return null;
+  }
+  
+  if (!serverUrl) {
+    console.error("Server URL not configured");
     return null;
   }
   
   try {
-    console.debug(`sending comments to bot detection api: ${comments}`)
-    const response = await fetch(`${serverUrl}/evaluate`, {
+    // Ensure serverUrl doesn't end with a slash
+    const apiUrl = serverUrl.endsWith('/') ? `${serverUrl}evaluate` : `${serverUrl}/evaluate`;
+    
+    console.log(`Sending ${comments.length} comments to bot detection API: ${apiUrl}`);
+    console.log("API Key present:", !!apiKey);
+    
+    const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -233,10 +112,13 @@ async function detectBots(comments) {
     });
     
     if (!response.ok) {
-      throw new Error(`API responded with status: ${response.status}`);
+      const errorText = await response.text();
+      throw new Error(`API responded with status: ${response.status}, ${errorText}`);
     }
     
-    return await response.json();
+    const result = await response.json();
+    console.log("Bot detection API response:", result);
+    return result;
   } catch (error) {
     console.error('Error detecting bots:', error);
     return null;
@@ -320,10 +202,11 @@ async function processYouTubeCommentResponse(responseData, url) {
   }
 }
 
-// Set up the request interception (non-blocking in Manifest V3)
+// Listen for web requests to intercept
 chrome.webRequest.onBeforeRequest.addListener(
   interceptRequest,
-  { urls: youtubePatterns }
+  { urls: youtubePatterns },
+  []
 );
 
 // Listen for response headers to potentially modify them
@@ -340,74 +223,9 @@ chrome.webRequest.onHeadersReceived.addListener(
       // Update storage
       chrome.storage.local.set({ 'interceptedRequests': interceptedRequests });
     }
-    
-    // If response modification is enabled
-    if (responseModificationEnabled) {
-      try {
-        // Mark the request as being processed for modification
-        if (index !== -1) {
-          interceptedRequests[index].processing = true;
-          interceptedRequests[index].modified = true;
-          chrome.storage.local.set({ 'interceptedRequests': interceptedRequests });
-        }
-
-        // Start the dynamic response modification process
-        // Note: In Manifest V3, we can't actually modify the response body here
-        // This is just to track that we would modify this response
-        fetchModifiedResponse(details.url, details.requestId);
-      } catch (error) {
-        console.error('Error in response modification:', error);
-      }
-    }
   },
   { urls: youtubePatterns },
   ["responseHeaders"]
-);
-
-// Add a declarative net request rule handler to apply our modifications
-chrome.declarativeNetRequest.onRuleMatchedDebug?.addListener((info) => {
-  console.log('Rule matched:', info);
-  
-  // Get the request details
-  const { request, rule } = info;
-  
-  // If we have an active modification function and response modification is enabled
-  if (responseModificationEnabled && activeModificationFunction) {
-    try {
-      console.log(`Applying ${activeModificationFunction.name} to response for ${request.url}`);
-      
-      // Find the request in our array
-      const index = interceptedRequests.findIndex(req => req.url === request.url);
-      if (index !== -1) {
-        // Mark as modified by function
-        interceptedRequests[index].modified = true;
-        interceptedRequests[index].modificationSource = 'function';
-        interceptedRequests[index].modifiedTimestamp = new Date().toISOString();
-        
-        // Update storage
-        chrome.storage.local.set({ 'interceptedRequests': interceptedRequests });
-      }
-    } catch (error) {
-      console.error('Error applying modification function:', error);
-    }
-  }
-});
-
-// Also listen for completed requests to get response data
-chrome.webRequest.onCompleted.addListener(
-  (details) => {
-    // Find the matching request in our array
-    const index = interceptedRequests.findIndex(req => req.requestId === details.requestId);
-    if (index !== -1) {
-      // Update with response info
-      interceptedRequests[index].statusCode = details.statusCode;
-      interceptedRequests[index].responseTime = new Date().toISOString();
-      
-      // Update storage
-      chrome.storage.local.set({ 'interceptedRequests': interceptedRequests });
-    }
-  },
-  { urls: youtubePatterns }
 );
 
 // Listen for messages from content script
@@ -417,98 +235,67 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true; // Keep the message channel open for async response
   }
   
-  if (message.action === 'applyModificationFunction') {
-    try {
-      // Check if we have an active modification function and response modification is enabled
-      if (!responseModificationEnabled || !activeModificationFunction) {
-        sendResponse({ success: false, error: 'Response modification is disabled or no function selected' });
-        return true;
-      }
-      
-      // Apply the active modification function to the response data
-      const modifiedResponse = activeModificationFunction(message.responseData, message.url);
-      
-      // Send back the modified response
-      sendResponse({ 
-        success: true, 
-        modifiedResponse: modifiedResponse,
-        functionName: activeModificationFunction.name
-      });
-    } catch (error) {
-      console.error('Error applying modification function:', error);
-      sendResponse({ 
-        success: false, 
-        error: error.message 
-      });
+  if (message.action === 'detectBots') {
+    if (!message.comments || !Array.isArray(message.comments)) {
+      sendResponse({ success: false, error: 'Invalid comments data' });
+      return true;
     }
-    return true;
+    
+    detectBots(message.comments)
+      .then(results => {
+        sendResponse({ success: true, results: results });
+      })
+      .catch(error => {
+        sendResponse({ success: false, error: error.message });
+      });
+    
+    return true; // Keep the message channel open for async response
   }
   
-  if (message.action === 'setResponseModification') {
-    try {
-      responseModificationEnabled = message.enabled;
-      
-      if (message.functionCode) {
-        // Instead of using Function constructor, use predefined functions
-        const functionName = message.functionCode.trim();
-        if (predefinedFunctions[functionName]) {
-          activeModificationFunction = predefinedFunctions[functionName];
-          
-          // Save the function name for later retrieval
-          chrome.storage.local.set({ 'responseModificationFunctionName': functionName });
-        } else {
-          // If not a predefined function, use the default
-          activeModificationFunction = predefinedFunctions.markBotComments;
-          chrome.storage.local.set({ 'responseModificationFunctionName': 'markBotComments' });
-        }
-      } else {
-        activeModificationFunction = null;
-      }
-      
-      // Save the server URL if provided
-      if (message.serverUrl !== undefined) {
-        serverUrl = message.serverUrl;
-        chrome.storage.local.set({ 'serverUrl': serverUrl });
-      }
-      
-      // Save the API key if provided
-      if (message.apiKey !== undefined) {
-        apiKey = message.apiKey;
-        chrome.storage.local.set({ 'apiKey': apiKey });
-      }
-      
-      // Save the mark bot names setting if provided
-      if (message.markBotNames !== undefined) {
-        chrome.storage.local.set({ 'markBotNames': message.markBotNames });
-      }
-      
-      // Save the enable report menu setting if provided
-      if (message.enableReportMenu !== undefined) {
-        chrome.storage.local.set({ 'enableReportMenu': message.enableReportMenu });
-      }
-      
-      sendResponse({ 
-        success: true, 
-        enabled: responseModificationEnabled,
-        serverUrl: serverUrl,
-        apiKey: apiKey,
-        functionName: activeModificationFunction ? activeModificationFunction.name : null
-      });
-    } catch (error) {
-      sendResponse({ 
-        success: false, 
-        error: error.message 
-      });
-    }
-    return true;
-  }
-  
-  if (message.action === 'getResponseModificationStatus') {
+  if (message.action === 'getBotDetectionSettings') {
     sendResponse({
-      enabled: responseModificationEnabled,
-      hasFunction: activeModificationFunction !== null,
+      enabled: botDetectionEnabled,
       serverUrl: serverUrl,
-      apiKey: apiKey
+      apiKey: apiKey,
+      markBotNames: markBotNames,
+      enableReportMenu: enableReportMenu
+    });
+    return true;
+  }
+  
+  if (message.action === 'setBotDetectionSettings') {
+    if (message.enabled !== undefined) {
+      botDetectionEnabled = message.enabled;
+      chrome.storage.local.set({ 'botDetectionEnabled': botDetectionEnabled });
+    }
+    
+    if (message.serverUrl) {
+      serverUrl = message.serverUrl;
+      chrome.storage.local.set({ 'serverUrl': serverUrl });
+    }
+    
+    if (message.apiKey !== undefined) {
+      apiKey = message.apiKey;
+      chrome.storage.local.set({ 'apiKey': apiKey });
+    }
+    
+    if (message.markBotNames !== undefined) {
+      markBotNames = message.markBotNames;
+      chrome.storage.local.set({ 'markBotNames': markBotNames });
+    }
+    
+    if (message.enableReportMenu !== undefined) {
+      enableReportMenu = message.enableReportMenu;
+      chrome.storage.local.set({ 'enableReportMenu': enableReportMenu });
+    }
+    
+    sendResponse({
+      success: true,
+      enabled: botDetectionEnabled,
+      serverUrl: serverUrl,
+      apiKey: apiKey,
+      markBotNames: markBotNames,
+      enableReportMenu: enableReportMenu
     });
     return true;
   }
@@ -528,46 +315,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       .then(response => {
         if (response.ok) {
           sendResponse({ success: true, status: response.status });
-        } else {
-          sendResponse({ success: false, status: response.status, error: 'Server returned an error' });
-        }
-      })
-      .catch(error => {
-        sendResponse({ success: false, error: error.message });
-      });
-    
-    return true; // Keep the message channel open for async response
-  }
-  
-  if (message.action === 'testBotDetectionAPI') {
-    const url = message.serverUrl || serverUrl;
-    const key = message.apiKey || apiKey;
-    
-    if (!key) {
-      sendResponse({ success: false, error: 'API key is required' });
-      return true;
-    }
-    
-    const testComment = {
-      author_name: "Test User",
-      content: "This is a test comment."
-    };
-    
-    fetch(`${url}/evaluate`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        evaluate: [testComment],
-        api_key: key
-      })
-    })
-      .then(response => {
-        if (response.ok) {
-          return response.json().then(data => {
-            sendResponse({ success: true, data: data });
-          });
         } else {
           return response.text().then(text => {
             sendResponse({ success: false, status: response.status, error: text });
@@ -624,34 +371,23 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     
     return true; // Keep the message channel open for async response
   }
-  
-  if (message.action === 'getPredefinedFunctions') {
-    // Return a list of available predefined functions
-    const functionNames = Object.keys(predefinedFunctions);
-    sendResponse({ success: true, functions: functionNames });
-    return true;
-  }
 });
 
 // Initialize by loading any previously stored settings
 chrome.storage.local.get([
   'interceptedRequests',
-  'responseModificationEnabled', 
-  'responseModificationFunctionName', 
-  'serverUrl', 
-  'apiKey', 
-  'modifyApiKey'
+  'botDetectionEnabled',
+  'serverUrl',
+  'apiKey',
+  'markBotNames',
+  'enableReportMenu'
 ], (data) => {
   if (data.interceptedRequests) {
     interceptedRequests = data.interceptedRequests;
   }
   
-  if (data.responseModificationEnabled !== undefined) {
-    responseModificationEnabled = data.responseModificationEnabled;
-  }
-  
-  if (data.responseModificationFunctionName && predefinedFunctions[data.responseModificationFunctionName]) {
-    activeModificationFunction = predefinedFunctions[data.responseModificationFunctionName];
+  if (data.botDetectionEnabled !== undefined) {
+    botDetectionEnabled = data.botDetectionEnabled;
   }
   
   if (data.serverUrl) {
@@ -662,10 +398,28 @@ chrome.storage.local.get([
     apiKey = data.apiKey;
   }
   
-  // If there's a specific API key for response modification, use that instead
-  if (data.modifyApiKey) {
-    apiKey = data.modifyApiKey;
+  if (data.markBotNames !== undefined) {
+    markBotNames = data.markBotNames;
+  }
+  
+  if (data.enableReportMenu !== undefined) {
+    enableReportMenu = data.enableReportMenu;
   }
 });
 
-console.log('YouTube Request Interceptor background script loaded'); 
+// Set up context menu for reporting comments
+chrome.contextMenus.create({
+  id: 'reportBotComment',
+  title: 'Report as Bot',
+  contexts: ['all'],
+  documentUrlPatterns: ['*://www.youtube.com/*']
+});
+
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  if (info.menuItemId === 'reportBotComment') {
+    // The actual reporting is handled by the content script
+    chrome.tabs.sendMessage(tab.id, { action: 'contextMenuReportComment' });
+  }
+});
+
+console.log('YouTube Bot Detector background script loaded'); 

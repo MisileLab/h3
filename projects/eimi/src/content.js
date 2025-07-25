@@ -1,323 +1,186 @@
-// Content script for YouTube Request Interceptor
-
-// Function to add a control panel to the YouTube page
+// Add a control panel to the YouTube page
 function addControlPanel() {
-  // Create control panel container
+  // Create the panel container
   const panel = document.createElement('div');
-  panel.id = 'yt-request-interceptor-panel';
+  panel.id = 'yt-bot-detector-panel';
   panel.style.cssText = `
     position: fixed;
     bottom: 20px;
     right: 20px;
-    background: rgba(33, 33, 33, 0.9);
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
+    width: 300px;
+    background-color: rgba(33, 33, 33, 0.9);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
     z-index: 9999;
-    font-family: Arial, sans-serif;
-    max-width: 300px;
+    font-family: 'Roboto', Arial, sans-serif;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  `;
+  
+  // Create the header
+  const header = document.createElement('div');
+  header.style.cssText = `
+    padding: 10px;
+    background-color: #282828;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #444;
+  `;
+  
+  const title = document.createElement('div');
+  title.textContent = 'YouTube Bot Detector';
+  title.style.fontWeight = 'bold';
+  
+  const closeBtn = document.createElement('button');
+  closeBtn.innerHTML = '&times;';
+  closeBtn.style.cssText = `
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0 5px;
+  `;
+  closeBtn.addEventListener('click', () => {
+    panel.style.display = 'none';
+  });
+  
+  header.appendChild(title);
+  header.appendChild(closeBtn);
+  
+  // Create the tabs
+  const tabsContainer = document.createElement('div');
+  tabsContainer.style.cssText = `
+    display: flex;
+    background-color: #333;
+  `;
+  
+  const botDetectionTab = document.createElement('div');
+  botDetectionTab.textContent = 'Bot Detection';
+  botDetectionTab.style.cssText = `
+    padding: 8px 15px;
+    cursor: pointer;
+    background-color: #065fd4;
+    color: white;
+    flex: 1;
+    text-align: center;
+    font-size: 14px;
+  `;
+  
+  tabsContainer.appendChild(botDetectionTab);
+  
+  // Create the content container
+  const contentContainer = document.createElement('div');
+  contentContainer.style.cssText = `
+    padding: 15px;
     max-height: 400px;
     overflow-y: auto;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
-  `;
-
-  // Add header
-  const header = document.createElement('div');
-  header.innerHTML = '<strong>YouTube Request Interceptor</strong>';
-  header.style.cssText = `
-    margin-bottom: 10px;
-    padding-bottom: 5px;
-    border-bottom: 1px solid #555;
-  `;
-  panel.appendChild(header);
-
-  // Add toggle button
-  const toggleBtn = document.createElement('button');
-  toggleBtn.textContent = 'Show Requests';
-  toggleBtn.style.cssText = `
-    background: #065fd4;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 3px;
-    cursor: pointer;
-    margin-right: 5px;
   `;
   
-  // Add response modification button
-  const modifyBtn = document.createElement('button');
-  modifyBtn.textContent = 'Modify Responses';
-  modifyBtn.style.cssText = `
-    background: #555;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 3px;
-    cursor: pointer;
-    margin-right: 5px;
-  `;
-  
-  // Add bot detection button
-  const botDetectionBtn = document.createElement('button');
-  botDetectionBtn.textContent = 'Bot Detection';
-  botDetectionBtn.style.cssText = `
-    background: #555;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 3px;
-    cursor: pointer;
-  `;
-  
-  // Add requests container
-  const requestsContainer = document.createElement('div');
-  requestsContainer.id = 'yt-intercepted-requests';
-  requestsContainer.style.cssText = `
-    margin-top: 10px;
-    display: none;
-    font-size: 12px;
-  `;
-  
-  // Add response modification container
-  const modifyContainer = document.createElement('div');
-  modifyContainer.id = 'yt-response-modification';
-  modifyContainer.style.cssText = `
-    margin-top: 10px;
-    display: none;
-    font-size: 12px;
-  `;
-  
-  // Add bot detection container
+  // Create the bot detection container
   const botDetectionContainer = document.createElement('div');
-  botDetectionContainer.id = 'yt-bot-detection';
-  botDetectionContainer.style.cssText = `
-    margin-top: 10px;
-    display: none;
-    font-size: 12px;
-  `;
-  
-  // Create response modification UI
-  modifyContainer.innerHTML = `
-    <div style="margin-bottom: 10px;">
-      <label style="display: block; margin-bottom: 5px;">
-        <input type="checkbox" id="yt-modify-enabled" /> Enable Response Modification
-      </label>
-    </div>
-    <div style="margin-bottom: 10px;">
-      <div style="margin-bottom: 5px;">Example Server URL:</div>
-      <div style="display: flex;">
-        <input type="text" id="yt-server-url" style="flex-grow: 1; background: #222; color: #eee; border: 1px solid #444; padding: 5px; font-family: monospace; border-radius: 3px;" placeholder="https://example.com/api" />
-        <button id="yt-test-server" style="margin-left: 5px; background: #555; color: white; border: none; padding: 5px; border-radius: 3px; cursor: pointer;">Test</button>
-      </div>
-      <div id="yt-server-status" style="margin-top: 5px; font-size: 11px;"></div>
-    </div>
-    <div style="margin-bottom: 10px;">
-      <div style="margin-bottom: 5px;">API Key:</div>
-      <div style="display: flex;">
-        <input type="password" id="yt-modify-api-key" style="flex-grow: 1; background: #222; color: #eee; border: 1px solid #444; padding: 5px; font-family: monospace; border-radius: 3px;" placeholder="Your API key" />
-        <button id="yt-toggle-modify-api-key" style="margin-left: 5px; background: #555; color: white; border: none; padding: 5px; border-radius: 3px; cursor: pointer;">Show</button>
-      </div>
-    </div>
-    <div style="margin-bottom: 10px;">
-      <div style="margin-bottom: 5px;">Response Modification Function:</div>
-      <select id="yt-modify-function" style="width: 100%; background: #222; color: #eee; border: 1px solid #444; padding: 5px; font-family: monospace; border-radius: 3px;">
-        <option value="">Select a function</option>
-        <!-- Options will be populated dynamically -->
-      </select>
-      <div style="margin-top: 5px; font-size: 11px; color: #aaa;">
-        Select a predefined function to modify YouTube responses
-      </div>
-    </div>
-    <div>
-      <button id="yt-modify-save" style="background: #065fd4; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">Save Settings</button>
-      <span id="yt-modify-status" style="margin-left: 10px; font-size: 12px;"></span>
-    </div>
-  `;
-  
-  // Create bot detection UI
+  botDetectionContainer.id = 'yt-bot-detection-container';
   botDetectionContainer.innerHTML = `
     <div style="margin-bottom: 10px;">
-      <label style="display: block; margin-bottom: 5px;">
-        <input type="checkbox" id="yt-bot-detection-enabled" /> Enable Bot Detection
+      <label style="display: flex; align-items: center; margin-bottom: 10px;">
+        <input type="checkbox" id="yt-bot-detection-enabled" style="margin-right: 10px;">
+        <span>Enable Bot Detection</span>
       </label>
     </div>
     <div style="margin-bottom: 10px;">
+      <div style="margin-bottom: 5px;">Bot Detection API URL:</div>
+      <input type="text" id="yt-bot-api-url" placeholder="https://api.example.com" style="width: 100%; background: #222; color: #eee; border: 1px solid #444; padding: 5px; border-radius: 3px;">
+    </div>
+    <div style="margin-bottom: 10px;">
       <div style="margin-bottom: 5px;">API Key:</div>
-      <div style="display: flex;">
-        <input type="password" id="yt-api-key" style="flex-grow: 1; background: #222; color: #eee; border: 1px solid #444; padding: 5px; font-family: monospace; border-radius: 3px;" placeholder="Your API key" />
-        <button id="yt-toggle-api-key" style="margin-left: 5px; background: #555; color: white; border: none; padding: 5px; border-radius: 3px; cursor: pointer;">Show</button>
+      <div style="display: flex; align-items: center;">
+        <input type="password" id="yt-api-key" placeholder="Your API Key" style="flex: 1; background: #222; color: #eee; border: 1px solid #444; padding: 5px; border-radius: 3px;">
+        <button id="yt-toggle-api-key" style="background: #444; color: white; border: none; padding: 5px 8px; margin-left: 5px; border-radius: 3px; cursor: pointer;">👁️</button>
       </div>
     </div>
     <div style="margin-bottom: 10px;">
-      <div style="margin-bottom: 5px;">API Server URL:</div>
-      <input type="text" id="yt-bot-api-url" style="width: 100%; background: #222; color: #eee; border: 1px solid #444; padding: 5px; font-family: monospace; border-radius: 3px;" placeholder="https://example.com/api" />
+      <label style="display: flex; align-items: center; margin-bottom: 10px;">
+        <input type="checkbox" id="yt-bot-mark-names" style="margin-right: 10px;">
+        <span>Mark Bot Names with Icon</span>
+      </label>
     </div>
     <div style="margin-bottom: 10px;">
-      <button id="yt-test-bot-api" style="background: #555; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">Test API Connection</button>
-      <div id="yt-bot-api-status" style="margin-top: 5px; font-size: 11px;"></div>
+      <label style="display: flex; align-items: center; margin-bottom: 10px;">
+        <input type="checkbox" id="yt-enable-report-menu" style="margin-right: 10px;">
+        <span>Enable Right-Click Report Menu</span>
+      </label>
     </div>
-    <div style="margin-bottom: 10px;">
-      <div style="margin-bottom: 5px;">Bot Detection Settings:</div>
-      <div style="margin-bottom: 5px;">
-        <label style="display: block; margin-bottom: 5px;">
-          <input type="checkbox" id="yt-bot-mark-names" checked /> Mark bot names with [BOT]
-        </label>
-      </div>
-      <div style="margin-bottom: 5px;">
-        <label style="display: block; margin-bottom: 5px;">
-          <input type="checkbox" id="yt-enable-report-menu" checked /> Enable right-click report menu
-        </label>
-      </div>
+    <div style="display: flex; margin-bottom: 10px;">
+      <button id="yt-test-bot-api" style="background: #065fd4; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; margin-right: 10px;">Test Connection</button>
+      <button id="yt-save-bot-settings" style="background: #065fd4; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">Save Settings</button>
     </div>
-    <div>
-      <button id="yt-bot-detection-save" style="background: #065fd4; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">Save Settings</button>
-      <span id="yt-bot-detection-status" style="margin-left: 10px; font-size: 12px;"></span>
-    </div>
+    <div id="yt-bot-api-status" style="margin-top: 10px; font-size: 12px;"></div>
   `;
   
-  // Toggle display of requests
-  toggleBtn.addEventListener('click', () => {
-    if (requestsContainer.style.display === 'none') {
-      requestsContainer.style.display = 'block';
-      modifyContainer.style.display = 'none';
-      botDetectionContainer.style.display = 'none';
-      toggleBtn.textContent = 'Hide Requests';
-      modifyBtn.style.background = '#555';
-      botDetectionBtn.style.background = '#555';
-      toggleBtn.style.background = '#065fd4';
-      updateRequestsList();
-    } else {
-      requestsContainer.style.display = 'none';
-      toggleBtn.textContent = 'Show Requests';
-    }
-  });
+  contentContainer.appendChild(botDetectionContainer);
   
-  // Toggle display of response modification
-  modifyBtn.addEventListener('click', () => {
-    if (modifyContainer.style.display === 'none') {
-      modifyContainer.style.display = 'block';
-      requestsContainer.style.display = 'none';
-      botDetectionContainer.style.display = 'none';
-      modifyBtn.style.background = '#065fd4';
-      toggleBtn.style.background = '#555';
-      botDetectionBtn.style.background = '#555';
-      toggleBtn.textContent = 'Show Requests';
-      loadResponseModificationSettings();
-    } else {
-      modifyContainer.style.display = 'none';
-      modifyBtn.style.background = '#555';
-    }
-  });
+  // Add everything to the panel
+  panel.appendChild(header);
+  panel.appendChild(tabsContainer);
+  panel.appendChild(contentContainer);
   
-  // Toggle display of bot detection
-  botDetectionBtn.addEventListener('click', () => {
-    if (botDetectionContainer.style.display === 'none') {
-      botDetectionContainer.style.display = 'block';
-      requestsContainer.style.display = 'none';
-      modifyContainer.style.display = 'none';
-      botDetectionBtn.style.background = '#065fd4';
-      toggleBtn.style.background = '#555';
-      modifyBtn.style.background = '#555';
-      toggleBtn.textContent = 'Show Requests';
-      loadBotDetectionSettings();
-    } else {
-      botDetectionContainer.style.display = 'none';
-      botDetectionBtn.style.background = '#555';
-    }
-  });
-  
-  header.appendChild(toggleBtn);
-  header.appendChild(modifyBtn);
-  header.appendChild(botDetectionBtn);
-  panel.appendChild(requestsContainer);
-  panel.appendChild(modifyContainer);
-  panel.appendChild(botDetectionContainer);
-  
-  // Add panel to page
+  // Add the panel to the page
   document.body.appendChild(panel);
   
-  // Make panel draggable
+  // Make the panel draggable
   makeDraggable(panel, header);
   
-  // Set up response modification events
-  setupResponseModification();
-  
-  // Set up bot detection events
+  // Set up bot detection
   setupBotDetection();
   
-  return { panel, requestsContainer, modifyContainer, botDetectionContainer };
+  // Return the panel for further use
+  return { panel, contentContainer };
 }
 
-// Function to set up response modification events
-function setupResponseModification() {
-  // Wait for elements to be available
+// Function to set up bot detection
+function setupBotDetection() {
   setTimeout(() => {
-    const enabledCheckbox = document.getElementById('yt-modify-enabled');
-    const functionSelect = document.getElementById('yt-modify-function');
-    const serverUrlInput = document.getElementById('yt-server-url');
-    const testServerBtn = document.getElementById('yt-test-server');
-    const serverStatusDiv = document.getElementById('yt-server-status');
-    const apiKeyInput = document.getElementById('yt-modify-api-key');
-    const toggleApiKeyBtn = document.getElementById('yt-toggle-modify-api-key');
-    const saveButton = document.getElementById('yt-modify-save');
-    const statusSpan = document.getElementById('yt-modify-status');
+    const enabledCheckbox = document.getElementById('yt-bot-detection-enabled');
+    const apiKeyInput = document.getElementById('yt-api-key');
+    const apiUrlInput = document.getElementById('yt-bot-api-url');
+    const toggleApiKeyBtn = document.getElementById('yt-toggle-api-key');
+    const testApiBtn = document.getElementById('yt-test-bot-api');
+    const saveSettingsBtn = document.getElementById('yt-save-bot-settings');
+    const apiStatusDiv = document.getElementById('yt-bot-api-status');
+    const markNamesCheckbox = document.getElementById('yt-bot-mark-names');
+    const enableReportMenuCheckbox = document.getElementById('yt-enable-report-menu');
     
-    if (!enabledCheckbox || !functionSelect || !saveButton || !statusSpan || 
-        !serverUrlInput || !testServerBtn || !apiKeyInput || !toggleApiKeyBtn) return;
-    
-    // Populate the function select dropdown with available functions
-    chrome.runtime.sendMessage({ action: 'getPredefinedFunctions' }, (response) => {
-      if (response && response.success && response.functions) {
-        // Clear existing options
-        functionSelect.innerHTML = '';
-        
-        // Add default option
-        const defaultOption = document.createElement('option');
-        defaultOption.value = '';
-        defaultOption.textContent = 'Select a function';
-        functionSelect.appendChild(defaultOption);
-        
-        // Add each function as an option
-        response.functions.forEach(functionName => {
-          const option = document.createElement('option');
-          option.value = functionName;
-          option.textContent = functionName;
-          functionSelect.appendChild(option);
-        });
-        
-        // Load the currently selected function
-        chrome.storage.local.get('responseModificationFunctionName', (data) => {
-          if (data.responseModificationFunctionName) {
-            functionSelect.value = data.responseModificationFunctionName;
-          }
-        });
-      }
-    });
+    if (!enabledCheckbox || !apiKeyInput || !apiUrlInput || !toggleApiKeyBtn || 
+        !testApiBtn || !saveSettingsBtn || !apiStatusDiv || !markNamesCheckbox || 
+        !enableReportMenuCheckbox) return;
     
     // Toggle API key visibility
     toggleApiKeyBtn.addEventListener('click', () => {
       if (apiKeyInput.type === 'password') {
         apiKeyInput.type = 'text';
-        toggleApiKeyBtn.textContent = 'Hide';
+        toggleApiKeyBtn.textContent = '🔒';
       } else {
         apiKeyInput.type = 'password';
-        toggleApiKeyBtn.textContent = 'Show';
+        toggleApiKeyBtn.textContent = '👁️';
       }
     });
     
-    // Test server button click handler
-    testServerBtn.addEventListener('click', () => {
-      const serverUrl = serverUrlInput.value.trim();
+    // Test API connection
+    testApiBtn.addEventListener('click', () => {
+      const serverUrl = apiUrlInput.value.trim();
       const apiKey = apiKeyInput.value.trim();
       
       if (!serverUrl) {
-        serverStatusDiv.textContent = 'Please enter a server URL';
-        serverStatusDiv.style.color = '#ff9800';
+        apiStatusDiv.textContent = 'Error: Server URL is required';
+        apiStatusDiv.style.color = '#f44336';
         return;
       }
       
-      serverStatusDiv.textContent = 'Testing connection...';
-      serverStatusDiv.style.color = '#ff9800';
+      apiStatusDiv.textContent = 'Testing connection...';
+      apiStatusDiv.style.color = '#ffeb3b';
       
       chrome.runtime.sendMessage({
         action: 'testServerConnection',
@@ -325,238 +188,80 @@ function setupResponseModification() {
         apiKey: apiKey
       }, (response) => {
         if (response && response.success) {
-          serverStatusDiv.textContent = `Connection successful (${response.status})`;
-          serverStatusDiv.style.color = '#4caf50';
-        } else {
-          const errorMsg = response && response.error ? response.error : 'Unknown error';
-          serverStatusDiv.textContent = `Connection failed: ${errorMsg}`;
-          serverStatusDiv.style.color = '#f44336';
-        }
-      });
-    });
-    
-    // Save button click handler
-    saveButton.addEventListener('click', () => {
-      const enabled = enabledCheckbox.checked;
-      const functionName = functionSelect.value;
-      const serverUrl = serverUrlInput.value.trim();
-      const apiKey = apiKeyInput.value.trim();
-      
-      // Validate function selection
-      if (enabled && !functionName) {
-        statusSpan.textContent = 'Error: Please select a function';
-        statusSpan.style.color = '#f44336';
-        return;
-      }
-      
-      // Send to background script
-      chrome.runtime.sendMessage({
-        action: 'setResponseModification',
-        enabled: enabled,
-        functionCode: functionName, // Send the function name instead of code
-        serverUrl: serverUrl,
-        apiKey: apiKey
-      }, (response) => {
-        if (response && response.success) {
-          statusSpan.textContent = enabled ? 'Enabled!' : 'Disabled!';
-          statusSpan.style.color = '#4caf50';
-          
-          // Save to storage
-          chrome.storage.local.set({
-            'responseModificationEnabled': enabled,
-            'responseModificationFunctionName': functionName,
-            'serverUrl': serverUrl,
-            'modifyApiKey': apiKey
-          });
-        } else {
-          const errorMsg = response && response.error ? response.error : 'Unknown error';
-          statusSpan.textContent = `Error: ${errorMsg}`;
-          statusSpan.style.color = '#f44336';
-        }
-        
-        // Clear status after 3 seconds
-        setTimeout(() => {
-          statusSpan.textContent = '';
-        }, 3000);
-      });
-    });
-  }, 500);
-}
-
-// Function to set up bot detection events
-function setupBotDetection() {
-  // Wait for elements to be available
-  setTimeout(() => {
-    const enabledCheckbox = document.getElementById('yt-bot-detection-enabled');
-    const apiKeyInput = document.getElementById('yt-api-key');
-    const toggleApiKeyBtn = document.getElementById('yt-toggle-api-key');
-    const apiUrlInput = document.getElementById('yt-bot-api-url');
-    const testApiBtn = document.getElementById('yt-test-bot-api');
-    const apiStatusDiv = document.getElementById('yt-bot-api-status');
-    const markNamesCheckbox = document.getElementById('yt-bot-mark-names');
-    const enableReportMenuCheckbox = document.getElementById('yt-enable-report-menu');
-    const saveButton = document.getElementById('yt-bot-detection-save');
-    const statusSpan = document.getElementById('yt-bot-detection-status');
-    
-    if (!enabledCheckbox || !apiKeyInput || !toggleApiKeyBtn || !apiUrlInput || 
-        !testApiBtn || !apiStatusDiv || !markNamesCheckbox || !enableReportMenuCheckbox || !saveButton || !statusSpan) return;
-    
-    // Toggle API key visibility
-    toggleApiKeyBtn.addEventListener('click', () => {
-      if (apiKeyInput.type === 'password') {
-        apiKeyInput.type = 'text';
-        toggleApiKeyBtn.textContent = 'Hide';
-      } else {
-        apiKeyInput.type = 'password';
-        toggleApiKeyBtn.textContent = 'Show';
-      }
-    });
-    
-    // Test API button click handler
-    testApiBtn.addEventListener('click', () => {
-      const apiUrl = apiUrlInput.value.trim();
-      const apiKey = apiKeyInput.value.trim();
-      
-      if (!apiUrl) {
-        apiStatusDiv.textContent = 'Please enter an API URL';
-        apiStatusDiv.style.color = '#ff9800';
-        return;
-      }
-      
-      if (!apiKey) {
-        apiStatusDiv.textContent = 'Please enter an API key';
-        apiStatusDiv.style.color = '#ff9800';
-        return;
-      }
-      
-      apiStatusDiv.textContent = 'Testing API connection...';
-      apiStatusDiv.style.color = '#ff9800';
-      
-      chrome.runtime.sendMessage({
-        action: 'testBotDetectionAPI',
-        serverUrl: apiUrl,
-        apiKey: apiKey
-      }, (response) => {
-        if (response.success) {
-          apiStatusDiv.textContent = `API connection successful`;
+          apiStatusDiv.textContent = 'Connection successful!';
           apiStatusDiv.style.color = '#4caf50';
         } else {
-          apiStatusDiv.textContent = `API connection failed: ${response.error}`;
+          const errorMsg = response && response.error ? response.error : 'Unknown error';
+          apiStatusDiv.textContent = `Error: ${errorMsg}`;
           apiStatusDiv.style.color = '#f44336';
         }
+        setTimeout(() => { apiStatusDiv.textContent = ''; }, 3000);
       });
     });
     
-    // Save button click handler
-    saveButton.addEventListener('click', () => {
+    // Save settings
+    saveSettingsBtn.addEventListener('click', () => {
       const enabled = enabledCheckbox.checked;
+      const serverUrl = apiUrlInput.value.trim();
       const apiKey = apiKeyInput.value.trim();
-      const apiUrl = apiUrlInput.value.trim();
-      const markNames = markNamesCheckbox.checked;
+      const markBotNames = markNamesCheckbox.checked;
       const enableReportMenu = enableReportMenuCheckbox.checked;
       
-      // Validate inputs
-      if (enabled) {
-        if (!apiKey) {
-          statusSpan.textContent = 'Error: API key is required';
-          statusSpan.style.color = '#f44336';
-          return;
-        }
-        
-        if (!apiUrl) {
-          statusSpan.textContent = 'Error: API URL is required';
-          statusSpan.style.color = '#f44336';
-          return;
-        }
+      if (enabled && !serverUrl) {
+        apiStatusDiv.textContent = 'Error: Server URL is required';
+        apiStatusDiv.style.color = '#f44336';
+        return;
       }
       
-      // Send to background script
       chrome.runtime.sendMessage({
-        action: 'setResponseModification',
+        action: 'setBotDetectionSettings',
         enabled: enabled,
+        serverUrl: serverUrl,
         apiKey: apiKey,
-        serverUrl: apiUrl,
-        markBotNames: markNames,
+        markBotNames: markBotNames,
         enableReportMenu: enableReportMenu
       }, (response) => {
-        if (response.success) {
-          statusSpan.textContent = enabled ? 'Bot detection enabled!' : 'Bot detection disabled!';
-          statusSpan.style.color = '#4caf50';
+        if (response && response.success) {
+          apiStatusDiv.textContent = enabled ? 'Bot detection enabled!' : 'Bot detection disabled!';
+          apiStatusDiv.style.color = '#4caf50';
           
-          // Save to storage
+          // Save settings to storage
           chrome.storage.local.set({
             'botDetectionEnabled': enabled,
+            'serverUrl': serverUrl,
             'apiKey': apiKey,
-            'apiServerUrl': apiUrl,
-            'markBotNames': markNames,
+            'markBotNames': markBotNames,
             'enableReportMenu': enableReportMenu
           });
         } else {
-          statusSpan.textContent = `Error: ${response.error}`;
-          statusSpan.style.color = '#f44336';
+          const errorMsg = response && response.error ? response.error : 'Unknown error';
+          apiStatusDiv.textContent = `Error: ${errorMsg}`;
+          apiStatusDiv.style.color = '#f44336';
         }
-        
-        // Clear status after 3 seconds
-        setTimeout(() => {
-          statusSpan.textContent = '';
-        }, 3000);
+        setTimeout(() => { apiStatusDiv.textContent = ''; }, 3000);
       });
     });
+    
+    // Load settings
+    loadBotDetectionSettings();
   }, 500);
-}
-
-// Function to load response modification settings
-function loadResponseModificationSettings() {
-  chrome.runtime.sendMessage({
-    action: 'getResponseModificationStatus'
-  }, (response) => {
-    if (!response) return;
-    
-    const enabledCheckbox = document.getElementById('yt-modify-enabled');
-    const functionSelect = document.getElementById('yt-modify-function');
-    const serverUrlInput = document.getElementById('yt-server-url');
-    const apiKeyInput = document.getElementById('yt-modify-api-key');
-    
-    if (enabledCheckbox) {
-      enabledCheckbox.checked = response.enabled;
-    }
-    
-    if (functionSelect && response.functionName) {
-      functionSelect.value = response.functionName;
-    }
-    
-    if (serverUrlInput && response.serverUrl) {
-      serverUrlInput.value = response.serverUrl;
-    }
-
-    // Get API key from storage
-    chrome.storage.local.get('modifyApiKey', (data) => {
-      if (apiKeyInput && data.modifyApiKey) {
-        apiKeyInput.value = data.modifyApiKey;
-      } else if (apiKeyInput && response.apiKey) {
-        // Fall back to the general API key if no specific one is found
-        apiKeyInput.value = response.apiKey;
-      }
-    });
-  });
 }
 
 // Function to load bot detection settings
 function loadBotDetectionSettings() {
   chrome.runtime.sendMessage({
-    action: 'getResponseModificationStatus'
+    action: 'getBotDetectionSettings'
   }, (response) => {
     if (!response) return;
     
     const enabledCheckbox = document.getElementById('yt-bot-detection-enabled');
     const apiKeyInput = document.getElementById('yt-api-key');
     const apiUrlInput = document.getElementById('yt-bot-api-url');
+    const markNamesCheckbox = document.getElementById('yt-bot-mark-names');
     const enableReportMenuCheckbox = document.getElementById('yt-enable-report-menu');
     
     if (enabledCheckbox) {
-      chrome.storage.local.get('botDetectionEnabled', (data) => {
-        enabledCheckbox.checked = data.botDetectionEnabled || false;
-      });
+      enabledCheckbox.checked = response.enabled;
     }
     
     if (apiKeyInput && response.apiKey) {
@@ -567,21 +272,13 @@ function loadBotDetectionSettings() {
       apiUrlInput.value = response.serverUrl;
     }
     
-    // Get mark names setting
-    chrome.storage.local.get('markBotNames', (data) => {
-      const markNamesCheckbox = document.getElementById('yt-bot-mark-names');
-      if (markNamesCheckbox) {
-        markNamesCheckbox.checked = data.markBotNames !== false; // Default to true
-      }
-    });
-
-    // Get enable report menu setting
-    chrome.storage.local.get('enableReportMenu', (data) => {
-      const enableReportMenuCheckbox = document.getElementById('yt-enable-report-menu');
-      if (enableReportMenuCheckbox) {
-        enableReportMenuCheckbox.checked = data.enableReportMenu !== false; // Default to true
-      }
-    });
+    if (markNamesCheckbox) {
+      markNamesCheckbox.checked = response.markBotNames !== false;
+    }
+    
+    if (enableReportMenuCheckbox) {
+      enableReportMenuCheckbox.checked = response.enableReportMenu !== false;
+    }
   });
 }
 
@@ -607,10 +304,16 @@ function makeDraggable(element, dragHandle) {
     pos3 = e.clientX;
     pos4 = e.clientY;
     
-    element.style.top = (element.offsetTop - pos2) + "px";
-    element.style.left = (element.offsetLeft - pos1) + "px";
-    element.style.bottom = "auto";
-    element.style.right = "auto";
+    // Calculate new position while keeping the element within the viewport
+    let newTop = element.offsetTop - pos2;
+    let newLeft = element.offsetLeft - pos1;
+    
+    // Ensure the element stays within the viewport
+    newTop = Math.max(0, Math.min(newTop, window.innerHeight - dragHandle.offsetHeight));
+    newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - element.offsetWidth));
+    
+    element.style.top = newTop + "px";
+    element.style.left = newLeft + "px";
   }
   
   function closeDragElement() {
@@ -619,262 +322,133 @@ function makeDraggable(element, dragHandle) {
   }
 }
 
-// Function to update the requests list
-function updateRequestsList() {
-  const container = document.getElementById('yt-intercepted-requests');
-  if (!container) return;
-  
-  // Get intercepted requests from background script
-  chrome.runtime.sendMessage({ action: 'getInterceptedRequests' }, (response) => {
-    if (!response || !response.requests) return;
-    
-    container.innerHTML = '';
-    
-    if (response.requests.length === 0) {
-      container.innerHTML = '<p>No requests intercepted yet.</p>';
-      return;
-    }
-    
-    // Display the last 20 requests
-    const recentRequests = response.requests.slice(-20).reverse();
-    
-    recentRequests.forEach((req, index) => {
-      const reqElement = document.createElement('div');
-      reqElement.style.cssText = `
-        margin-bottom: 8px;
-        padding-bottom: 8px;
-        border-bottom: 1px solid #444;
-      `;
-      
-      // Format URL to show only the path
-      let displayUrl = req.url;
-      try {
-        const urlObj = new URL(req.url);
-        displayUrl = urlObj.pathname + urlObj.search;
-        if (displayUrl.length > 40) {
-          displayUrl = displayUrl.substring(0, 37) + '...';
-        }
-      } catch (e) {}
-      
-      // Status code styling
-      let statusStyle = '';
-      let statusText = '';
-      if (req.statusCode) {
-        if (req.statusCode >= 200 && req.statusCode < 300) {
-          statusStyle = 'color: #4caf50;'; // Green for success
-        } else if (req.statusCode >= 400) {
-          statusStyle = 'color: #f44336;'; // Red for error
-        } else {
-          statusStyle = 'color: #ff9800;'; // Orange for other
-        }
-        statusText = `<span style="${statusStyle}">${req.statusCode}</span>`;
-      }
-      
-      // Modified indicator
-      let modifiedBadge = '';
-      if (req.modified) {
-        let badgeColor = '#8e44ad'; // Purple for regular modifications
-        
-        // If it's from the server, use a different color
-        if (req.modificationSource === 'server') {
-          badgeColor = '#2980b9'; // Blue for server modifications
-        }
-        
-        modifiedBadge = `<span style="background: ${badgeColor}; color: white; padding: 1px 4px; border-radius: 3px; font-size: 9px; margin-left: 5px;">MODIFIED</span>`;
-        
-        // If there was an error, show a warning
-        if (req.modificationError) {
-          modifiedBadge += `<span style="background: #e74c3c; color: white; padding: 1px 4px; border-radius: 3px; font-size: 9px; margin-left: 5px;">ERROR</span>`;
-        }
-        
-        // If it's currently processing
-        if (req.processing) {
-          modifiedBadge += `<span style="background: #f39c12; color: white; padding: 1px 4px; border-radius: 3px; font-size: 9px; margin-left: 5px;">PROCESSING</span>`;
-        }
-      }
-      
-      // Bot detection badge
-      if (req.botDetection) {
-        modifiedBadge += `<span style="background: #27ae60; color: white; padding: 1px 4px; border-radius: 3px; font-size: 9px; margin-left: 5px;">BOT DETECTION</span>`;
-      }
-      
-      reqElement.innerHTML = `
-        <div><strong>${index + 1}. ${req.method}</strong> ${statusText} ${modifiedBadge} ${displayUrl}</div>
-        <div style="font-size: 10px; color: #aaa;">${req.timestamp}</div>
-      `;
-      
-      // Add click event to show full URL and details
-      reqElement.addEventListener('click', () => {
-        const details = [
-          `URL: ${req.url}`,
-          `Method: ${req.method}`,
-          `Type: ${req.type}`,
-          `Request Time: ${req.timestamp}`
-        ];
-        
-        if (req.statusCode) {
-          details.push(`Status Code: ${req.statusCode}`);
-        }
-        
-        if (req.responseTime) {
-          details.push(`Response Time: ${req.responseTime}`);
-        }
-        
-        if (req.modified) {
-          details.push(`Response Modified: Yes`);
-          
-          if (req.modificationSource) {
-            details.push(`Modification Source: ${req.modificationSource}`);
-          }
-          
-          if (req.modifiedTimestamp) {
-            details.push(`Modified At: ${req.modifiedTimestamp}`);
-          }
-          
-          if (req.modificationError) {
-            details.push(`Modification Error: ${req.modificationError}`);
-          }
-        }
-        
-        if (req.botDetection) {
-          details.push(`Bot Detection: Active`);
-          if (req.botsDetected) {
-            details.push(`Bots Detected: ${req.botsDetected}`);
-          }
-        }
-        
-        alert(details.join('\n'));
-      });
-      
-      container.appendChild(reqElement);
-    });
-  });
-}
-
 // Function to intercept and modify YouTube API responses
 function interceptYouTubeResponses() {
+  console.log("Setting up YouTube API response interception");
+  
   // Store the original fetch function
   const originalFetch = window.fetch;
   
   // Override the fetch function
   window.fetch = async function(resource, init) {
-    // Call the original fetch function
-    const response = await originalFetch.apply(this, arguments);
-    
     try {
       // Check if this is a YouTube API request we want to modify
       const url = typeof resource === 'string' ? resource : resource.url;
-      if (url && (url.includes('/youtubei/v1/next') || url.includes('/youtubei/v1/browse'))) {
-        // Clone the response so we can read the body
-        const clonedResponse = response.clone();
-        
-        // Try to parse the response as JSON
-        try {
-          const responseData = await clonedResponse.json();
-          
-          // Send the response data to the background script for modification
-          chrome.runtime.sendMessage({
-            action: 'applyModificationFunction',
-            responseData: responseData,
-            url: url
-          }, (result) => {
-            if (result && result.success) {
-              console.log(`Successfully applied ${result.functionName} to response`);
-            } else {
-              const errorMsg = result && result.error ? result.error : 'Unknown error';
-              console.error('Failed to apply modification function:', errorMsg);
-            }
-          });
-        } catch (parseError) {
-          console.error('Error parsing response JSON:', parseError);
-        }
-      }
-    } catch (error) {
-      console.error('Error in fetch interceptor:', error);
-    }
-    
-    // Return the original response
-    return response;
-  };
-  
-  // Store the original XMLHttpRequest.prototype.open method
-  const originalOpen = XMLHttpRequest.prototype.open;
-  const originalSend = XMLHttpRequest.prototype.send;
-  
-  // Override the open method to capture the URL
-  XMLHttpRequest.prototype.open = function(method, url, async, user, password) {
-    this._url = url;
-    return originalOpen.apply(this, arguments);
-  };
-  
-  // Override the send method to intercept the response
-  XMLHttpRequest.prototype.send = function(body) {
-    const xhr = this;
-    
-    // Store the original onreadystatechange handler
-    const originalOnReadyStateChange = xhr.onreadystatechange;
-    
-    // Set a new onreadystatechange handler
-    xhr.onreadystatechange = function() {
-      // Call the original handler if it exists
-      if (originalOnReadyStateChange) {
-        originalOnReadyStateChange.apply(this, arguments);
-      }
+      const method = init?.method || 'GET';
+      const isYouTubeApiRequest = url && (url.includes('/youtubei/v1/next') || url.includes('/youtubei/v1/browse'));
       
-      // Check if the request is complete
-      if (xhr.readyState === 4) {
-        try {
-          // Check if this is a YouTube API request we want to modify
-          const url = xhr._url;
-          if (url && (url.includes('/youtubei/v1/next') || url.includes('/youtubei/v1/browse'))) {
-            // Try to parse the response as JSON
-            try {
-              const responseData = JSON.parse(xhr.responseText);
+      // For YouTube API requests, we want to potentially modify the response
+      if (isYouTubeApiRequest) {
+        console.log(`Intercepted YouTube API request: ${url}`);
+        
+        // Call the original fetch function
+        const response = await originalFetch.apply(this, arguments);
+        
+        // Check if bot detection is enabled
+        chrome.storage.local.get('botDetectionEnabled', async (data) => {
+          if (!data.botDetectionEnabled) {
+            console.log("Bot detection is disabled, skipping comment processing");
+            return;
+          }
+          
+          try {
+            // Clone the response so we can read the body
+            const clonedResponse = response.clone();
+            
+            // Parse the response as JSON
+            const responseData = await clonedResponse.json();
+            
+            // Check if we have bot comments in the response
+            const comments = extractCommentsFromResponse(responseData);
+            if (comments && comments.length > 0) {
+              console.log(`Found ${comments.length} comments in response`);
               
-              // Send the response data to the background script for modification
+              // Send the comments to the background script for bot detection
               chrome.runtime.sendMessage({
-                action: 'applyModificationFunction',
-                responseData: responseData,
-                url: url
+                action: 'detectBots',
+                comments: comments
               }, (result) => {
-                if (result && result.success) {
-                  console.log(`Successfully applied ${result.functionName} to response`);
+                if (chrome.runtime.lastError) {
+                  console.error("Runtime error:", chrome.runtime.lastError);
+                  return;
+                }
+                
+                if (result && result.success && result.results) {
+                  console.log('Bot detection results:', result.results);
                   
-                  // In a real implementation, we would modify the response here
-                  // But due to limitations in Manifest V3, we can't directly modify XHR responses
-                  // Instead, we'll apply the modifications to the DOM after the response is processed
+                  // Store the results for DOM modification
+                  chrome.storage.local.set({ 
+                    'lastBotDetectionResults': result.results,
+                    'lastDetectionTime': Date.now()
+                  });
                 } else {
                   const errorMsg = result && result.error ? result.error : 'Unknown error';
-                  console.error('Failed to apply modification function:', errorMsg);
+                  console.error('Failed to detect bots:', errorMsg);
                 }
               });
-            } catch (parseError) {
-              console.error('Error parsing response JSON:', parseError);
+            } else {
+              console.log("No comments found in the response");
             }
+          } catch (error) {
+            console.error('Error processing response:', error);
           }
-        } catch (error) {
-          console.error('Error in XHR interceptor:', error);
+        });
+        
+        // Return the original response
+        return response;
+      }
+      
+      // For all other requests, just pass through
+      return originalFetch.apply(this, arguments);
+    } catch (error) {
+      console.error('Error in fetch interceptor:', error);
+      // Ensure the original fetch is called even if our code fails
+      return originalFetch.apply(this, arguments);
+    }
+  };
+  
+  console.log("YouTube API response interception set up successfully");
+}
+
+// Function to extract comments from YouTube response
+function extractCommentsFromResponse(responseData) {
+  try {
+    if (!responseData || !responseData.frameworkUpdates || 
+        !responseData.frameworkUpdates.entityBatchUpdate || 
+        !responseData.frameworkUpdates.entityBatchUpdate.mutations) {
+      return null;
+    }
+    
+    const {mutations} = responseData.frameworkUpdates.entityBatchUpdate;
+    const comments = [];
+    
+    for (const mutation of mutations) {
+      if (mutation.payload && mutation.payload.commentEntityPayload) {
+        const payload = mutation.payload.commentEntityPayload;
+        
+        if (payload.author && payload.author.displayName && 
+            payload.properties && payload.properties.content) {
+          comments.push({
+            author: payload.author.displayName,
+            content: payload.properties.content.content
+          });
         }
       }
-    };
+    }
     
-    // Call the original send method
-    return originalSend.apply(this, arguments);
-  };
+    return comments.length > 0 ? comments : null;
+  } catch (error) {
+    console.error('Error extracting comments:', error);
+    return null;
+  }
 }
 
 // Wait for page to load before adding panel
 window.addEventListener('load', () => {
   // Check if we're on YouTube
   if (window.location.hostname.includes('youtube.com')) {
-    const { panel, requestsContainer } = addControlPanel();
-    
-    // Update requests list periodically
-    setInterval(() => {
-      if (requestsContainer.style.display !== 'none') {
-        updateRequestsList();
-      }
-    }, 5000);
+    // Add control panel
+    addControlPanel();
     
     // Set up comment report menu
     setupCommentReportMenu();
@@ -890,19 +464,30 @@ window.addEventListener('load', () => {
 // Function to apply bot detection to the DOM
 function applyBotDetectionToDom() {
   // Get settings from storage
-  chrome.storage.local.get(['botDetectionEnabled', 'markBotNames'], (data) => {
+  chrome.storage.local.get(['botDetectionEnabled', 'markBotNames', 'lastBotDetectionResults', 'lastDetectionTime'], (data) => {
     if (!data.botDetectionEnabled) return;
+    
+    // Check if we have detection results that are recent (less than 30 seconds old)
+    const now = Date.now();
+    const isRecentDetection = data.lastDetectionTime && (now - data.lastDetectionTime < 30000);
+    
+    if (isRecentDetection && data.lastBotDetectionResults) {
+      console.log("Using recent bot detection results:", data.lastBotDetectionResults);
+    }
     
     // Find all comment author elements that haven't been processed yet
     const commentAuthors = document.querySelectorAll('#author-text:not([data-bot-processed])');
+    console.log(`Found ${commentAuthors.length} unprocessed comment authors`);
     
     // Process each comment author
     commentAuthors.forEach(author => {
       // Mark as processed
       author.setAttribute('data-bot-processed', 'true');
       
-      // Check if the author name contains the [BOT] tag
+      // Get the author name
       const authorName = author.textContent.trim();
+      
+      // Check if the author name contains the [BOT] tag
       if (authorName.includes('[BOT]')) {
         // Add a visual indicator
         author.style.color = '#e74c3c';
@@ -914,152 +499,219 @@ function applyBotDetectionToDom() {
           botIcon.style.marginLeft = '5px';
           author.appendChild(botIcon);
         }
+      } 
+      // If we have recent detection results, check if this author is in it
+      else if (isRecentDetection && data.lastBotDetectionResults) {
+        try {
+          // Find the comment content associated with this author
+          const commentElement = author.closest('ytd-comment-renderer');
+          if (!commentElement) return;
+          
+          const contentElement = commentElement.querySelector('#content-text');
+          if (!contentElement) return;
+          
+          const commentContent = contentElement.textContent.trim();
+          
+          console.log(`Checking comment: ${authorName} - "${commentContent.substring(0, 30)}..."`);
+          
+          // Check the format of the results
+          if (data.lastBotDetectionResults.is_bot) {
+            // Original format with is_bot array
+            const index = data.lastBotDetectionResults.is_bot.findIndex((isBot, idx) => {
+              // Try to match by original comments array if available
+              if (data.lastBotDetectionResults.comments) {
+                const comment = data.lastBotDetectionResults.comments[idx];
+                return comment && 
+                      (comment.author === authorName || comment.author_name === authorName) && 
+                      (comment.content === commentContent);
+              }
+              
+              // Otherwise, just use the index (less reliable)
+              return false;
+            });
+            
+            if (index !== -1 && data.lastBotDetectionResults.is_bot[index]) {
+              console.log(`Marking comment as bot: ${authorName}`);
+              markCommentAsBot(author, data.markBotNames);
+            }
+          } 
+          // New format with results array
+          else if (data.lastBotDetectionResults.results) {
+            const index = data.lastBotDetectionResults.results.findIndex((result, idx) => {
+              // Try to match by evaluate array if available
+              if (data.lastBotDetectionResults.evaluate) {
+                const comment = data.lastBotDetectionResults.evaluate[idx];
+                return comment && 
+                      (comment.author === authorName || comment.author_name === authorName) && 
+                      (comment.content === commentContent);
+              }
+              
+              // Otherwise, just use the index (less reliable)
+              return false;
+            });
+            
+            if (index !== -1 && data.lastBotDetectionResults.results[index]) {
+              console.log(`Marking comment as bot: ${authorName}`);
+              markCommentAsBot(author, data.markBotNames);
+            }
+          }
+        } catch (error) {
+          console.error('Error processing detection results for DOM updates:', error);
+        }
       }
     });
   });
+}
+
+// Helper function to mark a comment as a bot
+function markCommentAsBot(authorElement, markBotNames) {
+  // Add a visual indicator
+  authorElement.style.color = '#e74c3c';
+  
+  // Add the [BOT] tag to the displayed name
+  if (!authorElement.textContent.includes('[BOT]')) {
+    authorElement.textContent = authorElement.textContent + ' [BOT]';
+  }
+  
+  // Add a bot icon if mark names is enabled
+  if (markBotNames !== false) {
+    const botIcon = document.createElement('span');
+    botIcon.textContent = '🤖';
+    botIcon.style.marginLeft = '5px';
+    authorElement.appendChild(botIcon);
+  }
 }
 
 // Function to set up the comment report menu
 function setupCommentReportMenu() {
-  // Check if report menu is enabled
-  chrome.storage.local.get('enableReportMenu', (data) => {
-    if (data.enableReportMenu === false) return;
-    
-    // Create custom context menu
-    createCustomContextMenu();
-    
-    // Add event listener for right clicks on comments
-    document.addEventListener('contextmenu', handleCommentRightClick);
+  // Create the context menu
+  const contextMenu = createCustomContextMenu();
+  
+  // Add event listener for right clicks on comments
+  document.addEventListener('contextmenu', handleCommentRightClick);
+  
+  // Listen for messages from the background script
+  chrome.runtime.onMessage.addListener((message) => {
+    if (message.action === 'contextMenuReportComment') {
+      // Get the comment element under the cursor
+      const commentElement = document.elementFromPoint(
+        contextMenu.lastX || 0, 
+        contextMenu.lastY || 0
+      );
+      
+      if (commentElement) {
+        const comment = findCommentElement(commentElement);
+        if (comment) {
+          const commentData = extractCommentData(comment);
+          if (commentData) {
+            reportComment(commentData);
+          }
+        }
+      }
+    }
   });
 }
 
-// Custom context menu for reporting comments
-let contextMenu = null;
-let currentCommentData = null;
-
-// Function to create the custom context menu
+// Function to create a custom context menu
 function createCustomContextMenu() {
-  // Create the context menu if it doesn't exist
-  if (!contextMenu) {
-    contextMenu = document.createElement('div');
-    contextMenu.id = 'yt-report-context-menu';
-    contextMenu.style.cssText = `
-      position: absolute;
-      background: rgba(33, 33, 33, 0.95);
-      color: white;
-      padding: 8px 0;
-      border-radius: 4px;
-      z-index: 10000;
-      font-family: Arial, sans-serif;
-      font-size: 14px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-      display: none;
-    `;
+  const menu = document.createElement('div');
+  menu.id = 'yt-bot-detector-context-menu';
+  menu.style.cssText = `
+    position: absolute;
+    background-color: rgba(33, 33, 33, 0.95);
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    z-index: 10000;
+    padding: 5px 0;
+    display: none;
+    font-family: 'Roboto', Arial, sans-serif;
+    font-size: 14px;
+    color: #fff;
+    min-width: 150px;
+  `;
+  
+  const reportItem = document.createElement('div');
+  reportItem.textContent = 'Report as Bot';
+  reportItem.style.cssText = `
+    padding: 8px 15px;
+    cursor: pointer;
+  `;
+  reportItem.addEventListener('mouseover', () => {
+    reportItem.style.backgroundColor = '#065fd4';
+  });
+  reportItem.addEventListener('mouseout', () => {
+    reportItem.style.backgroundColor = 'transparent';
+  });
+  reportItem.addEventListener('click', () => {
+    hideContextMenu();
     
-    // Add report option
-    const reportOption = document.createElement('div');
-    reportOption.textContent = 'Report as Bot';
-    reportOption.style.cssText = `
-      padding: 8px 16px;
-      cursor: pointer;
-    `;
-    reportOption.addEventListener('mouseover', () => {
-      reportOption.style.background = 'rgba(255, 255, 255, 0.1)';
-    });
-    reportOption.addEventListener('mouseout', () => {
-      reportOption.style.background = 'transparent';
-    });
-    reportOption.addEventListener('click', () => {
-      if (currentCommentData) {
-        reportComment(currentCommentData);
-      }
-      hideContextMenu();
-    });
-    
-    contextMenu.appendChild(reportOption);
-    document.body.appendChild(contextMenu);
-    
-    // Hide context menu when clicking elsewhere
-    document.addEventListener('click', hideContextMenu);
-  }
+    // Get the current comment data
+    const currentCommentData = menu.commentData;
+    if (currentCommentData) {
+      reportComment(currentCommentData);
+    }
+  });
+  
+  menu.appendChild(reportItem);
+  document.body.appendChild(menu);
+  
+  // Hide the menu when clicking elsewhere
+  document.addEventListener('click', hideContextMenu);
+  
+  return menu;
 }
 
 // Function to handle right clicks on comments
 function handleCommentRightClick(event) {
-  // Check if we're on a comment
-  const commentElement = findCommentElement(event.target);
-  if (!commentElement) return;
-  
-  // Extract comment data
-  const commentData = extractCommentData(commentElement);
-  if (!commentData) return;
-  
-  // Store the current comment data
-  currentCommentData = commentData;
-  
-  // Show the context menu
-  showContextMenu(event.clientX, event.clientY);
-  
-  // Prevent the default context menu
-  event.preventDefault();
+  chrome.storage.local.get(['botDetectionEnabled', 'enableReportMenu'], (data) => {
+    if (!data.botDetectionEnabled || data.enableReportMenu === false) return;
+    
+    const commentElement = findCommentElement(event.target);
+    if (commentElement) {
+      // Get comment data
+      const commentData = extractCommentData(commentElement);
+      if (commentData) {
+        // Show the context menu
+        showContextMenu(event.clientX, event.clientY, commentData);
+        event.preventDefault();
+      }
+    }
+  });
 }
 
-// Function to find the comment element from a clicked element
+// Function to find a comment element from a clicked element
 function findCommentElement(element) {
-  // YouTube comment structure changes frequently, so we need to be flexible
-  // Look for common comment container classes or attributes
-  
-  // Try to find the comment container by traversing up the DOM
+  // Try to find the closest comment renderer
   let current = element;
-  const maxDepth = 10; // Prevent infinite loops
-  let depth = 0;
-  
-  while (current && depth < maxDepth) {
-    // Check if this is a comment element
-    // YouTube comments are typically in ytd-comment-renderer or similar elements
-    if (
-      current.tagName && (
-        current.tagName.toLowerCase() === 'ytd-comment-renderer' ||
-        current.tagName.toLowerCase() === 'ytd-comment-thread-renderer' ||
-        (current.id && current.id.includes('comment')) ||
-        (current.className && typeof current.className === 'string' && 
-         (current.className.includes('comment') || current.className.includes('Comment')))
-      )
-    ) {
+  while (current && current !== document.body) {
+    if (current.tagName && 
+        current.tagName.toLowerCase() === 'ytd-comment-renderer') {
       return current;
     }
-    
     current = current.parentElement;
-    depth++;
   }
-  
   return null;
 }
 
 // Function to extract comment data from a comment element
 function extractCommentData(commentElement) {
   try {
-    // Try to find the author name
-    let authorElement = commentElement.querySelector('#author-text') || 
-                       commentElement.querySelector('.ytd-comment-renderer #author-text') ||
-                       commentElement.querySelector('[id*="author"]');
-    
-    // Try to find the comment content
-    let contentElement = commentElement.querySelector('#content-text') || 
-                        commentElement.querySelector('.ytd-comment-renderer #content-text') ||
-                        commentElement.querySelector('[id*="content"]');
-    
-    if (!authorElement || !contentElement) return null;
+    // Get the author name
+    const authorElement = commentElement.querySelector('#author-text');
+    if (!authorElement) return null;
     
     const authorName = authorElement.textContent.trim();
+    
+    // Get the comment content
+    const contentElement = commentElement.querySelector('#content-text');
+    if (!contentElement) return null;
+    
     const content = contentElement.textContent.trim();
     
-    if (!authorName || !content) return null;
-    
+    // Return the comment data
     return {
       author_name: authorName,
-      content: content,
-      element: commentElement
+      content: content
     };
   } catch (error) {
     console.error('Error extracting comment data:', error);
@@ -1068,102 +720,82 @@ function extractCommentData(commentElement) {
 }
 
 // Function to show the context menu
-function showContextMenu(x, y) {
-  if (!contextMenu) return;
+function showContextMenu(x, y, commentData) {
+  const menu = document.getElementById('yt-bot-detector-context-menu');
+  if (!menu) return;
+  
+  // Store the comment data
+  menu.commentData = commentData;
+  menu.lastX = x;
+  menu.lastY = y;
   
   // Position the menu
-  contextMenu.style.left = `${x}px`;
-  contextMenu.style.top = `${y}px`;
-  contextMenu.style.display = 'block';
+  menu.style.left = `${x}px`;
+  menu.style.top = `${y}px`;
+  menu.style.display = 'block';
 }
 
 // Function to hide the context menu
 function hideContextMenu() {
-  if (!contextMenu) return;
-  contextMenu.style.display = 'none';
-  currentCommentData = null;
+  const menu = document.getElementById('yt-bot-detector-context-menu');
+  if (menu) {
+    menu.style.display = 'none';
+  }
 }
 
-// Function to report a comment to the API
+// Function to report a comment as a bot
 function reportComment(commentData) {
-  // Get API settings
-  chrome.storage.local.get(['apiKey', 'apiServerUrl'], (data) => {
-    if (!data.apiKey || !data.apiServerUrl) {
-      alert('API key or server URL not configured. Please configure them in the Bot Detection settings.');
+  chrome.storage.local.get(['serverUrl', 'apiKey'], (data) => {
+    if (!data.serverUrl || !data.apiKey) {
+      console.error('Server URL or API key not configured');
       return;
     }
     
-    // Show reporting status
-    const statusElement = document.createElement('div');
-    statusElement.style.cssText = `
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      background: rgba(33, 33, 33, 0.9);
-      color: white;
-      padding: 10px;
-      border-radius: 5px;
-      z-index: 10000;
-      font-family: Arial, sans-serif;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
-    `;
-    statusElement.textContent = 'Reporting comment...';
-    document.body.appendChild(statusElement);
-    
-    // Send the report via background script
     chrome.runtime.sendMessage({
       action: 'reportComment',
-      serverUrl: data.apiServerUrl,
+      serverUrl: data.serverUrl,
       apiKey: data.apiKey,
-      comment: {
-        author_name: commentData.author_name,
-        content: commentData.content,
-        is_bot: true
-      }
+      comment: commentData
     }, (response) => {
       if (response && response.success) {
-        // Success - update status
-        statusElement.textContent = 'Comment reported successfully!';
-        statusElement.style.background = 'rgba(46, 125, 50, 0.9)'; // Green
+        console.log('Comment reported successfully');
         
-        // Add visual indicator to the reported comment
-        if (commentData.element) {
-          const reportBadge = document.createElement('span');
-          reportBadge.textContent = 'REPORTED';
-          reportBadge.style.cssText = `
-            background: #e74c3c;
-            color: white;
-            padding: 2px 5px;
-            border-radius: 3px;
-            font-size: 10px;
-            margin-left: 5px;
-            vertical-align: middle;
-          `;
+        // Find the comment in the DOM and mark it as a bot
+        const commentElements = document.querySelectorAll('ytd-comment-renderer');
+        for (const commentElement of commentElements) {
+          const authorElement = commentElement.querySelector('#author-text');
+          const contentElement = commentElement.querySelector('#content-text');
           
-          // Try to add the badge to the author element
-          try {
-            const authorElement = commentData.element.querySelector('#author-text') || 
-                                 commentData.element.querySelector('.ytd-comment-renderer #author-text') ||
-                                 commentData.element.querySelector('[id*="author"]');
-            if (authorElement) {
-              authorElement.appendChild(reportBadge);
+          if (authorElement && contentElement) {
+            const authorName = authorElement.textContent.trim();
+            const content = contentElement.textContent.trim();
+            
+            if (authorName === commentData.author_name && content === commentData.content) {
+              // Mark this comment as a bot
+              if (!authorElement.textContent.includes('[BOT]')) {
+                authorElement.textContent = authorElement.textContent + ' [BOT]';
+              }
+              
+              authorElement.style.color = '#e74c3c';
+              
+              // Add a bot icon
+              chrome.storage.local.get('markBotNames', (data) => {
+                if (data.markBotNames !== false) {
+                  const botIcon = document.createElement('span');
+                  botIcon.textContent = '🤖';
+                  botIcon.style.marginLeft = '5px';
+                  authorElement.appendChild(botIcon);
+                }
+              });
+              
+              break;
             }
-          } catch (e) {
-            console.error('Error adding report badge:', e);
           }
         }
       } else {
-        // Error - update status
-        statusElement.textContent = `Error: ${response && response.error ? response.error : 'Failed to report comment'}`;
-        statusElement.style.background = 'rgba(198, 40, 40, 0.9)'; // Red
+        const errorMsg = response && response.error ? response.error : 'Unknown error';
+        console.error('Error reporting comment:', errorMsg);
       }
-      
-      // Remove status after a delay
-      setTimeout(() => {
-        document.body.removeChild(statusElement);
-      }, 3000);
     });
   });
-}
-
-console.log('YouTube Request Interceptor content script loaded'); 
+} 

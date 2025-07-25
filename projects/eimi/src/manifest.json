@@ -1,15 +1,13 @@
 {
   "manifest_version": 3,
   "name": "YouTube Bot Detector",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Detects and marks bot comments on YouTube videos with AI-powered analysis",
   "author": "Bot Detection Team",
   "permissions": [
     "webRequest",
     "storage",
-    "declarativeNetRequest",
-    "contextMenus",
-    "scripting"
+    "contextMenus"
   ],
   "host_permissions": [
     "*://www.youtube.com/*",
@@ -26,21 +24,6 @@
       "all_frames": false
     }
   ],
-  "web_accessible_resources": [
-    {
-      "resources": ["icons/*"],
-      "matches": ["*://www.youtube.com/*", "*://*.youtube.com/*"]
-    }
-  ],
-  "declarative_net_request": {
-    "rule_resources": [
-      {
-        "id": "youtube_rules",
-        "enabled": true,
-        "path": "rules.json"
-      }
-    ]
-  },
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'"
   }

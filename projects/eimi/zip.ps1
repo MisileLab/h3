@@ -1,4 +1,4 @@
-# PowerShell script to package the Chrome extension for production
+# PowerShell script to package the YouTube Bot Detector extension
 
 # Get version from manifest.json
 $manifestPath = Join-Path -Path $PSScriptRoot -ChildPath "src\manifest.json"
@@ -18,8 +18,7 @@ New-Item -Path $buildDir -ItemType Directory | Out-Null
 $filesToCopy = @(
     "background.js",
     "content.js",
-    "manifest.json",
-    "rules.json"
+    "manifest.json"
 )
 
 foreach ($file in $filesToCopy) {
