@@ -64,7 +64,7 @@ class EvaluateRequest(BaseModel):
 async def evaluate(item: EvaluateRequest) -> dict[str, Sequence[float | bool]]:
   if not item.evaluate:
     raise HTTPException(status.HTTP_400_BAD_REQUEST, detail="Author name and content are required")
-  if len(item.evaluate) >= 10:
+  if len(item.evaluate) >= 50:
     raise HTTPException(status.HTTP_400_BAD_REQUEST, detail="Too many fields in request")
   api_key = getenv("API_KEY")
   if not api_key:
