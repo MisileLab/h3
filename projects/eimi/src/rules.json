@@ -1,0 +1,18 @@
+{
+  "rules": [
+    {
+      "id": 1,
+      "priority": 1,
+      "action": {
+        "type": "modifyHeaders",
+        "responseHeaders": [
+          { "header": "content-type", "operation": "set", "value": "application/json" }
+        ]
+      },
+      "condition": {
+        "urlFilter": "youtube.com/api/",
+        "resourceTypes": ["xmlhttprequest"]
+      }
+    }
+  ]
+} 

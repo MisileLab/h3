@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube Request Interceptor",
+  "version": "1.0",
+  "description": "Intercepts and monitors YouTube requests with dynamic response modification",
+  "permissions": [
+    "webRequest",
+    "storage",
+    "declarativeNetRequest"
+  ],
+  "host_permissions": [
+    "*://www.youtube.com/*",
+    "*://*.youtube.com/*",
+    "*://*.example.com/*",
+    "https://*/*",
+    "http://*/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://www.youtube.com/*", "*://*.youtube.com/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "youtube_rules",
+        "enabled": true,
+        "path": "rules.json"
+      }
+    ]
+  }
+} 
