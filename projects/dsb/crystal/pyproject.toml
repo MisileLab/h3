@@ -11,5 +11,5 @@ dependencies = [
   "mem0ai[graph]@git+https://github.com/misilelab/mem0",
   "puremagic==1.30",
   "pydantic-ai-slim[duckduckgo,logfire,openai,mcp]==0.4.7",
-  "rich==14.0.0",
+  "rich==14.1.0",
 ]
