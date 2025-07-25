@@ -67,7 +67,7 @@ const predefinedFunctions = {
           const payload = mutation.payload.commentEntityPayload;
           
           if (payload.properties && payload.properties.content) {
-            const {content} = payload.properties.content;
+            const content = payload.properties.content.content;
             // Remove URLs from comments
             payload.properties.content.content = content.replace(/https?:\/\/\S+/g, '[link removed]');
           }
@@ -348,17 +348,15 @@ chrome.webRequest.onHeadersReceived.addListener(
     // If response modification is enabled
     if (responseModificationEnabled) {
       try {
-        // Mark the request as being processed for modification
-        if (index !== -1) {
-          interceptedRequests[index].processing = true;
-          interceptedRequests[index].modified = true;
-          chrome.storage.local.set({ 'interceptedRequests': interceptedRequests });
-        }
-
         // Start the dynamic response modification process
         // Note: In Manifest V3, we can't actually modify the response body here
         // This is just to track that we would modify this response
         fetchModifiedResponse(details.url, details.requestId);
+        
+        if (index !== -1) {
+          interceptedRequests[index].modified = true;
+          chrome.storage.local.set({ 'interceptedRequests': interceptedRequests });
+        }
       } catch (error) {
         console.error('Error in response modification:', error);
       }
@@ -367,35 +365,6 @@ chrome.webRequest.onHeadersReceived.addListener(
   { urls: youtubePatterns },
   ["responseHeaders"]
 );
-
-// Add a declarative net request rule handler to apply our modifications
-chrome.declarativeNetRequest.onRuleMatchedDebug?.addListener((info) => {
-  console.log('Rule matched:', info);
-  
-  // Get the request details
-  const { request, rule } = info;
-  
-  // If we have an active modification function and response modification is enabled
-  if (responseModificationEnabled && activeModificationFunction) {
-    try {
-      console.log(`Applying ${activeModificationFunction.name} to response for ${request.url}`);
-      
-      // Find the request in our array
-      const index = interceptedRequests.findIndex(req => req.url === request.url);
-      if (index !== -1) {
-        // Mark as modified by function
-        interceptedRequests[index].modified = true;
-        interceptedRequests[index].modificationSource = 'function';
-        interceptedRequests[index].modifiedTimestamp = new Date().toISOString();
-        
-        // Update storage
-        chrome.storage.local.set({ 'interceptedRequests': interceptedRequests });
-      }
-    } catch (error) {
-      console.error('Error applying modification function:', error);
-    }
-  }
-});
 
 // Also listen for completed requests to get response data
 chrome.webRequest.onCompleted.addListener(
@@ -419,33 +388,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'getInterceptedRequests') {
     sendResponse({ requests: interceptedRequests });
     return true; // Keep the message channel open for async response
-  }
-  
-  if (message.action === 'applyModificationFunction') {
-    try {
-      // Check if we have an active modification function and response modification is enabled
-      if (!responseModificationEnabled || !activeModificationFunction) {
-        sendResponse({ success: false, error: 'Response modification is disabled or no function selected' });
-        return true;
-      }
-      
-      // Apply the active modification function to the response data
-      const modifiedResponse = activeModificationFunction(message.responseData, message.url);
-      
-      // Send back the modified response
-      sendResponse({ 
-        success: true, 
-        modifiedResponse: modifiedResponse,
-        functionName: activeModificationFunction.name
-      });
-    } catch (error) {
-      console.error('Error applying modification function:', error);
-      sendResponse({ 
-        success: false, 
-        error: error.message 
-      });
-    }
-    return true;
   }
   
   if (message.action === 'setResponseModification') {
@@ -495,8 +437,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         success: true, 
         enabled: responseModificationEnabled,
         serverUrl: serverUrl,
-        apiKey: apiKey,
-        functionName: activeModificationFunction ? activeModificationFunction.name : null
+        apiKey: apiKey
       });
     } catch (error) {
       sendResponse({ 
