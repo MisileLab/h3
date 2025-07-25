@@ -6,7 +6,7 @@ const youtubePatterns = [
 
 // Response modification settings
 let responseModificationEnabled = false;
-let serverUrl = "https://misilelab--himari-api-fastapi-app.modal.run/";
+let serverUrl = "https://misilelab--himari-api-fastapi-app.modal.run";
 let apiKey = "";
 
 // Store predefined response modification functions
@@ -220,6 +220,7 @@ async function detectBots(comments) {
   }
   
   try {
+    console.debug(`sending comments to bot detection api: ${comments}`)
     const response = await fetch(`${serverUrl}/evaluate`, {
       method: 'POST',
       headers: {
