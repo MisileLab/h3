@@ -103,11 +103,6 @@ async function fetchModifiedResponse(originalUrl, requestId) {
       'Content-Type': 'application/json'
     };
     
-    // Add API key if available
-    if (apiKey) {
-      headers['Authorization'] = `Bearer ${apiKey}`;
-    }
-    
     // Fetch from the example server
     const response = await fetch(fetchUrl, {
       method: 'POST', // Changed from GET to POST for proper JSON body
@@ -519,19 +514,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   
   if (message.action === 'testServerConnection') {
     const url = message.serverUrl || serverUrl;
-    const key = message.apiKey || apiKey;
     
     // Prepare headers
     const headers = {
       'Content-Type': 'application/json'
     };
     
-    // Add API key if available
-    if (key) {
-      headers['Authorization'] = `Bearer ${key}`;
-    }
-    
-    fetch(url, { 
+    fetch(`${url}/docs`, { 
       method: 'GET',
       headers: headers
     })
