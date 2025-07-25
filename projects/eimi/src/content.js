@@ -187,6 +187,12 @@ function setupBotDetection() {
         serverUrl: serverUrl,
         apiKey: apiKey
       }, (response) => {
+        if (chrome.runtime.lastError) {
+          apiStatusDiv.textContent = `Error: ${chrome.runtime.lastError.message}`;
+          apiStatusDiv.style.color = '#f44336';
+          return;
+        }
+        
         if (response && response.success) {
           apiStatusDiv.textContent = 'Connection successful!';
           apiStatusDiv.style.color = '#4caf50';
@@ -213,32 +219,57 @@ function setupBotDetection() {
         return;
       }
       
-      chrome.runtime.sendMessage({
-        action: 'setBotDetectionSettings',
-        enabled: enabled,
-        serverUrl: serverUrl,
-        apiKey: apiKey,
-        markBotNames: markBotNames,
-        enableReportMenu: enableReportMenu
-      }, (response) => {
-        if (response && response.success) {
-          apiStatusDiv.textContent = enabled ? 'Bot detection enabled!' : 'Bot detection disabled!';
-          apiStatusDiv.style.color = '#4caf50';
-          
-          // Save settings to storage
-          chrome.storage.local.set({
-            'botDetectionEnabled': enabled,
-            'serverUrl': serverUrl,
-            'apiKey': apiKey,
-            'markBotNames': markBotNames,
-            'enableReportMenu': enableReportMenu
-          });
-        } else {
-          const errorMsg = response && response.error ? response.error : 'Unknown error';
-          apiStatusDiv.textContent = `Error: ${errorMsg}`;
+      if (enabled && !apiKey) {
+        apiStatusDiv.textContent = 'Error: API Key is required';
+        apiStatusDiv.style.color = '#f44336';
+        return;
+      }
+      
+      // Save settings to storage first
+      chrome.storage.local.set({
+        'botDetectionEnabled': enabled,
+        'serverUrl': serverUrl,
+        'apiKey': apiKey,
+        'markBotNames': markBotNames,
+        'enableReportMenu': enableReportMenu
+      }, () => {
+        if (chrome.runtime.lastError) {
+          apiStatusDiv.textContent = `Error saving settings: ${chrome.runtime.lastError.message}`;
           apiStatusDiv.style.color = '#f44336';
+          return;
         }
-        setTimeout(() => { apiStatusDiv.textContent = ''; }, 3000);
+        
+        // Then update the background script
+        chrome.runtime.sendMessage({
+          action: 'setBotDetectionSettings',
+          enabled: enabled,
+          serverUrl: serverUrl,
+          apiKey: apiKey,
+          markBotNames: markBotNames,
+          enableReportMenu: enableReportMenu
+        }, (response) => {
+          if (chrome.runtime.lastError) {
+            apiStatusDiv.textContent = `Error: ${chrome.runtime.lastError.message}`;
+            apiStatusDiv.style.color = '#f44336';
+            return;
+          }
+          
+          if (response && response.success) {
+            apiStatusDiv.textContent = enabled ? 'Bot detection enabled!' : 'Bot detection disabled!';
+            apiStatusDiv.style.color = '#4caf50';
+            
+            // If enabled and properly configured, trigger an immediate check
+            if (enabled && serverUrl && apiKey) {
+              console.log("✅ Bot detection settings updated, triggering immediate check");
+              setTimeout(() => applyBotDetectionToDom(), 1000);
+            }
+          } else {
+            const errorMsg = response && response.error ? response.error : 'Unknown error';
+            apiStatusDiv.textContent = `Error: ${errorMsg}`;
+            apiStatusDiv.style.color = '#f44336';
+          }
+          setTimeout(() => { apiStatusDiv.textContent = ''; }, 3000);
+        });
       });
     });
     
@@ -335,64 +366,126 @@ function interceptYouTubeResponses() {
       // Check if this is a YouTube API request we want to modify
       const url = typeof resource === 'string' ? resource : resource.url;
       const method = init?.method || 'GET';
-      const isYouTubeApiRequest = url && (url.includes('/youtubei/v1/next') || url.includes('/youtubei/v1/browse'));
+      
+      // More specific matching for YouTube API requests that contain comments
+      const isYouTubeApiRequest = url && (
+        url.includes('/youtubei/v1/next') || 
+        url.includes('/youtubei/v1/browse') ||
+        // Add more specific patterns for comment-related requests
+        url.includes('/youtubei/v1/comment/get_comment_replies') ||
+        url.includes('/youtubei/v1/comment/create_comment') ||
+        url.includes('/youtubei/v1/comment/get_comments')
+      );
       
       // For YouTube API requests, we want to potentially modify the response
       if (isYouTubeApiRequest) {
-        console.log(`Intercepted YouTube API request: ${url}`);
+        console.log(`🔍 Intercepted YouTube API request: ${url}`);
+        console.log(`📊 Request method: ${method}, Body size: ${init && init.body ? init.body.length : 'N/A'}`);
         
         // Call the original fetch function
         const response = await originalFetch.apply(this, arguments);
+        console.log(`✅ Got response for: ${url}, Status: ${response.status}`);
         
         // Check if bot detection is enabled
-        chrome.storage.local.get('botDetectionEnabled', async (data) => {
-          if (!data.botDetectionEnabled) {
-            console.log("Bot detection is disabled, skipping comment processing");
-            return;
-          }
-          
-          try {
-            // Clone the response so we can read the body
-            const clonedResponse = response.clone();
-            
-            // Parse the response as JSON
-            const responseData = await clonedResponse.json();
-            
-            // Check if we have bot comments in the response
-            const comments = extractCommentsFromResponse(responseData);
-            if (comments && comments.length > 0) {
-              console.log(`Found ${comments.length} comments in response`);
+        try {
+          chrome.storage.local.get(['botDetectionEnabled', 'serverUrl', 'apiKey'], async (data) => {
+            try {
+              if (chrome.runtime.lastError) {
+                console.error("Runtime error in storage.local.get:", chrome.runtime.lastError);
+                return;
+              }
               
-              // Send the comments to the background script for bot detection
-              chrome.runtime.sendMessage({
-                action: 'detectBots',
-                comments: comments
-              }, (result) => {
-                if (chrome.runtime.lastError) {
-                  console.error("Runtime error:", chrome.runtime.lastError);
-                  return;
-                }
+              console.log(`🔧 Bot detection settings: enabled=${data.botDetectionEnabled}, serverUrl=${data.serverUrl ? 'set' : 'not set'}, apiKey=${data.apiKey ? 'set' : 'not set'}`);
+              
+              if (!data.botDetectionEnabled) {
+                console.log("⚠️ Bot detection is disabled, skipping comment processing");
+                return;
+              }
+              
+              if (!data.serverUrl) {
+                console.error("⛔ Server URL not configured, cannot process comments");
+                return;
+              }
+              
+              if (!data.apiKey) {
+                console.error("⛔ API key not configured, cannot process comments");
+                return;
+              }
+              
+              try {
+                // Clone the response so we can read the body
+                const clonedResponse = response.clone();
                 
-                if (result && result.success && result.results) {
-                  console.log('Bot detection results:', result.results);
-                  
-                  // Store the results for DOM modification
-                  chrome.storage.local.set({ 
-                    'lastBotDetectionResults': result.results,
-                    'lastDetectionTime': Date.now()
+                // Parse the response as JSON
+                const responseData = await clonedResponse.json();
+                console.log(`📦 Response data received, type: ${typeof responseData}, has data: ${!!responseData}`);
+                
+                // Check if we have bot comments in the response
+                const comments = extractCommentsFromResponse(responseData);
+                if (comments && comments.length > 0) {
+                  console.log(`📝 Found ${comments.length} comments in response:`);
+                  // Log a sample of comments (first 2)
+                  comments.slice(0, 2).forEach((comment, i) => {
+                    console.log(`  Comment ${i+1}: Author="${comment.author || comment.author_name}", Content="${comment.content.substring(0, 30)}..."`);
                   });
+                  
+                  // Send the comments to the background script for bot detection
+                  try {
+                    console.log(`🚀 Sending ${comments.length} comments to background script for detection`);
+                    chrome.runtime.sendMessage({
+                      action: 'detectBots',
+                      comments: comments
+                    }, (result) => {
+                      try {
+                        if (chrome.runtime.lastError) {
+                          console.error("⚠️ Runtime error in sendMessage callback:", chrome.runtime.lastError);
+                          return;
+                        }
+                        
+                        console.log(`📨 Got response from background script:`, result);
+                        
+                        if (result && result.success && result.results) {
+                          console.log('✅ Bot detection results received:', result.results);
+                          
+                          // Store the results for DOM modification
+                          try {
+                            chrome.storage.local.set({ 
+                              'lastBotDetectionResults': result.results,
+                              'lastDetectionTime': Date.now()
+                            }, () => {
+                              if (chrome.runtime.lastError) {
+                                console.error("⚠️ Runtime error in storage.local.set:", chrome.runtime.lastError);
+                              } else {
+                                console.log("💾 Stored bot detection results for DOM updates");
+                              }
+                            });
+                          } catch (storageError) {
+                            console.error('⚠️ Error storing bot detection results:', storageError);
+                          }
+                        } else {
+                          const errorMsg = result && result.error ? result.error : 'Unknown error';
+                          console.error('❌ Failed to detect bots:', errorMsg);
+                        }
+                      } catch (callbackError) {
+                        console.error('⚠️ Error in sendMessage callback:', callbackError);
+                      }
+                    });
+                  } catch (sendMessageError) {
+                    console.error('⚠️ Error sending message to background script:', sendMessageError);
+                  }
                 } else {
-                  const errorMsg = result && result.error ? result.error : 'Unknown error';
-                  console.error('Failed to detect bots:', errorMsg);
+                  console.log("ℹ️ No comments found in the response");
                 }
-              });
-            } else {
-              console.log("No comments found in the response");
+              } catch (responseError) {
+                console.error('⚠️ Error processing response:', responseError);
+              }
+            } catch (storageCallbackError) {
+              console.error('⚠️ Error in storage callback:', storageCallbackError);
             }
-          } catch (error) {
-            console.error('Error processing response:', error);
-          }
-        });
+          });
+        } catch (storageError) {
+          console.error('⚠️ Error accessing chrome.storage:', storageError);
+        }
         
         // Return the original response
         return response;
@@ -401,29 +494,55 @@ function interceptYouTubeResponses() {
       // For all other requests, just pass through
       return originalFetch.apply(this, arguments);
     } catch (error) {
-      console.error('Error in fetch interceptor:', error);
+      console.error('⚠️ Error in fetch interceptor:', error);
       // Ensure the original fetch is called even if our code fails
       return originalFetch.apply(this, arguments);
     }
   };
   
-  console.log("YouTube API response interception set up successfully");
+  console.log("✅ YouTube API response interception set up successfully");
 }
 
 // Function to extract comments from YouTube response
 function extractCommentsFromResponse(responseData) {
   try {
-    if (!responseData || !responseData.frameworkUpdates || 
-        !responseData.frameworkUpdates.entityBatchUpdate || 
-        !responseData.frameworkUpdates.entityBatchUpdate.mutations) {
+    console.log("🔍 Analyzing response data for comments");
+    
+    if (!responseData) {
+      console.log("⚠️ Response data is null or undefined");
+      return null;
+    }
+    
+    // Log the structure of the response data to help debug
+    console.log("📊 Response data structure:", 
+      Object.keys(responseData).join(", "),
+      responseData.frameworkUpdates ? "has frameworkUpdates" : "no frameworkUpdates"
+    );
+    
+    if (!responseData.frameworkUpdates) {
+      console.log("⚠️ No frameworkUpdates in response");
+      return null;
+    }
+    
+    if (!responseData.frameworkUpdates.entityBatchUpdate) {
+      console.log("⚠️ No entityBatchUpdate in frameworkUpdates");
+      return null;
+    }
+    
+    if (!responseData.frameworkUpdates.entityBatchUpdate.mutations) {
+      console.log("⚠️ No mutations in entityBatchUpdate");
       return null;
     }
     
     const {mutations} = responseData.frameworkUpdates.entityBatchUpdate;
+    console.log(`📋 Found ${mutations.length} mutations in response`);
+    
     const comments = [];
+    let commentPayloads = 0;
     
     for (const mutation of mutations) {
       if (mutation.payload && mutation.payload.commentEntityPayload) {
+        commentPayloads++;
         const payload = mutation.payload.commentEntityPayload;
         
         if (payload.author && payload.author.displayName && 
@@ -436,131 +555,251 @@ function extractCommentsFromResponse(responseData) {
       }
     }
     
+    console.log(`📝 Found ${commentPayloads} comment payloads, extracted ${comments.length} valid comments`);
+    
     return comments.length > 0 ? comments : null;
   } catch (error) {
-    console.error('Error extracting comments:', error);
+    console.error('⚠️ Error extracting comments:', error);
     return null;
   }
 }
 
 // Wait for page to load before adding panel
 window.addEventListener('load', () => {
-  // Check if we're on YouTube
-  if (window.location.hostname.includes('youtube.com')) {
-    // Add control panel
-    addControlPanel();
-    
-    // Set up comment report menu
-    setupCommentReportMenu();
-    
-    // Intercept YouTube API responses
-    interceptYouTubeResponses();
-    
-    // Apply DOM modifications for bot comments
-    setInterval(applyBotDetectionToDom, 2000);
+  try {
+    // Check if we're on YouTube
+    if (window.location.hostname.includes('youtube.com')) {
+      console.log("YouTube detected, initializing bot detector");
+      
+      try {
+        // Add control panel
+        addControlPanel();
+        
+        // Set up comment report menu
+        setupCommentReportMenu();
+        
+        // Intercept YouTube API responses
+        interceptYouTubeResponses();
+        
+        // Load settings and verify configuration
+        chrome.storage.local.get(['botDetectionEnabled', 'serverUrl', 'apiKey'], (data) => {
+          try {
+            if (chrome.runtime.lastError) {
+              console.error("Runtime error loading settings:", chrome.runtime.lastError);
+              return;
+            }
+            
+            console.log(`🔧 Bot detector settings loaded: enabled=${data.botDetectionEnabled}, serverUrl=${data.serverUrl ? 'set' : 'not set'}, apiKey=${data.apiKey ? 'set' : 'not set'}`);
+            
+            if (!data.botDetectionEnabled) {
+              console.log("⚠️ Bot detection is currently disabled");
+            } else if (!data.serverUrl) {
+              console.error("⛔ Server URL not configured, bot detection will not work");
+            } else if (!data.apiKey) {
+              console.error("⛔ API key not configured, bot detection will not work");
+            } else {
+              console.log("✅ Bot detection is properly configured");
+              
+              // Trigger an immediate check for comments
+              setTimeout(() => {
+                console.log("🔍 Triggering initial comment check");
+                applyBotDetectionToDom();
+              }, 3000);
+            }
+          } catch (settingsError) {
+            console.error("Error processing settings:", settingsError);
+          }
+        });
+        
+        // Set up interval for DOM modifications
+        const intervalId = setInterval(() => {
+          try {
+            applyBotDetectionToDom();
+          } catch (intervalError) {
+            console.error("Error in applyBotDetectionToDom interval:", intervalError);
+            
+            // If we get an extension context invalidated error, clear the interval
+            if (intervalError.message && intervalError.message.includes("Extension context invalidated")) {
+              console.log("Extension context invalidated, clearing interval");
+              clearInterval(intervalId);
+            }
+          }
+        }, 5000); // Changed to 5 seconds to reduce API calls
+        
+        // Clean up on unload
+        window.addEventListener('unload', () => {
+          clearInterval(intervalId);
+        });
+      } catch (initError) {
+        console.error("Error initializing bot detector:", initError);
+      }
+    }
+  } catch (error) {
+    console.error("Error in load event listener:", error);
   }
 });
 
 // Function to apply bot detection to the DOM
 function applyBotDetectionToDom() {
-  // Get settings from storage
-  chrome.storage.local.get(['botDetectionEnabled', 'markBotNames', 'lastBotDetectionResults', 'lastDetectionTime'], (data) => {
-    if (!data.botDetectionEnabled) return;
-    
-    // Check if we have detection results that are recent (less than 30 seconds old)
-    const now = Date.now();
-    const isRecentDetection = data.lastDetectionTime && (now - data.lastDetectionTime < 30000);
-    
-    if (isRecentDetection && data.lastBotDetectionResults) {
-      console.log("Using recent bot detection results:", data.lastBotDetectionResults);
-    }
-    
-    // Find all comment author elements that haven't been processed yet
-    const commentAuthors = document.querySelectorAll('#author-text:not([data-bot-processed])');
-    console.log(`Found ${commentAuthors.length} unprocessed comment authors`);
-    
-    // Process each comment author
-    commentAuthors.forEach(author => {
-      // Mark as processed
-      author.setAttribute('data-bot-processed', 'true');
-      
-      // Get the author name
-      const authorName = author.textContent.trim();
-      
-      // Check if the author name contains the [BOT] tag
-      if (authorName.includes('[BOT]')) {
-        // Add a visual indicator
-        author.style.color = '#e74c3c';
+  try {
+    // Get settings from storage
+    chrome.storage.local.get(['botDetectionEnabled', 'markBotNames', 'lastBotDetectionResults', 'lastDetectionTime', 'serverUrl', 'apiKey'], (data) => {
+      try {
+        if (chrome.runtime.lastError) {
+          console.error("Runtime error in storage.local.get:", chrome.runtime.lastError);
+          return;
+        }
         
-        // Add a bot icon if mark names is enabled
-        if (data.markBotNames !== false) {
-          const botIcon = document.createElement('span');
-          botIcon.textContent = '🤖';
-          botIcon.style.marginLeft = '5px';
-          author.appendChild(botIcon);
+        if (!data.botDetectionEnabled) return;
+        
+        // Find all comment author elements that haven't been processed yet
+        const commentAuthors = document.querySelectorAll('#author-text:not([data-bot-processed])');
+        console.log(`Found ${commentAuthors.length} unprocessed comment authors`);
+        
+        if (commentAuthors.length === 0) return;
+        
+        // Check if we have necessary settings for API call
+        if (!data.serverUrl) {
+          console.error("⛔ Server URL not configured, cannot detect bots");
+          return;
         }
-      } 
-      // If we have recent detection results, check if this author is in it
-      else if (isRecentDetection && data.lastBotDetectionResults) {
-        try {
-          // Find the comment content associated with this author
-          const commentElement = author.closest('ytd-comment-renderer');
-          if (!commentElement) return;
-          
-          const contentElement = commentElement.querySelector('#content-text');
-          if (!contentElement) return;
-          
-          const commentContent = contentElement.textContent.trim();
-          
-          console.log(`Checking comment: ${authorName} - "${commentContent.substring(0, 30)}..."`);
-          
-          // Check the format of the results
-          if (data.lastBotDetectionResults.is_bot) {
-            // Original format with is_bot array
-            const index = data.lastBotDetectionResults.is_bot.findIndex((isBot, idx) => {
-              // Try to match by original comments array if available
-              if (data.lastBotDetectionResults.comments) {
-                const comment = data.lastBotDetectionResults.comments[idx];
-                return comment && 
-                      (comment.author === authorName || comment.author_name === authorName) && 
-                      (comment.content === commentContent);
-              }
-              
-              // Otherwise, just use the index (less reliable)
-              return false;
-            });
+        
+        if (!data.apiKey) {
+          console.error("⛔ API key not configured, cannot detect bots");
+          return;
+        }
+        
+        // Collect comments to analyze
+        const commentsToAnalyze = [];
+        
+        // Process each comment author
+        commentAuthors.forEach(author => {
+          try {
+            // Mark as processed to avoid processing again
+            author.setAttribute('data-bot-processed', 'true');
             
-            if (index !== -1 && data.lastBotDetectionResults.is_bot[index]) {
-              console.log(`Marking comment as bot: ${authorName}`);
-              markCommentAsBot(author, data.markBotNames);
-            }
-          } 
-          // New format with results array
-          else if (data.lastBotDetectionResults.results) {
-            const index = data.lastBotDetectionResults.results.findIndex((result, idx) => {
-              // Try to match by evaluate array if available
-              if (data.lastBotDetectionResults.evaluate) {
-                const comment = data.lastBotDetectionResults.evaluate[idx];
-                return comment && 
-                      (comment.author === authorName || comment.author_name === authorName) && 
-                      (comment.content === commentContent);
-              }
-              
-              // Otherwise, just use the index (less reliable)
-              return false;
-            });
+            // Get the author name
+            const authorName = author.textContent.trim();
             
-            if (index !== -1 && data.lastBotDetectionResults.results[index]) {
-              console.log(`Marking comment as bot: ${authorName}`);
-              markCommentAsBot(author, data.markBotNames);
+            // Check if this comment is already marked as a bot
+            if (author.hasAttribute('data-is-bot')) {
+              // Add a visual indicator
+              author.style.color = '#e74c3c';
+              
+              // Add a bot icon if mark names is enabled
+              if (data.markBotNames !== false) {
+                const botIcon = document.createElement('span');
+                botIcon.textContent = '🤖';
+                botIcon.style.marginLeft = '5px';
+                author.appendChild(botIcon);
+              }
+            } 
+            // Check if this comment is already marked as a user
+            else if (author.hasAttribute('data-is-user')) {
+              // Make sure it has the user checkmark
+              let hasCheckmark = false;
+              const spans = author.querySelectorAll('span');
+              spans.forEach(span => {
+                if (span.textContent === '✓') {
+                  hasCheckmark = true;
+                }
+              });
+              
+              if (!hasCheckmark) {
+                const userIcon = document.createElement('span');
+                userIcon.textContent = '✓';
+                userIcon.style.cssText = `
+                  margin-left: 5px;
+                  color: #2ecc71;
+                  font-weight: bold;
+                `;
+                author.appendChild(userIcon);
+              }
             }
+            else {
+              // Find the comment content
+              const commentElement = author.closest('ytd-comment-renderer');
+              if (!commentElement) return;
+              
+              const contentElement = commentElement.querySelector('#content-text');
+              if (!contentElement) return;
+              
+              const commentContent = contentElement.textContent.trim();
+              
+              // Add to comments to analyze
+              commentsToAnalyze.push({
+                author: authorName,
+                content: commentContent,
+                element: author // Store reference to the DOM element
+              });
+            }
+          } catch (commentError) {
+            console.error('Error processing comment:', commentError);
           }
-        } catch (error) {
-          console.error('Error processing detection results for DOM updates:', error);
+        });
+        
+        // If we have comments to analyze, send them to the API
+        if (commentsToAnalyze.length > 0) {
+          console.log(`🚀 Sending ${commentsToAnalyze.length} comments directly to bot detection API`);
+          
+          // Send directly to the background script
+          chrome.runtime.sendMessage({
+            action: 'detectBots',
+            comments: commentsToAnalyze.map(c => ({ author: c.author, content: c.content }))
+          }, (result) => {
+            try {
+              if (chrome.runtime.lastError) {
+                console.error("⚠️ Runtime error in sendMessage callback:", chrome.runtime.lastError);
+                return;
+              }
+              
+              console.log(`📨 Got response from background script:`, result);
+              
+              if (result && result.success && result.results) {
+                console.log('✅ Bot detection results received:', result.results);
+                
+                // Apply the results to the DOM
+                if (result.results.is_bot && Array.isArray(result.results.is_bot)) {
+                  result.results.is_bot.forEach((isBot, index) => {
+                    if (isBot && index < commentsToAnalyze.length) {
+                      const authorElement = commentsToAnalyze[index].element;
+                      console.log(`Marking comment as bot: ${commentsToAnalyze[index].author}`);
+                      markCommentAsBot(authorElement, data.markBotNames);
+                    }
+                  });
+                }
+                
+                // Store the results for future use
+                try {
+                  chrome.storage.local.set({ 
+                    'lastBotDetectionResults': result.results,
+                    'lastDetectionTime': Date.now()
+                  }, () => {
+                    if (chrome.runtime.lastError) {
+                      console.error("⚠️ Runtime error in storage.local.set:", chrome.runtime.lastError);
+                    } else {
+                      console.log("💾 Stored bot detection results");
+                    }
+                  });
+                } catch (storageError) {
+                  console.error('⚠️ Error storing bot detection results:', storageError);
+                }
+              } else {
+                const errorMsg = result && result.error ? result.error : 'Unknown error';
+                console.error('❌ Failed to detect bots:', errorMsg);
+              }
+            } catch (callbackError) {
+              console.error('⚠️ Error in sendMessage callback:', callbackError);
+            }
+          });
         }
+      } catch (error) {
+        console.error('Error in applyBotDetectionToDom storage callback:', error);
       }
     });
-  });
+  } catch (error) {
+    console.error('Error in applyBotDetectionToDom:', error);
+  }
 }
 
 // Helper function to mark a comment as a bot
@@ -568,10 +807,8 @@ function markCommentAsBot(authorElement, markBotNames) {
   // Add a visual indicator
   authorElement.style.color = '#e74c3c';
   
-  // Add the [BOT] tag to the displayed name
-  if (!authorElement.textContent.includes('[BOT]')) {
-    authorElement.textContent = authorElement.textContent + ' [BOT]';
-  }
+  // Set data attribute to mark as bot
+  authorElement.setAttribute('data-is-bot', 'true');
   
   // Add a bot icon if mark names is enabled
   if (markBotNames !== false) {
@@ -582,34 +819,89 @@ function markCommentAsBot(authorElement, markBotNames) {
   }
 }
 
-// Function to set up the comment report menu
-function setupCommentReportMenu() {
-  // Create the context menu
-  const contextMenu = createCustomContextMenu();
+// Helper function to mark a comment as a user
+function markCommentAsUser(authorElement) {
+  // Remove bot marking if present
+  if (authorElement.hasAttribute('data-is-bot')) {
+    authorElement.removeAttribute('data-is-bot');
+  }
   
-  // Add event listener for right clicks on comments
-  document.addEventListener('contextmenu', handleCommentRightClick);
+  // Reset color to default
+  authorElement.style.color = '';
   
-  // Listen for messages from the background script
-  chrome.runtime.onMessage.addListener((message) => {
-    if (message.action === 'contextMenuReportComment') {
-      // Get the comment element under the cursor
-      const commentElement = document.elementFromPoint(
-        contextMenu.lastX || 0, 
-        contextMenu.lastY || 0
-      );
-      
-      if (commentElement) {
-        const comment = findCommentElement(commentElement);
-        if (comment) {
-          const commentData = extractCommentData(comment);
-          if (commentData) {
-            reportComment(commentData);
-          }
-        }
-      }
+  // Set data attribute to mark as user-verified
+  authorElement.setAttribute('data-is-user', 'true');
+  
+  // Remove bot icon if present
+  const existingIcons = authorElement.querySelectorAll('span');
+  existingIcons.forEach(icon => {
+    if (icon.textContent === '🤖') {
+      authorElement.removeChild(icon);
     }
   });
+  
+  // Add a visual indicator for human-verified comments
+  // First check if it already has the checkmark
+  let hasCheckmark = false;
+  existingIcons.forEach(icon => {
+    if (icon.textContent === '✓') {
+      hasCheckmark = true;
+    }
+  });
+  
+  if (!hasCheckmark) {
+    const userIcon = document.createElement('span');
+    userIcon.textContent = '✓';
+    userIcon.style.cssText = `
+      margin-left: 5px;
+      color: #2ecc71;
+      font-weight: bold;
+    `;
+    authorElement.appendChild(userIcon);
+  }
+}
+
+// Function to set up the comment report menu
+function setupCommentReportMenu() {
+  try {
+    // Create the context menu
+    const contextMenu = createCustomContextMenu();
+    
+    // Add event listener for right clicks on comments
+    document.addEventListener('contextmenu', handleCommentRightClick);
+    
+    // Listen for messages from the background script
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+      try {
+        if (chrome.runtime.lastError) {
+          console.error("Runtime error in onMessage listener:", chrome.runtime.lastError);
+          return;
+        }
+        
+        if (message.action === 'contextMenuReportComment') {
+          // Get the comment element under the cursor
+          const commentElement = document.elementFromPoint(
+            contextMenu.lastX || 0, 
+            contextMenu.lastY || 0
+          );
+          
+          if (commentElement) {
+            const comment = findCommentElement(commentElement);
+            if (comment) {
+              const commentData = extractCommentData(comment);
+              if (commentData) {
+                reportComment(commentData);
+              }
+            }
+          }
+        }
+      } catch (messageError) {
+        console.error("Error handling message:", messageError);
+      }
+    });
+  } catch (error) {
+    console.error("Error setting up comment report menu:", error);
+  }
 }
 
 // Function to create a custom context menu
@@ -630,29 +922,63 @@ function createCustomContextMenu() {
     min-width: 150px;
   `;
   
-  const reportItem = document.createElement('div');
-  reportItem.textContent = 'Report as Bot';
-  reportItem.style.cssText = `
+  // Report as Bot option
+  const reportBotItem = document.createElement('div');
+  reportBotItem.textContent = 'Report as Bot';
+  reportBotItem.style.cssText = `
     padding: 8px 15px;
     cursor: pointer;
   `;
-  reportItem.addEventListener('mouseover', () => {
-    reportItem.style.backgroundColor = '#065fd4';
+  reportBotItem.addEventListener('mouseover', () => {
+    reportBotItem.style.backgroundColor = '#e74c3c';
   });
-  reportItem.addEventListener('mouseout', () => {
-    reportItem.style.backgroundColor = 'transparent';
+  reportBotItem.addEventListener('mouseout', () => {
+    reportBotItem.style.backgroundColor = 'transparent';
   });
-  reportItem.addEventListener('click', () => {
+  reportBotItem.addEventListener('click', () => {
     hideContextMenu();
     
     // Get the current comment data
     const currentCommentData = menu.commentData;
     if (currentCommentData) {
-      reportComment(currentCommentData);
+      reportComment(currentCommentData, true); // true = report as bot
     }
   });
   
-  menu.appendChild(reportItem);
+  // Report as User option
+  const reportUserItem = document.createElement('div');
+  reportUserItem.textContent = 'Report as User';
+  reportUserItem.style.cssText = `
+    padding: 8px 15px;
+    cursor: pointer;
+  `;
+  reportUserItem.addEventListener('mouseover', () => {
+    reportUserItem.style.backgroundColor = '#2ecc71';
+  });
+  reportUserItem.addEventListener('mouseout', () => {
+    reportUserItem.style.backgroundColor = 'transparent';
+  });
+  reportUserItem.addEventListener('click', () => {
+    hideContextMenu();
+    
+    // Get the current comment data
+    const currentCommentData = menu.commentData;
+    if (currentCommentData) {
+      reportComment(currentCommentData, false); // false = report as user
+    }
+  });
+  
+  // Add separator
+  const separator = document.createElement('div');
+  separator.style.cssText = `
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.1);
+    margin: 5px 0;
+  `;
+  
+  menu.appendChild(reportBotItem);
+  menu.appendChild(separator);
+  menu.appendChild(reportUserItem);
   document.body.appendChild(menu);
   
   // Hide the menu when clicking elsewhere
@@ -743,59 +1069,78 @@ function hideContextMenu() {
   }
 }
 
-// Function to report a comment as a bot
-function reportComment(commentData) {
-  chrome.storage.local.get(['serverUrl', 'apiKey'], (data) => {
-    if (!data.serverUrl || !data.apiKey) {
-      console.error('Server URL or API key not configured');
-      return;
-    }
-    
-    chrome.runtime.sendMessage({
-      action: 'reportComment',
-      serverUrl: data.serverUrl,
-      apiKey: data.apiKey,
-      comment: commentData
-    }, (response) => {
-      if (response && response.success) {
-        console.log('Comment reported successfully');
+// Function to report a comment as a bot or user
+function reportComment(commentData, isBot) {
+  try {
+    chrome.storage.local.get(['serverUrl', 'apiKey'], (data) => {
+      try {
+        if (chrome.runtime.lastError) {
+          console.error("Runtime error in storage.local.get:", chrome.runtime.lastError);
+          return;
+        }
         
-        // Find the comment in the DOM and mark it as a bot
-        const commentElements = document.querySelectorAll('ytd-comment-renderer');
-        for (const commentElement of commentElements) {
-          const authorElement = commentElement.querySelector('#author-text');
-          const contentElement = commentElement.querySelector('#content-text');
+        if (!data.serverUrl || !data.apiKey) {
+          console.error('Server URL or API key not configured');
+          return;
+        }
+        
+        try {
+          console.log(`Reporting comment as ${isBot ? 'bot' : 'user'}: "${commentData.content.substring(0, 30)}..."`);
           
-          if (authorElement && contentElement) {
-            const authorName = authorElement.textContent.trim();
-            const content = contentElement.textContent.trim();
-            
-            if (authorName === commentData.author_name && content === commentData.content) {
-              // Mark this comment as a bot
-              if (!authorElement.textContent.includes('[BOT]')) {
-                authorElement.textContent = authorElement.textContent + ' [BOT]';
+          chrome.runtime.sendMessage({
+            action: 'reportComment',
+            serverUrl: data.serverUrl,
+            apiKey: data.apiKey,
+            comment: commentData,
+            isBot: isBot
+          }, (response) => {
+            try {
+              if (chrome.runtime.lastError) {
+                console.error("Runtime error in sendMessage callback:", chrome.runtime.lastError);
+                return;
               }
               
-              authorElement.style.color = '#e74c3c';
-              
-              // Add a bot icon
-              chrome.storage.local.get('markBotNames', (data) => {
-                if (data.markBotNames !== false) {
-                  const botIcon = document.createElement('span');
-                  botIcon.textContent = '🤖';
-                  botIcon.style.marginLeft = '5px';
-                  authorElement.appendChild(botIcon);
+              if (response && response.success) {
+                console.log(`Comment reported successfully as ${isBot ? 'bot' : 'user'}`);
+                
+                // Find the comment in the DOM and update its status
+                const commentElements = document.querySelectorAll('ytd-comment-renderer');
+                for (const commentElement of commentElements) {
+                  const authorElement = commentElement.querySelector('#author-text');
+                  const contentElement = commentElement.querySelector('#content-text');
+                  
+                  if (authorElement && contentElement) {
+                    const authorName = authorElement.textContent.trim();
+                    const content = contentElement.textContent.trim();
+                    
+                    if (authorName === commentData.author_name && content === commentData.content) {
+                      if (isBot) {
+                        // Mark this comment as a bot using the data attribute
+                        markCommentAsBot(authorElement, true);
+                      } else {
+                        // Mark this comment as a user
+                        markCommentAsUser(authorElement);
+                      }
+                      break;
+                    }
+                  }
                 }
-              });
-              
-              break;
+              } else {
+                const errorMsg = response && response.error ? response.error : 'Unknown error';
+                console.error('Error reporting comment:', errorMsg);
+              }
+            } catch (callbackError) {
+              console.error('Error in sendMessage callback:', callbackError);
             }
-          }
+          });
+        } catch (sendMessageError) {
+          console.error('Error sending message to background script:', sendMessageError);
         }
-      } else {
-        const errorMsg = response && response.error ? response.error : 'Unknown error';
-        console.error('Error reporting comment:', errorMsg);
+      } catch (storageCallbackError) {
+        console.error('Error in storage callback:', storageCallbackError);
       }
     });
-  });
+  } catch (error) {
+    console.error('Error in reportComment:', error);
+  }
 } 

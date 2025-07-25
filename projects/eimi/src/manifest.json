@@ -11,7 +11,8 @@
   ],
   "host_permissions": [
     "*://www.youtube.com/*",
-    "*://*.youtube.com/*"
+    "*://*.youtube.com/*",
+    "https://misilelab--himari-api-fastapi-app.modal.run/*"
   ],
   "background": {
     "service_worker": "background.js"
