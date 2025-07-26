@@ -10,7 +10,7 @@
   },
   "license": "MisileLab License",
   "devDependencies": {
-    "@catppuccin/tailwindcss": "0.1.6",
+    "@catppuccin/tailwindcss": "1.0.0",
     "autoprefixer": "10.4.21",
     "postcss": "8.5.6",
     "solid-devtools": "0.34.3",
