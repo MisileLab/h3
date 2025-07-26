@@ -1,12 +1,12 @@
 import modal
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
+from blake3 import blake3
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
-import uuid
 from collections.abc import Sequence
 from os import getenv
 from datetime import datetime
@@ -74,27 +74,37 @@ async def evaluate(item: EvaluateRequest) -> dict[str, Sequence[float | bool]]:
     _ = ph.verify(api_key_hashed, item.api_key)
   except VerifyMismatchError as e:
     raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail="Invalid API key") from e
-  
+
   global model
   # Evaluate using Modal remote execution
   if model is None:
     model = Model()
     model.setup()
-  author_names = [i.author_name for i in item.evaluate]
-  contents = [i.content for i in item.evaluate]
-  result: list[float] = model.evaluate(author_names, contents)
-  is_bot = [result > 0.9 for result in result]
-  
-  # Store in Modal's KV store
+  author_names: list[str] = []
+  contents: list[str] = []
+  result: list[float] = []
   for i in item.evaluate:
-    entry_id = str(uuid.uuid4())
-    kv_store[entry_id] = {
-      "author_name": i.author_name,
-      "content": i.content,
-      "is_bot": is_bot,
+    if kv_store.get(blake3((i.author_name + i.content).encode()).digest()):
+      result.append(kv_store.get(blake3((i.author_name + i.content).encode()).digest())["result"])
+    else:
+      author_names.append(i.author_name)
+      contents.append(i.content)
+  if author_names:
+    result.extend(model.evaluate(author_names, contents))
+  is_bot = [result > 0.9 for result in result]
+
+  # Store in Modal's KV store
+  for i in zip(author_names, contents, result, is_bot):
+    if kv_store.get(blake3((i[0] + i[1]).encode()).digest()):
+      continue
+    kv_store[blake3((i[0] + i[1]).encode()).digest()] = {
+      "author_name": i[0],
+      "content": i[1],
+      "is_bot": i[3],
+      "result": i[2],
       "timestamp": datetime.now().isoformat()
     }
-  
+
   return {"result": result, "is_bot": is_bot}
 
 @web_app.post("/report")
@@ -111,11 +121,11 @@ async def report(item: ReportRequest):
     raise HTTPException(status.HTTP_400_BAD_REQUEST, detail="Author name and content are required")
   
   # Store in Modal's KV store
-  entry_id = str(uuid.uuid4())
-  kv_store[entry_id] = {
+  kv_store[blake3((item.author_name + item.content).encode()).digest()] = {
     "author_name": item.author_name,
     "content": item.content,
     "is_bot": item.is_bot,
+    "result": 1 if item.is_bot else 0,
     "timestamp": datetime.now().isoformat()
   }
   
