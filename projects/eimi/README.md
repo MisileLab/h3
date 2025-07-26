@@ -1,6 +1,9 @@
+
 # YouTube Bot Detector
 
 A Chrome extension that detects and marks bot comments on YouTube videos with AI-powered analysis. This production-ready extension helps you identify potential spam and bot comments in YouTube comment sections.
+
+Quick preview: https://youtu.be/9kjVpKrUJOI
 
 ## Features
 
