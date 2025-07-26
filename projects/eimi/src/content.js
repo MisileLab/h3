@@ -426,7 +426,7 @@ function interceptYouTubeResponses() {
                   console.log(`📝 Found ${comments.length} comments in response:`);
                   // Log a sample of comments (first 2)
                   comments.slice(0, 2).forEach((comment, i) => {
-                    console.log(`  Comment ${i+1}: Author="${comment.author || comment.author_name}", Content="${comment.content.substring(0, 30)}..."`);
+                    console.log(`  Comment ${i+1}: Author="${comment.author_name}", Content="${comment.content.substring(0, 30)}..."`);
                   });
                   
                   // Send the comments to the background script for bot detection
@@ -548,7 +548,7 @@ function extractCommentsFromResponse(responseData) {
         if (payload.author && payload.author.displayName && 
             payload.properties && payload.properties.content) {
           comments.push({
-            author: payload.author.displayName,
+            author_name: payload.author.displayName,
             content: payload.properties.content.content
           });
         }
@@ -575,8 +575,7 @@ window.addEventListener('load', () => {
         // Add control panel
         addControlPanel();
         
-        // Set up comment report menu
-        setupCommentReportMenu();
+        
         
         // Intercept YouTube API responses
         interceptYouTubeResponses();
@@ -654,7 +653,9 @@ function applyBotDetectionToDom() {
         
         // Find all comment author elements that haven't been processed yet
         const commentAuthors = document.querySelectorAll('#author-text:not([data-bot-processed])');
-        console.log(`Found ${commentAuthors.length} unprocessed comment authors`);
+        if (commentAuthors.length > 0) {
+            console.log(`Found ${commentAuthors.length} unprocessed comment authors`);
+        }
         
         if (commentAuthors.length === 0) return;
         
@@ -673,7 +674,7 @@ function applyBotDetectionToDom() {
         const commentsToAnalyze = [];
         
         // Process each comment author
-        commentAuthors.forEach(author => {
+        commentAuthors.forEach((author, index) => {
           try {
             // Mark as processed to avoid processing again
             author.setAttribute('data-bot-processed', 'true');
@@ -718,17 +719,23 @@ function applyBotDetectionToDom() {
             }
             else {
               // Find the comment content
-              const commentElement = author.closest('ytd-comment-renderer');
-              if (!commentElement) return;
+              const commentElement = author.closest('ytd-comment-view-model');
+              if (!commentElement) {
+                console.log(`[Debug] Could not find 'ytd-comment-view-model' for author #${index} ('${authorName}')`);
+                return;
+              }
               
               const contentElement = commentElement.querySelector('#content-text');
-              if (!contentElement) return;
+              if (!contentElement) {
+                console.log(`[Debug] Could not find '#content-text' in comment for author #${index} ('${authorName}')`);
+                return;
+              }
               
               const commentContent = contentElement.textContent.trim();
               
               // Add to comments to analyze
               commentsToAnalyze.push({
-                author: authorName,
+                author_name: authorName,
                 content: commentContent,
                 element: author // Store reference to the DOM element
               });
@@ -745,7 +752,7 @@ function applyBotDetectionToDom() {
           // Send directly to the background script
           chrome.runtime.sendMessage({
             action: 'detectBots',
-            comments: commentsToAnalyze.map(c => ({ author: c.author, content: c.content }))
+            comments: commentsToAnalyze.map(c => ({ author_name: c.author_name, content: c.content }))
           }, (result) => {
             try {
               if (chrome.runtime.lastError) {
@@ -763,7 +770,7 @@ function applyBotDetectionToDom() {
                   result.results.is_bot.forEach((isBot, index) => {
                     if (isBot && index < commentsToAnalyze.length) {
                       const authorElement = commentsToAnalyze[index].element;
-                      console.log(`Marking comment as bot: ${commentsToAnalyze[index].author}`);
+                      console.log(`Marking comment as bot: ${commentsToAnalyze[index].author_name}`);
                       markCommentAsBot(authorElement, data.markBotNames);
                     }
                   });
@@ -861,213 +868,69 @@ function markCommentAsUser(authorElement) {
   }
 }
 
-// Function to set up the comment report menu
-function setupCommentReportMenu() {
-  try {
-    // Create the context menu
-    const contextMenu = createCustomContextMenu();
-    
-    // Add event listener for right clicks on comments
-    document.addEventListener('contextmenu', handleCommentRightClick);
-    
-    // Listen for messages from the background script
-    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-      try {
-        if (chrome.runtime.lastError) {
-          console.error("Runtime error in onMessage listener:", chrome.runtime.lastError);
-          return;
-        }
-        
-        if (message.action === 'contextMenuReportComment') {
-          // Get the comment element under the cursor
-          const commentElement = document.elementFromPoint(
-            contextMenu.lastX || 0, 
-            contextMenu.lastY || 0
-          );
-          
-          if (commentElement) {
-            const comment = findCommentElement(commentElement);
-            if (comment) {
-              const commentData = extractCommentData(comment);
-              if (commentData) {
-                reportComment(commentData);
-              }
-            }
-          }
-        }
-      } catch (messageError) {
-        console.error("Error handling message:", messageError);
-      }
-    });
-  } catch (error) {
-    console.error("Error setting up comment report menu:", error);
+// Helper function to find the comment element from a given target
+function findCommentElement(target) {
+  let element = target;
+  while (element && !element.matches('ytd-comment-view-model')) {
+    element = element.parentElement;
   }
+  if (element) {
+    console.log('Found comment element:', element);
+  } else {
+    console.log('No comment element found for target:', target);
+  }
+  return element;
 }
 
-// Function to create a custom context menu
-function createCustomContextMenu() {
-  const menu = document.createElement('div');
-  menu.id = 'yt-bot-detector-context-menu';
-  menu.style.cssText = `
-    position: absolute;
-    background-color: rgba(33, 33, 33, 0.95);
-    border-radius: 4px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    z-index: 10000;
-    padding: 5px 0;
-    display: none;
-    font-family: 'Roboto', Arial, sans-serif;
-    font-size: 14px;
-    color: #fff;
-    min-width: 150px;
-  `;
-  
-  // Report as Bot option
-  const reportBotItem = document.createElement('div');
-  reportBotItem.textContent = 'Report as Bot';
-  reportBotItem.style.cssText = `
-    padding: 8px 15px;
-    cursor: pointer;
-  `;
-  reportBotItem.addEventListener('mouseover', () => {
-    reportBotItem.style.backgroundColor = '#e74c3c';
-  });
-  reportBotItem.addEventListener('mouseout', () => {
-    reportBotItem.style.backgroundColor = 'transparent';
-  });
-  reportBotItem.addEventListener('click', () => {
-    hideContextMenu();
-    
-    // Get the current comment data
-    const currentCommentData = menu.commentData;
-    if (currentCommentData) {
-      reportComment(currentCommentData, true); // true = report as bot
-    }
-  });
-  
-  // Report as User option
-  const reportUserItem = document.createElement('div');
-  reportUserItem.textContent = 'Report as User';
-  reportUserItem.style.cssText = `
-    padding: 8px 15px;
-    cursor: pointer;
-  `;
-  reportUserItem.addEventListener('mouseover', () => {
-    reportUserItem.style.backgroundColor = '#2ecc71';
-  });
-  reportUserItem.addEventListener('mouseout', () => {
-    reportUserItem.style.backgroundColor = 'transparent';
-  });
-  reportUserItem.addEventListener('click', () => {
-    hideContextMenu();
-    
-    // Get the current comment data
-    const currentCommentData = menu.commentData;
-    if (currentCommentData) {
-      reportComment(currentCommentData, false); // false = report as user
-    }
-  });
-  
-  // Add separator
-  const separator = document.createElement('div');
-  separator.style.cssText = `
-    height: 1px;
-    background-color: rgba(255, 255, 255, 0.1);
-    margin: 5px 0;
-  `;
-  
-  menu.appendChild(reportBotItem);
-  menu.appendChild(separator);
-  menu.appendChild(reportUserItem);
-  document.body.appendChild(menu);
-  
-  // Hide the menu when clicking elsewhere
-  document.addEventListener('click', hideContextMenu);
-  
-  return menu;
-}
+// Helper function to extract comment data from a comment element
+function extractCommentData(commentElement) {
+  const authorElement = commentElement.querySelector('#author-text');
+  const contentElement = commentElement.querySelector('#content-text');
 
-// Function to handle right clicks on comments
-function handleCommentRightClick(event) {
-  chrome.storage.local.get(['botDetectionEnabled', 'enableReportMenu'], (data) => {
-    if (!data.botDetectionEnabled || data.enableReportMenu === false) return;
-    
-    const commentElement = findCommentElement(event.target);
-    if (commentElement) {
-      // Get comment data
-      const commentData = extractCommentData(commentElement);
-      if (commentData) {
-        // Show the context menu
-        showContextMenu(event.clientX, event.clientY, commentData);
-        event.preventDefault();
-      }
-    }
-  });
-}
-
-// Function to find a comment element from a clicked element
-function findCommentElement(element) {
-  // Try to find the closest comment renderer
-  let current = element;
-  while (current && current !== document.body) {
-    if (current.tagName && 
-        current.tagName.toLowerCase() === 'ytd-comment-renderer') {
-      return current;
-    }
-    current = current.parentElement;
+  if (authorElement && contentElement) {
+    return {
+      author_name: authorElement.textContent.trim(),
+      content: contentElement.textContent.trim()
+    };
   }
   return null;
 }
 
-// Function to extract comment data from a comment element
-function extractCommentData(commentElement) {
-  try {
-    // Get the author name
-    const authorElement = commentElement.querySelector('#author-text');
-    if (!authorElement) return null;
-    
-    const authorName = authorElement.textContent.trim();
-    
-    // Get the comment content
-    const contentElement = commentElement.querySelector('#content-text');
-    if (!contentElement) return null;
-    
-    const content = contentElement.textContent.trim();
-    
-    // Return the comment data
-    return {
-      author_name: authorName,
-      content: content
-    };
-  } catch (error) {
-    console.error('Error extracting comment data:', error);
-    return null;
-  }
-}
+let lastClickedCommentData = null;
 
-// Function to show the context menu
-function showContextMenu(x, y, commentData) {
-  const menu = document.getElementById('yt-bot-detector-context-menu');
-  if (!menu) return;
-  
-  // Store the comment data
-  menu.commentData = commentData;
-  menu.lastX = x;
-  menu.lastY = y;
-  
-  // Position the menu
-  menu.style.left = `${x}px`;
-  menu.style.top = `${y}px`;
-  menu.style.display = 'block';
-}
-
-// Function to hide the context menu
-function hideContextMenu() {
-  const menu = document.getElementById('yt-bot-detector-context-menu');
-  if (menu) {
-    menu.style.display = 'none';
+document.addEventListener('contextmenu', (event) => {
+  const commentElement = findCommentElement(event.target);
+  if (commentElement) {
+    lastClickedCommentData = extractCommentData(commentElement);
+    lastClickedCommentData.author_name = lastClickedCommentData.author_name.replace('🤖', '').trim()
+    if (lastClickedCommentData) {
+      console.log('Comment data extracted for context menu:', lastClickedCommentData);
+    } else {
+      console.warn('Could not extract comment data from found comment element.');
+    }
+  } else {
+    lastClickedCommentData = null; // Ensure it's null if no comment element is found
+    console.log('Context menu opened, but no comment element was clicked.');
   }
-}
+});
+
+// Listen for messages from the background script
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === 'contextMenuClick') {
+    if (lastClickedCommentData) {
+      const isBot = message.menuItemId === 'reportAsBot';
+      reportComment(lastClickedCommentData, isBot);
+      lastClickedCommentData = null; // Clear the stored data after use
+    } else {
+      console.warn('No comment data available for reporting.');
+    }
+  }
+});;
+
+
+    
+
+  
 
 // Function to report a comment as a bot or user
 function reportComment(commentData, isBot) {

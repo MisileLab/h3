@@ -32,6 +32,7 @@ async function detectBots(comments) {
   try {
     const apiUrl = serverUrl.endsWith('/') ? `${serverUrl}evaluate` : `${serverUrl}/evaluate`;
     console.log(`🚀 Sending ${comments.length} comments to bot detection API: ${apiUrl}`);
+    console.log(comments)
     
     const response = await fetch(apiUrl, {
       method: 'POST',
@@ -197,24 +198,49 @@ function loadSettings() {
     if (data.markBotNames !== undefined) markBotNames = data.markBotNames;
     if (data.enableReportMenu !== undefined) enableReportMenu = data.enableReportMenu;
     console.log("🔧 Settings loaded:", { botDetectionEnabled, serverUrl, apiKey: apiKey ? 'set' : 'not set', markBotNames, enableReportMenu });
+    setupContextMenu(); // Set up the context menu based on loaded settings
   });
 }
 
-// Set up context menu for reporting comments
-chrome.contextMenus.create({
-  id: 'reportBotComment',
-  title: 'Report as Bot',
-  contexts: ['all'],
-  documentUrlPatterns: ['*://www.youtube.com/*']
-});
+// Function to set up or remove the context menu
+function setupContextMenu() {
+  chrome.contextMenus.removeAll(() => {
+    if (enableReportMenu) {
+      chrome.contextMenus.create({
+        id: 'reportAsBot',
+        title: 'Report as Bot',
+        contexts: ['all'],
+        documentUrlPatterns: ['*://www.youtube.com/*']
+      });
+      chrome.contextMenus.create({
+        id: 'reportAsUser',
+        title: 'Report as User',
+        contexts: ['all'],
+        documentUrlPatterns: ['*://www.youtube.com/*']
+      });
+    }
+  });
+}
 
-chrome.contextMenus.onClicked.addListener((info, tab) => {
-  if (info.menuItemId === 'reportBotComment') {
-    chrome.tabs.sendMessage(tab.id, { action: 'contextMenuReportComment' });
+// Update context menu when the setting changes
+chrome.storage.onChanged.addListener((changes, namespace) => {
+  if (changes.enableReportMenu) {
+    enableReportMenu = changes.enableReportMenu.newValue;
+    setupContextMenu();
   }
 });
 
-// Load settings on startup
+// Listen for context menu clicks
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  if (info.menuItemId === 'reportAsBot' || info.menuItemId === 'reportAsUser') {
+    chrome.tabs.sendMessage(tab.id, {
+      action: 'contextMenuClick',
+      menuItemId: info.menuItemId
+    });
+  }
+});
+
+// Load settings on startup and set up the context menu
 loadSettings();
 
 console.log('YouTube Bot Detector background script loaded and simplified.'); 
