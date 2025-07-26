@@ -90,4 +90,8 @@ This extension requires the following permissions:
 - `storage`: To store settings and configuration
 - `declarativeNetRequest`: For network request handling
 - `contextMenus`: For the right-click report menu
-- Host permissions for YouTube domains only 
+- Host permissions for YouTube domains only
+
+## Fun fact
+
+- Inspired by characters from Blue Archive mobile game
