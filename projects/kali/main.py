@@ -7,18 +7,20 @@ from pydantic_ai.models.fallback import FallbackModel
 from pydantic_ai.models.openai import OpenAIModel
 from pydantic_ai.providers.openai import OpenAIProvider
 from pydantic_ai.providers.openrouter import OpenRouterProvider
-from inquirer import Editor, prompt # pyright: ignore[reportUnknownVariableType, reportMissingTypeStubs]
+import logfire
 
 _ = load_dotenv()
+_ = logfire.configure(token=getenv('LOGFIRE_KEY', ''))
+_ = logfire.instrument_pydantic_ai()
 
 main_provider = OpenRouterProvider(
   api_key=getenv("OPENROUTER_API_KEY", "")
 )
 
-translate_provider = OpenAIProvider(
-  api_key=getenv("OPENAI_API_KEY"),
-  base_url=getenv("OPENAI_BASE_URL")
-)
+# translate_provider = OpenAIProvider(
+#   api_key=getenv("OPENAI_API_KEY"),
+#   base_url=getenv("OPENAI_BASE_URL")
+# )
 
 main_model = FallbackModel(
   OpenAIModel(
@@ -31,11 +33,16 @@ main_model = FallbackModel(
   )
 )
 
+# translate_agent = Agent(
+#   model=OpenAIModel(
+#     model_name="Seed-X-PPO-7B",
+#     provider=translate_provider
+#   )
+# )
+
 translate_agent = Agent(
-  model=OpenAIModel(
-    model_name="Seed-X-PPO-7B",
-    provider=translate_provider
-  )
+  model=main_model,
+  instructions=Path("./translate_prompt").read_text()
 )
 
 apply_character_agent = Agent(
@@ -48,18 +55,27 @@ note_agent = Agent(
   instructions=Path("./note_prompt").read_text()
 )
 
-def verify[T](value: T | None) -> T:
-  if value is None:
-    raise ValueError("Value is None")
-  return value
-
 while True:
-  original: str = verify(prompt(Editor("original")))["original"] # pyright: ignore[reportUnknownVariableType, reportUnknownArgumentType]
-  note = note_agent.run_sync(f"<note>\n{Path('./note.txt').read_text()}\n</note>\n<story>\n{original}\n</story>").output
-  _ = Path("./note.txt").write_text(note)
-  for i in original.split("\n"): # pyright: ignore[reportUnknownMemberType, reportUnknownVariableType]
-    print(i) # pyright: ignore[reportUnknownArgumentType]
-    translated = translate_agent.run_sync(f"Translate the following Chinese sentence into Korean:\n{i}<ko>").output
+  prev_original: str = Path("./original_prev.txt").read_text()
+  prev_translated: str = Path("./translated_prev.txt").read_text()
+  original: str = Path("./original.txt").read_text()
+  note = note_agent.run_sync(f"""
+    <note>
+      {Path('./note.txt').read_text()}
+    </note>
+    <story>
+      {original}
+    </story>
+    <prev>
+      {prev_original}
+    </prev>
+    <translated>
+      {prev_translated}
+    </translated>""").output
+  _ = Path("./note.txt").write_text(data=note)
+  for i in original.split("\n"):
+    print(i)
+    translated = translate_agent.run_sync(f"Translate the following English sentence into Korean:\n{i}<ko>").output
     print(translated)
     _ = Path("./translated.txt").write_text(translated)
     applied = apply_character_agent.run_sync(f"<note>\n{Path('./note.txt').read_text()}\n</note>\n<translated>{translated}\n</translated><original>{i}\n</original>").output
