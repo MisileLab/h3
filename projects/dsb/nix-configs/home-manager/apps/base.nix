@@ -1,4 +1,4 @@
-{lib, config, pkgs, zigpkgs, ...}:
+{lib, config, pkgs, stablep, zigpkgs, ...}:
 let
   writeScript = name: content: pkgs.writeShellScriptBin name "${content} $@";
   completions = [
@@ -70,10 +70,10 @@ in
 plugin add ${pkgs.nushellPlugins.polars}/bin/nu_plugin_polars
 plugin use polars
 # completion that command name and program different
-source ${pkgs.nu_scripts}/share/nu_scripts/custom-completions/tealdeer/tldr-completions.nu
-source ${pkgs.nu_scripts}/share/nu_scripts/custom-completions/bend/bend-completion.nu
-${lib.concatStringsSep "\n" (map (name: "source ${pkgs.nu_scripts}/share/nu_scripts/custom-completions/${name}/${name}-completions.nu") completions)}
-${lib.concatStringsSep "\n" (map (name: "source ${pkgs.nu_scripts}/share/nu_scripts/aliases/${name}/${name}-aliases.nu") aliases)}
+source ${stablep.nu_scripts}/share/nu_scripts/custom-completions/tealdeer/tldr-completions.nu
+source ${stablep.nu_scripts}/share/nu_scripts/custom-completions/bend/bend-completion.nu
+${lib.concatStringsSep "\n" (map (name: "source ${stablep.nu_scripts}/share/nu_scripts/custom-completions/${name}/${name}-completions.nu") completions)}
+${lib.concatStringsSep "\n" (map (name: "source ${stablep.nu_scripts}/share/nu_scripts/aliases/${name}/${name}-aliases.nu") aliases)}
 use std/util "path add"
 $env.UV_PUBLISH_TOKEN = (cat ${config.sops.secrets.uv_pypi_token.path})
 $env.TAVILY_API_KEY = (cat ${config.sops.secrets.tavily_api_key.path})
