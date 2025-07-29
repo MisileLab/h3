@@ -256,7 +256,7 @@ requires-dist = [
     { name = "langchain-memgraph", specifier = "==0.1.5" },
     { name = "mem0ai", extras = ["graph"], git = "https://github.com/misilelab/mem0" },
     { name = "puremagic", specifier = "==1.30" },
-    { name = "pydantic-ai-slim", extras = ["duckduckgo", "logfire", "openai", "mcp"], specifier = "==0.4.8" },
+    { name = "pydantic-ai-slim", extras = ["duckduckgo", "logfire", "openai", "mcp"], specifier = "==0.4.9" },
     { name = "rich", specifier = "==14.1.0" },
 ]
 
@@ -1451,7 +1451,7 @@ wheels = [
 
 [[package]]
 name = "pydantic-ai-slim"
-version = "0.4.8"
+version = "0.4.9"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "eval-type-backport" },
@@ -1462,9 +1462,9 @@ dependencies = [
     { name = "pydantic-graph" },
     { name = "typing-inspection" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/99/74/38e4cd2cfd9a621bb9f5991ff5f23dfdfaf3b86e3c176ca2b501155ff006/pydantic_ai_slim-0.4.8.tar.gz", hash = "sha256:0852b1635caaf97e67bff8a8633f45ffe3265d5231f0bf261ec9e422d1222b31", size = 189216, upload-time = "2025-07-28T15:03:16.557Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/03/b5/c4d564402b82d04d7150d9978563994b206260fc42fb5faebed96ee45966/pydantic_ai_slim-0.4.9.tar.gz", hash = "sha256:8ab74e6b5d2491435e2ff33ff20ea21b034334db0e97afd691e8841f9b242c27", size = 189445, upload-time = "2025-07-28T23:49:13.387Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/a6/3e/a7c93524eb5b8f48596e0ddc4848328145974dce12e641a87f7035909041/pydantic_ai_slim-0.4.8-py3-none-any.whl", hash = "sha256:34f50350714247bd0a1e8af4bb07c2478f14ab09cd9e01d4a2a9897ff7af00bb", size = 254430, upload-time = "2025-07-28T15:03:04.543Z" },
+    { url = "https://files.pythonhosted.org/packages/3c/ce/9eab814d441d0c5e977d4f8f9d09c6537aef5b6d53a974adcf9b7e21c203/pydantic_ai_slim-0.4.9-py3-none-any.whl", hash = "sha256:d30e2c12d64d3ccc67fa2a0b7ad3a0e0dc8c4aa43fd236cf400dadf92adb2972", size = 254859, upload-time = "2025-07-28T23:49:03.928Z" },
 ]
 
 [package.optional-dependencies]
@@ -1511,7 +1511,7 @@ wheels = [
 
 [[package]]
 name = "pydantic-graph"
-version = "0.4.8"
+version = "0.4.9"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "httpx" },
@@ -1519,9 +1519,9 @@ dependencies = [
     { name = "pydantic" },
     { name = "typing-inspection" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f2/a4/7805229a07bf32cb4545b4c942e3a8ac570a4a0b91a0010237fb43217467/pydantic_graph-0.4.8.tar.gz", hash = "sha256:78a1d8ab084cfbbde418f901296d7e0b37299c5182de0b16efc1fd0bd173795d", size = 21980, upload-time = "2025-07-28T15:03:18.924Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ea/94/734e8d95d7ba3a955ef2ba0b52a87903d54565c2dc674ab17fb3e98ab14f/pydantic_graph-0.4.9.tar.gz", hash = "sha256:22b11dbc9c3a4162d75fcb47c7392882f9880dbbfe58b3a36324b4e556507941", size = 21979, upload-time = "2025-07-28T23:49:15.589Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/12/e1/fa5dd1a98350790e2f952ea9778f09f1fd6be31eee885b5c096514ff535e/pydantic_graph-0.4.8-py3-none-any.whl", hash = "sha256:6e7282d07896d96c7678bcf17cef7643718b05cda15024a11e8a22e3b5dfb42f", size = 27566, upload-time = "2025-07-28T15:03:08.572Z" },
+    { url = "https://files.pythonhosted.org/packages/cb/ec/ebbc239cf53d834f8668952b30f9feed77aa09975ae32f334b7f5f759bc3/pydantic_graph-0.4.9-py3-none-any.whl", hash = "sha256:ec2fd743135979be29d03eb5fbb12e7691e56fa3ef1c8960cc66e0ad29c8149a", size = 27565, upload-time = "2025-07-28T23:49:06.57Z" },
 ]
 
 [[package]]
