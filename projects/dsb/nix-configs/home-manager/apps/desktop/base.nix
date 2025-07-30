@@ -21,7 +21,6 @@
       size = 32;
     };
   };
-  catppuccin.firefox.enable = false;
   programs = {
     obs-studio = {
       enable = true;
