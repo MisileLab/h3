@@ -105,7 +105,6 @@
   environment.systemPackages = with pkgs; [kdiskmark auto-cpufreq];
   programs = {
     nix-ld.enable = true;
-    steam.enable = true;
     dconf.enable = true;
     nh.enable = true;
   };
