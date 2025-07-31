@@ -8,16 +8,14 @@ PDFs that already have text content.
 """
 
 import os
-import sys
 from pathlib import Path
-from typing import List, Dict, Any, Optional
+from typing import Any
 import json
 
 import typer
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.panel import Panel
-from rich.table import Table
 import pandas as pd
 
 app = typer.Typer(help="Extract text from PDFs without OCR")
@@ -28,7 +26,7 @@ class PDFTextExtractor:
         """Initialize the text extractor."""
         console.print("📄 Initializing PDF text extractor...", style="blue")
     
-    def extract_text_from_pdf(self, pdf_path: str) -> List[Dict[str, Any]]:
+    def extract_text_from_pdf(self, pdf_path: str) -> list[dict[str, Any]]:
         """Extract text from PDF using direct text extraction."""
         console.print(f"📄 Processing PDF: {pdf_path}", style="blue")
         
@@ -88,7 +86,7 @@ class PDFTextExtractor:
         
         return all_results
     
-    def extract_tables_from_pdf(self, pdf_path: str) -> List[Dict[str, Any]]:
+    def extract_tables_from_pdf(self, pdf_path: str) -> list[dict[str, Any]]:
         """Extract tables from PDF using tabula-py."""
         console.print(f"📊 Extracting tables from PDF: {pdf_path}", style="blue")
         
@@ -142,7 +140,7 @@ class PDFTextExtractor:
         
         return all_tables
     
-    def save_text_to_file(self, text_data: List[Dict[str, Any]], output_path: str):
+    def save_text_to_file(self, text_data: list[dict[str, Any]], output_path: str):
         """Save extracted text to a text file."""
         try:
             with open(output_path, 'w', encoding='utf-8') as f:
@@ -157,7 +155,7 @@ class PDFTextExtractor:
             console.print(f"❌ Error saving text file: {e}", style="red")
             raise
     
-    def save_to_csv(self, text_data: List[Dict[str, Any]], output_path: str):
+    def save_to_csv(self, text_data: list[dict[str, Any]], output_path: str):
         """Save extracted text to CSV format."""
         try:
             rows = []
@@ -180,7 +178,7 @@ class PDFTextExtractor:
             console.print(f"❌ Error saving CSV: {e}", style="red")
             raise
     
-    def save_tables_to_csv(self, table_data: List[Dict[str, Any]], output_path: str):
+    def save_tables_to_csv(self, table_data: list[dict[str, Any]], output_path: str):
         """Save extracted tables to CSV format."""
         if not table_data:
             console.print("⚠️  No tables to save", style="yellow")
@@ -220,7 +218,7 @@ class PDFTextExtractor:
             console.print(f"❌ Error saving tables CSV: {e}", style="red")
             raise
     
-    def save_to_json(self, text_data: List[Dict[str, Any]], table_data: List[Dict[str, Any]], output_path: str):
+    def save_to_json(self, text_data: list[dict[str, Any]], table_data: list[dict[str, Any]], output_path: str):
         """Save extracted data to JSON format."""
         try:
             result = {
@@ -243,7 +241,7 @@ class PDFTextExtractor:
             console.print(f"❌ Error saving JSON: {e}", style="red")
             raise
 
-def _show_preview(text_data: List[Dict[str, Any]], table_data: List[Dict[str, Any]]):
+def _show_preview(text_data: list[dict[str, Any]], table_data: list[dict[str, Any]]):
     """Show preview of extracted data."""
     # Show text preview
     if text_data:

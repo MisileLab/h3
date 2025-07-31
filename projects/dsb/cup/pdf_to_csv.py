@@ -6,21 +6,15 @@ This tool extracts text from PDFs using Surya OCR and then uses OpenAI to fix
 OCR errors and structure the data for CSV output.
 """
 
-import json
 import os
-import sys
 from pathlib import Path
-from typing import List, Dict, Any, Optional
-import tempfile
-import shutil
+from typing import Any
 
 import typer
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
-from rich.table import Table
 from rich.panel import Panel
 import pandas as pd
-from PIL import Image
 
 from surya.recognition import RecognitionPredictor
 from surya.detection import DetectionPredictor
@@ -51,7 +45,7 @@ class PDFToCSVConverter:
         self.table_rec_predictor = TableRecPredictor()
         console.print("✅ Surya OCR models initialized", style="green")
     
-    def extract_text_from_pdf(self, pdf_path: str) -> List[Dict[str, Any]]:
+    def extract_text_from_pdf(self, pdf_path: str) -> list[dict[str, Any]]:
         """Extract text from PDF using Surya OCR."""
         console.print(f"📄 Processing PDF: {pdf_path}", style="blue")
         
@@ -108,7 +102,7 @@ class PDFToCSVConverter:
         
         return all_results
     
-    def extract_tables_from_pdf(self, pdf_path: str) -> List[Dict[str, Any]]:
+    def extract_tables_from_pdf(self, pdf_path: str) -> list[dict[str, Any]]:
         """Extract tables from PDF using Surya table recognition."""
         console.print(f"📊 Extracting tables from PDF: {pdf_path}", style="blue")
         
@@ -157,8 +151,8 @@ class PDFToCSVConverter:
         
         return all_tables
     
-    def post_process_with_openai(self, text_data: List[Dict[str, Any]], 
-                                table_data: List[Dict[str, Any]]) -> str:
+    def post_process_with_openai(self, text_data: list[dict[str, Any]], 
+                                table_data: list[dict[str, Any]]) -> str:
         """Post-process OCR results using OpenAI to fix errors and structure data."""
         console.print("🤖 Post-processing with OpenAI...", style="yellow")
         
@@ -219,7 +213,7 @@ Start with the header row and end with the last data row. No ```csv or ``` marke
             # Fallback to basic CSV conversion
             return self._fallback_csv_conversion(text_data, table_data)
     
-    def _prepare_text_content(self, text_data: List[Dict[str, Any]]) -> str:
+    def _prepare_text_content(self, text_data: list[dict[str, Any]]) -> str:
         """Prepare text content for OpenAI processing."""
         content = []
         for page_data in text_data:
@@ -229,7 +223,7 @@ Start with the header row and end with the last data row. No ```csv or ``` marke
             content.append("")
         return "\n".join(content)
     
-    def _prepare_table_content(self, table_data: List[Dict[str, Any]]) -> str:
+    def _prepare_table_content(self, table_data: list[dict[str, Any]]) -> str:
         """Prepare table content for OpenAI processing."""
         if not table_data:
             return "No tables detected"
@@ -262,8 +256,8 @@ Start with the header row and end with the last data row. No ```csv or ``` marke
         
         return "\n".join(content)
     
-    def _fallback_csv_conversion(self, text_data: List[Dict[str, Any]], 
-                                table_data: List[Dict[str, Any]]) -> str:
+    def _fallback_csv_conversion(self, text_data: list[dict[str, Any]], 
+                                table_data: list[dict[str, Any]]) -> str:
         """Fallback CSV conversion when OpenAI fails."""
         console.print("⚠️  Using fallback CSV conversion", style="yellow")
         
@@ -317,7 +311,7 @@ def safe_get_confidence(line_obj) -> float:
     else:
         return 0.0
 
-def _show_preview(text_data: List[Dict[str, Any]], table_data: List[Dict[str, Any]]):
+def _show_preview(text_data: list[dict[str, Any]], table_data: list[dict[str, Any]]):
     """Show preview of extracted data."""
     # Show text preview
     if text_data:
