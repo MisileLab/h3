@@ -8,7 +8,7 @@ let
     "dotnet" "gradlew" "less" "make" "man" "nano" "pytest"
     "tar" "typst"
   ];
-  aliases = ["docker" "git" "eza"];
+  aliases = ["docker" "eza"];
 in
   {
     imports = [
