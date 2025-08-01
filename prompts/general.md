@@ -72,7 +72,7 @@ def fetch_user_data(user_id: int, session: Session) -> dict[str, str | int]:
   return response.json()
 ```
 
-### TypeScript
+### TypeScript / Frontend Development
 ```typescript
 import { Session } from 'requests';
 import { DataFrame } from 'pandas-js';
@@ -99,6 +99,13 @@ function findUserByEmail(email: string): Record<string, string | number> | null 
   return null;
 }
 ```
+
+**For TypeScript and Frontend Development:**
+- **ALWAYS check frontend.md for additional frontend-specific guidelines and requirements**
+- Follow React/Vue/Angular best practices as specified in frontend.md
+- Use appropriate frontend tooling and patterns (hooks, components, state management)
+- Implement proper accessibility standards
+- Follow modern frontend architecture patterns
 
 ### Java
 ```java
@@ -250,8 +257,9 @@ def bad_indentation():
 5. **Never include unused imports/includes/requires**
 6. **Always let errors bubble up naturally**
 7. **Follow language-specific naming conventions and best practices**
-8. Write clean, readable, and maintainable code
-9. Provide appropriate documentation using language conventions
-10. Follow established style guides for each language
+8. **For TypeScript/Frontend: Always check and follow frontend.md guidelines**
+9. Write clean, readable, and maintainable code
+10. Provide appropriate documentation using language conventions
+11. Follow established style guides for each language
 
 Remember: Code should be explicit, well-typed (when possible), and fail fast when something goes wrong. Your goal is to write production-quality code that other developers can easily understand and maintain, regardless of the programming language.

@@ -13,6 +13,7 @@ monorepo for my projects
 - libraries (library for projects)
 - templates (template for projects)
 - projects (active projects)
+- prompts (prompts for AI development)
 - modpacks (minecraft modpacks)
 
 ## Partial checkout (or clone)
