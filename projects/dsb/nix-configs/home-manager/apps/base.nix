@@ -43,6 +43,7 @@ in
         uv_pypi_token.path = "${config.sops.defaultSymlinkPath}/uv_pypi_token";
         tavily_api_key.path = "${config.sops.defaultSymlinkPath}/tavily_api_key";
         openai_api_key.path = "${config.sops.defaultSymlinkPath}/openai_api_key";
+        openrouter_api_key.path = "${config.sops.defaultSymlinkPath}/openrouter_api_key";
       };
     };
     programs = {
@@ -78,6 +79,7 @@ use std/util "path add"
 $env.UV_PUBLISH_TOKEN = (cat ${config.sops.secrets.uv_pypi_token.path})
 $env.TAVILY_API_KEY = (cat ${config.sops.secrets.tavily_api_key.path})
 $env.AVANTE_OPENAI_API_KEY = (cat ${config.sops.secrets.openai_api_key.path})
+$env.AVANTE_OPENROUTER_API_KEY = (cat ${config.sops.secrets.openrouter_api_key.path})
 $env.PNPM_HOME = "/home/misile/.local/share/pnpm/global/5"
 $env.DEVSHELL_NO_MOTD = 1;
 $env.EDITOR = "nvim";
