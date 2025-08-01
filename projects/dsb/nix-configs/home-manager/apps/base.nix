@@ -78,6 +78,7 @@ use std/util "path add"
 $env.UV_PUBLISH_TOKEN = (cat ${config.sops.secrets.uv_pypi_token.path})
 $env.TAVILY_API_KEY = (cat ${config.sops.secrets.tavily_api_key.path})
 $env.AVANTE_OPENAI_API_KEY = (cat ${config.sops.secrets.openai_api_key.path})
+$env.PNPM_HOME = "/home/misile/.local/share/pnpm/global/5"
 $env.DEVSHELL_NO_MOTD = 1;
 $env.EDITOR = "nvim";
 def bulk-run [paths: list<string>, command: string, ...args] {
@@ -96,6 +97,7 @@ def bulk-run [paths: list<string>, command: string, ...args] {
 }
 path add "~/.cargo/bin"
 path add "~/.local/bin"
+path add $env.PNPM_HOME
 if $env.TERM == "linux" {
   niri --session
 }
