@@ -1,4 +1,4 @@
-{pkgs, ...}:
+{pkgs, stablep, ...}:
 {
   imports = [
     ./security.nix
@@ -24,6 +24,7 @@
   programs = {
     obs-studio = {
       enable = true;
+      package = stablep.obs-studio;
     };
     ghostty = {
       enable = true;
