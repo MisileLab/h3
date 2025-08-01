@@ -1,244 +1,277 @@
-# PDF to CSV Converter
+# PDF Processing Tools
 
-A powerful CLI tool that converts PDF files to CSV using **Surya OCR** for text extraction and **OpenAI** for post-processing to fix OCR errors and structure data.
+A comprehensive collection of tools for extracting and converting PDF content to various formats. This project provides both direct text extraction (for PDFs with text layers) and OCR-based extraction (for scanned documents) with optional AI-powered post-processing.
 
 ## Features
 
-- 🔍 **Multi-language OCR support** - Works with 90+ languages
-- 📊 **Table detection and extraction** - Automatically identifies and extracts tables
-- 🤖 **AI-powered error correction** - Uses OpenAI to fix OCR errors
-- 📐 **Layout analysis** - Understands document structure
-- 📖 **Reading order detection** - Maintains logical document flow
-- 🎯 **High accuracy** - Benchmarks favorably vs cloud services
-- ⚡ **Fast processing** - Optimized for both CPU and GPU
+- **Direct Text Extraction**: Extract text from PDFs with text layers (no OCR required)
+- **OCR-based Extraction**: Use Surya OCR for scanned documents and images
+- **Table Detection**: Automatically detect and extract tables from PDFs
+- **AI Post-processing**: Use OpenAI to fix OCR errors and structure data
+- **Multiple Output Formats**: CSV, TXT, JSON, and combined formats
+- **Fast Processing**: Optimized for speed and accuracy
+- **Rich CLI Interface**: Beautiful command-line interface with progress bars
 
 ## Installation
 
 ### Prerequisites
 
-- Python 3.10+
-- OpenAI API key
-- (Optional) GPU for faster processing
+- Python 3.13.5
+- [uv](https://docs.astral.sh/uv/getting-started/installation/) package manager
 
-### Install Dependencies
+### Quick Start
 
-```bash
-uv sync
-```
+1. **Clone the repository**:
+   ```bash
+   git clone <repository-url>
+   cd cup
+   ```
 
-The project already includes Surya OCR and other required dependencies in `pyproject.toml`.
+2. **Install dependencies**:
+   ```bash
+   python install.py
+   ```
 
-### Using Environment Variables
-
-1. **Set your OpenAI API key:**
+3. **Set up OpenAI API key** (optional, for AI post-processing):
    ```bash
    export OPENAI_API_KEY='your-api-key-here'
    ```
 
-2. **Convert a PDF to CSV:**
-   ```bash
-   python pdf_to_csv.py convert your_document.pdf
-   ```
-
-3. **View the results:**
-   The tool will create `your_document_output.csv` with the extracted and processed data.
-
 ## Usage
 
-```bash
-# Convert PDF to CSV
-python pdf_to_csv.py convert document.pdf
+### Basic Text Extraction
 
-# Specify output file
-python pdf_to_csv.py convert document.pdf --output result.csv
+Extract text from a PDF with text layers:
+
+```bash
+# Extract to CSV (default)
+python pdf_extract.py extract document.pdf
+
+# Extract to multiple formats
+python pdf_extract.py extract document.pdf --format all
+
+# Extract to specific format
+python pdf_extract.py extract document.pdf --format json
 
 # Show preview of extracted data
-python pdf_to_csv.py convert document.pdf --preview
+python pdf_extract.py extract document.pdf --preview
 ```
 
-### Advanced Options
+### OCR-based Extraction
+
+Extract text from scanned documents using OCR:
 
 ```bash
-# Use a different OpenAI model
-python pdf_to_csv.py convert document.pdf --model gpt-4o
+# Use OCR for text extraction
+python pdf_extract.py extract scanned_document.pdf --ocr
 
-# Extract only text (no tables)
-python pdf_to_csv.py convert document.pdf --no-tables
+# Extract tables with OCR
+python pdf_extract.py extract scanned_document.pdf --ocr --tables
+```
 
-# Verbose output for debugging
-python pdf_to_csv.py convert document.pdf --verbose
+### AI-powered Conversion
 
-# Provide API key directly
-python pdf_to_csv.py convert document.pdf --api-key sk-your-key-here
+Convert PDFs to CSV using OCR and AI post-processing:
+
+```bash
+# Convert with AI post-processing
+python pdf_convert.py convert document.pdf
+
+# Specify output file
+python pdf_convert.py convert document.pdf --output result.csv
+
+# Use different OpenAI model
+python pdf_convert.py convert document.pdf --model gpt-4
 ```
 
 ### Command Options
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `--output, -o` | Output CSV file path | `{filename}_output.csv` |
-| `--api-key` | OpenAI API key | `OPENAI_API_KEY` env var |
-| `--model, -m` | OpenAI model to use | `gpt-4o-mini` |
-| `--tables/--no-tables` | Extract tables from PDF | `True` |
-| `--preview` | Show preview of extracted data | `False` |
-| `--verbose, -v` | Verbose output | `False` |
+#### Extract Command
+- `--format, -f`: Output format (csv, txt, json, all)
+- `--output-dir, -o`: Output directory
+- `--tables/--no-tables`: Extract tables (default: true)
+- `--preview`: Show preview of extracted data
+- `--ocr`: Use OCR for text extraction
+- `--verbose, -v`: Verbose output
 
-### Available Commands
+#### Convert Command
+- `--output, -o`: Output CSV file path
+- `--api-key`: OpenAI API key
+- `--model, -m`: OpenAI model to use (default: gpt-4o-mini)
+- `--tables/--no-tables`: Extract tables (default: true)
+- `--preview`: Show preview of extracted data
+- `--verbose, -v`: Verbose output
 
-```bash
-# Convert PDF to CSV
-python pdf_to_csv.py convert <pdf_file>
+## Project Structure
 
-# Show tool information
-python pdf_to_csv.py info
-
-# Show help
-python pdf_to_csv.py --help
+```
+cup/
+├── src/                          # Source code
+│   ├── core/                     # Core functionality
+│   │   ├── config.py            # Configuration management
+│   │   ├── exceptions.py        # Custom exceptions
+│   │   └── types.py             # Type definitions
+│   ├── extractors/              # PDF extraction modules
+│   │   ├── base.py              # Base extractor class
+│   │   ├── direct_text.py       # Direct text extraction
+│   │   └── ocr_text.py          # OCR-based extraction
+│   ├── output/                  # Output formatting
+│   │   ├── base.py              # Base formatter class
+│   │   ├── csv_formatter.py     # CSV output
+│   │   ├── text_formatter.py    # Text output
+│   │   └── json_formatter.py    # JSON output
+│   ├── processors/              # AI post-processing
+│   │   ├── base.py              # Base processor class
+│   │   └── openai_processor.py  # OpenAI integration
+│   ├── app.py                   # Main application class
+│   └── cli.py                   # Command-line interface
+├── pdf_extract.py               # Text extraction entry point
+├── pdf_convert.py               # AI conversion entry point
+├── install.py                   # Installation script
+├── pyproject.toml              # Project configuration
+└── README.md                   # This file
 ```
 
-## How It Works
+## Architecture
 
-1. **PDF Processing**: Converts PDF pages to images using `pdf2image`
-2. **Text Extraction**: Uses Surya OCR to detect and extract text lines
-3. **Table Detection**: Identifies and extracts table structures
-4. **AI Post-processing**: Sends extracted data to OpenAI for:
-   - OCR error correction (fixing 0/O, 1/l, 5/S, etc.)
-   - Data structuring and formatting
-   - CSV generation with appropriate headers
-5. **Output**: Saves clean, structured CSV file
+The project follows a modular architecture with clear separation of concerns:
 
-## Example Output
+### Core Module (`src/core/`)
+- **Configuration Management**: Centralized settings and constants
+- **Type Definitions**: Strongly typed data structures
+- **Custom Exceptions**: Domain-specific error handling
 
-### Input PDF
-A document with tables, text, and potential OCR errors.
+### Extractors (`src/extractors/`)
+- **Base Extractor**: Abstract interface for all extractors
+- **Direct Text Extractor**: Uses pypdf for text-based PDFs
+- **OCR Text Extractor**: Uses Surya OCR for scanned documents
 
-### Output CSV
-```csv
-Name,Age,Department,Salary
-John Doe,32,Engineering,75000
-Jane Smith,28,Marketing,65000
-Bob Johnson,35,Sales,80000
-```
+### Output Formatters (`src/output/`)
+- **Base Formatter**: Abstract interface for all formatters
+- **CSV Formatter**: Structured CSV output with table support
+- **Text Formatter**: Plain text output
+- **JSON Formatter**: Structured JSON output
 
-## Error Handling
+### Processors (`src/processors/`)
+- **Base Processor**: Abstract interface for AI processors
+- **OpenAI Processor**: AI-powered post-processing and error correction
 
-The tool includes robust error handling:
+### Application Layer
+- **PDFProcessor**: Main application class orchestrating all components
+- **CLI Interface**: Rich command-line interface using Typer
 
-- **Fallback CSV conversion** if OpenAI processing fails
-- **Graceful degradation** for missing dependencies
-- **Detailed error messages** with verbose mode
-- **Input validation** for PDF files and API keys
+## Configuration
 
-## Performance Tips
+### Environment Variables
 
-### GPU Acceleration
-Set environment variables for optimal performance:
+- `OPENAI_API_KEY`: OpenAI API key for AI post-processing
+- `RECOGNITION_BATCH_SIZE`: OCR recognition batch size (default: 32)
+- `DETECTOR_BATCH_SIZE`: OCR detector batch size (default: 6)
+- `TABLE_REC_BATCH_SIZE`: Table recognition batch size (default: 8)
+- `TORCH_DEVICE`: Device for OCR processing (default: cpu)
 
+### Performance Tuning
+
+For GPU acceleration:
 ```bash
-# For GPU processing
 export TORCH_DEVICE=cuda
 export RECOGNITION_BATCH_SIZE=512
 export DETECTOR_BATCH_SIZE=36
 export TABLE_REC_BATCH_SIZE=64
 ```
 
-### CPU Optimization
+For CPU optimization:
 ```bash
-# For CPU processing
 export RECOGNITION_BATCH_SIZE=32
 export DETECTOR_BATCH_SIZE=6
 export TABLE_REC_BATCH_SIZE=8
 ```
 
+## Development
+
+### Setup Development Environment
+
+```bash
+# Install development dependencies
+uv sync --extra dev
+
+# Install pre-commit hooks
+pre-commit install
+```
+
+### Code Quality
+
+The project uses several tools for code quality:
+
+- **Black**: Code formatting
+- **isort**: Import sorting
+- **mypy**: Type checking
+- **flake8**: Linting
+
+Run all quality checks:
+```bash
+black src/
+isort src/
+mypy src/
+flake8 src/
+```
+
+### Testing
+
+```bash
+# Run tests
+pytest
+
+# Run with coverage
+pytest --cov=src
+```
+
+## When to Use Each Tool
+
+### Use `pdf_extract.py` when:
+- PDFs have text layers (most modern PDFs)
+- You need fast extraction without OCR
+- Working with forms or documents with embedded text
+- You want multiple output formats
+
+### Use `pdf_convert.py` when:
+- Working with scanned documents
+- PDFs are image-based
+- You need AI-powered error correction
+- You want structured CSV output
+- Working with handwritten documents
+
 ## Troubleshooting
 
 ### Common Issues
 
-1. **"PDF file not found"**
-   - Ensure the PDF file path is correct
-   - Check file permissions
+1. **Import Errors**: Make sure you're using Python 3.10+ and have installed all dependencies
+2. **OCR Performance**: Adjust batch sizes based on your hardware
+3. **OpenAI API Errors**: Verify your API key and check your usage limits
+4. **Memory Issues**: Reduce batch sizes for large documents
 
-2. **"OpenAI API key not provided"**
-   - Set `OPENAI_API_KEY` environment variable
-   - Or use `--api-key` option
+### Getting Help
 
-3. **"Invalid OpenAI API key format"**
-   - API key should start with `sk-`
-   - Check for typos or extra spaces
-
-4. **Slow processing**
-   - Use GPU if available
-   - Adjust batch sizes for your hardware
-   - Consider using `gpt-4o-mini` instead of `gpt-4o`
-
-5. **OCR quality issues**
-   - Ensure PDF has good resolution
-   - Try preprocessing (binarizing, deskewing)
-   - Adjust Surya thresholds if needed
-
-### Debug Mode
-
-Use verbose mode for detailed error information:
-
-```bash
-python pdf_to_csv.py convert document.pdf --verbose
-```
-
-## API Reference
-
-### PDFToCSVConverter Class
-
-```python
-from pdf_to_csv import PDFToCSVConverter
-
-# Initialize
-converter = PDFToCSVConverter(openai_api_key, model="gpt-4o-mini")
-
-# Extract text
-text_data = converter.extract_text_from_pdf("document.pdf")
-
-# Extract tables
-table_data = converter.extract_tables_from_pdf("document.pdf")
-
-# Post-process with OpenAI
-csv_content = converter.post_process_with_openai(text_data, table_data)
-
-# Save CSV
-converter.save_csv(csv_content, "output.csv")
-```
-
-## Examples
-
-See `example_usage.py` for complete usage examples:
-
-```bash
-python example_usage.py
-```
-
-## Dependencies
-
-- **Surya OCR**: Multi-language document OCR
-- **OpenAI**: AI-powered post-processing
-- **PDF2Image**: PDF to image conversion
-- **Pandas**: CSV handling
-- **Rich**: Beautiful terminal output
-- **Typer**: CLI framework
+- Check the tool information: `python pdf_extract.py info`
+- Use verbose mode for detailed error messages: `--verbose`
+- Check the logs for specific error details
 
 ## Contributing
 
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+4. Add tests for new functionality
+5. Ensure all quality checks pass
+6. Submit a pull request
 
-## Support
+## License
 
-- Check the [troubleshooting section](#troubleshooting)
-- Open an issue for bugs or feature requests
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Acknowledgments
 
-- [Surya OCR](https://github.com/datalab-to/surya) for the excellent OCR capabilities
-- [OpenAI](https://openai.com/) for the AI post-processing
-- The open source community for the supporting libraries
+- [Surya OCR](https://github.com/VikParuchuri/surya) for OCR capabilities
+- [OpenAI](https://openai.com/) for AI post-processing
+- [Typer](https://typer.tiangolo.com/) for the CLI framework
+- [Rich](https://rich.readthedocs.io/) for beautiful terminal output

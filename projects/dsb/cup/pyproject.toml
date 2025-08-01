@@ -1,7 +1,7 @@
 [project]
 name = "cup"
 version = "0.1.0"
-description = "Add your description here"
+description = "PDF Processing Tools - Extract and convert PDF content to various formats"
 readme = "README.md"
 requires-python = "==3.13.5"
 dependencies = [
@@ -11,16 +11,26 @@ dependencies = [
   "numpy==2.3.2",
   "openai==1.98.0",
   "opencv-python-headless==4.12.0.88",
-  "pandas==2.3.1",
-  "pandas-stubs==2.3.0.250703",
+  "polars==1.32.0",
   "pdf2image==1.17.0",
   "pillow==11.3.0",
   "pypdf==5.9.0",
+  "pydantic==2.11.7",
   "rich==14.1.0",
   "surya-ocr==0.14.7",
   "tabula-py[jpype]==2.10.0",
   "tabulate==0.9.0",
   "typer==0.16.0",
+]
+
+[project.scripts]
+pdf-extract = "src.cli:app"
+pdf-convert = "src.cli:app"
+
+[project.optional-dependencies]
+dev = [
+  "pytest==8.4.1",
+  "black==25.1.0",
 ]
 
 [tool.uv]
