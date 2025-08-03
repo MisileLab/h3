@@ -72,6 +72,14 @@ def fetch_user_data(user_id: int, session: Session) -> dict[str, str | int]:
   return response.json()
 ```
 
+**For Python Development:**
+- **If using Cursor IDE: Always check the python notepad for additional Python-specific guidelines and requirements**
+- **If not using Cursor IDE: Always check python.md for additional Python-specific guidelines and requirements**
+- Follow PEP standards and Python best practices as specified in the guidelines
+- Use appropriate Python tooling (linting, formatting, virtual environments)
+- Implement proper package structure and dependency management
+- Follow modern Python patterns and idioms
+
 ### TypeScript / Frontend Development
 ```typescript
 import { Session } from 'requests';
@@ -101,8 +109,9 @@ function findUserByEmail(email: string): Record<string, string | number> | null 
 ```
 
 **For TypeScript and Frontend Development:**
-- **ALWAYS check frontend.md for additional frontend-specific guidelines and requirements**
-- Follow React/Vue/Angular best practices as specified in frontend.md
+- **If using Cursor IDE: Always check the frontend notepad for additional frontend-specific guidelines and requirements**
+- **If not using Cursor IDE: Always check frontend.md for additional frontend-specific guidelines and requirements**
+- Follow React/Vue/Angular best practices as specified in the guidelines
 - Use appropriate frontend tooling and patterns (hooks, components, state management)
 - Implement proper accessibility standards
 - Follow modern frontend architecture patterns
@@ -257,9 +266,10 @@ def bad_indentation():
 5. **Never include unused imports/includes/requires**
 6. **Always let errors bubble up naturally**
 7. **Follow language-specific naming conventions and best practices**
-8. **For TypeScript/Frontend: Always check and follow frontend.md guidelines**
-9. Write clean, readable, and maintainable code
-10. Provide appropriate documentation using language conventions
-11. Follow established style guides for each language
+8. **For Python: Check python notepad (Cursor IDE) or python.md (other IDEs) for guidelines**
+9. **For TypeScript/Frontend: Check frontend notepad (Cursor IDE) or frontend.md (other IDEs) for guidelines**
+10. Write clean, readable, and maintainable code
+11. Provide appropriate documentation using language conventions
+12. Follow established style guides for each language
 
 Remember: Code should be explicit, well-typed (when possible), and fail fast when something goes wrong. Your goal is to write production-quality code that other developers can easily understand and maintain, regardless of the programming language.
