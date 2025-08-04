@@ -30,7 +30,7 @@
 		"@fontsource-variable/jetbrains-mono": "5.2.6",
 		"@fontsource-variable/manrope": "5.2.6",
 		"@tailwindcss/vite": "4.1.11",
-		"@types/node": "24.1.0",
+		"@types/node": "24.2.0",
 		"reveal.js": "5.2.1",
 		"tailwindcss": "4.1.11"
 	}
