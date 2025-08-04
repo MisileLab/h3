@@ -178,7 +178,7 @@ requires-dist = [
     { name = "pypdf", specifier = "==5.9.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = "==8.4.1" },
     { name = "rich", specifier = "==14.1.0" },
-    { name = "surya-ocr", specifier = "==0.14.7" },
+    { name = "surya-ocr", specifier = "==0.15.0" },
     { name = "tabula-py", extras = ["jpype"], specifier = "==2.10.0" },
     { name = "tabulate", specifier = "==0.9.0" },
     { name = "typer", specifier = "==0.16.0" },
@@ -1264,7 +1264,7 @@ wheels = [
 
 [[package]]
 name = "surya-ocr"
-version = "0.14.7"
+version = "0.15.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
@@ -1281,9 +1281,9 @@ dependencies = [
     { name = "torch" },
     { name = "transformers" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ef/89/909e7985be0dafcc4894ab0fda11823a7f8b15df9473d677b75c7e8cd287/surya_ocr-0.14.7.tar.gz", hash = "sha256:47f24d67c846cb44e6755c60ffb60f2fe41923c7b307dcd0f4a636f61fba6a41", size = 148789, upload-time = "2025-07-25T20:19:12.531Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b9/94/299d41e03948b7627fdd313e920c2d4b931438a87aa7b6ce140e6d70e463/surya_ocr-0.15.0.tar.gz", hash = "sha256:d9bef35f0607181a5d1f6cd08c2e4c6431d86698305dc50db6ffef4a196fbb34", size = 156604, upload-time = "2025-08-04T13:47:15.415Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0b/50/e34ec655156b176eb6520cc729d3eb1d3da2c6747b29de23a672aa9ad0ae/surya_ocr-0.14.7-py3-none-any.whl", hash = "sha256:c325cf35835c3f1c6273ab605e5f25ab43cda0d69c23b73d39bf8ac7167a259e", size = 175535, upload-time = "2025-07-25T20:19:11.092Z" },
+    { url = "https://files.pythonhosted.org/packages/b5/c5/e1bb1f4f5b4c36c9e1ee6d23c40a9a015c45da39893763ea5372493b6228/surya_ocr-0.15.0-py3-none-any.whl", hash = "sha256:d29630d90a9b8d62c53a2852b1825948ee3eb60500f747159dcff285d1e8a50c", size = 185439, upload-time = "2025-08-04T13:47:14.052Z" },
 ]
 
 [[package]]
