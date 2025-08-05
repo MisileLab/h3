@@ -14,7 +14,7 @@
       imagemagick loupe xfce.thunar
       galaxy-buds-client firefoxpwa gparted
       gimp3 (stablep.telegram-desktop) xournalpp zotero headsetcontrol
-    ] ++ (with kdePackages; [filelight okular merkuro]);
+    ] ++ (with stablep.kdePackages; [filelight okular merkuro]);
     pointerCursor = {
       name = "Adwaita";
       package = pkgs.adwaita-icon-theme;
