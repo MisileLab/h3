@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Multimodal Search - Options</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>YouTube Multimodal Search - Options</h1>
+    </header>
+
+    <div class="option-section">
+      <h2>API Key Configuration</h2>
+      <p class="description">Enter your YouTube Multimodal Search API key below. This key will be stored securely in your browser.</p>
+      
+      <div class="input-group">
+        <label for="apiKeyInput">API Key</label>
+        <input type="password" id="apiKeyInput" placeholder="Enter your API key">
+        <button id="toggleVisibility" type="button">Show</button>
+      </div>
+
+      <div class="button-group">
+        <button id="saveBtn" class="primary">Save API Key</button>
+        <button id="deleteBtn" class="danger">Delete API Key</button>
+      </div>
+
+      <div id="statusMessage" class="status-message"></div>
+    </div>
+  </div>
+  <script src="../utils/storage.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

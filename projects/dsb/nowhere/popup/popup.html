@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Multimodal Search</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>YouTube Search</h1>
+    </header>
+
+    <div class="api-key-warning hidden" id="apiKeyWarning">
+      <p>Please set your API key in the options page</p>
+      <button id="openOptions">Open Options</button>
+    </div>
+
+    <div class="upload-section">
+      <h2>Upload Video</h2>
+      <div class="input-group">
+        <input type="text" id="videoIdInput" placeholder="Enter YouTube video ID">
+        <button id="uploadBtn">Upload</button>
+      </div>
+      <div id="uploadStatus" class="status"></div>
+    </div>
+
+    <div class="check-status-section">
+      <h2>Check Embedding Status</h2>
+      <button id="checkStatusBtn">Check Status</button>
+      <div id="embeddingStatus" class="status"></div>
+    </div>
+
+    <div class="search-section">
+      <h2>Search Videos</h2>
+      <div class="input-group">
+        <input type="text" id="searchInput" placeholder="Enter search query">
+        <button id="searchBtn">Search</button>
+      </div>
+    </div>
+
+    <div id="loadingIndicator" class="loading-indicator hidden">
+      <div class="spinner"></div>
+      <p>Loading...</p>
+    </div>
+
+    <div id="errorToast" class="error-toast hidden"></div>
+
+    <div id="searchResults" class="search-results"></div>
+  </div>
+  <script src="../utils/storage.js"></script>
+  <script src="../utils/api.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
