@@ -24,10 +24,26 @@ console = Console()
 class PDFProcessor:
   """Main PDF processing application."""
   
-  def __init__(self, use_ocr: bool = False, openai_api_key: Optional[str] = None) -> None:
-    """Initialize the PDF processor."""
+  def __init__(
+    self, 
+    use_ocr: bool = False, 
+    openai_api_key: Optional[str] = None,
+    ref_wtm_x: Optional[float] = None,
+    ref_wtm_y: Optional[float] = None
+  ) -> None:
+    """
+    Initialize the PDF processor.
+    
+    Args:
+        use_ocr: Whether to use OCR for text extraction
+        openai_api_key: OpenAI API key for AI post-processing
+        ref_wtm_x: Reference X coordinate in WTM format for address lookup
+        ref_wtm_y: Reference Y coordinate in WTM format for address lookup
+    """
     self.use_ocr: bool = use_ocr
     self.openai_api_key: Optional[str] = openai_api_key or Config.get_openai_api_key()
+    self.ref_wtm_x: Optional[float] = ref_wtm_x
+    self.ref_wtm_y: Optional[float] = ref_wtm_y
     
     # Initialize extractor
     if use_ocr:
@@ -35,10 +51,10 @@ class PDFProcessor:
     else:
       self.extractor: DirectTextExtractor | OCRTextExtractor = DirectTextExtractor()
     
-    # Initialize output formatters
-    self.csv_formatter: CSVFormatter = CSVFormatter()
-    self.text_formatter: TextFormatter = TextFormatter()
-    self.json_formatter: JSONFormatter = JSONFormatter()
+    # Initialize output formatters with reference coordinates
+    self.csv_formatter: CSVFormatter = CSVFormatter(ref_wtm_x=ref_wtm_x, ref_wtm_y=ref_wtm_y)
+    self.text_formatter: TextFormatter = TextFormatter(ref_wtm_x=ref_wtm_x, ref_wtm_y=ref_wtm_y)
+    self.json_formatter: JSONFormatter = JSONFormatter(ref_wtm_x=ref_wtm_x, ref_wtm_y=ref_wtm_y)
     
     # Initialize AI processor if API key is provided
     self.ai_processor: Optional[OpenAIProcessor] = None
@@ -50,6 +66,15 @@ class PDFProcessor:
     # Validate inputs
     if not os.path.exists(pdf_path):
       raise PDFProcessingError(f"PDF file not found: {pdf_path}")
+    
+    # Check for KAKAO_API_KEY
+    kakao_api_key = os.getenv("KAKAO_API_KEY")
+    if not kakao_api_key:
+      console.print("⚠️ KAKAO_API_KEY environment variable not set. Address lookup will not work.", style="yellow")
+    else:
+      console.print(f"✅ KAKAO_API_KEY found: {kakao_api_key[:5]}...{kakao_api_key[-5:]}", style="green")
+      if self.ref_wtm_x is not None and self.ref_wtm_y is not None:
+        console.print(f"✅ Reference coordinates set: ({self.ref_wtm_x}, {self.ref_wtm_y})", style="green")
     
     # Set output directory
     output_dir = Config.get_output_dir(pdf_path, output_config.get("output_dir"))

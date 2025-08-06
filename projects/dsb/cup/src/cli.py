@@ -22,13 +22,19 @@ def extract(
   extract_tables: bool = typer.Option(True, "--tables/--no-tables", help="Extract tables from PDF"),
   show_preview: bool = typer.Option(False, "--preview", help="Show preview of extracted data"),
   use_ocr: bool = typer.Option(False, "--ocr", help="Use OCR for text extraction"),
+  ref_wtm_x: float = typer.Option(None, "--ref-x", help="Reference X coordinate in WTM format for address lookup"),
+  ref_wtm_y: float = typer.Option(None, "--ref-y", help="Reference Y coordinate in WTM format for address lookup"),
   verbose: bool = typer.Option(False, "--verbose", "-v", help="Verbose output")
 ):
   """Extract text from PDF with optional OCR."""
   
   try:
-    # Initialize processor
-    processor = PDFProcessor(use_ocr=use_ocr)
+    # Initialize processor with reference coordinates
+    processor = PDFProcessor(
+      use_ocr=use_ocr,
+      ref_wtm_x=ref_wtm_x,
+      ref_wtm_y=ref_wtm_y
+    )
     
     # Configure output
     output_config = {
@@ -63,6 +69,8 @@ def convert(
   model: str = typer.Option("gpt-4o-mini", "--model", "-m", help="OpenAI model to use"),
   extract_tables: bool = typer.Option(True, "--tables/--no-tables", help="Extract tables from PDF"),
   show_preview: bool = typer.Option(False, "--preview", help="Show preview of extracted data"),
+  ref_wtm_x: float = typer.Option(None, "--ref-x", help="Reference X coordinate in WTM format for address lookup"),
+  ref_wtm_y: float = typer.Option(None, "--ref-y", help="Reference Y coordinate in WTM format for address lookup"),
   verbose: bool = typer.Option(False, "--verbose", "-v", help="Verbose output")
 ):
   """Convert PDF to CSV using OCR and AI post-processing."""
@@ -84,8 +92,13 @@ def convert(
       pdf_name = Path(pdf_path).stem
       output_path = f"{pdf_name}_output.csv"
     
-    # Initialize processor with OCR and AI
-    processor = PDFProcessor(use_ocr=True, openai_api_key=api_key)
+    # Initialize processor with OCR, AI, and reference coordinates
+    processor = PDFProcessor(
+      use_ocr=True, 
+      openai_api_key=api_key,
+      ref_wtm_x=ref_wtm_x,
+      ref_wtm_y=ref_wtm_y
+    )
     
     # Process with AI
     processor.process_with_ai(pdf_path, output_path)

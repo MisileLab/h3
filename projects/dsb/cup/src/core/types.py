@@ -15,6 +15,9 @@ class TextLine(BaseModel):
   page: int = Field(..., description="Page number")
   confidence: float | None = Field(None, ge=0.0, le=1.0, description="Confidence score for OCR")
   bbox: tuple[float, float, float, float] | None = Field(None, description="Bounding box coordinates")
+  nearest_address: str | None = Field(None, description="Nearest address found")
+  x: float | None = Field(None, description="X coordinate (longitude)")
+  y: float | None = Field(None, description="Y coordinate (latitude)")
 
 
 class TableData(BaseModel):
@@ -26,6 +29,7 @@ class TableData(BaseModel):
   rows: list[dict[str, Any]] = Field(default_factory=list, description="Table rows as list of dictionaries") # pyright: ignore[reportExplicitAny]
   columns: list[str] = Field(default_factory=list, description="Column headers")
   shape: tuple[int, int] = Field(..., description="Table dimensions (rows, columns)")
+  address_column: str | None = Field(None, description="Column name containing address information")
 
 
 class PageData(BaseModel):
@@ -60,6 +64,9 @@ class CSVRow(BaseModel):
   line: int = Field(..., ge=1, description="Line number")
   text: str = Field(..., description="Text content")
   confidence: float = Field(0.0, ge=0.0, le=1.0, description="Confidence score")
+  nearest_address: str | None = Field(None, description="Nearest address found")
+  x: float | None = Field(None, description="X coordinate (longitude)")
+  y: float | None = Field(None, description="Y coordinate (latitude)")
 
 
 class OutputConfig(TypedDict, total=False):

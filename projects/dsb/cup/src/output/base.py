@@ -11,9 +11,16 @@ from ..core.types import ProcessingResult
 class BaseOutputFormatter(ABC):
   """Base class for output formatters."""
   
-  def __init__(self) -> None:
-    """Initialize the formatter."""
-    pass
+  def __init__(self, ref_wtm_x: float | None = None, ref_wtm_y: float | None = None) -> None:
+    """
+    Initialize the formatter.
+    
+    Args:
+        ref_wtm_x: Reference X coordinate in WTM format
+        ref_wtm_y: Reference Y coordinate in WTM format
+    """
+    self.ref_wtm_x = ref_wtm_x
+    self.ref_wtm_y = ref_wtm_y
   
   @abstractmethod
   def format(self, result: ProcessingResult) -> str:

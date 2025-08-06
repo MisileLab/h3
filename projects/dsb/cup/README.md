@@ -9,6 +9,7 @@ A comprehensive collection of tools for extracting and converting PDF content to
 - **Table Detection**: Automatically detect and extract tables from PDFs
 - **AI Post-processing**: Use OpenAI to fix OCR errors and structure data
 - **Multiple Output Formats**: CSV, TXT, JSON, and combined formats
+- **Address and Coordinate Lookup**: Automatically find nearest address and coordinates for text content
 - **Fast Processing**: Optimized for speed and accuracy
 - **Rich CLI Interface**: Beautiful command-line interface with progress bars
 
@@ -55,6 +56,9 @@ python pdf_extract.py extract document.pdf --format json
 
 # Show preview of extracted data
 python pdf_extract.py extract document.pdf --preview
+
+# Use reference WTM coordinates for address lookup
+python pdf_extract.py extract document.pdf --ref-x 957123.45 --ref-y 1943789.56
 ```
 
 ### OCR-based Extraction
@@ -92,6 +96,8 @@ python pdf_convert.py convert document.pdf --model gpt-4
 - `--tables/--no-tables`: Extract tables (default: true)
 - `--preview`: Show preview of extracted data
 - `--ocr`: Use OCR for text extraction
+- `--ref-x`: Reference X coordinate in WTM format for address lookup
+- `--ref-y`: Reference Y coordinate in WTM format for address lookup
 - `--verbose, -v`: Verbose output
 
 #### Convert Command
@@ -100,6 +106,8 @@ python pdf_convert.py convert document.pdf --model gpt-4
 - `--model, -m`: OpenAI model to use (default: gpt-4o-mini)
 - `--tables/--no-tables`: Extract tables (default: true)
 - `--preview`: Show preview of extracted data
+- `--ref-x`: Reference X coordinate in WTM format for address lookup
+- `--ref-y`: Reference Y coordinate in WTM format for address lookup
 - `--verbose, -v`: Verbose output
 
 ## Project Structure
@@ -165,6 +173,7 @@ The project follows a modular architecture with clear separation of concerns:
 ### Environment Variables
 
 - `OPENAI_API_KEY`: OpenAI API key for AI post-processing
+- `KAKAO_API_KEY`: Kakao API key for address and coordinate lookup
 - `RECOGNITION_BATCH_SIZE`: OCR recognition batch size (default: 32)
 - `DETECTOR_BATCH_SIZE`: OCR detector batch size (default: 6)
 - `TABLE_REC_BATCH_SIZE`: Table recognition batch size (default: 8)
