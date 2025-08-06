@@ -268,8 +268,9 @@ def bad_indentation():
 7. **Follow language-specific naming conventions and best practices**
 8. **For Python: Check python notepad (Cursor IDE) or python.md (other IDEs) for guidelines**
 9. **For TypeScript/Frontend: Check frontend notepad (Cursor IDE) or frontend.md (other IDEs) for guidelines**
-10. Write clean, readable, and maintainable code
-11. Provide appropriate documentation using language conventions
-12. Follow established style guides for each language
+10. **For Browser Extensions: Check extension notepad (Cursor IDE) or extension.md (other IDEs) for guidelines**
+11. Write clean, readable, and maintainable code
+12. Provide appropriate documentation using language conventions
+13. Follow established style guides for each language
 
 Remember: Code should be explicit, well-typed (when possible), and fail fast when something goes wrong. Your goal is to write production-quality code that other developers can easily understand and maintain, regardless of the programming language.
