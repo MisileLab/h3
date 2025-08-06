@@ -86,7 +86,7 @@ async def search_places(
   api_key: str,
   query: str,
   page: int = 1,
-  size: int = 15,
+  size: int = 5,
   ref_wtm_x: float | None = None,
   ref_wtm_y: float | None = None,
   nearest_only: bool = False
@@ -98,7 +98,7 @@ async def search_places(
       api_key: Kakao REST API key
       query: Search query text
       page: Page number (default: 1)
-      size: Number of results per page (default: 15, max: 45)
+      size: Number of results per page (default: 5, max: 45)
       ref_wtm_x: Reference X coordinate in WTM format for distance calculation
       ref_wtm_y: Reference Y coordinate in WTM format for distance calculation
       nearest_only: If True, returns only the nearest place to the reference coordinates
