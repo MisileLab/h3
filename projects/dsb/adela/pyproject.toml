@@ -1,0 +1,20 @@
+[project]
+name = "adela"
+version = "0.1.0"
+description = "A modern Mixture-of-Experts chess AI"
+readme = "README.md"
+requires-python = "==3.13.5"
+dependencies = [
+  "torch>=2.8.0",
+  "polars>=1.32.0",
+  "python-chess>=1.9.0",
+  "numpy>=2.3.2",
+  "tqdm>=4.65.0",
+  "matplotlib>=3.7.0",
+  "wandb>=0.15.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.4.1"
+]
