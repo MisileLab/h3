@@ -12,6 +12,7 @@ dependencies = [
   "tqdm>=4.65.0",
   "matplotlib>=3.7.0",
   "wandb>=0.15.0",
+  "pyarrow>=21.0.0",
 ]
 
 [project.optional-dependencies]

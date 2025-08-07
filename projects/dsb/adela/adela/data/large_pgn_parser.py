@@ -7,7 +7,7 @@ import queue
 import threading
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union, Generator
-from concurrent.futures import ThreadPoolExecutor, as_completed
+
 import mmap
 
 import polars as pl
@@ -202,12 +202,7 @@ class LargePGNParser:
     def _reader_thread_optimized(self, pgn_path: Path, game_queue: queue.Queue, 
                                show_progress: bool = True) -> None:
         """Optimized reader thread using memory mapping and byte processing."""
-        try:
-            file_size = pgn_path.stat().st_size
-        except (OSError, FileNotFoundError):
-            file_size = None
-            logger.warning(f"Could not determine file size for {pgn_path}")
-        
+        file_size = pgn_path.stat().st_size
         bytes_read = 0
         
         pbar = None
@@ -222,7 +217,7 @@ class LargePGNParser:
         try:
             for chunk in self._read_file_chunked(pgn_path):
                 bytes_read += len(chunk)
-                if pbar:
+                if pbar is not None:
                     pbar.update(len(chunk))
                 
                 # Process chunk line by line
@@ -258,7 +253,7 @@ class LargePGNParser:
         finally:
             # Signal completion
             game_queue.put(None)
-            if pbar:
+            if pbar is not None:
                 pbar.close()
             logger.info(f"Reader thread sent {games_sent} games")
 
@@ -270,10 +265,9 @@ class LargePGNParser:
         
         pbar = None
         if show_progress:
-            pbar = tqdm(desc=f"Worker {worker_id}", position=worker_id + 1, leave=True)
+            pbar = tqdm(desc=f"Worker {worker_id}", position=worker_id + 1, leave=True, unit='games')
         
-        # Pre-allocate reusable objects
-        local_buffer = []
+        # Pre-allocate reusable objects (if needed in future)
         
         try:
             while True:
@@ -300,8 +294,9 @@ class LargePGNParser:
                         result_queue.put(game_record)
                         games_included += 1
                     
-                    if pbar and games_processed % 100 == 0:  # Update every 100 games
+                    if pbar is not None and games_processed % 100 == 0:  # Update every 100 games
                         pbar.update(100)
+                        pbar.set_postfix({"processed": games_processed, "included": games_included})
                         
                 except Exception as e:
                     logger.error(f"Worker {worker_id} error processing game: {e}")
@@ -312,7 +307,7 @@ class LargePGNParser:
         finally:
             # Send final stats
             result_queue.put((games_processed, games_included))
-            if pbar:
+            if pbar is not None:
                 pbar.close()
             logger.info(f"Worker {worker_id} processed {games_processed} games, included {games_included}")
 
@@ -369,7 +364,7 @@ class LargePGNParser:
             'opening': headers.get('Opening', ''),
             'moves': moves,
             'num_moves': len(moves),
-            'has_clock_times': bool(clock_times) if clock_times is not None else False,
+            'has_clock_times': bool(clock_times),
             **time_stats
         }
 
@@ -401,10 +396,10 @@ class LargePGNParser:
         
         pbar = None
         if show_progress:
-            pbar = tqdm(desc="Saving batches", position=0, leave=True)
+            pbar = tqdm(desc="Saving batches", position=0, leave=True, unit='batches')
         
         # Pre-allocate batch list with expected size
-        # Note: Python lists don't have a reserve method, this is just a comment
+        # current_batch.reserve = self.batch_size  # Lists don't have reserve method in Python
         
         try:
             while not (stop_event.is_set() and result_queue.empty()):
@@ -417,7 +412,7 @@ class LargePGNParser:
                         total_games_processed += games_processed
                         total_games_included += games_included
                         
-                        if pbar:
+                        if pbar is not None:
                             pbar.set_postfix({
                                 "processed": total_games_processed, 
                                 "included": total_games_included
@@ -431,7 +426,7 @@ class LargePGNParser:
                             current_batch.clear()  # More efficient than creating new list
                             batch_num += 1
                             
-                            if pbar:
+                            if pbar is not None:
                                 pbar.update(1)
                                 
                 except queue.Empty:
@@ -443,11 +438,11 @@ class LargePGNParser:
             if current_batch:
                 self._save_batch_optimized(current_batch, batch_num)
                 batch_num += 1
-                if pbar:
+                if pbar is not None:
                     pbar.update(1)
                     
         finally:
-            if pbar:
+            if pbar is not None:
                 pbar.close()
             
             # Update stats
@@ -457,10 +452,10 @@ class LargePGNParser:
                 "batch_num": batch_num
             })
 
-    def _save_batch_optimized(self, batch: List[Dict[str, Any]], batch_num: int) -> Optional[Path]:
+    def _save_batch_optimized(self, batch: List[Dict[str, Any]], batch_num: int) -> Path:
         """Optimized batch saving with better compression and memory usage."""
         if not batch:
-            return None
+            return
         
         try:
             # Create DataFrame more efficiently
@@ -559,12 +554,7 @@ class LargePGNParser:
         show_progress: bool = True
     ) -> int:
         """Optimized single-threaded parsing with memory mapping."""
-        try:
-            file_size = pgn_path.stat().st_size
-        except (OSError, FileNotFoundError):
-            file_size = None
-            logger.warning(f"Could not determine file size for {pgn_path}")
-        
+        file_size = pgn_path.stat().st_size
         games_processed = 0
         games_included = 0
         batch_num = 0
@@ -581,7 +571,7 @@ class LargePGNParser:
             
             for chunk in self._read_file_chunked(pgn_path):
                 bytes_processed += len(chunk)
-                if pbar:
+                if pbar is not None:
                     pbar.update(len(chunk))
                 
                 lines = chunk.split(b'\n')
@@ -640,7 +630,7 @@ class LargePGNParser:
                 batch_num += 1
                 
         finally:
-            if pbar:
+            if pbar is not None:
                 pbar.close()
         
         logger.info(f"Single-threaded: Processed {games_processed} games, "
