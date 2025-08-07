@@ -57,6 +57,12 @@ uv run python load_and_parse_parquets.py /path/to/folder --show-examples
 # Custom batch size for memory optimization
 uv run python load_and_parse_parquets.py /path/to/folder --batch-mode --batch-size 25000
 
+# Custom chunk sizes for performance tuning
+uv run python load_and_parse_parquets.py /path/to/folder \
+    --batch-mode \
+    --file-chunk-size 10000 \
+    --parse-chunk-size 1000
+
 # Custom output directory and file prefix
 uv run python load_and_parse_parquets.py /path/to/folder \
     --batch-mode \
@@ -116,9 +122,20 @@ When using `--batch-mode`, the script creates multiple Parquet files:
 For large datasets, the batch processing mode:
 - Processes files one at a time to limit memory usage
 - Uses lazy evaluation with Polars `scan_parquet()` for efficient filtering
-- Processes data in 10,000-game chunks within each file
+- Configurable file chunk size (default: 5,000 games per chunk)
+- Configurable movetext parsing chunk size (default: 500 games per chunk)
 - Performs garbage collection after each file and batch save
 - Maintains memory usage under 2-3GB even for 40GB+ datasets
+
+### Performance Tuning
+
+**Chunk Size Guidelines:**
+- **File chunk size** (`--file-chunk-size`): Number of games read from each Parquet file at once
+  - Larger = faster but more memory (try 10,000-20,000 for high-memory systems)
+  - Smaller = slower but less memory (try 2,000-5,000 for low-memory systems)
+- **Parse chunk size** (`--parse-chunk-size`): Number of games processed for movetext parsing at once
+  - Larger = faster parsing but more memory (try 1,000-2,000 for high-memory systems)
+  - Smaller = slower parsing but less memory (try 100-500 for low-memory systems)
 
 ## Move Parsing
 

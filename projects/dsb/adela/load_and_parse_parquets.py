@@ -74,7 +74,9 @@ def process_parquet_files_in_batches(
     min_elo: int = 1500, 
     batch_size: int = 50000,
     output_dir: Optional[Path] = None,
-    output_prefix: str = "processed_games"
+    output_prefix: str = "processed_games",
+    file_chunk_size: int = 5000,
+    parse_chunk_size: int = 500
 ) -> List[Path]:
     """Process Parquet files in batches to handle large datasets efficiently.
     
@@ -84,6 +86,8 @@ def process_parquet_files_in_batches(
         batch_size: Number of games per output batch (default: 50000)
         output_dir: Directory to save processed batches (default: current directory)
         output_prefix: Prefix for output filenames
+        file_chunk_size: Number of games to read from each file at once (default: 5000)
+        parse_chunk_size: Number of games to parse movetext for at once (default: 500)
         
     Returns:
         List of paths to created batch files
@@ -120,7 +124,6 @@ def process_parquet_files_in_batches(
         
         try:
             # Read file in smaller chunks to manage memory
-            file_chunk_size = 5000  # Smaller chunks for memory efficiency
             
             # Use scan_parquet to get total row count first
             total_rows = pl.scan_parquet(str(parquet_file)).select(pl.count()).collect().item()
@@ -139,7 +142,7 @@ def process_parquet_files_in_batches(
                 total_processed += len(chunk_df)
                 
                 # Parse movetext efficiently in smaller sub-chunks
-                parsed_chunk = add_parsed_moves(chunk_df, chunk_size=500)
+                parsed_chunk = add_parsed_moves(chunk_df, chunk_size=parse_chunk_size)
                 total_included += len(parsed_chunk)
                 
                 # Add to current batch
@@ -399,12 +402,14 @@ def main():
     """Main function to process Parquet files."""
     parser = argparse.ArgumentParser(description="Load Parquet files, filter by Elo, and parse movetext")
     parser.add_argument("folder_path", type=str, help="Path to folder containing Parquet files")
-    parser.add_argument("--min-elo", type=int, default=1500, help="Minimum Elo rating (default: 1500)")
+    parser.add_argument("--min-elo", type=int, default=1000, help="Minimum Elo rating (default: 1000)")
     parser.add_argument("--output", type=str, help="Output Parquet file path (for single file mode)")
     parser.add_argument("--output-dir", type=str, help="Output directory for batch processing (default: current directory)")
     parser.add_argument("--output-prefix", type=str, default="processed_games", help="Prefix for batch output files (default: processed_games)")
     parser.add_argument("--batch-size", type=int, default=50000, help="Games per batch file (default: 50000)")
     parser.add_argument("--batch-mode", action="store_true", help="Use batch processing for large datasets")
+    parser.add_argument("--file-chunk-size", type=int, default=5000, help="Games to read from each file at once (default: 5000)")
+    parser.add_argument("--parse-chunk-size", type=int, default=500, help="Games to parse movetext for at once (default: 500)")
     parser.add_argument("--sample", type=int, help="Sample N games for testing (only in single file mode)")
     parser.add_argument("--show-examples", action="store_true", help="Show example parsed moves (only in single file mode)")
     
@@ -424,7 +429,9 @@ def main():
                 min_elo=args.min_elo,
                 batch_size=args.batch_size,
                 output_dir=output_dir,
-                output_prefix=args.output_prefix
+                output_prefix=args.output_prefix,
+                file_chunk_size=args.file_chunk_size,
+                parse_chunk_size=args.parse_chunk_size
             )
             
             print(f"\nBatch processing complete!")
@@ -451,8 +458,8 @@ def main():
                 logger.warning("No games remaining after Elo filtering")
                 return
             
-            # Parse movetext to moves with smaller chunks for better memory efficiency
-            chunk_size = 1000 if len(df) > 10000 else 500
+            # Parse movetext to moves with configurable chunk size
+            chunk_size = args.parse_chunk_size if len(df) > 1000 else min(args.parse_chunk_size, 100)
             df = add_parsed_moves(df, chunk_size=chunk_size)
             
             # Show statistics
