@@ -202,7 +202,12 @@ class LargePGNParser:
     def _reader_thread_optimized(self, pgn_path: Path, game_queue: queue.Queue, 
                                show_progress: bool = True) -> None:
         """Optimized reader thread using memory mapping and byte processing."""
-        file_size = pgn_path.stat().st_size
+        try:
+            file_size = pgn_path.stat().st_size
+        except (OSError, FileNotFoundError):
+            file_size = None
+            logger.warning(f"Could not determine file size for {pgn_path}")
+        
         bytes_read = 0
         
         pbar = None
@@ -364,7 +369,7 @@ class LargePGNParser:
             'opening': headers.get('Opening', ''),
             'moves': moves,
             'num_moves': len(moves),
-            'has_clock_times': bool(clock_times),
+            'has_clock_times': bool(clock_times) if clock_times is not None else False,
             **time_stats
         }
 
@@ -399,7 +404,7 @@ class LargePGNParser:
             pbar = tqdm(desc="Saving batches", position=0, leave=True)
         
         # Pre-allocate batch list with expected size
-        current_batch.reserve = self.batch_size  # Hint for list allocation
+        # Note: Python lists don't have a reserve method, this is just a comment
         
         try:
             while not (stop_event.is_set() and result_queue.empty()):
@@ -452,10 +457,10 @@ class LargePGNParser:
                 "batch_num": batch_num
             })
 
-    def _save_batch_optimized(self, batch: List[Dict[str, Any]], batch_num: int) -> Path:
+    def _save_batch_optimized(self, batch: List[Dict[str, Any]], batch_num: int) -> Optional[Path]:
         """Optimized batch saving with better compression and memory usage."""
         if not batch:
-            return
+            return None
         
         try:
             # Create DataFrame more efficiently
@@ -554,7 +559,12 @@ class LargePGNParser:
         show_progress: bool = True
     ) -> int:
         """Optimized single-threaded parsing with memory mapping."""
-        file_size = pgn_path.stat().st_size
+        try:
+            file_size = pgn_path.stat().st_size
+        except (OSError, FileNotFoundError):
+            file_size = None
+            logger.warning(f"Could not determine file size for {pgn_path}")
+        
         games_processed = 0
         games_included = 0
         batch_num = 0
