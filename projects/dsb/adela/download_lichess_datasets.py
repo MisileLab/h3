@@ -11,6 +11,6 @@ month = int(input("Enter the month: "))
 snapshot_download(
   repo_id="Lichess/standard-chess-games",
   repo_type="dataset",
-  allow_patterns=["data/year={year}/month={month}/*"],
+  allow_patterns=[f"data/year={year}/month={month:02d}/*"],
   local_dir="./lichess_data"
 )
