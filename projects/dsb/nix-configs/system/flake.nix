@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs";
-    stablep.url = "github:nixos/nixpkgs/nixos-unstable";
+    # stablep.url = "github:nixos/nixpkgs/nixos-unstable";
     # lanzaboote = {
     #   url = "github:nix-community/lanzaboote/v0.4.1";
     #   inputs.nixpkgs.follows = "nixpkgs";
@@ -16,11 +16,11 @@
       modules = [
         ./configuration.nix
         # {_module.args = {stablep = import stablep { system = "x86_64-linux"; };};}
-        ({ stablep, ... }: {
-          nixpkgs.overlays = [(final: prev: {
-            wireshark-qt = stablep.wireshark-qt;
-          })];
-        })
+        # ({ stablep, ... }: {
+        #   nixpkgs.overlays = [(final: prev: {
+        #     wireshark-qt = stablep.wireshark-qt;
+        #   })];
+        # })
         # lanzaboote.nixosModules.lanzaboote
         ({ pkgs, lib, ... }: {
           environment.systemPackages = [pkgs.sbctl];
