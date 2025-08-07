@@ -11,7 +11,6 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import polars as pl
 from tqdm import tqdm
-import chess  # For converting SAN to UCI
 
 # Configure logging
 logging.basicConfig(
@@ -99,14 +98,13 @@ class LargePGNParser:
     move_matches = self.move_only_pattern.findall(cleaned_text)
     
     # Filter out move numbers, result markers, and incorrect chess moves
-    san_moves = []  # Store SAN moves for conversion to UCI
+    san_moves = []  # Store chess moves
     
     # Regex for valid chess moves in UCI format (e.g., e2e4) or standard algebraic notation (e.g., e4, Nf3)
     # Also matches castling notation in both formats (O-O, O-O-O, O O, O O O)
     valid_move_pattern = re.compile(r'^(?:[a-h][1-8][a-h][1-8]|[KQRBNP]?[a-h]?[1-8]?x?[a-h][1-8](?:=[QRBN])?|O-O(?:-O)?|O\s+O(?:\s+O)?|[KQRBN][a-h]?[1-8]?x?[a-h][1-8])(?:[+#])?$')
     
-    # Regex to identify UCI format moves (source square to target square)
-    uci_pattern = re.compile(r'^[a-h][1-8][a-h][1-8](?:[qrbn])?$')
+    # No longer need to identify UCI format moves
     
     for move in move_matches:
         # Process only valid chess moves (not numbers, result markers, etc.) that match our pattern
@@ -125,16 +123,8 @@ class LargePGNParser:
             # Add to SAN moves list for later conversion
             san_moves.append(move)
     
-    # Convert SAN moves to UCI format
-    valid_moves = []
-    for i, move in enumerate(san_moves):
-        # Skip conversion if already in UCI format
-        if re.match(uci_pattern, move):
-            valid_moves.append(move)
-        else:
-            # Convert SAN to UCI using chess library
-            uci_move = self._san_to_uci(move, san_moves[:i])
-            valid_moves.append(uci_move)
+    # No longer converting SAN moves to UCI format
+    valid_moves = san_moves
     
     # Extract clock times
     clock_matches = self.clock_pattern.findall(cleaned_text)
@@ -144,112 +134,7 @@ class LargePGNParser:
     
     return valid_moves, clock_times
   
-  def _san_to_uci(self, san_move: str, moves_history: List[str]) -> str:
-    """Convert a move in Standard Algebraic Notation (SAN) to UCI notation.
-    
-    Args:
-      san_move: Move in SAN format (e.g., "e4", "Nf3").
-      moves_history: List of previous moves in SAN format to establish the board position.
-      
-    Returns:
-      Move in UCI format (e.g., "e2e4", "g1f3").
-    """
-    # Handle castling directly
-    castling_kingside = {"O-O", "O O"}
-    castling_queenside = {"O-O-O", "O O O"}
-    if san_move in castling_kingside:
-      return "e1g1" if len(moves_history) % 2 == 0 else "e8g8"
-    if san_move in castling_queenside:
-      return "e1c1" if len(moves_history) % 2 == 0 else "e8c8"
-    
-    # Check if the move is already in UCI format
-    if re.match(r'^[a-h][1-8][a-h][1-8][qrbnQRBN]?$', san_move):
-      return san_move.lower()
-    
-    # Determine if it's white or black to move
-    is_white_move = len(moves_history) % 2 == 0
-    
-    # Parse pawn moves (e.g., e4, d5)
-    if pawn_move := re.match(r'^([a-h])([1-8])$', san_move):
-      file = pawn_move.group(1)
-      rank = pawn_move.group(2)
-      target_rank = int(rank)
-      
-      # Determine source rank based on whose turn it is and target rank
-      if is_white_move:
-        # For white pawns
-        source_rank = '2' if (target_rank == 4 and not moves_history) or target_rank == 3 else str(target_rank - 1)
-      else:
-        # For black pawns
-        source_rank = '7' if (target_rank == 5 and len(moves_history) == 1) or target_rank == 6 else str(target_rank + 1)
-      
-      return f"{file}{source_rank}{file}{rank}"
-    
-    # Parse pawn captures (e.g., exd5, fxg6)
-    if pawn_capture := re.match(r'^([a-h])x([a-h])([1-8])$', san_move):
-      source_file = pawn_capture.group(1)
-      target_file = pawn_capture.group(2)
-      target_rank = pawn_capture.group(3)
-      
-      # Adjust source rank based on target rank
-      source_rank = str(int(target_rank) - 1) if is_white_move else str(int(target_rank) + 1)
-        
-      return f"{source_file}{source_rank}{target_file}{target_rank}"
-    
-    # Parse piece moves (e.g., Nf3, Bc5)
-    piece_move = re.match(r'^([NBRQK])([a-h])([1-8])$', san_move)
-    if piece_move:
-      piece = piece_move.group(1)
-      target_file = piece_move.group(2)
-      target_rank = piece_move.group(3)
-      
-      # Use a more generic approach for piece moves
-      if is_white_move:
-        if piece == 'N':  # Knights
-          if target_file in ['c', 'f'] and target_rank in ['3']:  # Nc3, Nf3
-            source_file = 'b' if target_file == 'c' else 'g'
-            return f"{source_file}1{target_file}{target_rank}"
-        elif piece == 'B':  # Bishops
-          if target_file in ['c', 'b', 'f'] and target_rank in ['4', '5']:  # Bc4, Bf5
-            source_file = 'f' if target_file in ['c', 'b'] else 'c'
-            return f"{source_file}1{target_file}{target_rank}"
-      else:
-        if piece == 'N':  # Knights
-          if target_file in ['c', 'f'] and target_rank in ['6']:  # Nc6, Nf6
-            source_file = 'b' if target_file == 'c' else 'g'
-            return f"{source_file}8{target_file}{target_rank}"
-        elif piece == 'B':  # Bishops
-          if target_file in ['c', 'b', 'f'] and target_rank in ['4', '5']:  # Bc5, Bf4
-            source_file = 'f' if target_file in ['c', 'b'] else 'c'
-            return f"{source_file}8{target_file}{target_rank}"
-    
-    # For other moves, use chess library to parse
-    try:
-      board = chess.Board()
-      
-      # Apply previous moves to get the current position
-      for prev_move in moves_history:
-        try:
-          # Skip castling moves which we'll handle separately
-          castling_kingside = {"O-O", "O O"}
-          castling_queenside = {"O-O-O", "O O O"}
-          if prev_move in castling_kingside:
-            move = chess.Move.from_uci("e1g1" if board.turn == chess.WHITE else "e8g8")
-          elif prev_move in castling_queenside:
-            move = chess.Move.from_uci("e1c1" if board.turn == chess.WHITE else "e8c8")
-          else:
-            move = board.parse_san(prev_move)
-          board.push(move)
-        except ValueError:
-          # Skip invalid moves
-          continue
-      
-      # Parse the current move
-      move = board.parse_san(san_move)
-      return move.uci()
-    except ValueError:
-      # If parsing fails, return the original move
-      return san_move
+  # _san_to_uci method has been removed
   
   def _extract_time_control(self, time_control: str) -> Tuple[int, int]:
     """Extract base time and increment from time control string.

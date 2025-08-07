@@ -19,10 +19,10 @@ The standard PGN parser in the Lichess data pipeline works well for moderately s
 
 ```bash
 # Process a large PGN file with default settings
-uv run python process_large_pgn.py path/to/large_file.pgn
+cargo run -- path/to/large_file.pgn
 
 # Process with custom settings
-uv run python process_large_pgn.py path/to/large_file.pgn \
+cargo run -- path/to/large_file.pgn \
   --output-dir ./data/processed \
   --batch-size 100000 \
   --min-elo 1800 \
