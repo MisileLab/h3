@@ -40,39 +40,28 @@ def parse_movetext_to_moves(movetext: str) -> list[str]:
     
     moves = []
     
-    # Pattern to match chess moves in SAN notation
-    # This includes:
-    # - Regular moves: e4, Nf3, Bd5, etc.
-    # - Captures: exd5, Nxf7, etc.
-    # - Castling: O-O, O-O-O
-    # - Promotions: e8=Q, a1=R+, etc.
-    # - Check/Checkmate: Qg5+, Qe8#, etc.
-    move_pattern = r'(?:^|\s)([a-h][1-8]|[KQRBNP]?[a-h]?[1-8]?x?[a-h][1-8](?:=[QRBN])?|O-O(?:-O)?|[KQRBN][a-h]?[1-8]?x?[a-h][1-8])([+#]?)(?=\s|$|[{\[])'
-    
-    # Find all move matches
-    for match in re.finditer(move_pattern, cleaned):
-        move = match.group(1) + match.group(2)  # Combine move and check/checkmate marker
+    # Simple but effective approach: split on move numbers and extract moves
+    # This handles most PGN formats reliably
+    tokens = re.split(r'\d+\.', cleaned)
+    for token in tokens:
+        token = token.strip()
+        if not token:
+            continue
         
-        # Filter out obvious non-moves
-        if (not move.isdigit() and 
-            move not in {'1-0', '0-1', '1/2-1/2', '*', 'clk', 'eval'} and
-            not re.match(r'^\d+\.', move) and
-            len(move) >= 2):
-            moves.append(move)
-    
-    # Alternative approach using split and regex validation if the above doesn't capture all moves
-    if not moves:
-        # Split on move numbers and extract moves
-        tokens = re.split(r'\d+\.', cleaned)
-        for token in tokens:
-            if not token.strip():
-                continue
-            
-            # Extract individual moves from each token
-            token_moves = re.findall(r'[a-h][1-8]|[KQRBNP]?[a-h]?[1-8]?x?[a-h][1-8](?:=[QRBN])?[+#]?|O-O(?:-O)?[+#]?', token)
-            
-            moves.extend(move for move in token_moves 
-                        if move and move not in {'1-0', '0-1', '1/2-1/2', '*'} and len(move) >= 2)
+        # Extract moves from each token using a comprehensive pattern
+        # This pattern matches most chess moves in SAN notation
+        token_moves = re.findall(
+            r'\b(?:[KQRBNP]?[a-h]?[1-8]?x?[a-h][1-8](?:=[QRBNP])?[+#]?|O-O(?:-O)?[+#]?)\b',
+            token
+        )
+        
+        for move in token_moves:
+            # Filter out result markers and invalid moves
+            if (move and 
+                move not in {'1-0', '0-1', '1/2-1/2', '*'} and
+                len(move) >= 2 and
+                not move.isdigit()):
+                moves.append(move)
     
     return moves
 
@@ -116,7 +105,7 @@ def process_parquet_files_in_batches(
     logger.info(f"Processing in batches of {batch_size} games")
     
     # Initialize batch tracking
-    current_batch = []
+    current_batch_data = []
     batch_num = 0
     total_processed = 0
     total_included = 0
@@ -127,50 +116,58 @@ def process_parquet_files_in_batches(
         logger.info(f"Processing file {file_idx + 1}/{len(parquet_files)}: {parquet_file.name}")
         
         try:
-            # Load file with lazy evaluation for memory efficiency
-            lazy_df = pl.scan_parquet(str(parquet_file))
+            # Read file in smaller chunks to manage memory
+            file_chunk_size = 5000  # Smaller chunks for memory efficiency
             
-            # Apply Elo filter at scan level for efficiency
-            filtered_lazy = lazy_df.filter(
-                (pl.col("white_elo") >= min_elo) | (pl.col("black_elo") >= min_elo)
-            )
+            # Use scan_parquet to get total row count first
+            total_rows = pl.scan_parquet(str(parquet_file)).select(pl.count()).collect().item()
             
-            # Collect in chunks to manage memory
-            chunk_size = 10000
-            offset = 0
-            
-            while True:
-                # Get chunk
-                chunk_df = filtered_lazy.slice(offset, chunk_size).collect()
+            for chunk_start in range(0, total_rows, file_chunk_size):
+                # Read chunk with Elo filtering
+                chunk_df = pl.scan_parquet(str(parquet_file)).slice(
+                    chunk_start, file_chunk_size
+                ).filter(
+                    (pl.col("white_elo") >= min_elo) | (pl.col("black_elo") >= min_elo)
+                ).collect()
                 
                 if len(chunk_df) == 0:
-                    break
+                    continue
                 
                 total_processed += len(chunk_df)
                 
-                # Parse movetext for this chunk
-                chunk_with_moves = add_parsed_moves(chunk_df)
-                total_included += len(chunk_with_moves)
+                # Parse movetext efficiently in smaller sub-chunks
+                parsed_chunk = add_parsed_moves(chunk_df, chunk_size=500)
+                total_included += len(parsed_chunk)
                 
-                # Convert to list of dictionaries for batch accumulation
-                chunk_dicts = chunk_with_moves.to_dicts()
-                current_batch.extend(chunk_dicts)
+                # Add to current batch
+                current_batch_data.append(parsed_chunk)
                 
-                # Save batch if it reaches the target size
-                if len(current_batch) >= batch_size:
-                    output_file = _save_batch(current_batch[:batch_size], batch_num, output_dir, output_prefix)
-                    output_files.append(output_file)
+                # Check if we need to save a batch
+                current_total = sum(len(chunk) for chunk in current_batch_data)
+                if current_total >= batch_size:
+                    # Combine chunks and save batch
+                    combined_df = pl.concat(current_batch_data)
                     
-                    # Keep remaining items for next batch
-                    current_batch = current_batch[batch_size:]
+                    # Save exactly batch_size games
+                    batch_df = combined_df.head(batch_size)
+                    output_file = _save_batch_df(batch_df, batch_num, output_dir, output_prefix)
+                    if output_file:
+                        output_files.append(output_file)
+                    
+                    # Keep remaining games for next batch
+                    remaining_games = combined_df.tail(current_total - batch_size) if current_total > batch_size else None
+                    current_batch_data = [remaining_games] if remaining_games is not None and len(remaining_games) > 0 else []
+                    
                     batch_num += 1
-                    
                     logger.info(f"Saved batch {batch_num} with {batch_size} games")
                     
-                    # Force garbage collection to free memory
+                    # Force garbage collection
+                    del combined_df, batch_df
                     gc.collect()
                 
-                offset += chunk_size
+                # Clean up chunk memory
+                del chunk_df, parsed_chunk
+                gc.collect()
                 
         except Exception as e:
             logger.error(f"Error processing file {parquet_file}: {e}")
@@ -180,15 +177,46 @@ def process_parquet_files_in_batches(
         gc.collect()
     
     # Save final batch if it has any games
-    if current_batch:
-        output_file = _save_batch(current_batch, batch_num, output_dir, output_prefix)
-        output_files.append(output_file)
-        logger.info(f"Saved final batch {batch_num + 1} with {len(current_batch)} games")
+    if current_batch_data:
+        combined_df = pl.concat(current_batch_data)
+        if len(combined_df) > 0:
+            output_file = _save_batch_df(combined_df, batch_num, output_dir, output_prefix)
+            if output_file:
+                output_files.append(output_file)
+            logger.info(f"Saved final batch {batch_num + 1} with {len(combined_df)} games")
     
     logger.info(f"Processing complete: {total_processed} games processed, {total_included} games included")
     logger.info(f"Created {len(output_files)} batch files in {output_dir}")
     
     return output_files
+
+
+def _save_batch_df(batch_df: pl.DataFrame, batch_num: int, output_dir: Path, prefix: str) -> Optional[Path]:
+    """Save a batch DataFrame to a Parquet file.
+    
+    Args:
+        batch_df: DataFrame containing processed games
+        batch_num: Batch number for filename
+        output_dir: Output directory
+        prefix: Filename prefix
+        
+    Returns:
+        Path to saved file
+    """
+    if batch_df is None or len(batch_df) == 0:
+        return None
+    
+    # Generate output filename
+    output_file = output_dir / f"{prefix}_batch_{batch_num:06d}.parquet"
+    
+    # Save with compression
+    batch_df.write_parquet(
+        output_file,
+        compression="zstd",
+        use_pyarrow=True
+    )
+    
+    return output_file
 
 
 def _save_batch(batch_data: List[Dict[str, Any]], batch_num: int, output_dir: Path, prefix: str) -> Optional[Path]:
@@ -209,27 +237,17 @@ def _save_batch(batch_data: List[Dict[str, Any]], batch_num: int, output_dir: Pa
     # Create DataFrame from batch
     batch_df = pl.DataFrame(batch_data)
     
-    # Generate output filename
-    output_file = output_dir / f"{prefix}_batch_{batch_num:06d}.parquet"
-    
-    # Save with compression
-    batch_df.write_parquet(
-        output_file,
-        compression="zstd",
-        use_pyarrow=True
-    )
-    
-    return output_file
+    return _save_batch_df(batch_df, batch_num, output_dir, prefix)
 
 
-def load_parquet_files(folder_path: Path) -> pl.DataFrame:
-    """Load all Parquet files from a folder and combine them.
+def load_parquet_files(folder_path: Path, max_memory_mb: int = 2048) -> pl.DataFrame:
+    """Load all Parquet files from a folder and combine them with memory management.
     
-    NOTE: This function loads all data into memory and is not suitable for very large datasets.
-    Use process_parquet_files_in_batches() for large datasets instead.
+    NOTE: For datasets >5GB, consider using process_parquet_files_in_batches() instead.
     
     Args:
         folder_path: Path to folder containing Parquet files
+        max_memory_mb: Maximum memory usage in MB before warning (default: 2048MB)
         
     Returns:
         Combined Polars DataFrame
@@ -248,13 +266,40 @@ def load_parquet_files(folder_path: Path) -> pl.DataFrame:
     
     logger.info(f"Found {len(parquet_files)} Parquet files in {folder_path}")
     
-    # Load and combine all Parquet files
+    # Estimate memory usage
+    total_size_mb = sum(f.stat().st_size for f in parquet_files) / (1024 * 1024)
+    if total_size_mb > max_memory_mb:
+        logger.warning(f"Dataset size ({total_size_mb:.1f}MB) exceeds recommended limit ({max_memory_mb}MB)")
+        logger.warning("Consider using --batch-mode for better memory efficiency")
+    
+    # Load files efficiently
     if len(parquet_files) == 1:
         df = pl.read_parquet(parquet_files[0])
     else:
-        # Use scan_parquet for efficient lazy loading and concatenation
-        lazy_dfs = [pl.scan_parquet(str(file)) for file in parquet_files]
-        df = pl.concat(lazy_dfs).collect()
+        # Load files in groups to manage memory
+        avg_file_size_mb = total_size_mb / len(parquet_files) if len(parquet_files) > 0 else 1
+        max_files_per_group = max(1, min(10, max_memory_mb // max(1, int(avg_file_size_mb))))
+        
+        all_dfs = []
+        for i in range(0, len(parquet_files), max_files_per_group):
+            group_files = parquet_files[i:i + max_files_per_group]
+            logger.debug(f"Loading file group {i//max_files_per_group + 1}: {len(group_files)} files")
+            
+            # Use scan_parquet for efficient lazy loading
+            lazy_dfs = [pl.scan_parquet(str(file)) for file in group_files]
+            group_df = pl.concat(lazy_dfs).collect()
+            all_dfs.append(group_df)
+            
+            # Force garbage collection between groups
+            gc.collect()
+        
+        # Combine all groups
+        logger.info("Combining all file groups...")
+        df = pl.concat(all_dfs)
+        
+        # Clean up intermediate dataframes
+        del all_dfs
+        gc.collect()
     
     logger.info(f"Loaded {len(df)} total games from Parquet files")
     return df
@@ -283,16 +328,17 @@ def filter_by_elo(df: pl.DataFrame, min_elo: int = 1500) -> pl.DataFrame:
     return filtered_df
 
 
-def add_parsed_moves(df: pl.DataFrame) -> pl.DataFrame:
-    """Add a column with parsed chess moves from movetext.
+def add_parsed_moves(df: pl.DataFrame, chunk_size: int = 1000) -> pl.DataFrame:
+    """Add a column with parsed chess moves from movetext using memory-efficient chunked processing.
     
     Args:
         df: DataFrame containing chess games with movetext column
+        chunk_size: Number of rows to process at once (default: 1000)
         
     Returns:
         DataFrame with additional 'parsed_moves' column
     """
-    logger.info("Parsing movetext to extract chess moves...")
+    logger.info(f"Parsing movetext to extract chess moves (chunk size: {chunk_size})...")
     
     # Check if movetext column exists
     if "movetext" not in df.columns:
@@ -309,18 +355,38 @@ def add_parsed_moves(df: pl.DataFrame) -> pl.DataFrame:
     else:
         movetext_col = "movetext"
     
-    # Apply the parsing function to each movetext
-    parsed_df = df.with_columns([
-        pl.col(movetext_col).map_elements(
-            parse_movetext_to_moves, 
-            return_dtype=pl.List(pl.Utf8)
-        ).alias("parsed_moves")
-    ])
+    # Process in chunks to avoid memory issues
+    total_rows = len(df)
+    processed_chunks = []
     
-    # Add some statistics
-    parsed_df = parsed_df.with_columns([
-        pl.col("parsed_moves").list.len().alias("num_moves")
-    ])
+    for start_idx in range(0, total_rows, chunk_size):
+        end_idx = min(start_idx + chunk_size, total_rows)
+        chunk_df = df.slice(start_idx, end_idx - start_idx)
+        
+        # Process this chunk
+        chunk_with_moves = chunk_df.with_columns([
+            pl.col(movetext_col).map_elements(
+                parse_movetext_to_moves, 
+                return_dtype=pl.List(pl.Utf8)
+            ).alias("parsed_moves")
+        ])
+        
+        # Add move count
+        chunk_with_moves = chunk_with_moves.with_columns([
+            pl.col("parsed_moves").list.len().alias("num_moves")
+        ])
+        
+        processed_chunks.append(chunk_with_moves)
+        
+        # Log progress for large datasets
+        if total_rows > 5000:
+            logger.debug(f"Processed chunk {start_idx//chunk_size + 1}/{(total_rows + chunk_size - 1)//chunk_size}")
+    
+    # Combine all chunks
+    if len(processed_chunks) == 1:
+        parsed_df = processed_chunks[0]
+    else:
+        parsed_df = pl.concat(processed_chunks)
     
     logger.info("Successfully parsed movetext for all games")
     return parsed_df
@@ -382,8 +448,9 @@ def main():
                 logger.warning("No games remaining after Elo filtering")
                 return
             
-            # Parse movetext to moves
-            df = add_parsed_moves(df)
+            # Parse movetext to moves with smaller chunks for better memory efficiency
+            chunk_size = 1000 if len(df) > 10000 else 500
+            df = add_parsed_moves(df, chunk_size=chunk_size)
             
             # Show statistics
             logger.info(f"Final dataset: {len(df)} games")
