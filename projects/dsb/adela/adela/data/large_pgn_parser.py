@@ -225,8 +225,6 @@ class LargePGNParser:
                 
                 for i, line in enumerate(lines):
                     line = line.strip()
-                    if not line:
-                        continue
                     
                     # Check for game start
                     if line.startswith(b'[Event '):
@@ -241,6 +239,7 @@ class LargePGNParser:
                         current_game_data = bytearray(line + b'\n')
                         in_game = True
                     elif in_game:
+                        # Include empty lines to preserve PGN structure
                         current_game_data.extend(line + b'\n')
             
             # Send final game
@@ -577,8 +576,6 @@ class LargePGNParser:
                 lines = chunk.split(b'\n')
                 for line in lines:
                     line = line.strip()
-                    if not line:
-                        continue
                     
                     if line.startswith(b'[Event '):
                         # Process previous game
@@ -606,6 +603,7 @@ class LargePGNParser:
                         current_game = bytearray(line + b'\n')
                         in_game = True
                     elif in_game:
+                        # Include empty lines to preserve PGN structure
                         current_game.extend(line + b'\n')
             
             # Process final game
