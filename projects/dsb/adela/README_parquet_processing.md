@@ -93,9 +93,9 @@ This will create files like:
 ## Input Data Format
 
 The script expects Parquet files with the following columns:
-- `white_elo`: White player's Elo rating (integer)
-- `black_elo`: Black player's Elo rating (integer)
-- `movetext` or `moves`: PGN movetext string containing the game moves
+- **Elo columns**: `WhiteElo` and `BlackElo` (integer)
+- **Movetext column**: `movetext` or `moves` - PGN movetext string containing the game moves
+- **Other standard columns**: `White`, `Black`, `Result`, etc.
 
 ## Output Format
 

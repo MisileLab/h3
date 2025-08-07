@@ -66,6 +66,9 @@ def parse_movetext_to_moves(movetext: str) -> list[str]:
     return moves
 
 
+
+
+
 def process_parquet_files_in_batches(
     folder_path: Path, 
     min_elo: int = 1500, 
@@ -127,7 +130,7 @@ def process_parquet_files_in_batches(
                 chunk_df = pl.scan_parquet(str(parquet_file)).slice(
                     chunk_start, file_chunk_size
                 ).filter(
-                    (pl.col("white_elo") >= min_elo) | (pl.col("black_elo") >= min_elo)
+                    (pl.col("WhiteElo") >= min_elo) | (pl.col("BlackElo") >= min_elo)
                 ).collect()
                 
                 if len(chunk_df) == 0:
@@ -306,7 +309,7 @@ def load_parquet_files(folder_path: Path, max_memory_mb: int = 2048) -> pl.DataF
 
 
 def filter_by_elo(df: pl.DataFrame, min_elo: int = 1500) -> pl.DataFrame:
-    """Filter games where either whiteElo >= min_elo or blackElo >= min_elo.
+    """Filter games where either WhiteElo >= min_elo or BlackElo >= min_elo.
     
     Args:
         df: DataFrame containing chess games
@@ -319,7 +322,7 @@ def filter_by_elo(df: pl.DataFrame, min_elo: int = 1500) -> pl.DataFrame:
     
     # Filter where either white or black player has Elo >= min_elo
     filtered_df = df.filter(
-        (pl.col("white_elo") >= min_elo) | (pl.col("black_elo") >= min_elo)
+        (pl.col("WhiteElo") >= min_elo) | (pl.col("BlackElo") >= min_elo)
     )
     
     filtered_count = len(filtered_df)
