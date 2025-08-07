@@ -133,7 +133,7 @@ def main() -> int:
     # Merge batch files if requested
     if not args.no_merge:
       logger.info("Merging batch files...")
-      merged_path = parser.merge_parquet_files()
+      merged_path = parser.merge_parquet_files_optimized()
       logger.info(f"Merged file saved to {merged_path}")
     
     # End timing
