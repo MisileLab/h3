@@ -12,16 +12,16 @@ dependencies = [
   # https://modallabscommunity.slack.com/archives/C069RAH7X4M/p1741644232430889
   "protobuf<5.0.0",
   "safetensors==0.6.1",
-  "torch==2.8.0",
+  "torch==2.7.1",
   "transformers==4.55.0",
 ]
 
 [project.optional-dependencies]
 cpu = [
-  "torch==2.8.0",
+  "torch==2.7.1+cpu",
 ]
 rocm = [
-  "torch==2.8.0",
+  "torch==2.7.1+rocm6.3",
   "pytorch-triton-rocm==3.3.1"
 ]
 
