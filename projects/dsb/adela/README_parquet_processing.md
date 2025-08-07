@@ -30,11 +30,12 @@ uv run python load_and_parse_parquets.py data/games/ \
     --batch-size 50000 \
     --output-dir processed_data/ \
     --output-prefix chess_games \
-    --min-elo 1500
+    --min-elo 1000 \
+    --threads 4
 ```
 
 This will:
-- Process files one by one to manage memory
+- Process multiple files in parallel using 4 threads
 - Save results every 50,000 games to `processed_data/chess_games_batch_XXXXXX.parquet`
 - Reset the batch and continue processing
 - Handle the full 40GB dataset efficiently
@@ -62,6 +63,11 @@ uv run python load_and_parse_parquets.py /path/to/folder \
     --batch-mode \
     --file-chunk-size 10000 \
     --parse-chunk-size 1000
+
+# Multi-threading for faster processing
+uv run python load_and_parse_parquets.py /path/to/folder \
+    --batch-mode \
+    --threads 8
 
 # Custom output directory and file prefix
 uv run python load_and_parse_parquets.py /path/to/folder \
@@ -128,6 +134,13 @@ For large datasets, the batch processing mode:
 - Maintains memory usage under 2-3GB even for 40GB+ datasets
 
 ### Performance Tuning
+
+**Multi-Threading (`--threads`):**
+- **Auto-detect** (default: 0): Automatically selects optimal number of threads (max 4)
+- **Custom threads**: Set number of parallel file processing threads
+  - More threads = faster processing but more memory usage
+  - Recommended: 2-4 threads for most systems, 6-8 for high-end systems
+  - Memory usage scales roughly linearly with thread count
 
 **Chunk Size Guidelines:**
 - **File chunk size** (`--file-chunk-size`): Number of games read from each Parquet file at once

@@ -52,8 +52,8 @@ def create_large_test_data(num_files: int = 5, games_per_file: int = 15000) -> P
                 "id": f"file{file_idx}_game{game_idx}",
                 "white": f"Player{game_idx}_W",
                 "black": f"Player{game_idx}_B",
-                "white_elo": white_elo,
-                "black_elo": black_elo,
+                "WhiteElo": white_elo,
+                "BlackElo": black_elo,
                 "result": ["1-0", "0-1", "1/2-1/2"][game_idx % 3],
                 "movetext": movetexts[game_idx % len(movetexts)]
             }
@@ -118,9 +118,9 @@ def test_batch_processing():
             # Show sample of first batch
             if i == 0:
                 print(f"    Sample from first batch:")
-                sample = batch_df.select(["white", "black", "white_elo", "black_elo", "num_moves"]).head(3)
+                sample = batch_df.select(["white", "black", "WhiteElo", "BlackElo", "num_moves"]).head(3)
                 for row in sample.to_dicts():
-                    print(f"      {row['white']} ({row['white_elo']}) vs {row['black']} ({row['black_elo']}) - {row['num_moves']} moves")
+                    print(f"      {row['white']} ({row['WhiteElo']}) vs {row['black']} ({row['BlackElo']}) - {row['num_moves']} moves")
         
         print(f"\nTotal games in output: {total_games_in_output}")
         
@@ -138,7 +138,7 @@ def test_batch_processing():
         for output_file in output_files[:2]:  # Check first 2 files
             batch_df = pl.read_parquet(output_file)
             elo_check = batch_df.filter(
-                (pl.col("white_elo") < 1500) & (pl.col("black_elo") < 1500)
+                (pl.col("WhiteElo") < 1500) & (pl.col("BlackElo") < 1500)
             )
             if len(elo_check) > 0:
                 print(f"  WARNING: Found {len(elo_check)} games not meeting Elo criteria in {output_file.name}")

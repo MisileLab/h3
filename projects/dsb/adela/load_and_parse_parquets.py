@@ -7,6 +7,10 @@ from pathlib import Path
 from typing import List, Dict, Any, Optional
 import logging
 import gc
+import threading
+import queue
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import os
 
 import polars as pl
 from tqdm import tqdm
@@ -69,6 +73,60 @@ def parse_movetext_to_moves(movetext: str) -> list[str]:
 
 
 
+def _process_single_file(
+    file_info: tuple,
+    min_elo: int,
+    file_chunk_size: int,
+    parse_chunk_size: int
+) -> List[pl.DataFrame]:
+    """Process a single Parquet file and return chunks of processed data.
+    
+    Args:
+        file_info: Tuple of (file_index, parquet_file_path, total_files)
+        min_elo: Minimum Elo rating threshold
+        file_chunk_size: Number of games to read at once
+        parse_chunk_size: Number of games to parse movetext for at once
+        
+    Returns:
+        List of processed DataFrame chunks
+    """
+    file_idx, parquet_file, total_files = file_info
+    
+    logger.info(f"Processing file {file_idx + 1}/{total_files}: {parquet_file.name}")
+    
+    try:
+        processed_chunks = []
+        
+        # Use scan_parquet to get total row count first
+        total_rows = pl.scan_parquet(str(parquet_file)).select(pl.count()).collect().item()
+        
+        for chunk_start in range(0, total_rows, file_chunk_size):
+            # Read chunk with Elo filtering
+            chunk_df = pl.scan_parquet(str(parquet_file)).slice(
+                chunk_start, file_chunk_size
+            ).filter(
+                (pl.col("WhiteElo") >= min_elo) | (pl.col("BlackElo") >= min_elo)
+            ).collect()
+            
+            if len(chunk_df) == 0:
+                continue
+            
+            # Parse movetext efficiently in smaller sub-chunks
+            parsed_chunk = add_parsed_moves(chunk_df, chunk_size=parse_chunk_size)
+            processed_chunks.append(parsed_chunk)
+            
+            # Clean up memory
+            del chunk_df
+            gc.collect()
+        
+        logger.info(f"Completed file {file_idx + 1}/{total_files}: {parquet_file.name} - {len(processed_chunks)} chunks")
+        return processed_chunks
+        
+    except Exception as e:
+        logger.error(f"Error processing file {parquet_file}: {e}")
+        return []
+
+
 def process_parquet_files_in_batches(
     folder_path: Path, 
     min_elo: int = 1500, 
@@ -76,7 +134,8 @@ def process_parquet_files_in_batches(
     output_dir: Optional[Path] = None,
     output_prefix: str = "processed_games",
     file_chunk_size: int = 5000,
-    parse_chunk_size: int = 500
+    parse_chunk_size: int = 500,
+    num_threads: int = 0
 ) -> List[Path]:
     """Process Parquet files in batches to handle large datasets efficiently.
     
@@ -88,6 +147,7 @@ def process_parquet_files_in_batches(
         output_prefix: Prefix for output filenames
         file_chunk_size: Number of games to read from each file at once (default: 5000)
         parse_chunk_size: Number of games to parse movetext for at once (default: 500)
+        num_threads: Number of worker threads (0 = auto-detect, default: 0)
         
     Returns:
         List of paths to created batch files
@@ -111,76 +171,84 @@ def process_parquet_files_in_batches(
     logger.info(f"Found {len(parquet_files)} Parquet files in {folder_path}")
     logger.info(f"Processing in batches of {batch_size} games")
     
-    # Initialize batch tracking
+    # Determine optimal number of threads
+    if num_threads <= 0:
+        num_threads = min(os.cpu_count() or 1, len(parquet_files), 4)
+    
+    logger.info(f"Using {num_threads} threads for parallel processing")
+    
+    # Initialize batch tracking with thread safety
     current_batch_data = []
     batch_num = 0
     total_processed = 0
     total_included = 0
     output_files = []
+    batch_lock = threading.Lock()
     
-    # Process each Parquet file
-    for file_idx, parquet_file in enumerate(tqdm(parquet_files, desc="Processing files")):
-        logger.info(f"Processing file {file_idx + 1}/{len(parquet_files)}: {parquet_file.name}")
+    def save_batch_if_needed():
+        """Thread-safe batch saving function."""
+        nonlocal current_batch_data, batch_num, output_files
         
-        try:
-            # Read file in smaller chunks to manage memory
-            
-            # Use scan_parquet to get total row count first
-            total_rows = pl.scan_parquet(str(parquet_file)).select(pl.count()).collect().item()
-            
-            for chunk_start in range(0, total_rows, file_chunk_size):
-                # Read chunk with Elo filtering
-                chunk_df = pl.scan_parquet(str(parquet_file)).slice(
-                    chunk_start, file_chunk_size
-                ).filter(
-                    (pl.col("WhiteElo") >= min_elo) | (pl.col("BlackElo") >= min_elo)
-                ).collect()
+        with batch_lock:
+            current_total = sum(len(chunk) for chunk in current_batch_data)
+            if current_total >= batch_size:
+                # Combine chunks and save batch
+                combined_df = pl.concat(current_batch_data)
                 
-                if len(chunk_df) == 0:
-                    continue
+                # Save exactly batch_size games
+                batch_df = combined_df.head(batch_size)
+                output_file = _save_batch_df(batch_df, batch_num, output_dir, output_prefix)
+                if output_file:
+                    output_files.append(output_file)
                 
-                total_processed += len(chunk_df)
+                # Keep remaining games for next batch
+                remaining_games = combined_df.tail(current_total - batch_size) if current_total > batch_size else None
+                current_batch_data = [remaining_games] if remaining_games is not None and len(remaining_games) > 0 else []
                 
-                # Parse movetext efficiently in smaller sub-chunks
-                parsed_chunk = add_parsed_moves(chunk_df, chunk_size=parse_chunk_size)
-                total_included += len(parsed_chunk)
+                batch_num += 1
+                logger.info(f"Saved batch {batch_num} with {batch_size} games")
                 
-                # Add to current batch
-                current_batch_data.append(parsed_chunk)
-                
-                # Check if we need to save a batch
-                current_total = sum(len(chunk) for chunk in current_batch_data)
-                if current_total >= batch_size:
-                    # Combine chunks and save batch
-                    combined_df = pl.concat(current_batch_data)
-                    
-                    # Save exactly batch_size games
-                    batch_df = combined_df.head(batch_size)
-                    output_file = _save_batch_df(batch_df, batch_num, output_dir, output_prefix)
-                    if output_file:
-                        output_files.append(output_file)
-                    
-                    # Keep remaining games for next batch
-                    remaining_games = combined_df.tail(current_total - batch_size) if current_total > batch_size else None
-                    current_batch_data = [remaining_games] if remaining_games is not None and len(remaining_games) > 0 else []
-                    
-                    batch_num += 1
-                    logger.info(f"Saved batch {batch_num} with {batch_size} games")
-                    
-                    # Force garbage collection
-                    del combined_df, batch_df
-                    gc.collect()
-                
-                # Clean up chunk memory
-                del chunk_df, parsed_chunk
+                # Force garbage collection
+                del combined_df, batch_df
                 gc.collect()
-                
-        except Exception as e:
-            logger.error(f"Error processing file {parquet_file}: {e}")
-            continue
+    
+    # Prepare file info for threading
+    file_infos = [(i, file, len(parquet_files)) for i, file in enumerate(parquet_files)]
+    
+    # Process files using ThreadPoolExecutor
+    with ThreadPoolExecutor(max_workers=num_threads) as executor:
+        # Submit all file processing tasks
+        future_to_file = {
+            executor.submit(_process_single_file, file_info, min_elo, file_chunk_size, parse_chunk_size): file_info
+            for file_info in file_infos
+        }
         
-        # Clean up memory after each file
-        gc.collect()
+        # Process completed tasks with progress bar
+        with tqdm(total=len(parquet_files), desc="Processing files") as pbar:
+            for future in as_completed(future_to_file):
+                file_info = future_to_file[future]
+                file_idx, parquet_file, _ = file_info
+                
+                try:
+                    processed_chunks = future.result()
+                    
+                    # Update statistics
+                    for chunk in processed_chunks:
+                        total_processed += len(chunk)
+                        total_included += len(chunk)
+                    
+                    # Add processed chunks to batch (thread-safe)
+                    with batch_lock:
+                        current_batch_data.extend(processed_chunks)
+                    
+                    # Check if we need to save a batch
+                    save_batch_if_needed()
+                    
+                except Exception as e:
+                    logger.error(f"Error processing file {parquet_file}: {e}")
+                
+                pbar.update(1)
+                gc.collect()
     
     # Save final batch if it has any games
     if current_batch_data:
@@ -410,6 +478,7 @@ def main():
     parser.add_argument("--batch-mode", action="store_true", help="Use batch processing for large datasets")
     parser.add_argument("--file-chunk-size", type=int, default=5000, help="Games to read from each file at once (default: 5000)")
     parser.add_argument("--parse-chunk-size", type=int, default=500, help="Games to parse movetext for at once (default: 500)")
+    parser.add_argument("--threads", type=int, default=0, help="Number of threads for parallel processing (0 = auto-detect, default: 0)")
     parser.add_argument("--sample", type=int, help="Sample N games for testing (only in single file mode)")
     parser.add_argument("--show-examples", action="store_true", help="Show example parsed moves (only in single file mode)")
     
@@ -431,7 +500,8 @@ def main():
                 output_dir=output_dir,
                 output_prefix=args.output_prefix,
                 file_chunk_size=args.file_chunk_size,
-                parse_chunk_size=args.parse_chunk_size
+                parse_chunk_size=args.parse_chunk_size,
+                num_threads=args.threads
             )
             
             print(f"\nBatch processing complete!")
