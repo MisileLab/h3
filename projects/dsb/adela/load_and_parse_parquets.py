@@ -78,7 +78,8 @@ def _process_single_file(
     min_elo: int,
     file_chunk_size: int,
     parse_chunk_size: int,
-    progress_callback: Optional[Callable[[int, int], None]] = None
+    progress_callback: Optional[Callable[[int, int], None]] = None,
+    chunk_consumer: Optional[Callable[[pl.DataFrame], None]] = None
 ) -> List[pl.DataFrame]:
     """Process a single Parquet file and return chunks of processed data.
     
@@ -119,6 +120,13 @@ def _process_single_file(
             # Parse movetext efficiently in smaller sub-chunks
             parsed_chunk = add_parsed_moves(chunk_df, chunk_size=parse_chunk_size)
             processed_chunks.append(parsed_chunk)
+
+            # Emit chunk to shared collector immediately to enable timely batch saves
+            if chunk_consumer is not None:
+                try:
+                    chunk_consumer(parsed_chunk)
+                except Exception as e:
+                    logger.error(f"Failed to enqueue processed chunk from {parquet_file}: {e}")
 
             # Update progress with processed and included counts
             if progress_callback is not None:
@@ -205,8 +213,11 @@ def process_parquet_files_in_batches(
     batch_lock = threading.Lock()
     progress_lock = threading.Lock()
 
-    # Global games progress bar
-    games_pbar = tqdm(total=grand_total_rows, desc="Processing games")
+    # Global games progress bar (disable if no total or non-TTY to avoid flooding logs)
+    disable_games_bar = grand_total_rows <= 0
+    games_pbar = tqdm(total=grand_total_rows if not disable_games_bar else None,
+                      desc="Processing games",
+                      disable=disable_games_bar)
 
     def progress_callback(processed_rows: int, included_rows: int) -> None:
         nonlocal total_processed, total_included
@@ -214,9 +225,10 @@ def process_parquet_files_in_batches(
             total_processed += processed_rows
             total_included += included_rows
             # Ensure bar reflects processed rows
-            games_pbar.update(processed_rows)
-            # Show included as postfix
-            games_pbar.set_postfix(included=total_included)
+            if not disable_games_bar:
+                games_pbar.update(processed_rows)
+                # Show included as postfix
+                games_pbar.set_postfix(included=total_included)
     
     def save_batch_if_needed():
         """Thread-safe batch saving function."""
@@ -249,8 +261,22 @@ def process_parquet_files_in_batches(
     # Process files using ThreadPoolExecutor
     with ThreadPoolExecutor(max_workers=num_threads) as executor:
         # Submit all file processing tasks
+        def enqueue_chunk(df_chunk: pl.DataFrame) -> None:
+            with batch_lock:
+                current_batch_data.append(df_chunk)
+            # Try saving immediately if we reached threshold
+            save_batch_if_needed()
+
         future_to_file = {
-            executor.submit(_process_single_file, file_info, min_elo, file_chunk_size, parse_chunk_size, progress_callback): file_info
+            executor.submit(
+                _process_single_file,
+                file_info,
+                min_elo,
+                file_chunk_size,
+                parse_chunk_size,
+                progress_callback,
+                enqueue_chunk,
+            ): file_info
             for file_info in file_infos
         }
         
@@ -261,15 +287,8 @@ def process_parquet_files_in_batches(
                 file_idx, parquet_file, _ = file_info
                 
                 try:
-                    processed_chunks = future.result()
-                    
-                    # Add processed chunks to batch (thread-safe)
-                    with batch_lock:
-                        current_batch_data.extend(processed_chunks)
-                    
-                    # Check if we need to save a batch
-                    save_batch_if_needed()
-                    
+                    # Ensure any exception in worker is surfaced
+                    _ = future.result()
                 except Exception as e:
                     logger.error(f"Error processing file {parquet_file}: {e}")
                 
@@ -297,7 +316,8 @@ def process_parquet_files_in_batches(
             logger.info(f"Saved final batch {batch_num + 1} to {output_file} with {len(combined_df)} games")
     
     # Close progress bar
-    games_pbar.close()
+    if not disable_games_bar:
+        games_pbar.close()
 
     logger.info(f"Processing complete: {total_processed} games processed, {total_included} games included")
     logger.info(f"Created {len(output_files)} batch files in {output_dir}")
