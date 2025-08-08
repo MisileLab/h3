@@ -225,24 +225,22 @@ def process_parquet_files_in_batches(
         with batch_lock:
             current_total = sum(len(chunk) for chunk in current_batch_data)
             if current_total >= batch_size:
-                # Combine chunks and save batch
+                # Combine chunks and save one or more full batches
                 combined_df = pl.concat(current_batch_data)
-                
-                # Save exactly batch_size games
-                batch_df = combined_df.head(batch_size)
-                output_file = _save_batch_df(batch_df, batch_num, output_dir, output_prefix)
-                if output_file:
-                    output_files.append(output_file)
-                
-                # Keep remaining games for next batch
-                remaining_games = combined_df.tail(current_total - batch_size) if current_total > batch_size else None
-                current_batch_data = [remaining_games] if remaining_games is not None and len(remaining_games) > 0 else []
-                
-                batch_num += 1
-                logger.info(f"Saved batch {batch_num} with {batch_size} games")
+
+                while len(combined_df) >= batch_size:
+                    batch_df = combined_df.head(batch_size)
+                    output_file = _save_batch_df(batch_df, batch_num, output_dir, output_prefix)
+                    if output_file:
+                        output_files.append(output_file)
+                        logger.info(f"Saved batch {batch_num} to {output_file} with {len(batch_df)} games")
+                    batch_num += 1
+                    combined_df = combined_df.slice(batch_size, len(combined_df) - batch_size)
+
+                # Keep any remaining games for next batch
+                current_batch_data = [combined_df] if len(combined_df) > 0 else []
                 
                 # Force garbage collection
-                del combined_df, batch_df
                 gc.collect()
     
     # Prepare file info for threading
@@ -281,11 +279,22 @@ def process_parquet_files_in_batches(
     # Save final batch if it has any games
     if current_batch_data:
         combined_df = pl.concat(current_batch_data)
+        # Drain any remaining full batches
+        while len(combined_df) >= batch_size:
+            batch_df = combined_df.head(batch_size)
+            output_file = _save_batch_df(batch_df, batch_num, output_dir, output_prefix)
+            if output_file:
+                output_files.append(output_file)
+                logger.info(f"Saved batch {batch_num} to {output_file} with {len(batch_df)} games")
+            batch_num += 1
+            combined_df = combined_df.slice(batch_size, len(combined_df) - batch_size)
+
+        # Save any remainder as final batch
         if len(combined_df) > 0:
             output_file = _save_batch_df(combined_df, batch_num, output_dir, output_prefix)
             if output_file:
                 output_files.append(output_file)
-            logger.info(f"Saved final batch {batch_num + 1} with {len(combined_df)} games")
+            logger.info(f"Saved final batch {batch_num + 1} to {output_file} with {len(combined_df)} games")
     
     # Close progress bar
     games_pbar.close()
@@ -314,12 +323,26 @@ def _save_batch_df(batch_df: pl.DataFrame, batch_num: int, output_dir: Path, pre
     # Generate output filename
     output_file = output_dir / f"{prefix}_batch_{batch_num:06d}.parquet"
     
-    # Save with compression
-    batch_df.write_parquet(
-        output_file,
-        compression="zstd",
-        use_pyarrow=True
-    )
+    # Save with compression; prefer native writer for portability
+    try:
+        batch_df.write_parquet(output_file, compression="zstd")
+    except Exception as e:
+        logger.error(f"Primary Parquet write failed for {output_file}: {e}")
+        # Fallback: try with PyArrow if available
+        try:
+            batch_df.write_parquet(output_file, compression="zstd", use_pyarrow=True)
+        except Exception as e2:
+            logger.error(f"Fallback Parquet write also failed for {output_file}: {e2}")
+            return None
+
+    # Verify file exists and non-empty
+    try:
+        if not output_file.exists() or output_file.stat().st_size == 0:
+            logger.error(f"Output file missing or empty after write: {output_file}")
+            return None
+    except Exception:
+        # If stat fails, still return path; caller can handle
+        pass
     
     return output_file
 
