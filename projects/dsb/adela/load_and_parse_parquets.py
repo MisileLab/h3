@@ -4,7 +4,7 @@
 import re
 import argparse
 from pathlib import Path
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Callable
 import logging
 import gc
 import threading
@@ -74,10 +74,11 @@ def parse_movetext_to_moves(movetext: str) -> list[str]:
 
 
 def _process_single_file(
-    file_info: tuple,
+    file_info: tuple[int, Path, int],
     min_elo: int,
     file_chunk_size: int,
-    parse_chunk_size: int
+    parse_chunk_size: int,
+    progress_callback: Optional[Callable[[int, int], None]] = None
 ) -> List[pl.DataFrame]:
     """Process a single Parquet file and return chunks of processed data.
     
@@ -109,11 +110,20 @@ def _process_single_file(
             ).collect()
             
             if len(chunk_df) == 0:
+                # Update processed count even if nothing included
+                if progress_callback is not None:
+                    rows_in_slice = min(file_chunk_size, max(0, total_rows - chunk_start))
+                    progress_callback(rows_in_slice, 0)
                 continue
             
             # Parse movetext efficiently in smaller sub-chunks
             parsed_chunk = add_parsed_moves(chunk_df, chunk_size=parse_chunk_size)
             processed_chunks.append(parsed_chunk)
+
+            # Update progress with processed and included counts
+            if progress_callback is not None:
+                rows_in_slice = min(file_chunk_size, max(0, total_rows - chunk_start))
+                progress_callback(rows_in_slice, len(parsed_chunk))
             
             # Clean up memory
             del chunk_df
@@ -177,6 +187,15 @@ def process_parquet_files_in_batches(
     
     logger.info(f"Using {num_threads} threads for parallel processing")
     
+    # Precompute total number of rows for progress bar
+    file_to_total_rows: Dict[Path, int] = {}
+    for f in parquet_files:
+        try:
+            file_to_total_rows[f] = pl.scan_parquet(str(f)).select(pl.count()).collect().item()
+        except Exception:
+            file_to_total_rows[f] = 0
+    grand_total_rows = sum(file_to_total_rows.values())
+
     # Initialize batch tracking with thread safety
     current_batch_data = []
     batch_num = 0
@@ -184,6 +203,20 @@ def process_parquet_files_in_batches(
     total_included = 0
     output_files = []
     batch_lock = threading.Lock()
+    progress_lock = threading.Lock()
+
+    # Global games progress bar
+    games_pbar = tqdm(total=grand_total_rows, desc="Processing games")
+
+    def progress_callback(processed_rows: int, included_rows: int) -> None:
+        nonlocal total_processed, total_included
+        with progress_lock:
+            total_processed += processed_rows
+            total_included += included_rows
+            # Ensure bar reflects processed rows
+            games_pbar.update(processed_rows)
+            # Show included as postfix
+            games_pbar.set_postfix(included=total_included)
     
     def save_batch_if_needed():
         """Thread-safe batch saving function."""
@@ -219,7 +252,7 @@ def process_parquet_files_in_batches(
     with ThreadPoolExecutor(max_workers=num_threads) as executor:
         # Submit all file processing tasks
         future_to_file = {
-            executor.submit(_process_single_file, file_info, min_elo, file_chunk_size, parse_chunk_size): file_info
+            executor.submit(_process_single_file, file_info, min_elo, file_chunk_size, parse_chunk_size, progress_callback): file_info
             for file_info in file_infos
         }
         
@@ -231,11 +264,6 @@ def process_parquet_files_in_batches(
                 
                 try:
                     processed_chunks = future.result()
-                    
-                    # Update statistics
-                    for chunk in processed_chunks:
-                        total_processed += len(chunk)
-                        total_included += len(chunk)
                     
                     # Add processed chunks to batch (thread-safe)
                     with batch_lock:
@@ -259,6 +287,9 @@ def process_parquet_files_in_batches(
                 output_files.append(output_file)
             logger.info(f"Saved final batch {batch_num + 1} with {len(combined_df)} games")
     
+    # Close progress bar
+    games_pbar.close()
+
     logger.info(f"Processing complete: {total_processed} games processed, {total_included} games included")
     logger.info(f"Created {len(output_files)} batch files in {output_dir}")
     
