@@ -11,7 +11,7 @@ dependencies = [
   "modal==1.1.1",
   # https://modallabscommunity.slack.com/archives/C069RAH7X4M/p1741644232430889
   "protobuf<5.0.0",
-  "safetensors==0.6.1",
+  "safetensors==0.6.2",
   "torch==2.8.0",
   "transformers==4.55.0",
 ]
