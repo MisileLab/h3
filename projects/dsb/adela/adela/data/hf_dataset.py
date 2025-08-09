@@ -12,7 +12,7 @@ import random
 from pathlib import Path
 from collections.abc import Iterable
 
-from huggingface_hub import create_repo, upload_folder, snapshot_download
+from huggingface_hub import create_repo, upload_large_folder, snapshot_download
 
 
 def _collect_parquet_files(folder: Path) -> list[Path]:
@@ -24,8 +24,20 @@ def _collect_parquet_files(folder: Path) -> list[Path]:
 def _ensure_dataset_readme(tmp_dir: Path, repo_id: str) -> Path:
     readme = tmp_dir / "README.md"
     if not readme.exists():
-        readme.write_text(
-            f"""# {repo_id}\n\nDataset uploaded by Adela tools.\n\nSplits are under `data/train`, `data/validation`, `data/test`.\nFiles are Parquet with columns similar to Lichess exports plus `parsed_moves`/`num_moves`.\n""",
+        _ = readme.write_text(
+            f"""---
+license: cc0-1.0
+language:
+- en
+pretty_name: adela dataset
+---
+# {repo_id}
+
+Dataset uploaded by Adela tools.
+
+Splits are under `data/train`, `data/validation`, `data/test`.
+Files are Parquet with columns similar to Lichess exports plus `parsed_moves`/`num_moves`.
+""",
             encoding="utf-8",
         )
     return readme
@@ -104,18 +116,16 @@ def split_and_upload_parquet(
     _link_or_copy(val_files, tmp_root / "data" / "validation")
     _link_or_copy(test_files, tmp_root / "data" / "test")
 
-    _ensure_dataset_readme(tmp_root, repo_id)
+    _ = _ensure_dataset_readme(tmp_root, repo_id)
 
     # Create repo if needed
-    create_repo(repo_id=repo_id, repo_type="dataset", exist_ok=True)
+    _ = create_repo(repo_id=repo_id, repo_type="dataset", exist_ok=True)
 
-    # Upload the folder structure
-    upload_folder(
+    # Upload the folder structure (optimized for large datasets)
+    _ = upload_large_folder(
         folder_path=str(tmp_root),
         repo_id=repo_id,
         repo_type="dataset",
-        path_in_repo=".",
-        commit_message=commit_message,
     )
 
 
