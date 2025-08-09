@@ -312,17 +312,11 @@ class BatchParquetDataset(Dataset[tuple[np.ndarray, np.ndarray, np.ndarray, floa
                     
                     return board_tensor, additional_features, policy, value
                 else:
-                    # Fallback: return a dummy position if something went wrong
-                    board = BoardRepresentation()
-                    board_tensor = board.get_board_tensor()
-                    additional_features = board.get_additional_features()
-                    policy = np.zeros(1968, dtype=np.float32)
-                    value = 0.0
-                    return board_tensor, additional_features, policy, value
+                    raise IndexError(f"Index {idx} out of range for {self.total_games} games")
             
             current_idx += num_rows
         
-        raise IndexError(f"Index {idx} out of range for {self.total_games} games")
+        raise IndexError(f"Index {idx} out of range for {self.total_games} games") from None
 
 
 @final
