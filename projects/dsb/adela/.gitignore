@@ -1,4 +1,3 @@
-
 # Python.gitignore by ignofierplus
 __pycache__/
 *.py[codz]

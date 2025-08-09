@@ -23,7 +23,6 @@ from adela.experts.specialized import (
 )
 from adela.gating.system import MixtureOfExperts
 from adela.mcts.search import MCTS
-from load_and_parse_parquets import add_parsed_moves
 
 
 @final
@@ -93,7 +92,6 @@ class BatchParquetDataset(Dataset[tuple[np.ndarray, np.ndarray, np.ndarray, floa
         batch_size: int = 1000,
         min_elo: int = 2000,
         max_positions_per_game: int = 30,
-        parse_chunk_size: int = 1000,
     ) -> None:
         """Initialize the batch parquet dataset.
 
@@ -102,13 +100,11 @@ class BatchParquetDataset(Dataset[tuple[np.ndarray, np.ndarray, np.ndarray, floa
             batch_size: Size of batches to load from each file.
             min_elo: Minimum Elo rating for games to include.
             max_positions_per_game: Maximum positions to extract per game.
-            parse_chunk_size: Chunk size for move parsing if needed.
         """
         self.file_paths: list[str] = [str(p) for p in file_paths]
         self.batch_size: int = batch_size
         self.min_elo: int = min_elo
         self.max_positions_per_game: int = max_positions_per_game
-        self.parse_chunk_size: int = parse_chunk_size
         
         # Cache for loaded data
         self._cached_data: dict[str, tuple[list[str], list[np.ndarray], list[float]]] = {}
@@ -156,12 +152,10 @@ class BatchParquetDataset(Dataset[tuple[np.ndarray, np.ndarray, np.ndarray, floa
         if len(df) == 0:
             return [], [], []
         
-        # Ensure parsed_moves column exists
+        # Require parsed_moves column to exist
         parsed_moves_col = self._pick_column(df, ["parsed_moves"])
         if not parsed_moves_col:
-            from load_and_parse_parquets import add_parsed_moves
-            df = add_parsed_moves(df, chunk_size=self.parse_chunk_size)
-            parsed_moves_col = "parsed_moves"
+            raise ValueError(f"Parquet file {file_path} missing required 'parsed_moves' column. Data must be pre-processed.")
         
         result_col = self._pick_column(df, ["result", "Result"])
         
@@ -449,11 +443,9 @@ class ParquetProcessor:
         self,
         min_elo: int = 2000,
         max_positions_per_game: int = 30,
-        parse_chunk_size: int = 1000,
     ) -> None:
         self.min_elo = min_elo
         self.max_positions_per_game = max_positions_per_game
-        self.parse_chunk_size = parse_chunk_size
 
     def _pick_column(self, df: pl.DataFrame, candidates: list[str]) -> str | None:
         for name in candidates:
@@ -558,11 +550,10 @@ class ParquetProcessor:
         if len(df) == 0:
             return [], [], []
 
-        # Ensure parsed_moves exist
-        parsed_moves_col = self._pick_column(df, ["parsed_moves"]) or "parsed_moves"
-        if parsed_moves_col not in df.columns:
-            df = add_parsed_moves(df, chunk_size=self.parse_chunk_size)
-            parsed_moves_col = "parsed_moves"
+        # Require parsed_moves to exist
+        parsed_moves_col = self._pick_column(df, ["parsed_moves"])
+        if not parsed_moves_col or parsed_moves_col not in df.columns:
+            raise ValueError("Parquet data missing required 'parsed_moves' column. Data must be pre-processed.")
 
         result_col = self._pick_column(df, ["result", "Result"]) if df is not None else None
 

@@ -114,30 +114,29 @@ def train_from_pgn(
     print(f"Saved final model: {final_model_path}")
 
 
-def train_from_parquet(
-    parquet_path: str,
+def train_from_local_data(
+    data_path: str,
     output_dir: str,
     num_epochs: int = 10,
     batch_size: int = 256,
     min_elo: int = 2000,
-    parse_chunk_size: int = 1000,
     early_stop_patience: int = 3,
     early_stop_min_delta: float = 0.0,
     device: str | None = None
 ) -> None:
-    """Train the model from Parquet data.
+    """Train the model from local Parquet data with predefined splits.
 
     Args:
-        parquet_path: Path to a .parquet file or directory with parquet files.
+        data_path: Path to directory containing train/validation/test folders with parquet files.
         output_dir: Directory to save the model.
         num_epochs: Number of epochs to train for.
         batch_size: Batch size.
-        validation_split: Fraction of data to use for validation.
         min_elo: Minimum Elo rating for games to include.
-        parse_chunk_size: Chunk size for movetext parsing if needed.
+        early_stop_patience: Early stopping patience.
+        early_stop_min_delta: Minimum improvement for early stopping.
         device: Device to train on.
     """
-    print(f"Training from Parquet or HF dataset: {parquet_path}")
+    print(f"Training from local data: {data_path}")
     device = device or ("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
 
@@ -145,7 +144,131 @@ def train_from_parquet(
 
     model = create_mixture_of_experts(device=device)
 
-    processor = ParquetProcessor(min_elo=min_elo, parse_chunk_size=parse_chunk_size)
+    processor = ParquetProcessor(min_elo=min_elo)
+
+    # Look for split folders in the data path
+    p = Path(data_path)
+    root_candidates = [p, p / "data"]
+    found_split_root = None
+    
+    for root in root_candidates:
+        if (root / "train").exists() and (root / "validation").exists() and (root / "test").exists():
+            found_split_root = root
+            break
+    
+    if found_split_root is None:
+        raise ValueError(
+            f"Expected split folders under '{p}' or '{p}/data' (train/validation/test). "
+            f"Please create these folders and place your parquet files inside them."
+        )
+
+    print(f"Found data splits in: {found_split_root}")
+
+    def _process_dir(dir_path: Path) -> tuple[list[str], list[np.ndarray], list[float]]:
+        return processor.process_parquet(str(dir_path))
+
+    train_data = _process_dir(found_split_root / "train")
+    val_data = _process_dir(found_split_root / "validation")
+    test_data = _process_dir(found_split_root / "test")
+
+    # Sanity checks
+    if len(train_data[0]) == 0:
+        raise ValueError("Train split contains zero positions after processing.")
+    if len(val_data[0]) == 0:
+        raise ValueError("Validation split contains zero positions after processing.")
+    if len(test_data[0]) == 0:
+        raise ValueError("Test split contains zero positions after processing.")
+
+    print(f"Train positions: {len(train_data[0])}")
+    print(f"Validation positions: {len(val_data[0])}")
+    print(f"Test positions: {len(test_data[0])}")
+
+    # Build datasets/loaders from explicit splits
+    train_dataset = ChessDataset(*train_data)
+    val_dataset = ChessDataset(*val_data)
+    test_dataset = ChessDataset(*test_data)
+
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+    val_loader = DataLoader(val_dataset, batch_size=batch_size)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size)
+
+    trainer = Trainer(model, device=device)
+
+    print("Training model...")
+    best_val_loss = math.inf
+    epochs_no_improve = 0
+    best_ckpt_path = None
+    for epoch in range(num_epochs):
+        print(f"Epoch {epoch+1}/{num_epochs}")
+
+        train_metrics = trainer.train_epoch(train_loader)
+        print(f"Training loss: {train_metrics['loss']:.4f}")
+        print(f"Training policy loss: {train_metrics['policy_loss']:.4f}")
+        print(f"Training value loss: {train_metrics['value_loss']:.4f}")
+
+        val_metrics = trainer.validate(val_loader)
+        print(f"Validation loss: {val_metrics['val_loss']:.4f}")
+        print(f"Validation policy loss: {val_metrics['val_policy_loss']:.4f}")
+        print(f"Validation value loss: {val_metrics['val_value_loss']:.4f}")
+        
+        # Early stopping
+        val_loss = float(val_metrics["val_loss"])
+        if best_val_loss - val_loss > early_stop_min_delta:
+            best_val_loss = val_loss
+            epochs_no_improve = 0
+            best_ckpt_path = os.path.join(output_dir, "model_best.pt")
+            trainer.save_model(best_ckpt_path)
+            print(f"Improved val_loss -> saved best: {best_ckpt_path}")
+        else:
+            epochs_no_improve += 1
+            print(f"No improvement ({epochs_no_improve}/{early_stop_patience})")
+            if epochs_no_improve >= early_stop_patience:
+                print("Early stopping triggered.")
+                break
+
+    final_model_path = os.path.join(output_dir, "model_final.pt")
+    trainer.save_model(final_model_path)
+    print(f"Saved final model: {final_model_path}")
+
+    # Test evaluation
+    print("Evaluating on test split...")
+    test_metrics = trainer.validate(test_loader)
+    print(f"Test loss: {test_metrics['val_loss']:.4f}")
+    print(f"Test policy loss: {test_metrics['val_policy_loss']:.4f}")
+    print(f"Test value loss: {test_metrics['val_value_loss']:.4f}")
+
+
+def train_from_parquet(
+    parquet_path: str,
+    output_dir: str,
+    num_epochs: int = 10,
+    batch_size: int = 256,
+    min_elo: int = 2000,
+    early_stop_patience: int = 3,
+    early_stop_min_delta: float = 0.0,
+    device: str | None = None
+) -> None:
+    """Train the model from Parquet data (prioritizes local over HuggingFace).
+
+    Args:
+        parquet_path: Path to local directory with split folders or HuggingFace dataset ID.
+        output_dir: Directory to save the model.
+        num_epochs: Number of epochs to train for.
+        batch_size: Batch size.
+        min_elo: Minimum Elo rating for games to include.
+        early_stop_patience: Early stopping patience.
+        early_stop_min_delta: Minimum improvement for early stopping.
+        device: Device to train on.
+    """
+    print(f"Training from Parquet: {parquet_path}")
+    device = device or ("cuda" if torch.cuda.is_available() else "cpu")
+    print(f"Using device: {device}")
+
+    os.makedirs(output_dir, exist_ok=True)
+
+    model = create_mixture_of_experts(device=device)
+
+    processor = ParquetProcessor(min_elo=min_elo)
 
     # Strictly require predefined splits (train/validation/test) to exist
     train_data: tuple[list[str], list[np.ndarray], list[float]]
@@ -155,9 +278,25 @@ def train_from_parquet(
     def _process_dir(dir_path: Path) -> tuple[list[str], list[np.ndarray], list[float]]:
         return processor.process_parquet(str(dir_path))
 
-    if "/" in parquet_path and not Path(parquet_path).exists():
-        # Hugging Face repo id: download each split explicitly
-        print(f"Detected HF dataset repo: {parquet_path}. Downloading predefined splits (train/validation/test)...")
+    # Always prioritize local path first, even if it contains "/"
+    p = Path(parquet_path)
+    root_candidates = [p, p / "data"]
+    found_split_root = None
+    
+    for root in root_candidates:
+        if (root / "train").exists() and (root / "validation").exists() and (root / "test").exists():
+            found_split_root = root
+            break
+    
+    if found_split_root is not None:
+        # Use local data
+        print(f"Using local data splits from: {found_split_root}")
+        train_data = _process_dir(found_split_root / "train")
+        val_data = _process_dir(found_split_root / "validation")
+        test_data = _process_dir(found_split_root / "test")
+    elif "/" in parquet_path and not p.exists():
+        # Fallback to Hugging Face repo if local doesn't exist
+        print(f"Local path not found. Detected HF dataset repo: {parquet_path}. Downloading predefined splits...")
         tr_root = download_split(parquet_path, split="train")
         va_root = download_split(parquet_path, split="validation")
         te_root = download_split(parquet_path, split="test")
@@ -165,21 +304,10 @@ def train_from_parquet(
         val_data = _process_dir(va_root / "data" / "validation")
         test_data = _process_dir(te_root / "data" / "test")
     else:
-        # Local path: expect data/train|validation|test or train|validation|test
-        p = Path(parquet_path)
-        root_candidates = [p, p / "data"]
-        found_split_root = None
-        for root in root_candidates:
-            if (root / "train").exists() and (root / "validation").exists() and (root / "test").exists():
-                found_split_root = root
-                break
-        if found_split_root is None:
-            raise ValueError(
-                f"Expected split folders under '{p}' (train/validation/test or data/train|validation|test)."
-            )
-        train_data = _process_dir(found_split_root / "train")
-        val_data = _process_dir(found_split_root / "validation")
-        test_data = _process_dir(found_split_root / "test")
+        raise ValueError(
+            f"Expected split folders under '{p}' or '{p}/data' (train/validation/test). "
+            f"If using HuggingFace dataset, ensure the repo exists and is accessible."
+        )
 
     # Sanity checks
     if len(train_data[0]) == 0:
@@ -466,6 +594,15 @@ if __name__ == "__main__":
     
     # Example usage
     # Uncomment one of these to run the example
+    
+    # Train from local data with predefined splits (RECOMMENDED)
+    # train_from_local_data(
+    #     data_path="data/games",  # Path to folder containing train/validation/test subfolders
+    #     output_dir="models/local_data_trained",
+    #     num_epochs=5,
+    #     batch_size=256,
+    #     min_elo=1000
+    # )
     
     # Train from PGN data
     # train_from_pgn(
