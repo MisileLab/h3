@@ -7,7 +7,7 @@ train_from_parquet(
   num_epochs=50,
   batch_size=256,
   validation_split=0.1,
-  min_elo=1800,
+  min_elo=1000,
   parse_chunk_size=1000,
   early_stop_patience=5,
   early_stop_min_delta=1e-3,
