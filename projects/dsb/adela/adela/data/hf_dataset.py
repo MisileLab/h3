@@ -42,24 +42,6 @@ def split_and_upload_parquet(
     if abs((train_ratio + val_ratio + test_ratio) - 1.0) > 1e-6:
         raise ValueError("train_ratio + val_ratio + test_ratio must equal 1.0")
 
-    # If a prepared temp directory exists, skip splitting and just upload it
-    tmp_root = Path(".hf_upload_tmp")
-    if tmp_root.exists():
-        data_files: dict[str, list[str]] = {}
-        for split in ("train", "validation", "test"):
-            split_dir = tmp_root / "data" / split
-            if split_dir.exists() and split_dir.is_dir():
-                files = sorted(split_dir.glob("*.parquet"))
-                if files:
-                    data_files[split] = [str(p) for p in files]
-        if not data_files:
-            raise ValueError(
-                f"Found {tmp_root} but it contains no parquet files under data/<split>/"
-            )
-        dsdict = load_dataset("parquet", data_files=data_files)
-        _ = dsdict.push_to_hub(repo_id=repo_id, commit_message=commit_message)
-        return None
-
     src = Path(source_folder)
     files = _collect_parquet_files(src)
     if not files:
