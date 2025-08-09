@@ -11,10 +11,9 @@ dependencies = [
   "numpy>=2.3.2",
   "tqdm>=4.65.0",
   "matplotlib>=3.7.0",
-  "wandb>=0.21.1",
+  "wandb>=0.15.0",
   "pyarrow>=21.0.0",
-  "huggingface-hub[hf-transfer]>=0.34.4",
-  "datasets>=4.0.0",
+  "huggingface-hub[hf-transfer]>=0.34.3",
 ]
 
 [project.optional-dependencies]
