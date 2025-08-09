@@ -2,6 +2,7 @@
 
 import os
 import math
+import numpy as np
 from pathlib import Path
 import torch
 from torch.utils.data import DataLoader, random_split
@@ -26,7 +27,7 @@ def train_from_pgn(
     min_elo: int = 2000,
     early_stop_patience: int = 3,
     early_stop_min_delta: float = 0.0,
-    device: str = "cuda" if torch.cuda.is_available() else "cpu"
+    device: str | None = None
 ) -> None:
     """Train the model from PGN data.
 
@@ -40,6 +41,7 @@ def train_from_pgn(
         device: Device to train on.
     """
     print(f"Training from PGN: {pgn_path}")
+    device = device or ("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
     
     # Create output directory
@@ -116,12 +118,11 @@ def train_from_parquet(
     output_dir: str,
     num_epochs: int = 10,
     batch_size: int = 256,
-    validation_split: float = 0.1,
     min_elo: int = 2000,
     parse_chunk_size: int = 1000,
     early_stop_patience: int = 3,
     early_stop_min_delta: float = 0.0,
-    device: str = "cuda" if torch.cuda.is_available() else "cpu"
+    device: str | None = None
 ) -> None:
     """Train the model from Parquet data.
 
@@ -136,6 +137,7 @@ def train_from_parquet(
         device: Device to train on.
     """
     print(f"Training from Parquet or HF dataset: {parquet_path}")
+    device = device or ("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
 
     os.makedirs(output_dir, exist_ok=True)
@@ -143,25 +145,61 @@ def train_from_parquet(
     model = create_mixture_of_experts(device=device)
 
     processor = ParquetProcessor(min_elo=min_elo, parse_chunk_size=parse_chunk_size)
-    # If input looks like a HF repo id, download the 'train' split; otherwise read local path
+
+    # Strictly require predefined splits (train/validation/test) to exist
+    train_data: tuple[list[str], list[np.ndarray], list[float]]
+    val_data: tuple[list[str], list[np.ndarray], list[float]]
+    test_data: tuple[list[str], list[np.ndarray], list[float]]
+
+    def _process_dir(dir_path: Path) -> tuple[list[str], list[np.ndarray], list[float]]:
+        return processor.process_parquet(str(dir_path))
+
     if "/" in parquet_path and not Path(parquet_path).exists():
-        print(f"Downloading HF dataset split: train from {parquet_path}")
-        local_root = download_split(parquet_path, split="train")
-        data_dir = local_root / "data" / "train"
-        positions, policies, values = processor.process_parquet(str(data_dir))
+        # Hugging Face repo id: download each split explicitly
+        print(f"Detected HF dataset repo: {parquet_path}. Downloading predefined splits (train/validation/test)...")
+        tr_root = download_split(parquet_path, split="train")
+        va_root = download_split(parquet_path, split="validation")
+        te_root = download_split(parquet_path, split="test")
+        train_data = _process_dir(tr_root / "data" / "train")
+        val_data = _process_dir(va_root / "data" / "validation")
+        test_data = _process_dir(te_root / "data" / "test")
     else:
-        positions, policies, values = processor.process_parquet(parquet_path)
+        # Local path: expect data/train|validation|test or train|validation|test
+        p = Path(parquet_path)
+        root_candidates = [p, p / "data"]
+        found_split_root = None
+        for root in root_candidates:
+            if (root / "train").exists() and (root / "validation").exists() and (root / "test").exists():
+                found_split_root = root
+                break
+        if found_split_root is None:
+            raise ValueError(
+                f"Expected split folders under '{p}' (train/validation/test or data/train|validation|test)."
+            )
+        train_data = _process_dir(found_split_root / "train")
+        val_data = _process_dir(found_split_root / "validation")
+        test_data = _process_dir(found_split_root / "test")
 
-    print(f"Processed {len(positions)} positions")
+    # Sanity checks
+    if len(train_data[0]) == 0:
+        raise ValueError("Train split contains zero positions after processing.")
+    if len(val_data[0]) == 0:
+        raise ValueError("Validation split contains zero positions after processing.")
+    if len(test_data[0]) == 0:
+        raise ValueError("Test split contains zero positions after processing.")
 
-    dataset = ChessDataset(positions, policies, values)
+    print(f"Train positions: {len(train_data[0])}")
+    print(f"Validation positions: {len(val_data[0])}")
+    print(f"Test positions: {len(test_data[0])}")
 
-    val_size = int(validation_split * len(dataset))
-    train_size = len(dataset) - val_size
-    train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
+    # Build datasets/loaders from explicit splits only
+    train_dataset = ChessDataset(*train_data)
+    val_dataset = ChessDataset(*val_data)
+    test_dataset = ChessDataset(*test_data)
 
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(val_dataset, batch_size=batch_size)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size)
 
     trainer = Trainer(model, device=device)
 
@@ -201,6 +239,13 @@ def train_from_parquet(
     trainer.save_model(final_model_path)
     print(f"Saved final model: {final_model_path}")
 
+    # Test evaluation
+    print("Evaluating on test split...")
+    test_metrics = trainer.validate(test_loader)
+    print(f"Test loss: {test_metrics['val_loss']:.4f}")
+    print(f"Test policy loss: {test_metrics['val_policy_loss']:.4f}")
+    print(f"Test value loss: {test_metrics['val_value_loss']:.4f}")
+
 def train_from_self_play(
     output_dir: str,
     num_games: int = 100,
@@ -210,7 +255,7 @@ def train_from_self_play(
     mcts_simulations: int = 100,
     early_stop_patience: int = 3,
     early_stop_min_delta: float = 0.0,
-    device: str = "cuda" if torch.cuda.is_available() else "cpu"
+    device: str | None = None
 ) -> None:
     """Train the model from self-play.
 
@@ -224,6 +269,7 @@ def train_from_self_play(
         device: Device to train on.
     """
     print(f"Training from self-play ({num_games} games)")
+    device = device or ("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
     
     # Create output directory
