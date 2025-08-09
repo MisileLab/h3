@@ -1,3 +1,45 @@
+"""Command-line tools for dataset upload/download on Hugging Face."""
+
+from __future__ import annotations
+
+import argparse
+from pathlib import Path
+
+from .hf_dataset import split_and_upload_parquet
+
+
+def main() -> int:
+  parser = argparse.ArgumentParser(description="Adela HF dataset tools")
+  sub = parser.add_subparsers(dest="cmd", required=True)
+
+  up = sub.add_parser("upload", help="Split local Parquet files and upload to HF")
+  up.add_argument("source", type=str, help="Folder with .parquet files")
+  up.add_argument("repo", type=str, help="HF dataset repo id, e.g. misilelab/adela-dataset")
+  up.add_argument("--train", type=float, default=0.8, dest="train_ratio")
+  up.add_argument("--val", type=float, default=0.1, dest="val_ratio")
+  up.add_argument("--test", type=float, default=0.1, dest="test_ratio")
+  up.add_argument("--message", type=str, default="Upload dataset with auto splits")
+
+  args = parser.parse_args()
+
+  if args.cmd == "upload":
+    split_and_upload_parquet(
+      source_folder=Path(args.source),
+      repo_id=args.repo,
+      train_ratio=args.train_ratio,
+      val_ratio=args.val_ratio,
+      test_ratio=args.test_ratio,
+      commit_message=args.message,
+    )
+    print(f"Uploaded splits to {args.repo}")
+    return 0
+
+  return 1
+
+
+if __name__ == "__main__":
+  raise SystemExit(main())
+
 """Command-line interface for the Lichess data pipeline."""
 
 import os

@@ -1,16 +1,16 @@
 """Training pipeline for the chess AI."""
 
 import os
-import time
-from typing import Dict, List, Tuple, Any, Optional, Iterator
+from pathlib import Path
+from typing import final
 
 import chess
 import chess.pgn
 import numpy as np
 import polars as pl
 import torch
-import torch.nn as nn
 import torch.optim as optim
+import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
 
 from adela.core.board import BoardRepresentation
@@ -22,17 +22,19 @@ from adela.experts.specialized import (
 )
 from adela.gating.system import MixtureOfExperts
 from adela.mcts.search import MCTS
+from load_and_parse_parquets import add_parsed_moves
 
 
-class ChessDataset(Dataset):
+@final
+class ChessDataset(Dataset[tuple[np.ndarray, np.ndarray, np.ndarray, float]]):
     """Dataset for training chess models."""
 
     def __init__(
-        self, 
-        positions: List[str],
-        policies: List[np.ndarray],
-        values: List[float],
-        augment: bool = True
+        self,
+        positions: list[str],
+        policies: list[np.ndarray],
+        values: list[float],
+        augment: bool = True,
     ) -> None:
         """Initialize the dataset.
 
@@ -42,10 +44,10 @@ class ChessDataset(Dataset):
             values: List of position values.
             augment: Whether to augment the data with board flips and rotations.
         """
-        self.positions = positions
-        self.policies = policies
-        self.values = values
-        self.augment = augment
+        self.positions: list[str] = positions
+        self.policies: list[np.ndarray] = policies
+        self.values: list[float] = values
+        self.augment: bool = augment
         
     def __len__(self) -> int:
         """Get the length of the dataset.
@@ -55,7 +57,7 @@ class ChessDataset(Dataset):
         """
         return len(self.positions)
     
-    def __getitem__(self, idx: int) -> Tuple[np.ndarray, np.ndarray, float]:
+    def __getitem__(self, idx: int) -> tuple[np.ndarray, np.ndarray, np.ndarray, float]:
         """Get an item from the dataset.
 
         Args:
@@ -79,13 +81,14 @@ class ChessDataset(Dataset):
         return board_tensor, additional_features, policy, value
 
 
+@final
 class PGNProcessor:
     """Processor for PGN files to extract training data."""
 
     def __init__(
-        self, 
+        self,
         min_elo: int = 2000,
-        max_positions_per_game: int = 30
+        max_positions_per_game: int = 30,
     ) -> None:
         """Initialize the PGN processor.
 
@@ -97,9 +100,9 @@ class PGNProcessor:
         self.max_positions_per_game = max_positions_per_game
         
     def process_pgn_file(
-        self, 
-        pgn_path: str
-    ) -> Tuple[List[str], List[np.ndarray], List[float]]:
+        self,
+        pgn_path: str,
+    ) -> tuple[list[str], list[np.ndarray], list[float]]:
         """Process a PGN file to extract training data.
 
         Args:
@@ -108,9 +111,9 @@ class PGNProcessor:
         Returns:
             Tuple of (positions, policies, values).
         """
-        positions = []
-        policies = []
-        values = []
+        positions: list[str] = []
+        policies: list[np.ndarray] = []
+        values: list[float] = []
         
         # Open the PGN file
         with open(pgn_path, "r") as f:
@@ -136,9 +139,9 @@ class PGNProcessor:
         return positions, policies, values
     
     def _process_game(
-        self, 
-        game: chess.pgn.Game
-    ) -> Tuple[List[str], List[np.ndarray], List[float]]:
+        self,
+        game: chess.pgn.Game,
+    ) -> tuple[list[str], list[np.ndarray], list[float]]:
         """Process a single game to extract training data.
 
         Args:
@@ -147,9 +150,9 @@ class PGNProcessor:
         Returns:
             Tuple of (positions, policies, values).
         """
-        positions = []
-        policies = []
-        values = []
+        positions: list[str] = []
+        policies: list[np.ndarray] = []
+        values: list[float] = []
         
         # Get the result
         result = game.headers.get("Result", "*")
@@ -195,6 +198,151 @@ class PGNProcessor:
         return positions, policies, values
 
 
+@final
+class ParquetProcessor:
+    """Processor for Parquet data to extract training data.
+
+    Uses Polars to load Parquet rows, ensures a parsed SAN move list is present,
+    and converts each game into training positions/policies/values similar to
+    the PGN processor.
+    """
+
+    def __init__(
+        self,
+        min_elo: int = 2000,
+        max_positions_per_game: int = 30,
+        parse_chunk_size: int = 1000,
+    ) -> None:
+        self.min_elo = min_elo
+        self.max_positions_per_game = max_positions_per_game
+        self.parse_chunk_size = parse_chunk_size
+
+    def _pick_column(self, df: pl.DataFrame, candidates: list[str]) -> str | None:
+        for name in candidates:
+            if name in df.columns:
+                return name
+        # try case-insensitive
+        lower_map = {c.lower(): c for c in df.columns}
+        for cand in candidates:
+            if cand.lower() in lower_map:
+                return lower_map[cand.lower()]
+        return None
+
+    def _filter_by_elo(self, df: pl.DataFrame) -> pl.DataFrame:
+        white_col = self._pick_column(df, ["WhiteElo", "white_elo"]) or "WhiteElo"
+        black_col = self._pick_column(df, ["BlackElo", "black_elo"]) or "BlackElo"
+        if white_col in df.columns and black_col in df.columns:
+            return df.filter((pl.col(white_col) >= self.min_elo) | (pl.col(black_col) >= self.min_elo))
+        return df
+
+    def _game_value_from_result(self, result: str) -> float:
+        if result == "1-0":
+            return 1.0
+        if result == "0-1":
+            return -1.0
+        return 0.0
+
+    def _process_row(
+        self,
+        row: dict[str, object],
+        result_col: str | None,
+        parsed_moves_col: str,
+    ) -> tuple[list[str], list[np.ndarray], list[float]]:
+        positions: list[str] = []
+        policies: list[np.ndarray] = []
+        values: list[float] = []
+
+        result_str = (row.get(result_col) if result_col else None) or row.get("Result") or row.get("result") or "*"
+        game_value = self._game_value_from_result(str(result_str))
+
+        board = chess.Board()
+        board_rep = BoardRepresentation(board.fen())
+
+        raw_val = row.get(parsed_moves_col)
+        moves_san: list[str]
+        if isinstance(raw_val, list):
+            moves_san = [str(m) for m in raw_val]
+        elif isinstance(raw_val, str):
+            # Some pipelines might store parsed_moves as a space-joined string; handle both
+            moves_san = [m for m in raw_val.split() if m]
+        else:
+            moves_san = []
+
+        limit = min(len(moves_san), self.max_positions_per_game)
+        for i in range(limit):
+            fen = board.fen()
+
+            policy = np.zeros(1968, dtype=np.float32)
+            san = moves_san[i]
+            try:
+                move = board.parse_san(san)
+            except ValueError:
+                # Skip unparsable SAN
+                break
+
+            try:
+                move_idx = board_rep.get_move_index(move)
+            except ValueError:
+                # If mapping fails, skip
+                break
+
+            policy[move_idx] = 1.0
+            positions.append(fen)
+            policies.append(policy)
+            values.append(game_value if board.turn == chess.WHITE else -game_value)
+
+            board.push(move)
+            board_rep = BoardRepresentation(board.fen())
+
+        return positions, policies, values
+
+    def process_parquet(self, parquet_path: str) -> tuple[list[str], list[np.ndarray], list[float]]:
+        """Process a Parquet file (or directory of files) into training data.
+
+        Args:
+            parquet_path: Path to a .parquet file or a directory containing parquet files.
+
+        Returns:
+            positions, policies, values
+        """
+        path = os.fspath(parquet_path)
+
+        # Load data: support single file or directory
+        if os.path.isdir(path):
+            # Lazy scan and collect for all parquet files
+            lazy = pl.concat([pl.scan_parquet(str(p)) for p in sorted(Path(path).glob("*.parquet"))])
+            df = lazy.collect()
+        else:
+            df = pl.read_parquet(path)
+
+        # Elo filter
+        df = self._filter_by_elo(df)
+        if len(df) == 0:
+            return [], [], []
+
+        # Ensure parsed_moves exist
+        parsed_moves_col = self._pick_column(df, ["parsed_moves"]) or "parsed_moves"
+        if parsed_moves_col not in df.columns:
+            df = add_parsed_moves(df, chunk_size=self.parse_chunk_size)
+            parsed_moves_col = "parsed_moves"
+
+        result_col = self._pick_column(df, ["result", "Result"]) if df is not None else None
+
+        positions_all: list[str] = []
+        policies_all: list[np.ndarray] = []
+        values_all: list[float] = []
+
+        cols: list[str] = [parsed_moves_col] + ([result_col] if result_col else [])
+        for row in df.select(cols).to_dicts():
+            pos, pol, val = self._process_row(row, result_col, parsed_moves_col)
+            if pos:
+                positions_all.extend(pos)
+                policies_all.extend(pol)
+                values_all.extend(val)
+
+        return positions_all, policies_all, values_all
+
+@final
 class SelfPlayGenerator:
     """Generator for self-play games."""
 
@@ -225,7 +373,7 @@ class SelfPlayGenerator:
             temperature=temperature
         )
         
-    def generate_games(self) -> Tuple[List[str], List[np.ndarray], List[float]]:
+    def generate_games(self) -> tuple[list[str], list[np.ndarray], list[float]]:
         """Generate self-play games.
 
         Returns:
@@ -245,15 +393,15 @@ class SelfPlayGenerator:
         
         return positions, policies, values
     
-    def _generate_game(self) -> Tuple[List[str], List[np.ndarray], List[float]]:
+    def _generate_game(self) -> tuple[list[str], list[np.ndarray], list[float]]:
         """Generate a single self-play game.
 
         Returns:
             Tuple of (positions, policies, values).
         """
-        positions = []
-        policies = []
-        values = []
+        positions: list[str] = []
+        policies: list[np.ndarray] = []
+        values: list[float] = []
         
         # Initialize the board
         board = BoardRepresentation()
@@ -298,7 +446,7 @@ class SelfPlayGenerator:
             game_value = 0.0
         
         # Set the values for all positions
-        for i, fen in enumerate(positions):
+        for fen in positions:
             # Value from the perspective of the current player
             board_temp = chess.Board(fen)
             value = game_value if board_temp.turn == chess.WHITE else -game_value
@@ -307,16 +455,17 @@ class SelfPlayGenerator:
         return positions, policies, values
 
 
+@final
 class Trainer:
     """Trainer for the chess AI."""
 
     def __init__(
-        self, 
+        self,
         model: MixtureOfExperts,
         lr: float = 0.001,
         weight_decay: float = 1e-4,
         batch_size: int = 256,
-        device: str = "cuda" if torch.cuda.is_available() else "cpu"
+        device: str | None = None,
     ) -> None:
         """Initialize the trainer.
 
@@ -327,24 +476,24 @@ class Trainer:
             batch_size: Batch size.
             device: Device to train on.
         """
-        self.model = model
-        self.device = device
-        self.batch_size = batch_size
+        self.model: MixtureOfExperts = model
+        self.device: str = device or ("cuda" if torch.cuda.is_available() else "cpu")
+        self.batch_size: int = batch_size
         
         # Move model to device
-        self.model.to(device)
+        self.model.to(self.device)
         
         # Create optimizer
-        self.optimizer = optim.Adam(
+        self.optimizer: optim.Optimizer = optim.Adam(
             self.model.parameters(),
             lr=lr,
             weight_decay=weight_decay
         )
         
     def train_epoch(
-        self, 
-        dataloader: DataLoader
-    ) -> Dict[str, float]:
+        self,
+        dataloader: DataLoader[tuple[np.ndarray, np.ndarray, np.ndarray, float]],
+    ) -> dict[str, float]:
         """Train for one epoch.
 
         Args:
@@ -391,7 +540,7 @@ class Trainer:
         
         # Calculate average metrics
         num_batches = len(dataloader)
-        metrics = {
+        metrics: dict[str, float] = {
             "loss": total_loss / num_batches,
             "policy_loss": policy_loss_sum / num_batches,
             "value_loss": value_loss_sum / num_batches
@@ -400,9 +549,9 @@ class Trainer:
         return metrics
     
     def validate(
-        self, 
-        dataloader: DataLoader
-    ) -> Dict[str, float]:
+        self,
+        dataloader: DataLoader[tuple[np.ndarray, np.ndarray, np.ndarray, float]],
+    ) -> dict[str, float]:
         """Validate the model.
 
         Args:
@@ -445,7 +594,7 @@ class Trainer:
         
         # Calculate average metrics
         num_batches = len(dataloader)
-        metrics = {
+        metrics: dict[str, float] = {
             "val_loss": total_loss / num_batches,
             "val_policy_loss": policy_loss_sum / num_batches,
             "val_value_loss": value_loss_sum / num_batches
@@ -473,7 +622,7 @@ class Trainer:
 def create_mixture_of_experts(
     num_filters: int = 256,
     num_blocks: int = 10,
-    device: str = "cuda" if torch.cuda.is_available() else "cpu"
+    device: str | None = None,
 ) -> MixtureOfExperts:
     """Create a mixture of experts model.
 
@@ -491,7 +640,7 @@ def create_mixture_of_experts(
     adaptation_experts = create_adaptation_experts(num_filters, num_blocks)
     
     # Combine experts
-    experts = {}
+    experts: dict[str, ExpertBase] = {}
     experts.update(phase_experts)
     experts.update(style_experts)
     experts.update(adaptation_experts)
@@ -500,6 +649,6 @@ def create_mixture_of_experts(
     model = MixtureOfExperts(experts)
     
     # Move to device
-    model.to(device)
+    model.to(device or ("cuda" if torch.cuda.is_available() else "cpu"))
     
     return model
