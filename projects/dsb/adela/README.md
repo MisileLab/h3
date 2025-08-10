@@ -8,7 +8,7 @@ A modern Mixture-of-Experts chess AI using PyTorch and MCTS.
 - Dynamic gating system to select and weight experts based on current board state
 - Integration of human gameplay patterns from Lichess data
 - Combined MCTS and neural network evaluation for efficient search
-- Self-play and human-data hybrid training pipeline
+- Human-data training pipeline using local datasets
 
 ## Installation
 
@@ -43,8 +43,8 @@ uv run python run.py play
 # Analyze a position
 uv run python run.py analyze --fen "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
-# Engine plays against itself
-uv run python run.py selfplay --games 5
+# Train using local parquet splits (see data/games README)
+uv run python train_model.py data/games
 
 # Run the Lichess data pipeline
 uv run python run_lichess_pipeline.py --games --puzzles --evaluations --num-months 1 --min-elo 2000

@@ -3,6 +3,7 @@
 import os
 from pathlib import Path
 from typing import final, override
+from collections.abc import Iterator
 
 import chess
 import chess.pgn
@@ -11,7 +12,7 @@ import polars as pl
 import torch
 import torch.optim as optim
 import torch.nn.functional as F
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset, DataLoader, IterableDataset
 
 from adela.core.board import BoardRepresentation
 from adela.experts.base import ExpertBase
@@ -21,7 +22,6 @@ from adela.experts.specialized import (
     create_adaptation_experts,
 )
 from adela.gating.system import MixtureOfExperts
-from adela.mcts.search import MCTS
 
 
 @final
@@ -87,7 +87,7 @@ class PGNProcessor:
 
     def __init__(
         self,
-        min_elo: int = 2000,
+        min_elo: int = 1000,
         max_positions_per_game: int = 30,
     ) -> None:
         """Initialize the PGN processor.
@@ -197,6 +197,10 @@ class PGNProcessor:
         
         return positions, policies, values
 
+    def process_game(self, game: chess.pgn.Game) -> tuple[list[str], list[np.ndarray], list[float]]:
+        """Public wrapper to process a single game into training triples."""
+        return self._process_game(game)
+
 
 @final
 class ParquetProcessor:
@@ -209,7 +213,7 @@ class ParquetProcessor:
 
     def __init__(
         self,
-        min_elo: int = 2000,
+        min_elo: int = 1000,
         max_positions_per_game: int = 30,
     ) -> None:
         self.min_elo = min_elo
@@ -294,6 +298,15 @@ class ParquetProcessor:
 
         return positions, policies, values
 
+    def process_row(
+        self,
+        row: dict[str, object],
+        result_col: str | None,
+        parsed_moves_col: str,
+    ) -> tuple[list[str], list[np.ndarray], list[float]]:
+        """Public wrapper to process a single row into training triples."""
+        return self._process_row(row, result_col, parsed_moves_col)
+
     def process_parquet(self, parquet_path: str) -> tuple[list[str], list[np.ndarray], list[float]]:
         """Process a Parquet file (or directory of files) into training data.
 
@@ -377,117 +390,157 @@ class ParquetProcessor:
 
         return positions_all, policies_all, values_all
 
+
 @final
-class SelfPlayGenerator:
-    """Generator for self-play games."""
+class StreamingParquetDataset(IterableDataset[tuple[np.ndarray, np.ndarray, np.ndarray, float]]):
+    """Stream training samples directly from Parquet files in small chunks.
+
+    This avoids loading all data into memory by scanning each Parquet file and
+    yielding per-position training samples on the fly.
+    """
 
     def __init__(
-        self, 
-        model: MixtureOfExperts,
-        num_games: int = 1000,
-        mcts_simulations: int = 800,
-        temperature: float = 1.0
+        self,
+        data_path: str | Path,
+        min_elo: int = 1000,
+        max_positions_per_game: int = 30,
+        chunk_rows: int = 10_000,
+        shuffle_files: bool = False,
     ) -> None:
-        """Initialize the self-play generator.
+        self.data_path: str = os.fspath(data_path)
+        self.min_elo: int = min_elo
+        self.max_positions_per_game: int = max_positions_per_game
+        self.chunk_rows: int = max(1, int(chunk_rows))
+        self.shuffle_files: bool = shuffle_files
 
-        Args:
-            model: Neural network model.
-            num_games: Number of games to generate.
-            mcts_simulations: Number of MCTS simulations per move.
-            temperature: Temperature for move selection.
-        """
-        self.model = model
-        self.num_games = num_games
-        self.mcts_simulations = mcts_simulations
-        self.temperature = temperature
-        
-        # Create MCTS
-        self.mcts = MCTS(
-            model=model,
-            num_simulations=mcts_simulations,
-            temperature=temperature
-        )
-        
-    def generate_games(self) -> tuple[list[str], list[np.ndarray], list[float]]:
-        """Generate self-play games.
+        self._processor = ParquetProcessor(min_elo=min_elo, max_positions_per_game=max_positions_per_game)
 
-        Returns:
-            Tuple of (positions, policies, values).
-        """
-        positions = []
-        policies = []
-        values = []
-        
-        for _ in range(self.num_games):
-            # Generate a game
-            game_positions, game_policies, game_values = self._generate_game()
-            
-            positions.extend(game_positions)
-            policies.extend(game_policies)
-            values.extend(game_values)
-        
-        return positions, policies, values
-    
-    def _generate_game(self) -> tuple[list[str], list[np.ndarray], list[float]]:
-        """Generate a single self-play game.
-
-        Returns:
-            Tuple of (positions, policies, values).
-        """
-        positions: list[str] = []
-        policies: list[np.ndarray] = []
-        values: list[float] = []
-        
-        # Initialize the board
-        board = BoardRepresentation()
-        
-        # Play the game
-        while not board.is_game_over():
-            # Get the current position
-            fen = board.get_fen()
-            
-            # Run MCTS
-            visit_counts = self.mcts.search(board)
-            
-            # Create policy vector from visit counts
-            policy = np.zeros(1968, dtype=np.float32)  # Maximum possible moves
-            
-            # Set the policy based on visit counts
-            legal_moves = board.get_legal_moves()
-            visit_sum = sum(visit_counts.values())
-            
-            for move in legal_moves:
-                if move in visit_counts:
-                    move_idx = board.get_move_index(move)
-                    policy[move_idx] = visit_counts[move] / visit_sum
-            
-            # Add the position and policy
-            positions.append(fen)
-            policies.append(policy)
-            
-            # Select move based on visit counts and temperature
-            move = self.mcts.get_best_move(board, self.temperature)
-            
-            # Make the move
-            board.make_move(move)
-        
-        # Get the game result
-        result = board.get_result()
-        if result == "1-0":
-            game_value = 1.0
-        elif result == "0-1":
-            game_value = -1.0
+        if os.path.isdir(self.data_path):
+            self._files = sorted(Path(self.data_path).glob("*.parquet"))
         else:
-            game_value = 0.0
-        
-        # Set the values for all positions
-        for fen in positions:
-            # Value from the perspective of the current player
-            board_temp = chess.Board(fen)
-            value = game_value if board_temp.turn == chess.WHITE else -game_value
-            values.append(value)
-        
-        return positions, policies, values
+            self._files = [Path(self.data_path)]
+
+    def _pick_column(self, df: pl.DataFrame, candidates: list[str]) -> str | None:
+        # Delegate to processor's public behavior through the same method
+        return ParquetProcessor()._pick_column(df, candidates)
+
+    def _filter_by_elo(self, df: pl.DataFrame) -> pl.DataFrame:
+        # Use a temporary processor with the configured min_elo
+        tmp = ParquetProcessor(min_elo=self.min_elo, max_positions_per_game=self.max_positions_per_game)
+        return tmp._filter_by_elo(df)
+
+    def _rows_iter(self, file_path: Path) -> Iterator[dict[str, object]]:
+        # Determine columns early to avoid reading unnecessary data
+        # We still need to collect a small slice to infer available columns robustly
+        try:
+            lazy = pl.scan_parquet(str(file_path))
+            # Count total rows lazily
+            total_rows = lazy.select(pl.count()).collect().item()
+        except Exception:
+            return iter(())
+
+        start = 0
+        while start < total_rows:
+            try:
+                df = (
+                    pl.scan_parquet(str(file_path))
+                    .slice(start, self.chunk_rows)
+                    .collect()
+                )
+            except Exception:
+                break
+
+            if len(df) == 0:
+                break
+
+            df = self._filter_by_elo(df)
+            if len(df) == 0:
+                start += self.chunk_rows
+                continue
+
+            parsed_moves_col = self._pick_column(df, ["parsed_moves"]) or "parsed_moves"
+            result_col = self._pick_column(df, ["result", "Result"])  # may be None
+
+            cols: list[str] = [parsed_moves_col] + ([result_col] if result_col else [])
+            # Some files might be missing a requested column; guard selection
+            cols = [c for c in cols if c in df.columns]
+            if not cols or parsed_moves_col not in cols:
+                start += self.chunk_rows
+                continue
+
+            for row in df.select(cols).to_dicts():
+                yield row
+
+            start += self.chunk_rows
+
+    @override
+    def __iter__(self) -> Iterator[tuple[np.ndarray, np.ndarray, np.ndarray, float]]:
+        files = list(self._files)
+        if self.shuffle_files:
+            try:
+                import random as _random  # local import to avoid global dependency
+                _random.shuffle(files)
+            except Exception:
+                pass
+
+        for fp in files:
+            for row in self._rows_iter(fp):
+                # Determine column names directly from row keys
+                result_col = "result" if "result" in row else ("Result" if "Result" in row else None)
+                parsed_moves_col = "parsed_moves"
+
+                positions, policies, values = self._processor.process_row(
+                    row=row,
+                    result_col=result_col,
+                    parsed_moves_col=parsed_moves_col,
+                )
+                if not positions:
+                    continue
+
+                for fen, policy, value in zip(positions, policies, values):
+                    board = BoardRepresentation(fen)
+                    board_tensor = board.get_board_tensor()
+                    additional_features = board.get_additional_features()
+                    yield board_tensor, additional_features, policy, value
+
+
+@final
+class StreamingPGNDataset(IterableDataset[tuple[np.ndarray, np.ndarray, np.ndarray, float]]):
+    """Stream training samples directly from a PGN file.
+
+    Opens the PGN file each iteration and yields per-position samples without
+    caching everything in memory.
+    """
+
+    def __init__(
+        self,
+        pgn_path: str | Path,
+        min_elo: int = 1000,
+        max_positions_per_game: int = 30,
+    ) -> None:
+        self.pgn_path: str = os.fspath(pgn_path)
+        self._processor = PGNProcessor(min_elo=min_elo, max_positions_per_game=max_positions_per_game)
+
+    @override
+    def __iter__(self) -> Iterator[tuple[np.ndarray, np.ndarray, np.ndarray, float]]:
+        with open(self.pgn_path, "r") as f:
+            while True:
+                game = chess.pgn.read_game(f)
+                if game is None:
+                    break
+
+                # Filter by Elo inside processor logic
+                white_elo = int(game.headers.get("WhiteElo", "0"))
+                black_elo = int(game.headers.get("BlackElo", "0"))
+                if white_elo < self._processor.min_elo or black_elo < self._processor.min_elo:
+                    continue
+
+                positions, policies, values = self._processor.process_game(game)
+                for fen, policy, value in zip(positions, policies, values):
+                    board = BoardRepresentation(fen)
+                    board_tensor = board.get_board_tensor()
+                    additional_features = board.get_additional_features()
+                    yield board_tensor, additional_features, policy, value
 
 
 @final
@@ -538,11 +591,12 @@ class Trainer:
             Dictionary with training metrics.
         """
         _ = self.model.train()
-        
+
         total_loss = 0.0
         policy_loss_sum = 0.0
         value_loss_sum = 0.0
-        
+        batch_count = 0
+
         for batch in dataloader:
             # Get batch data
             board_tensor, additional_features, policy_target, value_target = batch
@@ -572,9 +626,10 @@ class Trainer:
             total_loss += loss.item()
             policy_loss_sum += policy_loss.item()
             value_loss_sum += value_loss.item()
+            batch_count += 1
         
         # Calculate average metrics
-        num_batches = len(dataloader)
+        num_batches = batch_count if batch_count > 0 else 1
         metrics: dict[str, float] = {
             "loss": total_loss / num_batches,
             "policy_loss": policy_loss_sum / num_batches,
@@ -596,11 +651,12 @@ class Trainer:
             Dictionary with validation metrics.
         """
         _ = self.model.eval()
-        
+
         total_loss = 0.0
         policy_loss_sum = 0.0
         value_loss_sum = 0.0
-        
+        batch_count = 0
+
         with torch.no_grad():
             for batch in dataloader:
                 # Get batch data
@@ -626,9 +682,10 @@ class Trainer:
                 total_loss += loss.item()
                 policy_loss_sum += policy_loss.item()
                 value_loss_sum += value_loss.item()
+                batch_count += 1
         
         # Calculate average metrics
-        num_batches = len(dataloader)
+        num_batches = batch_count if batch_count > 0 else 1
         metrics: dict[str, float] = {
             "val_loss": total_loss / num_batches,
             "val_policy_loss": policy_loss_sum / num_batches,

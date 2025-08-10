@@ -1,18 +1,12 @@
 """Main engine class for the chess AI."""
 
 import os
-from typing import Dict, List, Tuple, Any, Optional
+from typing import Callable, Optional
 
 import chess
 import torch
 
 from adela.core.board import BoardRepresentation
-from adela.experts.specialized import (
-    create_phase_experts,
-    create_style_experts,
-    create_adaptation_experts,
-)
-from adela.gating.system import MixtureOfExperts
 from adela.mcts.search import MCTS
 from adela.opponent.analyzer import OpponentAnalyzer, OpponentProfile
 from adela.training.pipeline import create_mixture_of_experts
@@ -84,10 +78,10 @@ class AdelaEngine:
         self.move_history.append(move)
         
     def get_best_move(
-        self, 
+        self,
         fen: Optional[str] = None,
         time_limit: Optional[float] = None,
-        temperature: Optional[float] = None
+        temperature: Optional[float] = None,
     ) -> chess.Move:
         """Get the best move for a position.
 
@@ -112,9 +106,9 @@ class AdelaEngine:
         return move
     
     def play_game(
-        self, 
-        opponent_function: Optional[callable] = None,
-        max_moves: int = 200
+        self,
+        opponent_function: Optional[Callable[[BoardRepresentation], chess.Move]] = None,
+        max_moves: int = 200,
     ) -> str:
         """Play a game against an opponent.
 
@@ -150,7 +144,7 @@ class AdelaEngine:
         # Return the result
         return self.board.get_result()
     
-    def get_expert_contributions(self) -> Dict[str, float]:
+    def get_expert_contributions(self) -> dict[str, float]:
         """Get the contribution of each expert for the current position.
 
         Returns:
@@ -209,7 +203,7 @@ if __name__ == "__main__":
     best_move = engine.get_best_move()
     print(f"Best move: {best_move}")
     
-    # Play a self-play game
+    # Play a quick game against itself (for smoke test)
     result = engine.play_game()
     print(f"Game result: {result}")
     

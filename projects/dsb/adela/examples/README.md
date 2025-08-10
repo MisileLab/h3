@@ -32,6 +32,6 @@ uv run python run_example.py train_model
    - Includes an interactive mode to play against the engine
 
 2. **Train Model** (`train_model.py`)
-   - Shows how to train the model using PGN data or self-play
+   - Shows how to train the model using PGN data or local parquet splits only
    - Demonstrates the training pipeline
    - Includes validation and model saving

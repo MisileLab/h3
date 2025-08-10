@@ -24,11 +24,7 @@ def main():
     analyze_parser.add_argument("--model", help="Path to model checkpoint")
     analyze_parser.add_argument("--simulations", type=int, default=100, help="MCTS simulations per move")
     
-    # Self-play command
-    selfplay_parser = subparsers.add_parser("selfplay", help="Engine plays against itself")
-    selfplay_parser.add_argument("--model", help="Path to model checkpoint")
-    selfplay_parser.add_argument("--simulations", type=int, default=100, help="MCTS simulations per move")
-    selfplay_parser.add_argument("--games", type=int, default=1, help="Number of games to play")
+    # Self-play command removed to enforce local-only workflow
     
     args = parser.parse_args()
     
@@ -36,8 +32,7 @@ def main():
         play_game(args)
     elif args.command == "analyze":
         analyze_position(args)
-    elif args.command == "selfplay":
-        self_play(args)
+    # No selfplay entrypoint
     else:
         parser.print_help()
 
@@ -80,26 +75,7 @@ def analyze_position(args):
         print(f"  {expert}: {weight:.4f}")
 
 
-def self_play(args):
-    """Engine plays against itself."""
-    print("Initializing Adela chess engine...")
-    engine = AdelaEngine(
-        model_path=args.model,
-        mcts_simulations=args.simulations
-    )
-    
-    results = {"1-0": 0, "0-1": 0, "1/2-1/2": 0}
-    
-    for i in range(args.games):
-        print(f"\nGame {i+1}/{args.games}")
-        result = engine.play_game()
-        print(f"Result: {result}")
-        results[result] = results.get(result, 0) + 1
-    
-    print("\nFinal results:")
-    print(f"White wins: {results['1-0']}")
-    print(f"Black wins: {results['0-1']}")
-    print(f"Draws: {results['1/2-1/2']}")
+# Self-play helper removed
 
 
 if __name__ == "__main__":
