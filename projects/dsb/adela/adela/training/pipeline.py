@@ -13,6 +13,7 @@ import torch
 import torch.optim as optim
 import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader, IterableDataset
+from tqdm import tqdm
 
 from adela.core.board import BoardRepresentation
 from adela.experts.base import ExpertBase
@@ -597,7 +598,15 @@ class Trainer:
         value_loss_sum = 0.0
         batch_count = 0
 
-        for batch in dataloader:
+        # Progress bar over batches; len(dataloader) may be unavailable for IterableDataset
+        try:
+            total_batches = len(dataloader)
+        except Exception:
+            total_batches = None
+
+        pbar = tqdm(dataloader, total=total_batches, desc="train", unit="batch")
+
+        for batch in pbar:
             # Get batch data
             board_tensor, additional_features, policy_target, value_target = batch
             
@@ -627,6 +636,13 @@ class Trainer:
             policy_loss_sum += policy_loss.item()
             value_loss_sum += value_loss.item()
             batch_count += 1
+
+            # Update progress display with current and running average losses
+            avg_loss = total_loss / max(1, batch_count)
+            pbar.set_postfix({
+                "loss": f"{loss.item():.4f}",
+                "avg": f"{avg_loss:.4f}",
+            })
         
         # Calculate average metrics
         num_batches = batch_count if batch_count > 0 else 1
@@ -657,8 +673,15 @@ class Trainer:
         value_loss_sum = 0.0
         batch_count = 0
 
+        # Progress bar over validation; len(dataloader) may be unavailable for IterableDataset
+        try:
+            total_batches = len(dataloader)
+        except Exception:
+            total_batches = None
+
         with torch.no_grad():
-            for batch in dataloader:
+            pbar = tqdm(dataloader, total=total_batches, desc="val", unit="batch")
+            for batch in pbar:
                 # Get batch data
                 board_tensor, additional_features, policy_target, value_target = batch
                 
@@ -683,6 +706,12 @@ class Trainer:
                 policy_loss_sum += policy_loss.item()
                 value_loss_sum += value_loss.item()
                 batch_count += 1
+
+                avg_loss = total_loss / max(1, batch_count)
+                pbar.set_postfix({
+                    "loss": f"{loss.item():.4f}",
+                    "avg": f"{avg_loss:.4f}",
+                })
         
         # Calculate average metrics
         num_batches = batch_count if batch_count > 0 else 1
