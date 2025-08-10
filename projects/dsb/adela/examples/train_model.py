@@ -15,6 +15,7 @@ from adela.training.pipeline import (
     StreamingPGNDataset,
     StreamingParquetDataset,
     Trainer,
+    collate_training_batch,
 )
 
 
@@ -66,8 +67,8 @@ def train_from_pgn(
     train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
     
     # Create data loaders
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-    val_loader = DataLoader(val_dataset, batch_size=batch_size)
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_training_batch)
+    val_loader = DataLoader(val_dataset, batch_size=batch_size, collate_fn=collate_training_batch)
     
     # Create trainer
     trainer = Trainer(model, device=device)
@@ -186,9 +187,9 @@ def train_from_local_data(
     val_dataset = ChessDataset(*val_data)
     test_dataset = ChessDataset(*test_data)
 
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-    val_loader = DataLoader(val_dataset, batch_size=batch_size)
-    test_loader = DataLoader(test_dataset, batch_size=batch_size)
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_training_batch)
+    val_loader = DataLoader(val_dataset, batch_size=batch_size, collate_fn=collate_training_batch)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, collate_fn=collate_training_batch)
 
     trainer = Trainer(model, device=device)
 
@@ -313,9 +314,9 @@ def train_from_parquet(
     val_dataset = ChessDataset(*val_data)
     test_dataset = ChessDataset(*test_data)
 
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-    val_loader = DataLoader(val_dataset, batch_size=batch_size)
-    test_loader = DataLoader(test_dataset, batch_size=batch_size)
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_training_batch)
+    val_loader = DataLoader(val_dataset, batch_size=batch_size, collate_fn=collate_training_batch)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, collate_fn=collate_training_batch)
 
     trainer = Trainer(model, device=device)
 
@@ -439,6 +440,7 @@ def train_streaming_from_parquet(
         shuffle=False,
         num_workers=0,
         pin_memory=(device == "cuda"),
+        collate_fn=collate_training_batch,
       )
       val_loader = DataLoader(
         val_stream_ds,
@@ -446,6 +448,7 @@ def train_streaming_from_parquet(
         shuffle=False,
         num_workers=0,
         pin_memory=(device == "cuda"),
+        collate_fn=collate_training_batch,
       )
       test_loader = DataLoader(
         test_stream_ds,
@@ -453,6 +456,7 @@ def train_streaming_from_parquet(
         shuffle=False,
         num_workers=0,
         pin_memory=(device == "cuda"),
+        collate_fn=collate_training_batch,
       )
     else:
       stream_ds = StreamingParquetDataset(
@@ -468,6 +472,7 @@ def train_streaming_from_parquet(
         shuffle=False,
         num_workers=0,
         pin_memory=(device == "cuda"),
+        collate_fn=collate_training_batch,
       )
       if val_data_path is not None:
         val_stream_ds = StreamingParquetDataset(
@@ -483,6 +488,7 @@ def train_streaming_from_parquet(
           shuffle=False,
           num_workers=0,
           pin_memory=(device == "cuda"),
+          collate_fn=collate_training_batch,
         )
 
     trainer = Trainer(model, device=device, batch_size=batch_size)
@@ -566,7 +572,8 @@ def train_streaming_from_pgn(
         batch_size=batch_size,
         shuffle=False,
         num_workers=0,
-        pin_memory=(device == "cuda"),
+      pin_memory=(device == "cuda"),
+      collate_fn=collate_training_batch,
     )
 
     trainer = Trainer(model, device=device, batch_size=batch_size)
@@ -590,6 +597,7 @@ def train_streaming_from_pgn(
         shuffle=False,
         num_workers=0,
         pin_memory=(device == "cuda"),
+        collate_fn=collate_training_batch,
       )
 
     for epoch in range(num_epochs):

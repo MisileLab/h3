@@ -711,6 +711,40 @@ class Trainer:
         _ = self.model.load_state_dict(torch.load(path, map_location=self.device))
 
 
+def collate_training_batch(
+    batch: list[tuple[np.ndarray, np.ndarray, np.ndarray, float]]
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+    """Collate function to assemble a training batch with correct dtypes.
+
+    - Stacks board tensors and additional features as float32
+    - Converts policy one-hot/probability vectors to class indices (long)
+    - Assembles value targets as float32
+    """
+    boards_np, feats_np, policies_arr, values_list = zip(*batch)
+
+    boards = torch.from_numpy(np.stack(boards_np)).to(torch.float32)
+    feats = torch.from_numpy(np.stack(feats_np)).to(torch.float32)
+
+    # Policies can be numpy arrays or tensors. Normalize to float tensor then to class indices.
+    if isinstance(policies_arr[0], np.ndarray):
+        policy_tensor = torch.from_numpy(np.stack(policies_arr)).to(torch.float32)
+    elif isinstance(policies_arr[0], torch.Tensor):
+        policy_tensor = torch.stack([p.to(torch.float32) for p in policies_arr])
+    else:
+        # Fallback: convert via numpy
+        policy_tensor = torch.from_numpy(np.stack([np.asarray(p) for p in policies_arr])).to(torch.float32)
+
+    # Convert to class indices for CrossEntropyLoss
+    if policy_tensor.ndim == 2:
+        policy_target = policy_tensor.argmax(dim=1).to(torch.long)
+    else:
+        policy_target = policy_tensor.to(torch.long)
+
+    value_target = torch.tensor(values_list, dtype=torch.float32)
+
+    return boards, feats, policy_target, value_target
+
+
 def create_mixture_of_experts(
     num_filters: int = 256,
     num_blocks: int = 10,

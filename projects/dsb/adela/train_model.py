@@ -6,8 +6,8 @@ from sys import argv
 train_streaming_from_parquet(
   data_path=argv[1],  # Local folder with train/validation/test subfolders
   output_dir="models/adela",
-  num_epochs=50,
-  batch_size=256,
+  num_epochs=int(argv[2] if len(argv) > 2 else 50),
+  batch_size=int(argv[3] if len(argv) > 3 else 256),
   min_elo=1000,
   early_stop_patience=5,
   early_stop_min_delta=1e-3,
