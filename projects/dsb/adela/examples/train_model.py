@@ -10,7 +10,6 @@ from torch.utils.data import DataLoader, random_split
 from adela.training.pipeline import (
     create_mixture_of_experts,
     ChessDataset,
-    BatchParquetDataset,
     PGNProcessor,
     ParquetProcessor,
     SelfPlayGenerator,
@@ -158,8 +157,7 @@ def train_from_local_data(
     
     if found_split_root is None:
         raise ValueError(
-            f"Expected split folders under '{p}' or '{p}/data' (train/validation/test). "
-            f"Please create these folders and place your parquet files inside them."
+            f"Expected split folders under '{p}' or '{p}/data' (train/validation/test). Please create these folders and place your parquet files inside them."
         )
 
     print(f"Found data splits in: {found_split_root}")
@@ -305,8 +303,7 @@ def train_from_parquet(
         test_data = _process_dir(te_root / "data" / "test")
     else:
         raise ValueError(
-            f"Expected split folders under '{p}' or '{p}/data' (train/validation/test). "
-            f"If using HuggingFace dataset, ensure the repo exists and is accessible."
+            f"Expected split folders under '{p}' or '{p}/data' (train/validation/test). If using HuggingFace dataset, ensure the repo exists and is accessible."
         )
 
     # Sanity checks
@@ -381,7 +378,6 @@ def train_from_batch_parquet(
     output_dir: str,
     num_epochs: int = 10,
     batch_size: int = 256,
-    parquet_batch_size: int = 1000,
     validation_split: float = 0.1,
     min_elo: int = 2000,
     max_positions_per_game: int = 30,
@@ -389,86 +385,71 @@ def train_from_batch_parquet(
     early_stop_min_delta: float = 0.0,
     device: str | None = None
 ) -> None:
-    """Train the model using BatchParquetDataset for efficient memory usage.
+    """Train the model from a list of parquet files using a simple Dataset.
 
-    Args:
-        parquet_files: List of paths to parquet files.
-        output_dir: Directory to save the model.
-        num_epochs: Number of epochs to train for.
-        batch_size: Training batch size.
-        parquet_batch_size: Size of batches to load from parquet files.
-        validation_split: Fraction of files to use for validation.
-        min_elo: Minimum Elo rating for games to include.
-        max_positions_per_game: Maximum positions to extract per game.
-        early_stop_patience: Early stopping patience.
-        early_stop_min_delta: Minimum improvement for early stopping.
-        device: Device to train on.
+    The parquet files are fully processed into position-level arrays and fed
+    via a standard PyTorch Dataset and DataLoader.
     """
-    print(f"Training from {len(parquet_files)} parquet files using BatchParquetDataset")
+    print(f"Training from {len(parquet_files)} parquet files (simple Dataset)")
     device = device or ("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
-    
-    # Create output directory
+
     os.makedirs(output_dir, exist_ok=True)
-    
-    # Create model
+
     model = create_mixture_of_experts(device=device)
-    
-    # Split files into train/validation
+
+    processor = ParquetProcessor(min_elo=min_elo, max_positions_per_game=max_positions_per_game)
+
+    # Split file list for validation
     val_size = max(1, int(validation_split * len(parquet_files)))
     train_files = parquet_files[:-val_size]
     val_files = parquet_files[-val_size:]
-    
-    print(f"Training files: {len(train_files)}")
-    print(f"Validation files: {len(val_files)}")
-    
-    # Create datasets using BatchParquetDataset
-    train_dataset = BatchParquetDataset(
-        file_paths=train_files,
-        batch_size=parquet_batch_size,
-        min_elo=min_elo,
-        max_positions_per_game=max_positions_per_game
-    )
-    
-    val_dataset = BatchParquetDataset(
-        file_paths=val_files,
-        batch_size=parquet_batch_size,
-        min_elo=min_elo,
-        max_positions_per_game=max_positions_per_game
-    )
-    
-    print(f"Training games: {len(train_dataset)}")
-    print(f"Validation games: {len(val_dataset)}")
-    
-    # Create data loaders
+
+    def _process_many(files: list[str] | list[Path]) -> tuple[list[str], list[np.ndarray], list[float]]:
+        all_pos: list[str] = []
+        all_pol: list[np.ndarray] = []
+        all_val: list[float] = []
+        for f in files:
+            p, pol, v = processor.process_parquet(str(f))
+            all_pos.extend(p)
+            all_pol.extend(pol)
+            all_val.extend(v)
+        return all_pos, all_pol, all_val
+
+    print("Processing training parquet files into positions...")
+    train_positions, train_policies, train_values = _process_many(train_files)
+    print("Processing validation parquet files into positions...")
+    val_positions, val_policies, val_values = _process_many(val_files)
+
+    print(f"Train positions: {len(train_positions)}")
+    print(f"Validation positions: {len(val_positions)}")
+
+    train_dataset = ChessDataset(train_positions, train_policies, train_values)
+    val_dataset = ChessDataset(val_positions, val_policies, val_values)
+
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=2)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, num_workers=2)
-    
-    # Create trainer
+
     trainer = Trainer(model, device=device)
-    
-    # Train the model
+
     print("Training model...")
     best_val_loss = math.inf
     epochs_no_improve = 0
     best_ckpt_path = None
-    
+
     for epoch in range(num_epochs):
         print(f"Epoch {epoch+1}/{num_epochs}")
-        
-        # Train
+
         train_metrics = trainer.train_epoch(train_loader)
         print(f"Training loss: {train_metrics['loss']:.4f}")
         print(f"Training policy loss: {train_metrics['policy_loss']:.4f}")
         print(f"Training value loss: {train_metrics['value_loss']:.4f}")
-        
-        # Validate
+
         val_metrics = trainer.validate(val_loader)
         print(f"Validation loss: {val_metrics['val_loss']:.4f}")
         print(f"Validation policy loss: {val_metrics['val_policy_loss']:.4f}")
         print(f"Validation value loss: {val_metrics['val_value_loss']:.4f}")
-        
-        # Early stopping
+
         val_loss = float(val_metrics["val_loss"])
         if best_val_loss - val_loss > early_stop_min_delta:
             best_val_loss = val_loss
@@ -482,8 +463,7 @@ def train_from_batch_parquet(
             if epochs_no_improve >= early_stop_patience:
                 print("Early stopping triggered.")
                 break
-    
-    # Save final model
+
     final_model_path = os.path.join(output_dir, "model_final.pt")
     trainer.save_model(final_model_path)
     print(f"Saved final model: {final_model_path}")
@@ -612,14 +592,13 @@ if __name__ == "__main__":
     #     batch_size=64
     # )
     
-    # Train from batch parquet files (most efficient for large datasets)
+    # Train from parquet files using simple Dataset
     # parquet_files = list(Path("data/games").glob("*.parquet"))
     # train_from_batch_parquet(
     #     parquet_files=parquet_files,
-    #     output_dir="models/batch_parquet_trained",
+    #     output_dir="models/parquet_trained",
     #     num_epochs=5,
     #     batch_size=256,
-    #     parquet_batch_size=1000,
     #     min_elo=2000
     # )
     
