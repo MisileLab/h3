@@ -305,37 +305,75 @@ class ParquetProcessor:
         """
         path = os.fspath(parquet_path)
 
-        # Load data: support single file or directory
-        if os.path.isdir(path):
-            # Lazy scan and collect for all parquet files
-            lazy = pl.concat([pl.scan_parquet(str(p)) for p in sorted(Path(path).glob("*.parquet"))])
-            df = lazy.collect()
-        else:
-            df = pl.read_parquet(path)
-
-        # Elo filter
-        df = self._filter_by_elo(df)
-        if len(df) == 0:
-            return [], [], []
-
-        # Require parsed_moves to exist
-        parsed_moves_col = self._pick_column(df, ["parsed_moves"])
-        if not parsed_moves_col or parsed_moves_col not in df.columns:
-            raise ValueError("Parquet data missing required 'parsed_moves' column. Data must be pre-processed.")
-
-        result_col = self._pick_column(df, ["result", "Result"]) if df is not None else None
-
+        # Accumulators for all positions/policies/values
         positions_all: list[str] = []
         policies_all: list[np.ndarray] = []
         values_all: list[float] = []
 
-        cols: list[str] = [parsed_moves_col] + ([result_col] if result_col else [])
-        for row in df.select(cols).to_dicts():
-            pos, pol, val = self._process_row(row, result_col, parsed_moves_col)
-            if pos:
-                positions_all.extend(pos)
-                policies_all.extend(pol)
-                values_all.extend(val)
+        # Load data: support single file or directory. For directories, process file-by-file to
+        # avoid a large collect() that can appear to hang on big datasets and to provide progress logs.
+        if os.path.isdir(path):
+            files = sorted(Path(path).glob("*.parquet"))
+            if not files:
+                return [], [], []
+
+            print(f"[ParquetProcessor] Found {len(files)} parquet files in {path}")
+            for idx, fp in enumerate(files):
+                try:
+                    df = pl.read_parquet(str(fp))
+                except Exception as err:  # pragma: no cover - defensive logging
+                    print(f"[ParquetProcessor] Skipping '{fp.name}' (read error): {err}")
+                    continue
+
+                # Elo filter per file
+                df = self._filter_by_elo(df)
+                if len(df) == 0:
+                    if (idx + 1) % max(1, len(files) // 10) == 0 or idx == len(files) - 1:
+                        print(f"[ParquetProcessor] {fp.name}: 0 rows after Elo filter; processed {idx+1}/{len(files)} files, positions so far: {len(positions_all)}")
+                    continue
+
+                # Determine required columns
+                parsed_moves_col = self._pick_column(df, ["parsed_moves"])
+                if not parsed_moves_col or parsed_moves_col not in df.columns:
+                    print(f"[ParquetProcessor] {fp.name}: missing 'parsed_moves' column; skipping")
+                    continue
+                result_col = self._pick_column(df, ["result", "Result"]) if df is not None else None
+
+                cols: list[str] = [parsed_moves_col] + ([result_col] if result_col else [])
+                for row in df.select(cols).to_dicts():
+                    pos, pol, val = self._process_row(row, result_col, parsed_moves_col)
+                    if pos:
+                        positions_all.extend(pos)
+                        policies_all.extend(pol)
+                        values_all.extend(val)
+
+                # Periodic progress update
+                if (idx + 1) % max(1, len(files) // 10) == 0 or idx == len(files) - 1:
+                    print(f"[ParquetProcessor] Processed {idx+1}/{len(files)} files; positions so far: {len(positions_all)}")
+
+        else:
+            # Single parquet file path
+            df = pl.read_parquet(path)
+
+            # Elo filter
+            df = self._filter_by_elo(df)
+            if len(df) == 0:
+                return [], [], []
+
+            # Require parsed_moves to exist
+            parsed_moves_col = self._pick_column(df, ["parsed_moves"])
+            if not parsed_moves_col or parsed_moves_col not in df.columns:
+                raise ValueError("Parquet data missing required 'parsed_moves' column. Data must be pre-processed.")
+
+            result_col = self._pick_column(df, ["result", "Result"]) if df is not None else None
+
+            cols: list[str] = [parsed_moves_col] + ([result_col] if result_col else [])
+            for row in df.select(cols).to_dicts():
+                pos, pol, val = self._process_row(row, result_col, parsed_moves_col)
+                if pos:
+                    positions_all.extend(pos)
+                    policies_all.extend(pol)
+                    values_all.extend(val)
 
         return positions_all, policies_all, values_all
 
