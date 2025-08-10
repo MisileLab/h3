@@ -5,6 +5,7 @@ import math
 import numpy as np
 from pathlib import Path
 import torch
+import polars as pl
 from torch.utils.data import DataLoader, random_split
 
 from adela.training.pipeline import (
@@ -471,12 +472,12 @@ def train_from_batch_parquet(
 
 def train_from_self_play(
     output_dir: str,
-    num_games: int = 100,
-    num_epochs: int = 10,
+    num_games: int = 1000,
+    num_epochs: int = 100,
     batch_size: int = 256,
     validation_split: float = 0.1,
     mcts_simulations: int = 100,
-    early_stop_patience: int = 3,
+    early_stop_patience: int = 5,
     early_stop_min_delta: float = 0.0,
     device: str | None = None
 ) -> None:
@@ -511,6 +512,31 @@ def train_from_self_play(
     positions, policies, values = generator.generate_games()
     
     print(f"Generated {len(positions)} positions")
+    # Save self-play dataset for reuse (NPZ + Parquet)
+    save_dir = Path(output_dir) / "self_play_data"
+    save_dir.mkdir(parents=True, exist_ok=True)
+    base_name = f"sp_{num_games}g_{mcts_simulations}s"
+
+    # NPZ (compressed)
+    np.savez_compressed(
+        save_dir / f"{base_name}.npz",
+        positions=np.array(positions, dtype=object),
+        policies=np.stack(policies).astype(np.float32),
+        values=np.array(values, dtype=np.float32),
+    )
+    print(f"Saved NPZ: {(save_dir / f'{base_name}.npz').as_posix()}")
+
+    # Parquet (fen, value, policy[list[float]])
+    df = pl.DataFrame(
+        {
+            "fen": positions,
+            "value": values,
+            "policy": [p.tolist() for p in policies],
+        }
+    )
+    parquet_path = save_dir / f"{base_name}.parquet"
+    df.write_parquet(parquet_path.as_posix())
+    print(f"Saved Parquet: {parquet_path.as_posix()}")
     
     # Create dataset
     dataset = ChessDataset(positions, policies, values)
