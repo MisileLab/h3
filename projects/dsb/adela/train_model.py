@@ -1,9 +1,9 @@
-from examples.train_model import train_streaming_from_parquet
+from examples.train_model import train_from_local_data
 
 from sys import argv
 
 # Train from local data folder (expects train/validation/test subfolders)
-train_streaming_from_parquet(
+train_from_local_data(
   data_path=argv[1],  # Local folder with train/validation/test subfolders
   output_dir="models/adela",
   num_epochs=int(argv[2] if len(argv) > 2 else 50),
