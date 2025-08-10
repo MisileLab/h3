@@ -5,8 +5,7 @@ from pathlib import Path
 from typing import final, override
 from collections.abc import Iterator
 
-import chess
-import chess.pgn
+from adela.core.chess_shim import chess, require_pgn
 import numpy as np
 import polars as pl
 import torch
@@ -116,11 +115,14 @@ class PGNProcessor:
         policies: list[np.ndarray] = []
         values: list[float] = []
         
+        # Ensure PGN support is available
+        _pgn = require_pgn()
+
         # Open the PGN file
         with open(pgn_path, "r") as f:
             while True:
                 # Read the next game
-                game = chess.pgn.read_game(f)
+                game = _pgn.read_game(f)
                 if game is None:
                     break
                 
@@ -141,7 +143,7 @@ class PGNProcessor:
     
     def _process_game(
         self,
-        game: chess.pgn.Game,
+        game: object,
     ) -> tuple[list[str], list[np.ndarray], list[float]]:
         """Process a single game to extract training data.
 
@@ -198,7 +200,7 @@ class PGNProcessor:
         
         return positions, policies, values
 
-    def process_game(self, game: chess.pgn.Game) -> tuple[list[str], list[np.ndarray], list[float]]:
+    def process_game(self, game: object) -> tuple[list[str], list[np.ndarray], list[float]]:
         """Public wrapper to process a single game into training triples."""
         return self._process_game(game)
 
@@ -277,11 +279,8 @@ class ParquetProcessor:
 
             policy = np.zeros(1968, dtype=np.float32)
             san = moves_san[i]
-            try:
-                move = board.parse_san(san)
-            except ValueError:
-                # Skip unparsable SAN
-                break
+            # Parse SAN robustly across engines
+            move = chess.Move.from_san(san, board)
 
             try:
                 move_idx = board_rep.get_move_index(move)
@@ -294,7 +293,10 @@ class ParquetProcessor:
             policies.append(policy)
             values.append(game_value if board.turn == chess.WHITE else -game_value)
 
-            board.push(move)
+            if hasattr(board, "push"):
+                board.push(move)
+            else:
+                board.apply(move)
             board_rep = BoardRepresentation(board.fen())
 
         return positions, policies, values
@@ -524,9 +526,10 @@ class StreamingPGNDataset(IterableDataset[tuple[np.ndarray, np.ndarray, np.ndarr
 
     @override
     def __iter__(self) -> Iterator[tuple[np.ndarray, np.ndarray, np.ndarray, float]]:
+        _pgn = require_pgn()
         with open(self.pgn_path, "r") as f:
             while True:
-                game = chess.pgn.read_game(f)
+                game = _pgn.read_game(f)
                 if game is None:
                     break
 

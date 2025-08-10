@@ -3,7 +3,7 @@
 import os
 from typing import Callable, Optional
 
-import chess
+from adela.core.chess_shim import chess
 import torch
 
 from adela.core.board import BoardRepresentation
@@ -68,7 +68,7 @@ class AdelaEngine:
         self.board = BoardRepresentation(fen)
         self.move_history = []
         
-    def make_move(self, move: chess.Move) -> None:
+    def make_move(self, move: object) -> None:
         """Make a move on the board.
 
         Args:
@@ -82,7 +82,7 @@ class AdelaEngine:
         fen: Optional[str] = None,
         time_limit: Optional[float] = None,
         temperature: Optional[float] = None,
-    ) -> chess.Move:
+    ) -> object:
         """Get the best move for a position.
 
         Args:
@@ -107,7 +107,7 @@ class AdelaEngine:
     
     def play_game(
         self,
-        opponent_function: Optional[Callable[[BoardRepresentation], chess.Move]] = None,
+        opponent_function: Optional[Callable[[BoardRepresentation], object]] = None,
         max_moves: int = 200,
     ) -> str:
         """Play a game against an opponent.

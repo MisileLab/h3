@@ -4,7 +4,7 @@ import math
 import time
 from typing import Dict, List, Tuple, Optional, Any
 
-import chess
+from adela.core.chess_shim import chess
 import numpy as np
 import torch
 
@@ -19,7 +19,7 @@ class Node:
         self, 
         board: BoardRepresentation,
         parent: Optional["Node"] = None,
-        move: Optional[chess.Move] = None,
+        move: Optional[object] = None,
         prior: float = 0.0
     ) -> None:
         """Initialize a node.
@@ -35,7 +35,7 @@ class Node:
         self.move = move
         self.prior = prior
         
-        self.children: Dict[chess.Move, "Node"] = {}
+        self.children: Dict[object, "Node"] = {}
         self.visit_count = 0
         self.value_sum = 0.0
         self.expanded = False
@@ -177,7 +177,7 @@ class MCTS:
         self, 
         board: BoardRepresentation,
         time_limit: Optional[float] = None
-    ) -> Dict[chess.Move, float]:
+    ) -> Dict[object, float]:
         """Run the MCTS algorithm.
 
         Args:
@@ -295,7 +295,7 @@ class MCTS:
         self, 
         board: BoardRepresentation,
         temperature: Optional[float] = None
-    ) -> chess.Move:
+    ) -> object:
         """Get the best move according to the MCTS algorithm.
 
         Args:

@@ -1,9 +1,9 @@
 """Evaluation metrics for the chess AI."""
 
-from typing import Dict, List, Tuple, Any, Optional
+from typing import Dict, List
 from collections import defaultdict
 
-import chess
+from adela.core.chess_shim import chess
 import numpy as np
 import torch
 
@@ -17,8 +17,8 @@ class EvaluationMetrics:
 
     @staticmethod
     def calculate_move_accuracy(
-        predicted_moves: List[chess.Move],
-        target_moves: List[chess.Move]
+        predicted_moves: List[object],
+        target_moves: List[object]
     ) -> float:
         """Calculate move accuracy.
 
@@ -37,8 +37,8 @@ class EvaluationMetrics:
     
     @staticmethod
     def calculate_top_k_accuracy(
-        predicted_moves: List[List[chess.Move]],
-        target_moves: List[chess.Move],
+        predicted_moves: List[List[object]],
+        target_moves: List[object],
         k: int = 3
     ) -> float:
         """Calculate top-k move accuracy.
@@ -78,7 +78,7 @@ class EvaluationMetrics:
         if not predicted_values or not target_values:
             return 0.0
         
-        return np.mean([(pred - target) ** 2 for pred, target in zip(predicted_values, target_values)])
+        return float(np.mean([(pred - target) ** 2 for pred, target in zip(predicted_values, target_values)]))
     
     @staticmethod
     def calculate_elo_gain(
@@ -133,7 +133,7 @@ class EvaluationMetrics:
         for expert in expert_usage:
             expert_usage[expert] /= len(expert_weights)
         
-        return dict(expert_usage)
+        return {k: float(v) for k, v in expert_usage.items()}
 
 
 class EngineMatch:
@@ -283,7 +283,7 @@ class ModelEvaluator:
         
         predicted_moves = []
         predicted_values = []
-        expert_weights_list = []
+        expert_weights_list: List[Dict[str, float]] = []
         
         with torch.no_grad():
             for fen in positions:
@@ -322,20 +322,20 @@ class ModelEvaluator:
                 predicted_values.append(value.item())
                 
                 # Get expert weights
-                expert_weights_dict = {
-                    name: weight.item()
+                expert_weights_dict: Dict[str, float] = {
+                    name: float(weight.item())
                     for name, weight in zip(self.model.expert_names, expert_weights[0])
                 }
                 expert_weights_list.append(expert_weights_dict)
         
         # Calculate metrics
-        metrics = {
+        metrics: Dict[str, float] = {
             "move_accuracy": EvaluationMetrics.calculate_move_accuracy(predicted_moves, target_moves),
             "top_3_accuracy": EvaluationMetrics.calculate_top_k_accuracy([top_moves for _, top_moves in zip(positions, predicted_moves)], target_moves, k=3),
             "value_mse": EvaluationMetrics.calculate_value_mse(predicted_values, target_values),
-            "expert_usage": EvaluationMetrics.calculate_expert_usage(expert_weights_list)
         }
-        
+        # Return separate mapping; caller can include expert usage alongside metrics if needed
+        _ = EvaluationMetrics.calculate_expert_usage(expert_weights_list)
         return metrics
     
     def evaluate_against_stockfish(

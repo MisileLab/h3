@@ -8,7 +8,7 @@ import logging
 from pathlib import Path
 from typing import Dict, List, Any, Optional, Iterator, Union, Tuple
 
-import chess
+from adela.core.chess_shim import chess
 import polars as pl
 from tqdm import tqdm
 

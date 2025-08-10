@@ -7,7 +7,7 @@ requires-python = "==3.13.6"
 dependencies = [
   "torch>=2.8.0",
   "polars>=1.32.2",
-  "python-chess>=1.9.0",
+  "bulletchess>=0.3.3",
   "numpy>=2.3.2",
   "tqdm>=4.67.1",
   "matplotlib>=3.10.5",
@@ -20,4 +20,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
   "pytest>=8.4.1"
+]
+pgn = [
+  "python-chess>=1.9.0"
 ]

@@ -1,7 +1,6 @@
 """Simple example of using the Adela chess engine."""
 
-import chess
-import chess.svg
+from adela.core.chess_shim import chess
 import time
 from pathlib import Path
 
@@ -71,8 +70,19 @@ def play_against_engine(engine=None) -> None:
             while not valid_move:
                 try:
                     move_str = input("Enter your move (e.g., 'e2e4'): ")
-                    move = chess.Move.from_uci(move_str)
-                    if move in board.legal_moves:
+                    # Create move; support both libraries
+                    if hasattr(chess, "Move") and hasattr(chess.Move, "from_uci"):
+                        move = chess.Move.from_uci(move_str)
+                    else:
+                        # bulletchess: moves are constructed by parsing UCI on the board if available
+                        if hasattr(board, "parse_uci"):
+                            move = board.parse_uci(move_str)
+                        else:
+                            # Fallback: rely on engine to validate
+                            move = move_str  # type: ignore[assignment]
+                    legal = getattr(board, "legal_moves", None)
+                    legal_list = list(legal() if callable(legal) else legal)
+                    if move in legal_list:
                         valid_move = True
                     else:
                         print("Illegal move!")

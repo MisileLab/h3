@@ -3,8 +3,7 @@
 from typing import Dict, List, Tuple, Any, Optional
 from collections import defaultdict
 
-import chess
-import chess.pgn
+from adela.core.chess_shim import chess, require_pgn
 import numpy as np
 import torch
 import torch.nn as nn
@@ -135,7 +134,8 @@ class OpponentAnalyzer:
         profile = self.get_profile(opponent_name)
         
         # Parse PGN
-        game = chess.pgn.read_game(pgn)
+        _pgn = require_pgn()
+        game = _pgn.read_game(pgn)
         if game is None:
             return
         

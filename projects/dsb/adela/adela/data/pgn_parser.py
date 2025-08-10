@@ -9,8 +9,7 @@ import tempfile
 from pathlib import Path
 from typing import Dict, List, Any, Optional, Iterator, Union, Tuple
 
-import chess
-import chess.pgn
+from adela.core.chess_shim import chess, require_pgn
 import polars as pl
 from tqdm import tqdm
 
@@ -138,6 +137,9 @@ class PGNParser:
     Returns:
       List of paths to the created Parquet files.
     """
+    # Ensure PGN parser is available if needed in future extensions
+    _ = require_pgn()
+
     # Set output directory
     if output_dir is None:
       output_dir = pgn_path.parent
