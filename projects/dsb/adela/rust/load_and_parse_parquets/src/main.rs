@@ -48,7 +48,7 @@ fn parse_movetext_to_moves(movetext: &str) -> Vec<String> {
 #[command(about = "Load Parquet files, filter by Elo, and parse movetext", long_about = None)]
 struct Cli {
     folder_path: PathBuf,
-    #[arg(long, default_value_t = 1000)]
+    #[arg(long, default_value_t = 2000)]
     min_elo: i64,
     #[arg(long)]
     output: Option<PathBuf>,
@@ -56,7 +56,7 @@ struct Cli {
     output_dir: Option<PathBuf>,
     #[arg(long, default_value = "processed_games")]
     output_prefix: String,
-    #[arg(long, default_value_t = 50_000)]
+    #[arg(long, default_value_t = 5_000)]
     batch_size: usize,
     #[arg(long, default_value_t = false)]
     batch_mode: bool,
@@ -139,9 +139,10 @@ fn read_slice_and_filter_elo(path: &Path, start: i64, len_rows: i64, min_elo: i6
 
     let left = df.column(&white_col)?.i64()?.gt(min_elo - 1);
     let right = df.column(&black_col)?.i64()?.gt(min_elo - 1);
-    let or_mask = &left | &right;
+    let classical = df.column("Event")?.str()?.eq("Rated Classical Game");
+    let and_mask = &left & &right & classical;
 
-    let filtered = df.filter(&or_mask)?;
+    let filtered = df.filter(&and_mask);
     Ok(filtered)
 }
 
@@ -195,6 +196,7 @@ fn add_parsed_moves(df: &DataFrame, chunk_size: usize) -> Result<DataFrame> {
     let mut out = df.clone();
     out.with_column(parsed_moves_series)?;
     out.with_column(num_moves_series)?;
+    out = out.drop_many(vec!["Event", "Site", "White", "Black", "WhiteTitle", "BlackTitle", "WhiteRatingDiff", "BlackRatingDiff", "UTCDate", "UTCTime", "ECO", "Opening", "Termination", "TimeControl", "movetext"])?;
     Ok(out)
 }
 

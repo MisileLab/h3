@@ -3,7 +3,7 @@ name = "adela"
 version = "0.1.0"
 description = "A modern Mixture-of-Experts chess AI"
 readme = "README.md"
-requires-python = "==3.13.6"
+requires-python = ">=3.13.5"
 dependencies = [
   "torch>=2.8.0",
   "polars>=1.32.2",
