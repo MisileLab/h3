@@ -139,7 +139,7 @@ fn read_slice_and_filter_elo(path: &Path, start: i64, len_rows: i64, min_elo: i6
 
     let left = df.column(&white_col)?.i64()?.gt(min_elo - 1);
     let right = df.column(&black_col)?.i64()?.gt(min_elo - 1);
-    let classical = df.column("Event")?.str()?.equal("Rated Classical Game");
+    let classical = df.column("Event")?.str()?.equal("Rated Classical game");
     let and_mask = (&left & &right) & classical;
 
     let filtered = df.filter(&and_mask)?;
