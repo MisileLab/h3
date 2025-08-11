@@ -96,7 +96,7 @@ fn list_parquet_files(dir: &Path) -> Result<Vec<PathBuf>> {
 }
 
 fn find_column_case_insensitive(df: &DataFrame, candidates: &[&str]) -> Option<String> {
-    let cols: Vec<&str> = df.get_column_names();
+    let cols: Vec<&PlSmallStr> = df.get_column_names();
     for cand in candidates {
         for c in &cols {
             if *c == *cand {
@@ -111,7 +111,7 @@ fn find_column_case_insensitive(df: &DataFrame, candidates: &[&str]) -> Option<S
 }
 
 fn get_total_rows_parquet(path: &Path) -> Result<i64> {
-    let lf = LazyFrame::scan_parquet(path.to_string_lossy().as_ref(), Default::default())?;
+    let lf = LazyFrame::scan_parquet(PlPath::new(path.to_string_lossy().as_ref()), Default::default())?;
     let out = lf.select([len()]).collect()?;
     let s = out.get_columns()[0].clone();
     let total = s.get(0).unwrap().try_extract::<i64>().unwrap_or(0);
@@ -120,14 +120,14 @@ fn get_total_rows_parquet(path: &Path) -> Result<i64> {
 
 fn coerce_to_i64(df: &mut DataFrame, col: &str) -> Result<()> {
     if df.column(col)?.dtype() != &DataType::Int64 {
-        let s = df.column(col)?.cast(&DataType::Int64)?;
+        let s = df.column(col)?.cast(&DataType::Int64)?.as_series().unwrap().clone();
         df.replace(col, s)?;
     }
     Ok(())
 }
 
 fn read_slice_and_filter_elo(path: &Path, start: i64, len_rows: i64, min_elo: i64) -> Result<DataFrame> {
-    let lf = LazyFrame::scan_parquet(path.to_string_lossy().as_ref(), Default::default())?
+    let lf = LazyFrame::scan_parquet(PlPath::new(path.to_string_lossy().as_ref()), Default::default())?
         .slice(start, len_rows as IdxSize);
     let mut df = lf.collect()?;
 
@@ -139,10 +139,10 @@ fn read_slice_and_filter_elo(path: &Path, start: i64, len_rows: i64, min_elo: i6
 
     let left = df.column(&white_col)?.i64()?.gt(min_elo - 1);
     let right = df.column(&black_col)?.i64()?.gt(min_elo - 1);
-    let classical = df.column("Event")?.str()?.eq("Rated Classical Game");
-    let and_mask = &left & &right & classical;
+    let classical = df.column("Event")?.str()?.equal("Rated Classical Game");
+    let and_mask = &left & &right;
 
-    let filtered = df.filter(&and_mask);
+    let filtered = df.filter(&and_mask)?.filter(&classical)?;
     Ok(filtered)
 }
 
@@ -190,13 +190,13 @@ fn add_parsed_moves(df: &DataFrame, chunk_size: usize) -> Result<DataFrame> {
         parsed_strs.push(Some(moves_vec.join(" ")));
     }
 
-    let parsed_moves_series = Series::new("parsed_moves", parsed_strs);
-    let num_moves_series = Series::new("num_moves", counts);
+    let parsed_moves_series = Series::new("parsed_moves".into(), parsed_strs);
+    let num_moves_series = Series::new("num_moves".into(), counts);
 
     let mut out = df.clone();
     out.with_column(parsed_moves_series)?;
     out.with_column(num_moves_series)?;
-    out = out.drop_many(vec!["Event", "Site", "White", "Black", "WhiteTitle", "BlackTitle", "WhiteRatingDiff", "BlackRatingDiff", "UTCDate", "UTCTime", "ECO", "Opening", "Termination", "TimeControl", "movetext"])?;
+    out = out.drop_many(vec!["Event", "Site", "White", "Black", "WhiteTitle", "BlackTitle", "WhiteRatingDiff", "BlackRatingDiff", "UTCDate", "UTCTime", "ECO", "Opening", "Termination", "TimeControl", "movetext"]);
     Ok(out)
 }
 
@@ -384,9 +384,7 @@ fn load_parquet_files(folder_path: &Path, max_memory_mb: usize) -> Result<DataFr
     }
 
     if files.len() == 1 {
-        let df = LazyFrame::scan_parquet(files[0].to_string_lossy().as_ref(), Default::default())?
-            .collect()?;
-        Ok(df)
+        panic!("Only one Parquet file found. Please provide a folder with multiple Parquet files.");
     } else {
         let avg_file_size_mb = (total_size_mb / files.len() as f64).max(1.0);
         let max_files_per_group = (max_memory_mb as f64 / avg_file_size_mb)
@@ -396,7 +394,7 @@ fn load_parquet_files(folder_path: &Path, max_memory_mb: usize) -> Result<DataFr
         for group in files.chunks(max_files_per_group) {
             let mut group_dfs: Vec<DataFrame> = Vec::with_capacity(group.len());
             for file in group {
-                let df = LazyFrame::scan_parquet(file.to_string_lossy().as_ref(), Default::default())?
+                let df = LazyFrame::scan_parquet(PlPath::new(file.to_string_lossy().as_ref()), Default::default())?
                     .collect()?;
                 group_dfs.push(df);
             }

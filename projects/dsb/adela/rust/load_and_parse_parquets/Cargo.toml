@@ -21,4 +21,6 @@ polars = { version = "0.50", features = [
   "lazy",
   "parquet",
   "strings",
+  "regex",
+  "timezones"
 ] }
