@@ -138,6 +138,50 @@ def _compute_last_batch_index(output_dir: Path) -> int:
     return last
 
 
+import multiprocessing
+
+def _run_single_self_play_game(model: MixtureOfExperts, cfg: SelfPlayConfig) -> list[dict[str, object]]:
+    """Runs a single self-play game and returns the generated rows."""
+    mcts = MCTS(
+        model=model, num_simulations=cfg.simulations_per_move, temperature=cfg.temperature, device=cfg.device
+    )
+
+    board = BoardRepresentation()
+    fens: list[str] = []
+    policies: list[np.ndarray] = []
+    side_to_move_is_white: list[bool] = []
+
+    move_count = 0
+    while not board.is_game_over() and move_count < cfg.max_moves_per_game:
+        visit_counts = mcts.search(board)
+        policy = _policy_from_visit_counts(board, visit_counts)
+
+        fens.append(board.get_fen())
+        policies.append(policy)
+        side_to_move_is_white.append(bool(board.board.turn))
+
+        legal_moves = board.get_legal_moves()
+        counts = np.array([float(visit_counts.get(m, 0)) for m in legal_moves], dtype=np.float32)
+        move = _sample_move_from_counts(legal_moves, counts, cfg.temperature)
+        board.make_move(move)
+        move_count += 1
+
+    result = board.get_result()
+    if result == "1-0":
+        game_value = 1.0
+    elif result == "0-1":
+        game_value = -1.0
+    else:
+        game_value = 0.0
+
+    values = [game_value if is_white else -game_value for is_white in side_to_move_is_white]
+
+    game_rows: list[dict[str, object]] = []
+    for fen, pol, val in zip(fens, policies, values):
+        game_rows.append({"fen": fen, "policy": pol.tolist(), "value": float(val)})
+
+    return game_rows
+
 def generate_self_play_data(
     model: MixtureOfExperts, cfg: SelfPlayConfig, *, last_batch_index: Optional[int] = None
 ) -> list[Path]:
@@ -147,77 +191,40 @@ def generate_self_play_data(
     """
     os.makedirs(cfg.output_dir, exist_ok=True)
 
-    mcts = MCTS(
-        model=model, num_simulations=cfg.simulations_per_move, temperature=cfg.temperature, device=cfg.device
-    )
-
-    rows: list[dict[str, object]] = []
     files: list[Path] = []
     if last_batch_index is None:
         last_batch_index = _compute_last_batch_index(cfg.output_dir)
     batch_idx = int(last_batch_index)
 
-    for game_idx in range(cfg.num_games):
-        board = BoardRepresentation()
-        fens: list[str] = []
-        policies: list[np.ndarray] = []
-        # We'll record side to move for sign handling later
-        side_to_move_is_white: list[bool] = []
+    game_args = [(model, cfg) for _ in range(cfg.num_games)]
 
-        move_count = 0
-        while not board.is_game_over() and move_count < cfg.max_moves_per_game:
-            # Run search at current node
-            visit_counts = mcts.search(board)
+    num_processes = multiprocessing.cpu_count()
+    print(f"Generating {cfg.num_games} games using {num_processes} processes...")
 
-            # Policy target from visits
-            policy = _policy_from_visit_counts(board, visit_counts)
+    all_game_rows: list[dict[str, object]] = []
+    with multiprocessing.Pool(processes=num_processes) as pool:
+        results_per_game = pool.starmap(_run_single_self_play_game, game_args)
+        for game_rows in results_per_game:
+            all_game_rows.extend(game_rows)
 
-            # Record current sample
-            fens.append(board.get_fen())
-            policies.append(policy)
-            side_to_move_is_white.append(bool(board.board.turn))
-
-            # Select move to play
-            legal_moves = board.get_legal_moves()
-            counts = np.array([float(visit_counts.get(m, 0)) for m in legal_moves], dtype=np.float32)
-            move = _sample_move_from_counts(legal_moves, counts, cfg.temperature)
-            board.make_move(move)
-
-            move_count += 1
-
-        # Determine game terminal value
-        result = board.get_result()
-        if result == "1-0":
-            game_value = 1.0
-        elif result == "0-1":
-            game_value = -1.0
-        else:
-            game_value = 0.0
-
-        # Per-position value from current-player perspective
-        values = [game_value if is_white else -game_value for is_white in side_to_move_is_white]
-
-        # Accumulate rows
-        for fen, pol, val in zip(fens, policies, values):
-            rows.append({"fen": fen, "policy": pol.tolist(), "value": float(val)})
-
-        # Write chunk if needed
-        if len(rows) >= cfg.chunk_size or game_idx == cfg.num_games - 1:
-            if rows:
-                batch_idx += 1
-                out_path = cfg.output_dir / f"selfplay_batch_{batch_idx:06d}.parquet"
-                df = pl.DataFrame({
-                    "fen": [r["fen"] for r in rows],
-                    "policy": [r["policy"] for r in rows],
-                    "value": [r["value"] for r in rows],
-                })
-                try:
-                    df.write_parquet(str(out_path), compression="zstd")
-                except Exception:
-                    # Fallback without compression
-                    df.write_parquet(str(out_path))
-                files.append(out_path)
-                rows = []
+    rows_to_write = all_game_rows
+    current_row_idx = 0
+    while current_row_idx < len(rows_to_write):
+        chunk = rows_to_write[current_row_idx : current_row_idx + cfg.chunk_size]
+        if chunk:
+            batch_idx += 1
+            out_path = cfg.output_dir / f"selfplay_batch_{batch_idx:06d}.parquet"
+            df = pl.DataFrame({
+                "fen": [r["fen"] for r in chunk],
+                "policy": [r["policy"] for r in chunk],
+                "value": [r["value"] for r in chunk],
+            })
+            try:
+                df.write_parquet(str(out_path), compression="zstd")
+            except Exception:
+                df.write_parquet(str(out_path))
+            files.append(out_path)
+        current_row_idx += cfg.chunk_size
 
     return files
 
