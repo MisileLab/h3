@@ -10,7 +10,7 @@
       # Development
       gel d2 pre-commit just mongosh tabnine
       snyk radicle-node infisical pnpm poop binsider
-      typst act gh
+      typst act gh crush
 
       # Language tools
       vscode-langservers-extracted
