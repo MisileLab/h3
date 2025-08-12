@@ -9,6 +9,7 @@ from surya.detection import DetectionPredictor # pyright: ignore[reportMissingTy
 from surya.layout import LayoutPredictor # pyright: ignore[reportMissingTypeStubs]
 from surya.table_rec import TableRecPredictor # pyright: ignore[reportMissingTypeStubs]
 from surya.recognition.schema import TextLine as SuryaTextLine # pyright: ignore[reportMissingTypeStubs]
+from surya.foundation import FoundationPredictor # pyright: ignore[reportMissingTypeStubs]
 
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
@@ -29,7 +30,8 @@ class OCRTextExtractor(BaseExtractor):
     super().__init__()
     console.print("🔄 Initializing Surya OCR models...", style="yellow")
     
-    self.recognition_predictor: RecognitionPredictor = RecognitionPredictor()
+    self.foundation_predictor: FoundationPredictor = FoundationPredictor()
+    self.recognition_predictor: RecognitionPredictor = RecognitionPredictor(self.foundation_predictor)
     self.detection_predictor: DetectionPredictor = DetectionPredictor()
     self.layout_predictor: LayoutPredictor = LayoutPredictor()
     self.table_rec_predictor: TableRecPredictor = TableRecPredictor()

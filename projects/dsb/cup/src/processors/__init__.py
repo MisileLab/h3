@@ -3,9 +3,9 @@ AI-powered post-processing modules.
 """
 
 from .base import BaseProcessor
-from .openai_processor import OpenAIProcessor
+from .llm_processor import LLMProcessor
 
 __all__ = [
   "BaseProcessor",
-  "OpenAIProcessor"
+  "LLMProcessor"
 ] 
