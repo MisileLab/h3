@@ -39,6 +39,8 @@ from pathlib import Path
 from collections.abc import Iterator, Mapping
 from typing import Optional
 
+from tqdm import tqdm
+
 import numpy as np
 import polars as pl
 import torch
@@ -204,7 +206,7 @@ def generate_self_play_data(
     all_game_rows: list[dict[str, object]] = []
     with multiprocessing.Pool(processes=num_processes) as pool:
         results_per_game = pool.starmap(_run_single_self_play_game, game_args)
-        for game_rows in results_per_game:
+        for game_rows in tqdm(results_per_game, total=cfg.num_games, desc="Generating self-play games"):
             all_game_rows.extend(game_rows)
 
     rows_to_write = all_game_rows
