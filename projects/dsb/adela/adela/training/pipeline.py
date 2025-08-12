@@ -5,7 +5,8 @@ from pathlib import Path
 from typing import final, override
 from collections.abc import Iterator
 
-from adela.core.chess_shim import chess, require_pgn
+from bulletchess.pgn import PGNFile, PGNGame
+import bulletchess as chess
 import numpy as np
 import polars as pl
 import torch
@@ -115,22 +116,20 @@ class PGNProcessor:
         policies: list[np.ndarray] = []
         values: list[float] = []
         
-        # Ensure PGN support is available
-        _pgn = require_pgn()
-
         # Open the PGN file
-        with open(pgn_path, "r") as f:
+        with PGNFile.open(pgn_path) as f:
             while True:
+                game = f.next_game()
+
                 # Read the next game
-                game = _pgn.read_game(f)
                 if game is None:
                     break
                 
                 # Check Elo ratings
-                white_elo = int(game.headers.get("WhiteElo", "0"))
-                black_elo = int(game.headers.get("BlackElo", "0"))
-                if white_elo < self.min_elo or black_elo < self.min_elo:
-                    continue
+                # white_elo = int(game.headers.get("WhiteElo", "0"))
+                # black_elo = int(game.headers.get("BlackElo", "0"))
+                # if white_elo < self.min_elo or black_elo < self.min_elo:
+                #     continue
                 
                 # Process the game
                 game_positions, game_policies, game_values = self._process_game(game)
@@ -143,7 +142,7 @@ class PGNProcessor:
     
     def _process_game(
         self,
-        game: object,
+        game: PGNGame,
     ) -> tuple[list[str], list[np.ndarray], list[float]]:
         """Process a single game to extract training data.
 
@@ -158,7 +157,7 @@ class PGNProcessor:
         values: list[float] = []
         
         # Get the result
-        result = game.headers.get("Result", "*")
+        result = game
         if result == "1-0":
             game_value = 1.0
         elif result == "0-1":
@@ -167,11 +166,11 @@ class PGNProcessor:
             game_value = 0.0
         
         # Initialize the board
-        board = game.board()
+        board = game.starting_board
         board_rep = BoardRepresentation(board.fen())
         
         # Process moves
-        moves = list(game.mainline_moves())
+        moves = game.moves
         num_positions = min(len(moves), self.max_positions_per_game)
         
         for i in range(num_positions):
@@ -195,12 +194,12 @@ class PGNProcessor:
             values.append(value)
             
             # Make the move
-            board.push(move)
+            board.apply(move)
             board_rep = BoardRepresentation(board.fen())
         
         return positions, policies, values
 
-    def process_game(self, game: object) -> tuple[list[str], list[np.ndarray], list[float]]:
+    def process_game(self, game: PGNGame) -> tuple[list[str], list[np.ndarray], list[float]]:
         """Public wrapper to process a single game into training triples."""
         return self._process_game(game)
 
@@ -293,10 +292,7 @@ class ParquetProcessor:
             policies.append(policy)
             values.append(game_value if board.turn == chess.WHITE else -game_value)
 
-            if hasattr(board, "push"):
-                board.push(move)
-            else:
-                board.apply(move)
+            board.apply(move)
             board_rep = BoardRepresentation(board.fen())
 
         return positions, policies, values
@@ -526,18 +522,17 @@ class StreamingPGNDataset(IterableDataset[tuple[np.ndarray, np.ndarray, np.ndarr
 
     @override
     def __iter__(self) -> Iterator[tuple[np.ndarray, np.ndarray, np.ndarray, float]]:
-        _pgn = require_pgn()
-        with open(self.pgn_path, "r") as f:
+        with PGNFile.open(self.pgn_path) as f:
             while True:
-                game = _pgn.read_game(f)
+                game = f.next_game()
                 if game is None:
                     break
 
                 # Filter by Elo inside processor logic
-                white_elo = int(game.headers.get("WhiteElo", "0"))
-                black_elo = int(game.headers.get("BlackElo", "0"))
-                if white_elo < self._processor.min_elo or black_elo < self._processor.min_elo:
-                    continue
+                # white_elo = int(game.headers.get("WhiteElo", "0"))
+                # black_elo = int(game.headers.get("BlackElo", "0"))
+                # if white_elo < self._processor.min_elo or black_elo < self._processor.min_elo:
+                #     continue
 
                 positions, policies, values = self._processor.process_game(game)
                 for fen, policy, value in zip(positions, policies, values):
