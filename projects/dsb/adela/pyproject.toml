@@ -15,12 +15,10 @@ dependencies = [
   "pyarrow>=21.0.0",
   "huggingface-hub[hf-transfer]>=0.34.4",
   "datasets>=2.21.0",
+  "typer>=0.16.0",
 ]
 
 [project.optional-dependencies]
 dev = [
   "pytest>=8.4.1"
-]
-pgn = [
-  "python-chess>=1.9.0"
 ]
