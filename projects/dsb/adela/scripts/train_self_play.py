@@ -40,6 +40,7 @@ from collections.abc import Iterator, Mapping
 from typing import Optional
 
 from tqdm import tqdm
+import torch.multiprocessing as mp
 
 import numpy as np
 import polars as pl
@@ -400,6 +401,7 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
+    mp.set_start_method('spawn', force=True)
     args = parse_args()
 
     device = args.device or ("cuda" if torch.cuda.is_available() else "cpu")
