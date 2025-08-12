@@ -143,8 +143,9 @@ def _compute_last_batch_index(output_dir: Path) -> int:
 
 import multiprocessing
 
-def _run_single_self_play_game(model: MixtureOfExperts, cfg: SelfPlayConfig) -> list[dict[str, object]]:
+def _run_single_self_play_game(args_tuple: tuple[MixtureOfExperts, SelfPlayConfig]) -> list[dict[str, object]]:
     """Runs a single self-play game and returns the generated rows."""
+    model, cfg = args_tuple
     mcts = MCTS(
         model=model, num_simulations=cfg.simulations_per_move, temperature=cfg.temperature, device=cfg.device
     )
@@ -206,8 +207,8 @@ def generate_self_play_data(
 
     all_game_rows: list[dict[str, object]] = []
     with multiprocessing.Pool(processes=num_processes) as pool:
-        results_per_game = pool.starmap(_run_single_self_play_game, game_args)
-        for game_rows in tqdm(results_per_game, total=cfg.num_games, desc="Generating self-play games"):
+        for game_rows in tqdm(pool.imap_unordered(_run_single_self_play_game, game_args),
+                              total=cfg.num_games, desc="Generating self-play games"):
             all_game_rows.extend(game_rows)
 
     rows_to_write = all_game_rows
