@@ -15,7 +15,7 @@ from .core.exceptions import PDFProcessingError, ConfigurationError
 from .core.types import ProcessingResult
 from .extractors import DirectTextExtractor, OCRTextExtractor
 from .output import CSVFormatter, TextFormatter, JSONFormatter
-from .processors import OpenAIProcessor
+from .processors import LLMProcessor
 
 console = Console()
 
@@ -57,9 +57,11 @@ class PDFProcessor:
     self.json_formatter: JSONFormatter = JSONFormatter(ref_wtm_x=ref_wtm_x, ref_wtm_y=ref_wtm_y)
     
     # Initialize AI processor if API key is provided
-    self.ai_processor: Optional[OpenAIProcessor] = None
-    if self.openai_api_key and Config.validate_openai_key(self.openai_api_key):
-      self.ai_processor = OpenAIProcessor(self.openai_api_key)
+    self.ai_processor: Optional[LLMProcessor] = None
+    # Use OpenRouter if configured
+    openrouter_key = os.getenv("OPENROUTER_API_KEY")
+    if openrouter_key and Config.validate_openrouter_key(openrouter_key):
+      self.ai_processor = LLMProcessor(openrouter_key)
   
   def process_pdf(self, pdf_path: str, output_config: dict) -> None:
     """Process a PDF file with the given configuration."""
@@ -202,7 +204,7 @@ class PDFProcessor:
   def process_with_ai(self, pdf_path: str, output_path: str) -> None:
     """Process PDF with AI post-processing."""
     if not self.ai_processor:
-      raise ConfigurationError("OpenAI API key not configured")
+      raise ConfigurationError("OpenRouter API key not configured")
     
     # Extract data
     text_pages = self.extractor.extract_text(pdf_path)

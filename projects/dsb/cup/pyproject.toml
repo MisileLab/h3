@@ -24,11 +24,9 @@ dependencies = [
   "httpx>=0.28.1",
   "pytest-asyncio>=1.1.0",
   "python-dotenv>=1.1.1",
+  "beautifulsoup4>=4.13.4",
+  "lxml>=6.0.0",
 ]
-
-[project.scripts]
-pdf-extract = "src.cli:app"
-pdf-convert = "src.cli:app"
 
 [project.optional-dependencies]
 dev = [

@@ -16,6 +16,7 @@ class Config:
   DEFAULT_TEMPERATURE: float = 0.1
   DEFAULT_BATCH_SIZE: int = 32
   DEFAULT_OUTPUT_FORMAT: str = "csv"
+  DEFAULT_OPENROUTER_MODEL: str = os.getenv("OPENROUTER_MODEL", "google/gemini-2.5-pro")
   
   # File extensions
   SUPPORTED_FORMATS: list[str] = ["csv", "txt", "json", "all"]
@@ -37,6 +38,10 @@ class Config:
   def validate_openai_key(cls, api_key: str) -> bool:
     """Validate OpenAI API key format."""
     return api_key.startswith("sk-") and len(api_key) > 20
+  
+  @classmethod
+  def validate_openrouter_key(cls, api_key: str) -> bool:
+    return len(api_key) > 20
   
   @classmethod
   def get_output_dir(cls, pdf_path: str, output_dir: str | None = None) -> str:
