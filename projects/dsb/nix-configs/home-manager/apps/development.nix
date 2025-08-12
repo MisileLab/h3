@@ -1,4 +1,4 @@
-{pkgs, config, ...}:
+{pkgs, stablep, config, ...}:
 {
   home = {
     sessionVariables = {
@@ -16,7 +16,8 @@
       vscode-langservers-extracted
       ruby_3_4 rubyPackages_3_4.ruby-lsp
       ghc cabal-install haskell-language-server
-      cargo-update rustc cargo clippy rust-analyzer
+      # https://github.com/NixOS/nixpkgs/issues/432960
+      cargo-update rustc cargo clippy (stablep.rust-analyzer)
       metals scala-next
       taplo
       yaml-language-server
