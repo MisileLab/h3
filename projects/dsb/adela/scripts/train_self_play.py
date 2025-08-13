@@ -253,7 +253,7 @@ class StreamingSelfPlayDataset(IterableDataset[tuple[np.ndarray, np.ndarray, np.
         for fp in self._files:
             try:
                 lazy = pl.scan_parquet(str(fp))
-                total_rows = int(lazy.select(pl.count()).collect().item())
+                total_rows = int(lazy.select(pl.len()).collect().item())
             except Exception:
                 continue
 
