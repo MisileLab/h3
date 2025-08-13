@@ -141,9 +141,13 @@ def _compute_last_batch_index(output_dir: Path) -> int:
     return last
 
 
-def _run_single_self_play_game(args_tuple: tuple[MixtureOfExperts, SelfPlayConfig]) -> list[dict[str, object]]:
+def _run_single_self_play_game(args_tuple: tuple[dict, SelfPlayConfig]) -> list[dict[str, object]]:
     """Runs a single self-play game and returns the generated rows."""
-    model, cfg = args_tuple
+    model_state_dict, cfg = args_tuple
+    model = create_mixture_of_experts(device=cfg.device)
+    model.load_state_dict(model_state_dict)
+    model.eval()
+
     mcts = MCTS(
         model=model, num_simulations=cfg.simulations_per_move, temperature=cfg.temperature, device=cfg.device
     )
@@ -198,7 +202,11 @@ def generate_self_play_data(
         last_batch_index = _compute_last_batch_index(cfg.output_dir)
     batch_idx = int(last_batch_index)
 
-    game_args = [(model, cfg) for _ in range(cfg.num_games)]
+    # Pass model state dict instead of the model object to avoid CUDA issues with multiprocessing.
+    model_state_dict = model.cpu().state_dict()
+    model.to(cfg.device)
+
+    game_args = [(model_state_dict, cfg) for _ in range(cfg.num_games)]
 
     num_processes = mp.cpu_count()
     print(f"Generating {cfg.num_games} games using {num_processes} processes...")
