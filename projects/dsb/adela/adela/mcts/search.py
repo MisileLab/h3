@@ -316,13 +316,12 @@ class MCTS:
     Returns:
       Tuple of (board_tensor, additional_features).
     """
-    # Get board tensors and additional features
-    board_tensors = [board.get_board_tensor() for board in boards]
-    additional_features = [board.get_additional_features() for board in boards]
+    board_tensors_np = np.array([board.get_board_tensor() for board in boards], dtype=np.float32)
+    additional_features_np = np.array([board.get_additional_features() for board in boards], dtype=np.float32)
 
     # Convert to torch tensors
-    board_tensors = torch.tensor(board_tensors, dtype=torch.float32, device=self.device)
-    additional_features = torch.tensor(additional_features, dtype=torch.float32, device=self.device)
+    board_tensors = torch.from_numpy(board_tensors_np).to(self.device)
+    additional_features = torch.from_numpy(additional_features_np).to(self.device)
 
     return board_tensors, additional_features
 
