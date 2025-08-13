@@ -322,7 +322,6 @@ def train_from_selfplay(
     train_loader = DataLoader(
         train_dataset,
         batch_size=batch_size,
-        shuffle=True,
         num_workers=0,  # NOTE: Set to 0 to avoid multiprocessing issues
         collate_fn=collate_training_batch,
         pin_memory=True if device == "cuda" else False,
@@ -334,7 +333,6 @@ def train_from_selfplay(
         val_loader = DataLoader(
             val_dataset,
             batch_size=batch_size,
-            shuffle=False,
             num_workers=0,  # NOTE: Set to 0 to avoid multiprocessing issues
             collate_fn=collate_training_batch,
             pin_memory=True if device == "cuda" else False,
