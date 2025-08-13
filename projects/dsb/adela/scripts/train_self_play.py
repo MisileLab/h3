@@ -141,8 +141,6 @@ def _compute_last_batch_index(output_dir: Path) -> int:
     return last
 
 
-import multiprocessing
-
 def _run_single_self_play_game(args_tuple: tuple[MixtureOfExperts, SelfPlayConfig]) -> list[dict[str, object]]:
     """Runs a single self-play game and returns the generated rows."""
     model, cfg = args_tuple
@@ -202,11 +200,11 @@ def generate_self_play_data(
 
     game_args = [(model, cfg) for _ in range(cfg.num_games)]
 
-    num_processes = multiprocessing.cpu_count()
+    num_processes = mp.cpu_count()
     print(f"Generating {cfg.num_games} games using {num_processes} processes...")
 
     all_game_rows: list[dict[str, object]] = []
-    with multiprocessing.Pool(processes=num_processes) as pool:
+    with mp.Pool(processes=num_processes) as pool:
         for game_rows in tqdm(pool.imap_unordered(_run_single_self_play_game, game_args),
                               total=cfg.num_games, desc="Generating self-play games"):
             all_game_rows.extend(game_rows)
