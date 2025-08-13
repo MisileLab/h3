@@ -48,7 +48,11 @@ in
       };
     };
     programs = {
-      command-not-found.enable = false;
+      nix-search-tv = {
+        enable = true;
+        enableTelevisionIntegration = true;
+      };
+      television.enable = true;
       gpg = {
         enable = true;
         mutableTrust = true;
