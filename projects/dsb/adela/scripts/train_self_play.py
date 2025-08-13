@@ -40,8 +40,7 @@ from collections.abc import Iterator, Mapping
 from typing import Optional
 
 from tqdm import tqdm
-import torch.multiprocessing as mp
-
+from concurrent.futures import ThreadPoolExecutor
 import numpy as np
 import polars as pl
 import torch
@@ -141,13 +140,8 @@ def _compute_last_batch_index(output_dir: Path) -> int:
     return last
 
 
-def _run_single_self_play_game(args_tuple: tuple[dict, SelfPlayConfig]) -> list[dict[str, object]]:
+def _run_single_self_play_game(model: MixtureOfExperts, cfg: SelfPlayConfig) -> list[dict[str, object]]:
     """Runs a single self-play game and returns the generated rows."""
-    model_state_dict, cfg = args_tuple
-    model = create_mixture_of_experts(device=cfg.device)
-    model.load_state_dict(model_state_dict)
-    model.eval()
-
     mcts = MCTS(
         model=model, num_simulations=cfg.simulations_per_move, temperature=cfg.temperature, device=cfg.device
     )
@@ -202,20 +196,16 @@ def generate_self_play_data(
         last_batch_index = _compute_last_batch_index(cfg.output_dir)
     batch_idx = int(last_batch_index)
 
-    # Pass model state dict instead of the model object to avoid CUDA issues with multiprocessing.
-    model_state_dict = model.cpu().state_dict()
-    model.to(cfg.device)
+    game_args = [(model, cfg) for _ in range(cfg.num_games)]
 
-    game_args = [(model_state_dict, cfg) for _ in range(cfg.num_games)]
-
-    num_processes = mp.cpu_count()
-    print(f"Generating {cfg.num_games} games using {num_processes} processes...")
+    num_threads = os.cpu_count()
+    print(f"Generating {cfg.num_games} games using {num_threads} threads...")
 
     all_game_rows: list[dict[str, object]] = []
-    with mp.Pool(processes=num_processes) as pool:
-        for game_rows in tqdm(pool.imap_unordered(_run_single_self_play_game, game_args),
-                              total=cfg.num_games, desc="Generating self-play games"):
-            all_game_rows.extend(game_rows)
+    with ThreadPoolExecutor(max_workers=num_threads) as executor:
+        results = list(tqdm(executor.map(lambda p: _run_single_self_play_game(*p), game_args),
+                              total=cfg.num_games, desc="Generating self-play games"))
+    all_game_rows = [row for result in results for row in result]
 
     rows_to_write = all_game_rows
     current_row_idx = 0
@@ -408,7 +398,6 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
-    mp.set_start_method('spawn', force=True)
     args = parse_args()
 
     device = args.device or ("cuda" if torch.cuda.is_available() else "cpu")
