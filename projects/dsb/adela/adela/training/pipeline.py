@@ -434,7 +434,7 @@ class StreamingParquetDataset(IterableDataset[tuple[np.ndarray, np.ndarray, np.n
         try:
             lazy = pl.scan_parquet(str(file_path))
             # Count total rows lazily
-            total_rows = lazy.select(pl.count()).collect().item()
+            total_rows = lazy.select(pl.len()).collect().item()
         except Exception:
             return iter(())
 
