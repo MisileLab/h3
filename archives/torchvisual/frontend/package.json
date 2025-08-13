@@ -14,7 +14,7 @@
     "@radix-ui/react-select": "2.2.5",
     "@react-router/node": "7.8.0",
     "@react-router/serve": "7.8.0",
-    "@xyflow/react": "12.8.2",
+    "@xyflow/react": "12.8.3",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
     "isbot": "5.1.29",
