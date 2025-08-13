@@ -67,6 +67,7 @@ class SelfPlayConfig:
     simulations_per_move: int = 200
     temperature: float = 1.0
     chunk_size: int = 10_000
+    mcts_batch_size: int = 16,
     output_dir: Path = Path("data/selfplay")
     device: str = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -143,7 +144,7 @@ def _compute_last_batch_index(output_dir: Path) -> int:
 def _run_single_self_play_game(model: MixtureOfExperts, cfg: SelfPlayConfig) -> list[dict[str, object]]:
     """Runs a single self-play game and returns the generated rows."""
     mcts = MCTS(
-        model=model, num_simulations=cfg.simulations_per_move, temperature=cfg.temperature, device=cfg.device
+        model=model, num_simulations=cfg.simulations_per_move, temperature=cfg.temperature, device=cfg.device, batch_size=cfg.mcts_batch_size
     )
 
     board = BoardRepresentation()
@@ -322,7 +323,7 @@ def train_from_selfplay(
         train_dataset,
         batch_size=batch_size,
         shuffle=False,
-        num_workers=0,
+        num_workers=os.cpu_count(),
         collate_fn=collate_training_batch,
     )
 
@@ -333,7 +334,7 @@ def train_from_selfplay(
             val_dataset,
             batch_size=batch_size,
             shuffle=False,
-            num_workers=0,
+            num_workers=os.cpu_count(),
             collate_fn=collate_training_batch,
         )
 
@@ -389,7 +390,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--temperature", type=float, default=1.0, help="Move selection temperature")
     p.add_argument("--chunk-size", type=int, default=10_000, help="Rows per parquet file")
     p.add_argument("--epochs", type=int, default=5, help="Number of training epochs")
-    p.add_argument("--batch-size", type=int, default=256, help="Training batch size")
+    p.add_argument("--batch-size", type=int, default=512, help="Training batch size")
+    p.add_argument("--mcts-batch-size", type=int, default=16, help="MCTS model evaluation batch size")
     p.add_argument("--device", type=str, default=None, help="Force device (cpu/cuda)")
     p.add_argument("--until-interrupt", action="store_true", help="Continuously generate and train until Ctrl+C")
     p.add_argument("--games-per-iter", type=int, default=50, help="Games to generate per loop iteration (when --until-interrupt)")
@@ -410,6 +412,7 @@ def main() -> None:
         temperature=float(args.temperature),
         chunk_size=int(args.chunk_size),
         output_dir=Path(args.output_data),
+        mcts_batch_size=int(args.mcts_batch_size),
         device=device,
     )
 
@@ -427,6 +430,7 @@ def main() -> None:
                     temperature=float(args.temperature),
                     chunk_size=int(args.chunk_size),
                     output_dir=Path(args.output_data),
+                    mcts_batch_size=int(args.mcts_batch_size),
                     device=device,
                 )
                 last_idx = _compute_last_batch_index(iter_cfg.output_dir)

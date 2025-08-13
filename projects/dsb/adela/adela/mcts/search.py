@@ -154,6 +154,7 @@ class MCTS:
     dirichlet_alpha: float = 0.3,
     dirichlet_weight: float = 0.25,
     temperature: float = 1.0,
+    batch_size: int = 16,
     device: str = "cuda" if torch.cuda.is_available() else "cpu" # pyright: ignore[reportCallInDefaultInitializer]
   ) -> None:
     """Initialize the MCTS algorithm.
@@ -165,6 +166,7 @@ class MCTS:
       dirichlet_alpha: Dirichlet noise alpha parameter.
       dirichlet_weight: Weight of Dirichlet noise.
       temperature: Temperature for move selection.
+      batch_size: Batch size for model evaluations.
       device: Device to run the model on.
     """
     self.model = model
@@ -173,6 +175,7 @@ class MCTS:
     self.dirichlet_alpha = dirichlet_alpha
     self.dirichlet_weight = dirichlet_weight
     self.temperature = temperature
+    self.batch_size = batch_size
     self.device = device
 
   def search(
@@ -192,28 +195,14 @@ class MCTS:
     # Create root node
     root = Node(board)
 
-    # Get policy and value from the model
-    board_tensor, additional_features = self._prepare_input(board)
-    policy_logits, value, _ = self.model(board_tensor, additional_features)
+    # List to store nodes that need evaluation
+    nodes_to_evaluate: list[Node] = [root]
 
-    # Convert to numpy
-    policy_logits = policy_logits[0].detach().cpu().numpy()
+    # Perform initial batched evaluation for the root node
+    self._batch_evaluate(nodes_to_evaluate)
 
-    # Add Dirichlet noise to the root
-    legal_moves = board.get_legal_moves()
-    noise = np.random.dirichlet([self.dirichlet_alpha] * len(legal_moves))
-
-    # Apply noise to policy
-    for i, _ in enumerate(legal_moves):
-      policy_logits[i] = (1 - self.dirichlet_weight) * policy_logits[i] + self.dirichlet_weight * noise[i]
-
-    # Normalize policy
-    policy_sum = np.sum(policy_logits)
-    if policy_sum > 0:
-      policy_logits /= policy_sum
-
-    # Expand root node
-    root.expand(policy_logits)
+    # Clear the list after initial evaluation
+    nodes_to_evaluate = []
 
     # Start search
     start_time = time.time()
@@ -230,20 +219,8 @@ class MCTS:
         node = node.select_child(self.c_puct)
         search_path.append(node)
 
-      # Expansion and evaluation
-      if not node.is_terminal():
-        # Get policy and value from the model
-        board_tensor, additional_features = self._prepare_input(node.board)
-        policy_logits, value, _ = self.model(board_tensor, additional_features)
-
-        # Convert to numpy
-        policy_logits = policy_logits[0].detach().cpu().numpy()
-        value = value[0, 0].item()
-
-        # Expand the node
-        node.expand(policy_logits)
-      else:
-        # Terminal node, use the game result as value
+      # If it's a terminal node, backpropagate immediately
+      if node.is_terminal():
         result = node.board.get_result()
         if result == "1-0":
           value = 1.0
@@ -256,12 +233,23 @@ class MCTS:
         if not node.board.board.turn:  # If it's black's turn
           value = -value
 
-      # Backpropagation
-      for node in reversed(search_path):
-        # Update value (from the perspective of the current player)
-        node.update(value)
-        # Flip the value for the next node (parent's perspective)
-        value = -value
+        # Backpropagation
+        for node_to_update in reversed(search_path):
+          node_to_update.update(value)
+          value = -value
+        continue # Move to the next simulation
+
+      # Add the leaf node to the list for batched evaluation
+      nodes_to_evaluate.append(node)
+
+      # If we have enough nodes, perform batched evaluation
+      if len(nodes_to_evaluate) >= self.batch_size:
+        self._batch_evaluate(nodes_to_evaluate)
+        nodes_to_evaluate = []
+
+    # Evaluate any remaining nodes
+    if nodes_to_evaluate:
+      self._batch_evaluate(nodes_to_evaluate)
 
     # Return move probabilities based on visit counts
     visit_counts = {
@@ -271,27 +259,72 @@ class MCTS:
 
     return visit_counts
 
+  def _batch_evaluate(
+    self,
+    nodes: list[Node]
+  ) -> None:
+    """Performs batched evaluation of nodes using the model.
+
+    Args:
+      nodes: List of nodes to evaluate.
+    """
+    if not nodes:
+      return
+
+    boards = [node.board for node in nodes]
+    board_tensors, additional_features = self._prepare_input(boards)
+
+    policy_logits_batch, value_batch, _ = self.model(board_tensors, additional_features)
+
+    for i, node in enumerate(nodes):
+      policy_logits = policy_logits_batch[i].detach().cpu().numpy()
+      value = value_batch[i, 0].item()
+
+      # Apply Dirichlet noise to the root (only for the actual root node)
+      if node.parent is None: # This is the root node
+        legal_moves = node.board.get_legal_moves()
+        noise = np.random.dirichlet([self.dirichlet_alpha] * len(legal_moves))
+
+        # Apply noise to policy
+        for j, _ in enumerate(legal_moves):
+          policy_logits[j] = (1 - self.dirichlet_weight) * policy_logits[j] + self.dirichlet_weight * noise[j]
+
+        # Normalize policy
+        policy_sum = np.sum(policy_logits)
+        if policy_sum > 0:
+          policy_logits /= policy_sum
+
+      node.expand(policy_logits)
+
+      # Backpropagation for the evaluated node
+      current_value = value
+      current_node = node
+      while current_node is not None:
+        current_node.update(current_value)
+        current_value = -current_value # Flip value for parent
+        current_node = current_node.parent
+
   def _prepare_input(
     self, 
-    board: BoardRepresentation
+    boards: list[BoardRepresentation]
   ) -> tuple[torch.Tensor, torch.Tensor]:
     """Prepare input tensors for the model.
 
     Args:
-      board: Board representation.
+      boards: List of board representations.
 
     Returns:
       Tuple of (board_tensor, additional_features).
     """
-    # Get board tensor and additional features
-    board_tensor = board.get_board_tensor()
-    additional_features = board.get_additional_features()
+    # Get board tensors and additional features
+    board_tensors = [board.get_board_tensor() for board in boards]
+    additional_features = [board.get_additional_features() for board in boards]
 
     # Convert to torch tensors
-    board_tensor = torch.tensor(board_tensor, dtype=torch.float32, device=self.device).unsqueeze(0)
-    additional_features = torch.tensor(additional_features, dtype=torch.float32, device=self.device).unsqueeze(0)
+    board_tensors = torch.tensor(board_tensors, dtype=torch.float32, device=self.device)
+    additional_features = torch.tensor(additional_features, dtype=torch.float32, device=self.device)
 
-    return board_tensor, additional_features
+    return board_tensors, additional_features
 
   def get_best_move(
     self, 
