@@ -9,12 +9,12 @@
     "typecheck": "react-router typegen && tsc"
   },
   "dependencies": {
-    "@radix-ui/react-context-menu": "2.2.15",
+    "@radix-ui/react-context-menu": "2.2.16",
     "@radix-ui/react-label": "^2.1.7",
-    "@radix-ui/react-select": "2.2.5",
+    "@radix-ui/react-select": "2.2.6",
     "@react-router/node": "7.8.0",
     "@react-router/serve": "7.8.0",
-    "@xyflow/react": "12.8.2",
+    "@xyflow/react": "12.8.3",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
     "isbot": "5.1.29",
