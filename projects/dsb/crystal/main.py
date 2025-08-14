@@ -78,7 +78,7 @@ model = OpenAIModel(
 )
 
 summarize_model = OpenAIModel(
-  'gpt-4.1-nano',
+  'gpt-5-nano',
   provider=OpenAIProvider(api_key=getenv("OPENAI_KEY"))
 )
 
