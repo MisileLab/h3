@@ -2,5 +2,83 @@
 import Content from "../../../components/content.astro";
 ---
 
-<Content title="political extremism in South Korea" description="Now people sees the party, the person, but not pledge" date={1730809718} isnews={false}>
+<Content title="Adela: New chess engine with CNN and MoE" description="A team of experts, Not a single brain" date={1755079532} isnews={false}>
+  <code>this post written by Gemini 2.5 Pro</code>
+
+  <h1>Background</h1>
+  <p>Powerful existing chess engines like AlphaZero operate with a massive, monolithic brain (a single neural network) that evaluates all situations.</h1>
+  <p>While highly effective, I point out that this approach has its limitations.</p>
+  <p>For instance, the type of 'knowledge' required for opening theory is vastly different from that needed for precise endgame sequences.</h1>
+  <p>Similarly, a sharp tactical battle requires a different approach than a quiet, positional game.</p>
+
+  <p>Adela aims to solve this problem using a <strong>Divide and Conquer</strong> strategy.</p>
+  <p>It breaks down the immense challenge of chess into several sub-problems and assigns a dedicated <strong>expert</strong> who excels at solving each one.</p>
+
+  <h1>Detailed Explanation of the Mixture of Experts (MoE) Architecture</h1>
+  <p>The MoE is the heart of Adela.</p>
+  <p>It consists of a <strong>group of expert networks</strong> and a <strong>gating network</strong> that directs them.</p>
+
+  <h2>The Gating Network: The Commander's Role</h2>
+  <p>The gating network acts as a commander that assesses the current state of the board and decides which expert(s) should get the "right to speak."</p>
+  <ul>
+    <li><p><strong>Input:</strong> It receives all information about the current position.</p></li>
+    <p>The board state as a <code>12x8x8</code> tensor (representing the 6 piece types for both White and Black).</p>
+    <p>Additional game state information like castling rights, en passant squares, the 50-move rule counter, etc.</p>
+    <li><p><strong>Process:</strong> Based on the input, it analyzes the characteristics of the current position.</p>
+    <p>It determines things like, "Is this the early game? Is the position highly tactical? Is the opponent playing a style that baits human error?"</p>
+    <li><p><strong>Output:</strong> It outputs confidence scores for each expert.</p></li>
+    <p>For example, in a complex middlegame position, it would assign high weights to the 'Middlegame Expert' and the 'Tactical Expert.'</p>
+    <li><p><strong>Final Decision:</strong> The final evaluation (policy and value) is a <strong>weighted average</strong> of the outputs from all the experts, based on the weights assigned by the gating network.</p></li>
+    <p>Therefore, it's not always a single expert being chosen, but rather a blend of expert opinions tailored to the situation.</p>
+  </ul>
+
+  <h2>The Specialized Experts: The Specialists in Each Field</h2>
+  <p>Each expert is an independent neural network, intensively trained on data from a specific domain.</p>
+
+  <h3>Phase Experts</h3>
+  <ul>
+    <li><p><strong>Opening Expert:</strong> Trained on a vast dataset of opening theory, it has a deep understanding of standard opening moves and strategic principles.</p></li>
+    <li><p><strong>Middlegame Expert:</strong> Trained on the most complex middlegame positions, it excels at strategic planning and deep calculation.</p></li>
+    <li><p><strong>Endgame Expert:</strong> Trained on endgame data with fewer pieces (e.g., king and pawn endgames), it plays with high precision and avoids mistakes.</p></li>
+  </ul>
+
+  <h3>Style Experts</h3>
+  <ul>
+    <li><p><strong>Tactical Expert:</strong> Strong in positions with sharp calculations, such as piece exchanges, sacrifices, and checkmate patterns.</p></li>
+    <li><p><strong>Positional Expert:</strong> Excels at accumulating quiet but decisive long-term advantages, such as pawn structure, control of space, and the long-term value of pieces.</p></li>
+    <li><p><strong>Attacking/Defensive Expert:</strong> Specialized in directly threatening the opponent's king or effectively defending against an attack and launching a counter-attack.</p></li>
+  </ul>
+
+  <h3>Adaptation Experts</h3>
+  <ul>
+    <li><p><strong>Anti-Engine Expert:</strong> Learns how to exploit the weaknesses of typical engines, such as creating closed positions or long-term fortresses that they struggle to understand.</p></li>
+    <li><p><strong>Anti-Human Expert:</strong> Learns to make moves that are psychologically pressuring or lead to complications where humans are prone to making mistakes.</p></li>
+    <li><p><strong>Counter-Style Expert:</strong> Identifies the opponent's playing style (e.g., aggressive or defensive) and employs the optimal strategy to counter it.</p></li>
+  </ul>
+
+  <h1>Detailed Explanation of MCTS and the Self-Training Pipeline</h1>
+  <p>Adela uses the MoE model as its 'brain' and the Monte Carlo Tree Search (MCTS) as its 'calculation tool' to learn and play.</p>
+
+  <h2>The Synergy between MCTS and MoE</h2>
+  <ul>
+    <li><p><strong>Role of the Policy Head:</strong> When MCTS explores the next move, the MoE model's policy head acts as a **guide**, telling it, "In this position, moves A, B, and C seem most promising, so focus your search there." This prevents wasting time on unlikely moves and makes the calculation highly efficient.</p></li>
+    <li><p><strong>Role of the Value Head:</strong> When MCTS explores a sequence of moves and reaches a new position, the MoE model's value head acts as an **expert appraiser**, instantly evaluating how advantageous or disadvantageous that position is. This provides a much faster and more accurate evaluation than simulating the game to the end.</p></li>
+  </ul>
+
+  <h2>The Cycle of the Self-Training Pipeline</h2>
+  <p>Adela becomes stronger by endlessly repeating the following three-stage process</p>
+  <ol>
+    <li><p><strong>Generate Data (Self-Play):</strong> The current strongest version of the Adela engine plays countless games against itself, using MCTS to make careful move selections.</p></li>
+    <li><p><strong>Store Data (Data Storage):</strong> During these games, the following information is recorded for every position to build a dataset:</p></li>
+    <ul>
+      <li><p><strong>State:</strong> The current piece placement (in FEN format).</p></li>
+      <li><p><strong>Policy Target:</strong> The probability distribution of how 'good' each move is, as determined by the extensive MCTS search. (This serves as the 'answer key' from the 'teacher' for the model to learn from).</p></li>
+      <li><p><strong>Value Target:</strong> The final outcome of that game (`Win: +1`, `Loss: -1`, `Draw: 0`).</p></li>
+    </ul>
+    <li><p><strong>Train Model (Training):</strong> This massive dataset of 'State-Policy-Value' examples is used to train the MoE model (including the gating network and all experts). The model learns to predict the judgments of its 'teacher,' MCTS, as accurately as possible.</p></li>
+  </ol>
+
+  <p>Once this training is complete, a <strong>slightly smarter, new version of Adela</strong> is born.</p>
+  <p>This new version then starts the cycle over again from step 1 (Generate Data).</p>
+  <p>Through this cyclical loop, the engine progressively improves and discovers the principles of chess on its own, without human-provided game scores or knowledge.</p>
 </Content>
