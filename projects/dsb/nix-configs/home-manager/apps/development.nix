@@ -1,4 +1,4 @@
-{pkgs, stablep, config, ...}:
+{pkgs, config, ...}:
 {
   home = {
     sessionVariables = {
@@ -16,8 +16,7 @@
       vscode-langservers-extracted
       ruby_3_4 rubyPackages_3_4.ruby-lsp
       ghc cabal-install haskell-language-server
-      # https://github.com/NixOS/nixpkgs/issues/432960
-      cargo-update rustc cargo clippy (stablep.rust-analyzer)
+      cargo-update rustc cargo clippy rust-analyzer
       metals scala-next
       taplo
       yaml-language-server
@@ -54,8 +53,8 @@
   };
   programs = {
     java = {
-      enable=true;
-      package=pkgs.temurin-bin-21;
+      enable = true;
+      package = pkgs.temurin-bin-21;
     };
     go.enable = true;
     lazygit = {
