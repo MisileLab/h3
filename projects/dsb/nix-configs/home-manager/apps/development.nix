@@ -1,4 +1,4 @@
-{pkgs, config, ...}:
+{pkgs, stablep, config, ...}:
 {
   home = {
     sessionVariables = {
@@ -9,7 +9,7 @@
 
       # Development
       gel d2 pre-commit just mongosh tabnine
-      snyk radicle-node infisical pnpm poop binsider
+      snyk (stablep.radicle-node) infisical pnpm poop binsider
       typst act gh crush
 
       # Language tools
