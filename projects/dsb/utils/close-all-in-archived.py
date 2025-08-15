@@ -3,7 +3,7 @@ from github.Auth import Token
 
 from pathlib import Path
 
-g = Github(auth=Token(Path("token.txt").read_text()))
+g = Github(auth=Token(Path("token.txt").read_text().strip()))
 
 for i in g.get_user().get_repos():
   print(i, i.archived)
@@ -13,7 +13,7 @@ for i in g.get_user().get_repos():
   if issues.totalCount == 0:
     continue
   pr = i.get_pulls(state="open")
-  if i.archived and (issues.totalCount == 0 or pr.totalCount == 0):
+  if i.archived and (issues.totalCount >= 0 or pr.totalCount >= 0):
     i.edit(archived=False)
     for j in issues:
       print(f"closing issue {j.id}")
