@@ -70,7 +70,7 @@ mcp_servers = [
 
 # ========== Setup ==========
 model = OpenAIModel(
-  'deepseek/deepseek-r1-0528',
+  'google/gemini-2.5-flash',
   provider=OpenAIProvider(
     base_url='https://openrouter.ai/api/v1',
     api_key=getenv('OPENROUTER_KEY')
