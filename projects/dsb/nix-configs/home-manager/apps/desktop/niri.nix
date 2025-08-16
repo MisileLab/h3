@@ -3,6 +3,9 @@
     enable = true;
     package = pkgs.niri;
     settings = {
+      environment = {
+        DISPLAY = ":0";
+      };
       outputs."eDP-1".scale = 2.0;
       window-rules = [
         {
