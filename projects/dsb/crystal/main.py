@@ -70,7 +70,7 @@ mcp_servers = [
 
 # ========== Setup ==========
 model = OpenAIModel(
-  'z-ai/glm-4.5',
+  'deepseek/deepseek-r1-0528',
   provider=OpenAIProvider(
     base_url='https://openrouter.ai/api/v1',
     api_key=getenv('OPENROUTER_KEY')
