@@ -3,7 +3,7 @@ name = "cup"
 version = "0.1.0"
 description = "PDF Processing Tools - Extract and convert PDF content to various formats"
 readme = "README.md"
-requires-python = "==3.13.6"
+requires-python = "==3.13.7"
 dependencies = [
   "click==8.2.1",
   "langchain==0.3.27",

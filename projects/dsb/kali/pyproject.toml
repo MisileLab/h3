@@ -3,7 +3,7 @@ name = "kali"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = "==3.13.6"
+requires-python = "==3.13.7"
 dependencies = [
   "inquirer==3.4.1",
   "pydantic-ai-slim[logfire,openai]==0.7.2",
