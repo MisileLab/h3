@@ -29,7 +29,7 @@
       clang-tools lldb pkg-config
       niv nixpkgs-fmt nix-tree hub fh nixfmt-rfc-style nurl
       packwiz ccemux
-      dotnet-sdk_8
+      dotnet-sdk_9 omnisharp-roslyn
       lua (writeShellScriptBin "luajit" "${luajit}/bin/lua") luarocks
       vala
       zig
