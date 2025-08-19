@@ -11,8 +11,8 @@ def main():
   questions = [
     Text("openai_url", message="OpenAI API URL", default="https://api.openai.com/v1"),
     Text("openai_key", message="OpenAI API Key", default=""),
-    Text("casual_model", message="Model for casual conversations", default="gpt-5-mini"),
-    Text("high_reasoning_model", message="Model for high reasoning tasks", default="gpt-5")
+    Text("casual_model", message="Model for casual conversations", default="deepseek/deepseek-chat-v3-0324"),
+    Text("high_reasoning_model", message="Model for high reasoning tasks", default="deepseek/deepseek-r1-0528")
   ]
   answers: dict[str, str] = prompt(questions) # pyright: ignore[reportAssignmentType, reportUnknownVariableType]
   if None in answers.values():
