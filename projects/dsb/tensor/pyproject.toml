@@ -7,5 +7,6 @@ requires-python = ">=3.13.5"
 dependencies = [
   "fastapi[standard]==0.116.1",
   "inquirer==3.4.1",
+  "polars==1.32.3",
   "pydantic-ai-slim[openai]==0.7.3",
 ]

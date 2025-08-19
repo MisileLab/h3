@@ -9,7 +9,8 @@ from pydantic_ai.providers.openai import OpenAIProvider
 from rich.console import Console
 from rich.live import Live
 from rich.markdown import Markdown
-from rich.prompt import Prompt
+
+from tools.data import functions as data_functions
 
 class Config(BaseModel):
   openai_url: str
@@ -29,6 +30,9 @@ model = OpenAIModel(
 
 agent = Agent(
   model=model,
+  tools=[
+    *data_functions,
+  ],
   instructions=Path("./prompts/scalar").read_text()
 )
 
