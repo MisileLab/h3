@@ -10,7 +10,7 @@ from rich.console import Console
 from rich.live import Live
 from rich.markdown import Markdown
 
-from tools.data import functions as data_functions
+from tools.data import functions as data_functions, get_current_status
 
 class Config(BaseModel):
   openai_url: str
@@ -39,7 +39,7 @@ agent = Agent(
 async def main():
   console = Console()
   while True:
-    async with agent.run_stream(f"Crystal: {input("Crystal: ").strip()}") as result:
+    async with agent.run_stream(f"Crystal: {input("Crystal: ").strip()}" + f"\n{get_current_status()}") as result:
       with Live('', console=console, vertical_overflow="visible") as live:
         async for message in result.stream_text():
           live.update(Markdown(message))

@@ -58,5 +58,5 @@ def get_current_status():
   """
   return f"current hope: {data.hope}, current fear: {data.fear}"
 
-functions = [add_hope, add_fear, get_current_status]
+functions = [add_hope, add_fear]
 
