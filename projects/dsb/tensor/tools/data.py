@@ -34,7 +34,8 @@ def add_hope(amount: int):
   Add hope to Scalar.
   returns current hope
   """
-  hope_result = min(max(amount + data.hope, 100), 0)
+  print("Adding hope:", amount)
+  hope_result = min(max(amount + data.hope, 0), 100)
   data.hope = hope_result
   concat(DataFrame({"type": "hope", "amount": hope_result}))
   save_data()
@@ -45,7 +46,8 @@ def add_fear(amount: int):
   Add fear to Scalar.
   returns current fear
   """
-  fear_result = min(max(amount + data.fear, 100), 0)
+  print("Adding fear:", amount)
+  fear_result = min(max(amount + data.fear, 0), 100)
   data.fear = fear_result
   concat(DataFrame({"type": "fear", "amount": fear_result}))
   save_data()

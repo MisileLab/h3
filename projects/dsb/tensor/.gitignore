@@ -1,5 +1,7 @@
 # Custom
 config.json
+*.parquet
+*.pkl
 
 # Python.gitignore by ignofierplus
 __pycache__/
