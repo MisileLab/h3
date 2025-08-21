@@ -1,8 +1,10 @@
 from dataclasses import dataclass
-from pickle import loads, dumps
+from pickle import dumps
 from pathlib import Path
 
-from polars import DataFrame, read_parquet
+from polars import DataFrame
+
+from ..libraries.utils import read_parquet, concat as utils_concat, read_pickle
 
 @dataclass
 class Data:
@@ -10,24 +12,17 @@ class Data:
   fear: int = 15
 
 data_file = Path("./data.pkl")
-if data_file.exists():
-  data: Data = loads(data_file.read_bytes()) # pyright: ignore[reportAny]
-else:
-  data = Data()
-
-parquet_file = Path("./data.parquet")
-if parquet_file.exists():
-  df: DataFrame = read_parquet(parquet_file)
-else:
-  df = DataFrame()
+df_file = Path("./data.parquet")
+data = read_pickle(data_file, Data)
+df = read_parquet(df_file)
 
 def save_data():
-  _ = df.write_parquet(parquet_file)
+  _ = df.write_parquet(df_file)
   _ = data_file.write_bytes(dumps(data)) 
 
 def concat(data: DataFrame):
   global df
-  df = df.vstack(data)
+  df = utils_concat(df, data)
 
 def add_hope(amount: int):
   """
