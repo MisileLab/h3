@@ -12,10 +12,7 @@ from rich.markdown import Markdown
 from pydantic_ai.messages import (
     FinalResultEvent,
     FunctionToolCallEvent,
-    FunctionToolResultEvent,
-    PartDeltaEvent,
-    TextPartDelta,
-    ToolCallPartDelta,
+    FunctionToolResultEvent
 )
 
 from tools.data import functions as data_functions, get_current_status
