@@ -11,7 +11,7 @@
     defaultSopsFile = ./secrets.yaml;
     age.keyFile = "/home/misile/.config/sops/age/keys.txt";
     secrets = {
-      nextdns_config_id.restartUnits = ["systemd-resolved.service"];
+      nextdns_config_id = {};
     };
   };
 
