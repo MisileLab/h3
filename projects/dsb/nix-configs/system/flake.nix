@@ -3,6 +3,10 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs";
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     # stablep.url = "github:nixos/nixpkgs/nixos-unstable";
     # lanzaboote = {
     #   url = "github:nix-community/lanzaboote/v0.4.1";
@@ -10,7 +14,7 @@
     # };
   };
 
-  outputs = { self, nixpkgs, /*stablep, *//*lanzaboote*/... }@_: {
+  outputs = { self, nixpkgs, sops-nix, /*stablep, *//*lanzaboote*/... }@_: {
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
@@ -22,6 +26,7 @@
         #   })];
         # })
         # lanzaboote.nixosModules.lanzaboote
+        sops-nix.nixosModules.sops
         ({ pkgs, lib, ... }: {
           environment.systemPackages = [pkgs.sbctl];
           # boot = {

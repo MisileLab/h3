@@ -2,10 +2,48 @@
 # your system. Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 {
   # https://github.com/NixOS/nix/issues/12420
   nix.package = pkgs.lix;
+
+  sops = {
+    defaultSopsFile = ./secrets.yaml;
+    age.keyFile = "/home/misile/.config/sops/age/keys.txt";
+    secrets = {
+      nextdns_config_id.restartUnits = ["systemd-resolved.service"];
+    };
+  };
+
+    # Create a script that generates the resolved config with the secret
+  systemd.services.nextdns-resolved-config = {
+    description = "Configure systemd-resolved with NextDNS";
+    wantedBy = [ "systemd-resolved.service" ];
+    before = [ "systemd-resolved.service" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = let
+      configFile = "/etc/systemd/resolved.conf.d/nextdns.conf";
+    in ''
+      mkdir -p /etc/systemd/resolved.conf.d
+      NEXTDNS_ID=$(cat ${config.sops.secrets.nextdns_config_id.path})
+      cat > ${configFile} << EOF
+[Resolve]
+DNS=45.90.28.0#$NEXTDNS_ID.dns.nextdns.io
+DNS=2a07:a8c0::#$NEXTDNS_ID.dns.nextdns.io
+DNS=45.90.30.0#$NEXTDNS_ID.dns.nextdns.io
+DNS=2a07:a8c1::#$NEXTDNS_ID.dns.nextdns.io
+DNSOverTLS=yes
+DNSSEC=yes
+Domains=~.
+EOF
+    '';
+  };
+
+  # Enable systemd-resolved
+  services.resolved.enable = true;
 
   boot = {
     loader = {
