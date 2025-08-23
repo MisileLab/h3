@@ -2,6 +2,7 @@
 *.db
 credentials.json
 token.json
+form_responses.xlsx
 
 # Python.gitignore by ignofierplus
 __pycache__/
