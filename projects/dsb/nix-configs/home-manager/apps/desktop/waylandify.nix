@@ -10,13 +10,13 @@ let
   jwl = name: binaryPath: base name "DISPLAY=':0'" binaryPath "-Dawt.toolkit.name=WLToolkit";
   # qt-waylandify
   qwl = name: binaryPath: base name "QT_QPA_PLATFORM=wayland" binaryPath "";
-  electrons = with pkgs; [
+  electrons = with stablep; [
     (cwl "figma" "${figma-linux}/bin/figma-linux")
     (cwl "discord" "${vesktop}/bin/vesktop")
     (cwl "vscode" "${vscodium}/bin/codium")
     # (cwl "unityhub" "${unityhub}/bin/unityhub")
   ];
-  chromiums = with stablep; [
+  chromiums = with pkgs; [
     (cwl "chrome" "${ungoogled-chromium}/bin/chromium")
     ungoogled-chromium
   ];
