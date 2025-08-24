@@ -35,22 +35,25 @@ namespace Ink.UnityIntegration {
 			
         static void Add(BuildTargetGroup buildTargetGroup, params string[] defines) {
             var allDefines = new List<string>();
-            string definesStr = PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup);
+            var namedBuildTarget = NamedBuildTarget.FromBuildTargetGroup(buildTargetGroup);
+            string definesStr = PlayerSettings.GetScriptingDefineSymbols(namedBuildTarget);
             allDefines = definesStr.Split(DEFINE_SEPARATOR).ToList();
             allDefines.AddRange(defines.Except(allDefines));
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, string.Join(DEFINE_SEPARATOR.ToString(), allDefines.ToArray()));
+            PlayerSettings.SetScriptingDefineSymbols(namedBuildTarget, string.Join(DEFINE_SEPARATOR.ToString(), allDefines.ToArray()));
         }
 				
 				
         static void Remove(BuildTargetGroup buildTargetGroup, params string[] defines) {
-            string definesStr = PlayerSettings.GetScriptingDefineSymbolsForGroup(buildTargetGroup);
+            var namedBuildTarget = NamedBuildTarget.FromBuildTargetGroup(buildTargetGroup);
+            string definesStr = PlayerSettings.GetScriptingDefineSymbols(namedBuildTarget);
             var existingDefines = definesStr.Split(DEFINE_SEPARATOR).ToList();
             var newDefines = existingDefines.Except(defines);
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(buildTargetGroup, string.Join(DEFINE_SEPARATOR.ToString(), newDefines.ToArray()));
+            PlayerSettings.SetScriptingDefineSymbols(namedBuildTarget, string.Join(DEFINE_SEPARATOR.ToString(), newDefines.ToArray()));
         }
 
         static bool Exists(BuildTargetGroup buildTargetGroup, params string[] defines) {
-            string definesStr = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone);
+            var namedBuildTarget = NamedBuildTarget.FromBuildTargetGroup(buildTargetGroup);
+            string definesStr = PlayerSettings.GetScriptingDefineSymbols(namedBuildTarget);
             var existingDefines = definesStr.Split(DEFINE_SEPARATOR).ToList();
             return existingDefines.Contains("INK_RUNTIME") && existingDefines.Contains("INK_EDITOR");
         }
