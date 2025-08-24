@@ -42,7 +42,8 @@
     ]
     ++ (with llvmPackages_latest; [libcxxClang openmp libunwind]) # llvm
     ++ (with nodePackages_latest; [nodejs typescript typescript-language-server svelte-language-server prettier]) # nodejs
-    ++ (with python313Packages; [pip virtualenv mitmproxy]); # python thing
+    # https://github.com/NixOS/nixpkgs/issues/436417
+    ++ (with python313Packages; [pip virtualenv (stablep.python313Packages.mitmproxy)]); # python thing
     file = {
       ".config/process-compose/theme.yaml".source = config.lib.file.mkOutOfStoreSymlink "${builtins.fetchGit {
         url="https://github.com/catppuccin/process-compose";
