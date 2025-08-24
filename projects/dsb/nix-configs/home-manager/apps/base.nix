@@ -31,7 +31,7 @@ in
         (writeScript "cat" "${bat}/bin/bat")
         (writeScript "ocat" "${coreutils}/bin/cat")
         (writeScript "lzg" "${lazygit}/bin/lazygit")
-        (writeScript "utils" "~/repos/h3/projects/dsb/utils/zig-out/bin/utils")
+        (writeScript "util" "~/repos/h3/projects/dsb/utils/zig-out/bin/utils")
         (writeScript "zig-beta" "${zigpkgs.master}/bin/zig")
       ];
     };
