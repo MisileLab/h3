@@ -12,11 +12,10 @@ public class Conversation : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI _textField;
 
-    //[SerializeField]
-    //private VerticalLayoutGroup _choiceButtonContainer;
+    private VerticalLayoutGroup _choiceButtonContainer;
 
-    //[SerializeField]
-    //private Button _choiceButtonPrefab;
+    [SerializeField]
+    private Button _choiceButtonTemplate;
 
     [SerializeField]
     private Color _normalTextColor;
@@ -26,7 +25,60 @@ public class Conversation : MonoBehaviour
 
     void Start()
     {
+        CreateChoiceButtonContainer();
         StartStory();
+    }
+
+    private void CreateChoiceButtonContainer()
+    {
+        // Create a GameObject for the choice button container
+        GameObject containerObject = new GameObject("ChoiceButtonContainer");
+        
+        // Find the Canvas to parent the container to (for screen-relative positioning)
+        Canvas canvas = FindObjectOfType<Canvas>();
+        if (canvas != null)
+        {
+            containerObject.transform.SetParent(canvas.transform, false);
+        }
+        else
+        {
+            // Fallback: parent to this GameObject if no Canvas found
+            containerObject.transform.SetParent(this.transform, false);
+            Debug.LogWarning("No Canvas found. Choice buttons will be positioned relative to the Conversation GameObject.");
+        }
+        
+        // Add VerticalLayoutGroup component
+        _choiceButtonContainer = containerObject.AddComponent<VerticalLayoutGroup>();
+        
+        // Configure the layout properties
+        _choiceButtonContainer.spacing = 10f; // Space between buttons
+        _choiceButtonContainer.padding = new RectOffset(20, 20, 10, 10); // Padding around the container
+        _choiceButtonContainer.childAlignment = TextAnchor.UpperCenter; // Center buttons horizontally
+        _choiceButtonContainer.childControlWidth = false; // Let ContentSizeFitter control width
+        _choiceButtonContainer.childControlHeight = false; // Let ContentSizeFitter control height
+        _choiceButtonContainer.childForceExpandWidth = false; // Don't force buttons to expand
+        _choiceButtonContainer.childForceExpandHeight = false; // Don't force buttons to expand vertically
+        
+        // Add ContentSizeFitter to auto-resize based on content
+        ContentSizeFitter contentSizeFitter = containerObject.AddComponent<ContentSizeFitter>();
+        contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+        contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
+        
+        // Add RectTransform and set it up for UI
+        RectTransform rectTransform = containerObject.GetComponent<RectTransform>();
+        if (rectTransform == null)
+        {
+            rectTransform = containerObject.AddComponent<RectTransform>();
+        }
+        
+        // Position the container in the center of the screen
+        rectTransform.anchorMin = new Vector2(0.5f, 0.5f); // Center anchor
+        rectTransform.anchorMax = new Vector2(0.5f, 0.5f); // Center anchor
+        rectTransform.pivot = new Vector2(0.5f, 0.5f); // Center pivot
+        rectTransform.anchoredPosition = new Vector2(0f, 0f); // Exact center of screen
+        rectTransform.sizeDelta = new Vector2(400f, 300f); // Container size (increased for better visibility)
+        
+        Debug.Log("Choice button container created programmatically.");
     }
 
     private void StartStory()
@@ -56,27 +108,25 @@ public class Conversation : MonoBehaviour
                 Debug.LogError("Text field is not assigned.");
             }
         }
+        else if (_story.currentChoices.Count > 0)
+        {
+            DisplayChoices();
+        }
         else
         {
             Debug.Log("Story cannot continue.");
         }
-        //else if (_story.currentChoices.Count > 0)
-        //{
-        //    DisplayChoices();
-        //}
     }
 
-    /*
     private void DisplayChoices()
     {
-        // checks if choices are already being displaye
-        if (_choiceButtonContainer.GetComponentsInChildren<Button>().Length > 0) return;
+        // checks if choices are already being displayed
+        if (_choiceButtonContainer != null && _choiceButtonContainer.transform.childCount > 0) return;
 
         for (int i = 0; i < _story.currentChoices.Count; i++) // iterates through all choices
         {
-
             var choice = _story.currentChoices[i];
-            var button = CreateChoiceButton(choice.text); // creates a choice button
+            var button = CreateChoiceButton(choice.text); // creates a choice button by cloning
 
             button.onClick.AddListener(() => OnClickChoiceButton(choice));
         }
@@ -84,13 +134,54 @@ public class Conversation : MonoBehaviour
 
     Button CreateChoiceButton(string text)
     {
-        // creates the button from a prefab
-        var choiceButton = Instantiate(_choiceButtonPrefab);
-        choiceButton.transform.SetParent(_choiceButtonContainer.transform, false);
+        // clones the button template
+        var choiceButton = Instantiate(_choiceButtonTemplate);
+        
+        if (_choiceButtonContainer != null)
+        {
+            choiceButton.transform.SetParent(_choiceButtonContainer.transform, false);
+        }
         
         // sets text on the button
         var buttonText = choiceButton.GetComponentInChildren<TextMeshProUGUI>();
-        buttonText.text = text;
+        if (buttonText != null)
+        {
+            buttonText.text = text;
+            
+            // Configure text for auto-sizing
+            buttonText.enableAutoSizing = true;
+            buttonText.fontSizeMin = 12f;
+            buttonText.fontSizeMax = 24f;
+            buttonText.alignment = TextAlignmentOptions.Center;
+            
+            // Add padding around text for better appearance
+            buttonText.margin = new Vector4(10f, 5f, 10f, 5f); // left, top, right, bottom padding
+        }
+        
+        // Add ContentSizeFitter to auto-adjust button size based on text
+        ContentSizeFitter buttonSizeFitter = choiceButton.GetComponent<ContentSizeFitter>();
+        if (buttonSizeFitter == null)
+        {
+            buttonSizeFitter = choiceButton.gameObject.AddComponent<ContentSizeFitter>();
+        }
+        buttonSizeFitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
+        buttonSizeFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+        
+        // Add LayoutElement to control min/max sizes and centering
+        LayoutElement layoutElement = choiceButton.GetComponent<LayoutElement>();
+        if (layoutElement == null)
+        {
+            layoutElement = choiceButton.gameObject.AddComponent<LayoutElement>();
+        }
+        layoutElement.minWidth = 100f; // Minimum button width
+        layoutElement.minHeight = 40f; // Minimum button height
+        layoutElement.preferredWidth = -1f; // Let ContentSizeFitter control width
+        layoutElement.preferredHeight = -1f; // Let ContentSizeFitter control height
+        layoutElement.flexibleWidth = 0f; // Don't expand to fill container
+        layoutElement.flexibleHeight = 0f; // Don't expand vertically
+
+        // activate the cloned button
+        choiceButton.gameObject.SetActive(true);
 
         return choiceButton;
     }
@@ -106,13 +197,12 @@ public class Conversation : MonoBehaviour
     {
         if (_choiceButtonContainer != null)
         {
-            foreach (var button in _choiceButtonContainer.GetComponentsInChildren<Button>())
+            foreach (Transform child in _choiceButtonContainer.transform)
             {
-                Destroy(button.gameObject);
+                Destroy(child.gameObject);
             }
         }
     }
-    */
 
     private void ApplyStyling()
     {
