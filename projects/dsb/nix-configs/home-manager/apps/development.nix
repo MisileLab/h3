@@ -13,6 +13,7 @@
       typst act gh crush godot
 
       # Language tools
+      dart
       vscode-langservers-extracted
       ruby_3_4 rubyPackages_3_4.ruby-lsp
       ghc cabal-install haskell-language-server
