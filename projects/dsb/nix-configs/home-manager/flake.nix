@@ -2,7 +2,7 @@
   description = "Home Manager configuration of misile";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs";
+    nixpkgs.url = "github:misilelab/nixpkgs/dart";
     zig = {
       url = "github:mitchellh/zig-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
