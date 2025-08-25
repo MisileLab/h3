@@ -9,7 +9,7 @@
 
       # Development
       gel d2 pre-commit just mongosh tabnine
-      snyk (stablep.radicle-node) infisical pnpm poop binsider
+      snyk radicle-node infisical pnpm poop binsider
       typst act gh crush godot
 
       # Language tools
