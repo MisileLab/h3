@@ -13,7 +13,7 @@
       typst act gh crush godot
 
       # Language tools
-      pnpm yarn_berry
+      pnpm yarn-berry
       dart
       vscode-langservers-extracted
       ruby_3_4 rubyPackages_3_4.ruby-lsp
