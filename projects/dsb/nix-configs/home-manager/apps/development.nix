@@ -9,10 +9,11 @@
 
       # Development
       gel d2 pre-commit just mongosh tabnine
-      snyk radicle-node infisical pnpm poop binsider
+      snyk radicle-node infisical poop binsider
       typst act gh crush godot
 
       # Language tools
+      pnpm yarn_berry
       dart
       vscode-langservers-extracted
       ruby_3_4 rubyPackages_3_4.ruby-lsp
