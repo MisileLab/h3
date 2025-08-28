@@ -154,11 +154,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1756030473,
-        "narHash": "sha256-AQ5ikBIzB1+pzDPCJbbAbShvpvzPhi/a5NBk3KjM+IA=",
+        "lastModified": 1756349998,
+        "narHash": "sha256-ZTBwUMXnrGT+YofWWTUqSAYQ7Awii/QduTYuvhAneYU=",
         "owner": "misilelab",
         "repo": "nixpkgs",
-        "rev": "e1eafd362545c1faca4a03391036ef901a3fde98",
+        "rev": "0eae23073650cffad6d7f2c12b3f90ec3bac76aa",
         "type": "github"
       },
       "original": {
