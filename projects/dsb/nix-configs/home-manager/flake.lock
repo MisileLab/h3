@@ -154,16 +154,15 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1756349998,
-        "narHash": "sha256-ZTBwUMXnrGT+YofWWTUqSAYQ7Awii/QduTYuvhAneYU=",
-        "owner": "misilelab",
+        "lastModified": 1756447574,
+        "narHash": "sha256-42b44tE7T/6A+P0sqR3tMvAGALgnH0g1X5euvkI0zYc=",
+        "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "0eae23073650cffad6d7f2c12b3f90ec3bac76aa",
+        "rev": "78b266bfd73822cec79208089dacb8cfddba048c",
         "type": "github"
       },
       "original": {
-        "owner": "misilelab",
-        "ref": "dart",
+        "owner": "nixos",
         "repo": "nixpkgs",
         "type": "github"
       }

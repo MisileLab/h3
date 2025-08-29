@@ -2,7 +2,7 @@
   description = "Home Manager configuration of misile";
 
   inputs = {
-    nixpkgs.url = "github:misilelab/nixpkgs/dart";
+    nixpkgs.url = "github:nixos/nixpkgs";
     zig = {
       url = "github:mitchellh/zig-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -38,6 +38,23 @@
       c = import ./config.nix;
       # stablep = import stable {inherit system;config = {allowUnfree = true;};};
     in {
+      nixpkgs.overlays = [
+        (final: prev: {
+          dart = prev.dart.overrideAttrs (old: {
+            installPhase = ''
+              runHook preInstall
+              rm LICENSE
+              cp -R . $out
+            ''
+            + final.lib.optionalString (final.stdenv.hostPlatform.isLinux) ''
+              find $out/bin -executable -type f -exec patchelf --set-interpreter ${final.bintools.dynamicLinker} {} \;
+            ''
+            + ''
+              runHook postInstall
+            '';
+          });
+        })
+      ];
       homeConfigurations."misile" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
         modules = [
