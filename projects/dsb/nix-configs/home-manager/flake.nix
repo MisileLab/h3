@@ -33,17 +33,12 @@
   outputs = { nixpkgs, /*stable, */home-manager, catppuccin, zig, nix-index-database, sops-nix, niri, ... }:
     let
       system = "x86_64-linux"; # replace with your system
-      pkgs = import nixpkgs {inherit system;};
-      zigpkgs = zig.packages."${system}";
-      c = import ./config.nix;
-      # stablep = import stable {inherit system;config = {allowUnfree = true;};};
-    in {
-      nixpkgs.overlays = [
+      overlays = [
         (final: prev: {
           dart = prev.dart.overrideAttrs (old: {
             installPhase = ''
               runHook preInstall
-              rm LICENSE
+              [ -f LICENSE ] && rm LICENSE
               cp -R . $out
             ''
             + final.lib.optionalString (final.stdenv.hostPlatform.isLinux) ''
@@ -55,6 +50,14 @@
           });
         })
       ];
+      pkgs = import nixpkgs {
+        inherit system overlays;
+      };
+      zigpkgs = zig.packages."${system}";
+      c = import ./config.nix;
+      # stablep = import stable {inherit system;config = {allowUnfree = true;};};
+    in {
+      nixpkgs.overlays = overlays;
       homeConfigurations."misile" = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
         modules = [
