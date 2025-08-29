@@ -27,8 +27,8 @@ importers:
         specifier: 5.13.5
         version: 5.13.5(@types/node@24.3.0)(jiti@2.5.1)(lightningcss@1.30.1)(rollup@4.48.0)(typescript@5.9.2)(yaml@2.8.1)
       dayjs:
-        specifier: 1.11.16
-        version: 1.11.16(typescript@5.9.2)
+        specifier: 1.11.17
+        version: 1.11.17(typescript@5.9.2)
       mobile-device-detect:
         specifier: 0.4.3
         version: 0.4.3
@@ -1139,8 +1139,8 @@ packages:
     engines: {node: '>=4'}
     hasBin: true
 
-  dayjs@1.11.16:
-    resolution: {integrity: sha512-cHYOEnLgx05WFEe3jIoe/uxcWMguZqbQOh4rrVS1GP4/l6S3x4NB9AYg5BTDlGjB0KClWdmXXuTZ0umVMQ54wQ==}
+  dayjs@1.11.17:
+    resolution: {integrity: sha512-qgiVOerp5QCVMfE7hZ6z/gM+ug52I+xv70rCf6rWJXf0b4d8Kv6Yw9BmcLZlCvP3Xz8i3fjXbaU6Hwu7aGRXfA==}
 
   debug@4.4.1:
     resolution: {integrity: sha512-KcKCqiftBJcZr++7ykoDIEwSa3XWowTfNPo92BYxjXiyYEVrUQh2aLyhxBCwww+heortUFxEJYcRzosstTEBYQ==}
@@ -4303,7 +4303,7 @@ snapshots:
 
   cssesc@3.0.0: {}
 
-  dayjs@1.11.16(typescript@5.9.2):
+  dayjs@1.11.17(typescript@5.9.2):
     dependencies:
       '@semantic-release/changelog': 6.0.3(semantic-release@24.2.7(typescript@5.9.2))
       '@semantic-release/git': 10.0.1(semantic-release@24.2.7(typescript@5.9.2))
