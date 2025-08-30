@@ -3,8 +3,13 @@ name = "reactor"
 version = "0.1.0"
 description = "Reactor monitoring and control system"
 readme = "README.md"
-requires-python = "==3.13.5"
+requires-python = "==3.13.6"
 dependencies = [
+  "fastapi==0.116.1",
   "gel==3.1.0",
+  "polars==1.32.3",
+  "python-engineio==4.12.2",
+  "python-socketio==5.13.0",
+  "uvicorn==0.35.0",
   "websockets==15.0.1",
 ]
