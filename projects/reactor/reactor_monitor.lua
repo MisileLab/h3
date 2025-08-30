@@ -1,15 +1,9 @@
 -- Reactor Monitoring Script for ComputerCraft
 -- Communicates with FastAPI server via WebSocket
 
-local component = require("component")
-local computer = require("computer")
-local event = require("event")
-local websocket = require("websocket")
-local serialization = require("serialization")
-
 -- Check for required components
-if not component.isAvailable("fusionReactor") then
-  error("Fusion reactor not found!")
+if not peripheral.wrap("fissionReactorLogicAdapter_0") then
+  error("Fission reactor not found")
 end
 
 -- Configuration
@@ -17,10 +11,10 @@ local SERVER_URL = "ws://localhost:8765/ws/computercraft/1"
 local UPDATE_INTERVAL = 1 -- seconds
 
 -- Get reactor component
-local reactor = component.fusionReactor
+local reactor = peripheral.wrap("fissionReactorLogicAdapter_0")
 
 -- Connect to WebSocket server
-local ws, err = websocket.connect(SERVER_URL)
+local ws, err = http.websocket(SERVER_URL)
 if not ws then
   error("Failed to connect to server: " .. tostring(err))
 end
@@ -31,19 +25,20 @@ print("Connected to reactor monitoring server")
 local function getReactorData()
   local data = {
     temperature = reactor.getTemperature() or 0,
-    fuel_level = reactor.getFuelAmount() or 0,
-    coolant_level = reactor.getCoolantAmount() or 0,
-    waste_level = reactor.getWasteAmount() or 0,
-    emergency_stop = reactor.isEmergencyShutdown() or false,
-    coolant_speed = reactor.getCoolantSpeed() or 0,
+    fuel_level = ((reactor.getFuel()["amount"] or 0) / (reactor.getFuelCapacity() or 1)) * 100,
+    coolant_level = ((reactor.getCoolant()["amount"] or 0) / (reactor.getCoolantCapacity() or 1)) * 100,
+    waste_level = ((reactor.getWaste()["amount"] or 0) / (reactor.getWasteCapacity() or 1)) * 100,
+    status = reactor.getStatus() or false,
+    burn_rate = reactor.getBurnRate() or 0,
+    actual_burn_rate = reactor.getActualBurnRate() or 0,
     alert_status = 0 -- Will be calculated based on conditions
   }
 
   -- Calculate alert status
   -- 0 = normal, 1 = caution, 2 = danger
-  if data.temperature > 85 then
+  if data.temperature > 1000 then
     data.alert_status = 2
-  elseif data.temperature > 60 or data.coolant_level < 20 then
+  elseif data.temperature > 600 or data.coolant_level < 20 then
     data.alert_status = 1
   else
     data.alert_status = 0
@@ -56,7 +51,7 @@ end
 local function sendReactorData()
   local success, data = pcall(getReactorData)
   if success then
-    local jsonData = serialization.serialize(data)
+    local jsonData = textutils.serializeJSON(data)
     local ok, err = ws.send(jsonData)
     if not ok then
       print("Failed to send data: " .. tostring(err))
@@ -70,7 +65,7 @@ end
 
 -- Function to handle incoming commands
 local function handleCommand(command)
-  local success, data = pcall(serialization.unserialize, command)
+  local success, data = pcall(textutils.unserialiseJSON, command)
   if success and type(data) == "table" then
     if data.cmd == "emergency_stop" then
       reactor.setEmergencyShutdown(true)
@@ -99,7 +94,7 @@ local function main()
     end
 
     -- Wait for next update
-    os.sleep(UPDATE_INTERVAL)
+    sleep(UPDATE_INTERVAL)
   end
 end
 
@@ -110,13 +105,6 @@ local function shutdown()
   end
   print("Reactor monitoring stopped")
 end
-
--- Set up event handlers
-event.listen("component_unavailable", function(_, componentType)
-  if componentType == "fusionReactor" then
-    error("Fusion reactor disconnected!")
-  end
-end)
 
 -- Run main loop with error handling
 local success, err = pcall(main)

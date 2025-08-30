@@ -1,140 +1,90 @@
-# Mekanism Reactor Monitoring System
+# Reactor Monitoring System
 
-A real-time monitoring and control system for Minecraft Mekanism fusion reactors with physical hardware interface.
+A real-time monitoring system for Minecraft ComputerCraft fission reactors using FastAPI backend and Lua data collection.
 
-## Overview
+## Architecture
 
-This project provides a complete solution for monitoring and controlling Minecraft Mekanism fusion reactors through a physical hardware interface. The system consists of multiple components working together to provide real-time data visualization and control capabilities.
+The system consists of three main components:
 
-## System Architecture
+1. **Python Backend** (`main.py`) - FastAPI server with WebSocket support
+2. **Lua Data Collector** (`reactor_monitor.lua`) - ComputerCraft script for reactor monitoring
+3. **ESP8266 Interface** - Optional hardware interface via SocketIO
 
-```
-[ComputerCraft Computer] --WebSocket--> [FastAPI Server] --TCP Socket--> [ESP8266] --Serial--> [Arduino Mega]
-```
+## Data Structure Alignment
 
-### Data Flow
-* **Upstream**: ComputerCraft → FastAPI Server → ESP8266 → Arduino Mega (reactor status information)
-* **Downstream**: Arduino Mega → ESP8266 → FastAPI Server → ComputerCraft (control commands)
-* **Update Cycle**: 1 second
+### Data Fields Sent by Lua Script
 
-### Communication Methods
-* ComputerCraft ↔ FastAPI Server: WebSocket bidirectional communication
-* FastAPI Server ↔ ESP8266: TCP Socket (binary data)
-* ESP8266 ↔ Arduino Mega: UART Serial communication (9600 baud)
+The Lua script (`reactor_monitor.lua`) collects and sends the following reactor data:
 
-## Hardware Components
-
-### Main Components
-* **Main Controller**: Arduino Mega 2560
-* **WiFi Module**: ESP8266 (NodeMCU or Wemos D1 Mini)
-* **Display**: 4 WS2812B LED strips (10 LEDs each)
-* **Audio**: 1 Piezo buzzer
-* **Input**: 4 tactile switches (1 emergency stop + 3 coolant control)
-* **Power**: 5V/3A DC adapter
-
-### Physical Layout
-```
-[Temperature LED Bar] [Fuel LED Bar] [Coolant LED Bar] [Waste LED Bar] [Emergency Stop]
-                                                                     [Coolant-Low]
-                                                                     [Coolant-Medium]
-                                                                     [Coolant-High]
+```lua
+{
+  "temperature": number,        -- Reactor temperature in Kelvin
+  "fuel_level": number,         -- Fuel level as percentage (0-100)
+  "coolant_level": number,      -- Coolant level as percentage (0-100)
+  "waste_level": number,        -- Waste level as percentage (0-100)
+  "status": boolean,            -- Reactor operational status
+  "burn_rate": number,          -- Current burn rate
+  "actual_burn_rate": number,   -- Actual burn rate
+  "alert_status": number        -- Alert level (0=normal, 1=caution, 2=danger)
+}
 ```
 
-## Software Components
+### Data Fields Expected by Python Backend
 
-### 1. ComputerCraft (Lua)
-* Collects reactor status data
-* Transmits real-time data via WebSocket
-* Receives and executes control commands
-* Uses CC: Tweaked's websocket API
+The Python backend (`main.py`) expects and processes the exact same data structure:
 
-### 2. FastAPI Server (Python)
-* Provides WebSocket endpoint
-* Bidirectional real-time communication with ComputerCraft
-* TCP socket communication with ESP8266
-* Binary data conversion
-* Data logging and analysis with Polars
-
-### 3. ESP8266 (C++ / Arduino IDE)
-* WiFi connection management
-* TCP socket client
-* Serial communication with Arduino Mega
-* Data relay and protocol conversion
-
-### 4. Arduino Mega (C++ / Arduino IDE)
-* WS2812B LED control (FastLED library)
-* Button input processing (with debouncing)
-* Buzzer control
-* Serial communication with ESP8266
-
-## Data Logging
-
-### Logging System
-* **Library**: Polars (high-performance DataFrame library)
-* **Storage Format**: Parquet files (.parquet)
-* **Storage Cycle**: Real-time storage every 1 second
-* **File Management**: Daily file splitting (reactor_YYYY-MM-DD.parquet)
-
-### Data Schema
 ```python
-Schema = {
-    "timestamp": pl.Datetime,       # Timestamp
-    "temperature": pl.Float32,      # Reactor temperature
-    "fuel_level": pl.Float32,       # Fuel level (%)
-    "coolant_level": pl.Float32,    # Coolant level (%)
-    "waste_level": pl.Float32,      # Nuclear waste level (%)
-    "emergency_stop": pl.Boolean,   # Emergency stop status
-    "coolant_speed": pl.UInt8,      # Coolant speed (0=stop, 1=low, 2=medium, 3=high)
-    "alert_status": pl.UInt8        # Alert status (0=normal, 1=caution, 2=danger)
-}
-```
-
-## Data Protocols
-
-### TCP Socket Protocol (FastAPI ↔ ESP8266)
-```
-[Header:1byte][Temperature:2bytes][Fuel:2bytes][Coolant:2bytes][Waste:2bytes][Checksum:1byte]
-```
-
-### Serial Communication Protocol (ESP8266 ↔ Arduino)
-* **Baud Rate**: 9600 bps
-* **Data Format**: JSON-based text protocol
-```json
 {
-  "temp": 75.5,
-  "fuel": 80.2,
-  "coolant": 45.8,
-  "waste": 15.3
+    "temperature": 0.0,         # Float32
+    "fuel_level": 0.0,          # Float32 (0-100)
+    "coolant_level": 0.0,       # Float32 (0-100)
+    "waste_level": 0.0,         # Float32 (0-100)
+    "status": False,             # Boolean
+    "burn_rate": 0.0,           # Float32
+    "actual_burn_rate": 0.0,    # Float32
+    "alert_status": 0            # UInt8 (0-2)
 }
 ```
 
-### Control Commands
-```json
-{
-  "cmd": "emergency_stop"
-}
+## Data Flow
+
+1. **Lua Script** → Collects reactor data every second
+2. **WebSocket** → Sends JSON data to Python backend
+3. **Python Backend** → Processes and stores data, forwards to ESP8266 if connected
+4. **ESP8266** → Receives binary-encoded data for hardware display
+
+## Binary Data Format (ESP8266)
+
+The backend converts reactor data to a binary format for efficient transmission:
+
 ```
-```json
-{
-  "cmd": "coolant_speed",
-  "value": 2
-}
+[Header:1byte][Temperature:2bytes][Fuel:2bytes][Coolant:2bytes][Waste:2bytes][Status:1byte][Alert:1byte][Checksum:1byte]
 ```
 
-## API Endpoints
+- **Header**: 0xAA (start marker)
+- **Temperature**: 16-bit integer (0.1°K precision)
+- **Fuel Level**: 16-bit integer (0.1% precision)
+- **Coolant Level**: 16-bit integer (0.1% precision)
+- **Waste Level**: 16-bit integer (0.1% precision)
+- **Status**: 8-bit boolean (0/1)
+- **Alert Status**: 8-bit integer (0-2)
+- **Checksum**: 0x55 (end marker)
 
-### WebSocket
-* `/ws/computercraft/{computer_id}` - WebSocket endpoint for ComputerCraft communication
+## Alert System
 
-### HTTP
-* `GET /status` - Get current system status
-* `GET /data?limit={n}` - Get recent data log entries (default 100)
+The alert status is calculated based on reactor conditions:
 
-## Installation
+- **0 (Normal)**: Temperature < 600°K, Coolant > 20%
+- **1 (Caution)**: Temperature 600-1000°K OR Coolant < 20%
+- **2 (Danger)**: Temperature > 1000°K
+
+## Installation & Usage
+
+### Backend Setup
 
 1. Install dependencies:
    ```bash
-   uv sync
+   pip install fastapi uvicorn python-socketio polars
    ```
 
 2. Run the server:
@@ -142,68 +92,32 @@ Schema = {
    python main.py
    ```
 
-3. The server will start on `ws://localhost:8765`
+The server runs on `http://localhost:8765`
 
-## Development
+### ComputerCraft Setup
 
-### Adding New Features
+1. Place `reactor_monitor.lua` in your ComputerCraft computer
+2. Ensure a fission reactor is connected via `fissionReactorLogicAdapter_0`
+3. Run the script: `reactor_monitor`
 
-To extend the system with additional monitoring parameters:
+## API Endpoints
 
-1. Update the data schema in `main.py`
-2. Modify the TCP packet structure in `send_to_esp8266()`
-3. Update the Arduino firmware to handle new parameters
-4. Add new visualization components to the hardware interface
+- **WebSocket**: `/ws/computercraft/{computer_id}` - Real-time reactor data
+- **GET** `/status` - Current system status
+- **GET** `/data?limit=100` - Recent data log entries
 
-### Testing
+## Error Handling
 
-1. Run the server:
-   ```bash
-   python main.py
-   ```
+Both programs include comprehensive error handling:
+- JSON parsing errors
+- WebSocket connection failures
+- Reactor component availability checks
+- Graceful shutdown procedures
 
-2. Check the server status:
-   ```bash
-   curl http://localhost:8765/status
-   ```
+## Performance
 
-## Hardware Advantages
-
-### Arduino Mega 2560 Benefits
-* **Abundant I/O pins**: 54 digital, 16 analog pins for excellent expandability
-* **Multiple serial ports**: Serial1 dedicated for ESP8266 use
-* **Stability**: Proven platform for long-term stable operation
-* **Library support**: Extensive libraries like FastLED, SoftwareSerial
-
-### ESP8266 Separation Benefits
-* **Dedicated WiFi processing**: Network communication handled separately from main logic
-* **Easy upgrades**: WiFi module can be replaced/upgraded independently
-* **Debugging convenience**: Serial monitor for independent module debugging
-
-## Future Expansion Plans
-
-### Additional Features
-* Web dashboard (Parquet data visualization)
-* Historical data analysis and charts
-* Multi-reactor monitoring (Arduino expansion)
-* Mobile app integration
-* Predictive analytics (ML-based anomaly detection)
-* LCD display addition (real-time value display)
-* Temperature sensors (hardware temperature monitoring)
-
-## Cost Estimate
-
-| Item | Quantity | Unit Price | Total |
-|------|----------|------------|-------|
-| Arduino Mega 2560 | 1 | ₩18,000 | ₩18,000 |
-| ESP8266 (NodeMCU) | 1 | ₩8,500 | ₩8,500 |
-| WS2812B LED Strip (1m/60LED) | 1 | ₩10,000 | ₩10,000 |
-| Tactile Switches (4) | 4 | ₩350 | ₩1,400 |
-| Piezo Buzzer | 1 | ₩1,500 | ₩1,500 |
-| Jumper Wires, Breadboard | - | - | ₩4,000 |
-| Resistors, Capacitors, etc. | - | - | ₩3,000 |
-| 5V/3A DC Adapter | 1 | ₩7,000 | ₩7,000 |
-| Case Materials (Acrylic/3D Printing) | - | - | ₩5,000 |
-
-**Total Estimated Cost: ₩58,400**
+- **Update Rate**: 1 second intervals
+- **Data Storage**: Polars DataFrame for efficient time-series data
+- **Binary Transmission**: Optimized for ESP8266 communication
+- **Memory Management**: Automatic cleanup of disconnected clients
 

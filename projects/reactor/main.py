@@ -2,7 +2,7 @@ import asyncio
 import json
 import logging
 import struct
-from typing import Dict
+from typing import Dict, Any
 from datetime import datetime
 
 import polars as pl
@@ -31,8 +31,9 @@ class ConnectionManager:
             "fuel_level": 0.0,
             "coolant_level": 0.0,
             "waste_level": 0.0,
-            "emergency_stop": False,
-            "coolant_speed": 0,
+            "status": False,
+            "burn_rate": 0.0,
+            "actual_burn_rate": 0.0,
             "alert_status": 0
         }
         self.data_buffer = []
@@ -49,8 +50,9 @@ def initialize_data_logging():
         "fuel_level": pl.Float32,
         "coolant_level": pl.Float32,
         "waste_level": pl.Float32,
-        "emergency_stop": pl.Boolean,
-        "coolant_speed": pl.UInt8,
+        "status": pl.Boolean,
+        "burn_rate": pl.Float32,
+        "actual_burn_rate": pl.Float32,
         "alert_status": pl.UInt8
     }
     return pl.DataFrame(schema=schema)
@@ -99,20 +101,24 @@ async def send_to_esp8266(data: Dict[str, Any]):
     """Send data to ESP8266 via SocketIO"""
     try:
         # Convert data to binary format for efficient transmission
-        # Format: [Header:1byte][Temperature:2bytes][Fuel:2bytes][Coolant:2bytes][Waste:2bytes][Checksum:1byte]
+        # Format: [Header:1byte][Temperature:2bytes][Fuel:2bytes][Coolant:2bytes][Waste:2bytes][Status:1byte][Alert:1byte][Checksum:1byte]
         temp = int(data.get("temperature", 0) * 10)  # Convert to integer with 0.1 precision
         fuel = int(data.get("fuel_level", 0) * 10)
         coolant = int(data.get("coolant_level", 0) * 10)
         waste = int(data.get("waste_level", 0) * 10)
+        status = 1 if data.get("status", False) else 0
+        alert = data.get("alert_status", 0)
 
         # Create binary packet
         packet = struct.pack(
-            "!BHHHHB",
+            "!BHHHHBB",
             0xAA,  # Header
             min(temp, 65535),  # Temperature (0-6553.5)
             min(fuel, 65535),  # Fuel level (0-6553.5)
             min(coolant, 65535),  # Coolant level (0-6553.5)
             min(waste, 65535),  # Waste level (0-6553.5)
+            status,  # Status (0/1)
+            alert,   # Alert status (0-2)
             0x55   # Checksum (simplified)
         )
 
@@ -160,6 +166,8 @@ async def get_status():
 @app.get("/data")
 async def get_data_log(limit: int = 100):
     """Get recent data log entries"""
+    global data_log
+    
     # Process buffered data
     if manager.data_buffer:
         new_data = pl.DataFrame(manager.data_buffer)
