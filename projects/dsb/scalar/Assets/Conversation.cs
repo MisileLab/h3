@@ -35,7 +35,7 @@ public class Conversation : MonoBehaviour
         GameObject containerObject = new GameObject("ChoiceButtonContainer");
         
         // Find the Canvas to parent the container to (for screen-relative positioning)
-        Canvas canvas = FindObjectOfType<Canvas>();
+        Canvas canvas = FindFirstObjectByType<Canvas>();
         if (canvas != null)
         {
             containerObject.transform.SetParent(canvas.transform, false);
