@@ -19,9 +19,7 @@ namespace Scalar
         [SerializeField] private Camera targetCamera;
         [SerializeField] private float cameraMoveSpeed = 5.0f;
         [SerializeField] private float cameraHeight = 15.0f; // Increased for better overhead view
-        [SerializeField] private float cameraDistance = 0.0f; // Distance from party (0 = directly above)
-        [SerializeField] private bool autoCenterCamera = true;
-        [SerializeField] private float autoCenterDelay = 0.5f; // Delay before auto-centering
+        [SerializeField] private float cameraDistance = 0.0f; // Horizontal distance from party (0 = directly above, positive = offset in X direction)
         [SerializeField] private Vector3 cameraOffset = new Vector3(0, 0, 0); // Additional offset for fine-tuning
         
         private GraphSystem graphSystem;
@@ -30,7 +28,6 @@ namespace Scalar
         private Transform partyContainer;
         private Vector3 targetCameraPosition;
         private bool isMovingCamera = false;
-        private float lastPartyMoveTime;
         
         void Start()
         {
@@ -75,12 +72,6 @@ namespace Scalar
             if (isMovingCamera)
             {
                 MoveCameraToTarget();
-            }
-            
-            // Auto-center camera after party movement
-            if (autoCenterCamera && Time.time - lastPartyMoveTime > autoCenterDelay)
-            {
-                CenterCameraOnActiveParty();
             }
         }
         
@@ -206,7 +197,6 @@ namespace Scalar
                     if (Vector3.Distance(partyObj.transform.position, targetPos) > 0.1f)
                     {
                         partyObj.transform.position = Vector3.Lerp(partyObj.transform.position, targetPos, Time.deltaTime * 5.0f);
-                        lastPartyMoveTime = Time.time;
                     }
                 }
                 else
@@ -226,72 +216,86 @@ namespace Scalar
         }
         
         /// <summary>
-        /// Center camera on a specific party
+        /// Center camera on a specific party using CameraZoomSystem
         /// </summary>
         public void CenterCameraOnParty(string partyId)
         {
-            if (graphSystem == null || targetCamera == null) return;
+            if (graphSystem == null) return;
             
             var party = graphSystem.GetParty(partyId);
             if (party == null) return;
             
             Vector3 partyWorldPos = GetPartyWorldPosition(party.currentNodePosition);
             
-            // Calculate camera position: directly above the party with optional offset
-            Vector3 cameraPos = new Vector3(
-                partyWorldPos.x + cameraOffset.x,
-                partyWorldPos.y + cameraHeight + cameraOffset.y,
-                partyWorldPos.z + cameraOffset.z
-            );
-            
-            targetCameraPosition = cameraPos;
-            isMovingCamera = true;
-            
-            Debug.Log($"PartyVisualizer: Centering camera on party {partyId} at {party.currentNodePosition}");
-            Debug.Log($"PartyVisualizer: Party world position: {partyWorldPos}, Camera target: {cameraPos}");
+            // Use CameraZoomSystem if available
+            var cameraSystem = FindFirstObjectByType<CameraZoomSystem>();
+            if (cameraSystem != null)
+            {
+                cameraSystem.CenterOnPosition(partyWorldPos);
+                Debug.Log($"PartyVisualizer: Centering camera on party {partyId} at {party.currentNodePosition} using CameraZoomSystem");
+            }
+            else
+            {
+                // Fallback to old system
+                Vector3 cameraPos = new Vector3(
+                    partyWorldPos.x + cameraOffset.x + cameraDistance,
+                    partyWorldPos.y + cameraHeight + cameraOffset.y,
+                    partyWorldPos.z + cameraOffset.z
+                );
+                
+                targetCameraPosition = cameraPos;
+                isMovingCamera = true;
+                
+                Debug.Log($"PartyVisualizer: Centering camera on party {partyId} at {party.currentNodePosition} (fallback)");
+                Debug.Log($"PartyVisualizer: Party world position: {partyWorldPos}, Camera target: {cameraPos}");
+            }
         }
         
         /// <summary>
-        /// Center camera on a specific party and make it look at the party
+        /// Center camera on a specific party and make it look at the party using CameraZoomSystem
         /// </summary>
         public void CenterCameraOnPartyAndLookAt(string partyId)
         {
-            if (graphSystem == null || targetCamera == null) return;
+            if (graphSystem == null) return;
             
             var party = graphSystem.GetParty(partyId);
             if (party == null) return;
             
             Vector3 partyWorldPos = GetPartyWorldPosition(party.currentNodePosition);
             
-            // Calculate camera position: directly above the party with optional offset
-            Vector3 cameraPos = new Vector3(
-                partyWorldPos.x + cameraOffset.x,
-                partyWorldPos.y + cameraHeight + cameraOffset.y,
-                partyWorldPos.z + cameraOffset.z
-            );
-            
-            targetCameraPosition = cameraPos;
-            isMovingCamera = true;
-            
-            // Make camera look at the party
-            StartCoroutine(LookAtPartyWhenCameraStops(partyWorldPos));
-            
-            Debug.Log($"PartyVisualizer: Centering camera on party {partyId} at {party.currentNodePosition} and will look at party");
-            Debug.Log($"PartyVisualizer: Party world position: {partyWorldPos}, Camera target: {cameraPos}");
+            // Use CameraZoomSystem if available
+            var cameraSystem = FindFirstObjectByType<CameraZoomSystem>();
+            if (cameraSystem != null)
+            {
+                cameraSystem.CenterOnPosition(partyWorldPos);
+                Debug.Log($"PartyVisualizer: Centering camera on party {partyId} at {party.currentNodePosition} using CameraZoomSystem");
+            }
+            else
+            {
+                // Fallback to old system
+                Vector3 cameraPos = new Vector3(
+                    partyWorldPos.x + cameraOffset.x + cameraDistance,
+                    partyWorldPos.y + cameraHeight + cameraOffset.y,
+                    partyWorldPos.z + cameraOffset.z
+                );
+                
+                targetCameraPosition = cameraPos;
+                isMovingCamera = true;
+                
+                // Make camera look at the party
+                StartCoroutine(LookAtPartyWhenCameraStops(partyWorldPos));
+                
+                Debug.Log($"PartyVisualizer: Centering camera on party {partyId} at {party.currentNodePosition} and will look at party (fallback)");
+                Debug.Log($"PartyVisualizer: Party world position: {partyWorldPos}, Camera target: {cameraPos}");
+            }
         }
         
         /// <summary>
-        /// Center camera on the active party
+        /// Center camera on the active party (deprecated - use CameraZoomSystem instead)
         /// </summary>
         public void CenterCameraOnActiveParty()
         {
-            if (graphSystem == null) return;
-            
-            var activeParty = graphSystem.GetAllParties().Find(p => p.isActive);
-            if (activeParty != null)
-            {
-                CenterCameraOnParty(activeParty.id);
-            }
+            Debug.Log("PartyVisualizer: CenterCameraOnActiveParty is deprecated. Use CameraZoomSystem for camera controls.");
         }
         
         /// <summary>
@@ -323,12 +327,11 @@ namespace Scalar
         }
         
         /// <summary>
-        /// Toggle auto-camera centering
+        /// Toggle auto-camera centering (deprecated - use CameraZoomSystem instead)
         /// </summary>
         public void ToggleAutoCenterCamera()
         {
-            autoCenterCamera = !autoCenterCamera;
-            Debug.Log($"PartyVisualizer: Auto-camera centering {(autoCenterCamera ? "enabled" : "disabled")}");
+            Debug.Log("PartyVisualizer: Auto-camera centering is deprecated. Use CameraZoomSystem for camera controls.");
         }
         
         /// <summary>
@@ -375,14 +378,9 @@ namespace Scalar
                 var partyObj = partyObjects[party.id];
                 Vector3 targetPos = GetPartyWorldPosition(newPosition);
                 partyObj.transform.position = targetPos;
-                lastPartyMoveTime = Time.time;
             }
             
-            // Center camera on the moved party if auto-centering is enabled
-            if (autoCenterCamera)
-            {
-                CenterCameraOnParty(party.id);
-            }
+            // Camera movement is now handled by CameraZoomSystem
         }
         
         /// <summary>
@@ -431,29 +429,39 @@ namespace Scalar
         }
         
         /// <summary>
-        /// Center camera on the current position of a specific party
+        /// Center camera on the current position of a specific party using CameraZoomSystem
         /// </summary>
         public void CenterCameraOnPartyCurrentPosition(string partyId)
         {
-            if (graphSystem == null || targetCamera == null) return;
+            if (graphSystem == null) return;
             
             var party = graphSystem.GetParty(partyId);
             if (party == null) return;
             
             Vector3 partyWorldPos = GetPartyWorldPosition(party.currentNodePosition);
             
-            // Calculate camera position: directly above the party with optional offset
-            Vector3 cameraPos = new Vector3(
-                partyWorldPos.x + cameraOffset.x,
-                partyWorldPos.y + cameraHeight + cameraOffset.y,
-                partyWorldPos.z + cameraOffset.z
-            );
-            
-            targetCameraPosition = cameraPos;
-            isMovingCamera = true;
-            
-            Debug.Log($"PartyVisualizer: Centering camera on party {partyId} current position {party.currentNodePosition}");
-            Debug.Log($"PartyVisualizer: Party world position: {partyWorldPos}, Camera target: {cameraPos}");
+            // Use CameraZoomSystem if available
+            var cameraSystem = FindFirstObjectByType<CameraZoomSystem>();
+            if (cameraSystem != null)
+            {
+                cameraSystem.CenterOnPosition(partyWorldPos);
+                Debug.Log($"PartyVisualizer: Centering camera on party {partyId} current position {party.currentNodePosition} using CameraZoomSystem");
+            }
+            else
+            {
+                // Fallback to old system
+                Vector3 cameraPos = new Vector3(
+                    partyWorldPos.x + cameraOffset.x + cameraDistance,
+                    partyWorldPos.y + cameraHeight + cameraOffset.y,
+                    partyWorldPos.z + cameraOffset.z
+                );
+                
+                targetCameraPosition = cameraPos;
+                isMovingCamera = true;
+                
+                Debug.Log($"PartyVisualizer: Centering camera on party {partyId} current position {party.currentNodePosition} (fallback)");
+                Debug.Log($"PartyVisualizer: Party world position: {partyWorldPos}, Camera target: {cameraPos}");
+            }
         }
         
         /// <summary>
@@ -508,7 +516,7 @@ namespace Scalar
             {
                 Vector3 partyWorldPos = GetPartyWorldPosition(party.currentNodePosition);
                 Vector3 cameraPos = new Vector3(
-                    partyWorldPos.x + cameraOffset.x,
+                    partyWorldPos.x + cameraOffset.x + cameraDistance,
                     partyWorldPos.y + cameraHeight + cameraOffset.y,
                     partyWorldPos.z + cameraOffset.z
                 );

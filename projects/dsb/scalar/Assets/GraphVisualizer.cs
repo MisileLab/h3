@@ -46,14 +46,14 @@ namespace Scalar
         
         void Start()
         {
+            InitializeVisualizer();
+            
             graphSystem = FindFirstObjectByType<GraphSystem>();
             if (graphSystem == null)
             {
                 Debug.LogError("GraphVisualizer: No GraphSystem found in scene!");
                 return;
             }
-            
-            InitializeVisualizer();
             
             // Subscribe to graph events
             graphSystem.OnNodeDiscovered.AddListener(OnNodeDiscovered);
@@ -72,7 +72,13 @@ namespace Scalar
         
         void Update()
         {
+            // Check if graphSystem is available before proceeding
+            if (graphSystem == null) return;
+            
             // Update graph visualization when it's ready
+            // Note: Camera movement conflicts have been addressed by:
+            // 1. CameraZoomSystem now waits 1 second before focusing on main party
+            // 2. PartyVisualizer auto camera movement is disabled by default
             if (graphSystem.IsGraphGenerated())
             {
                 if (nodeObjects.Count == 0)
@@ -169,6 +175,8 @@ namespace Scalar
         /// </summary>
         private void CreateConnections()
         {
+            if (graphSystem == null) return;
+            
             var allNodes = graphSystem.GetVisibleNodes();
             Debug.Log($"GraphVisualizer: Creating connections for {allNodes.Count} nodes");
             
@@ -213,6 +221,8 @@ namespace Scalar
         /// </summary>
         private void ValidateConnections()
         {
+            if (graphSystem == null) return;
+            
             var allNodes = graphSystem.GetVisibleNodes();
             Debug.Log("GraphVisualizer: Validating connections...");
             
@@ -559,6 +569,8 @@ namespace Scalar
         /// </summary>
         public void VisualizeConnections()
         {
+            if (graphSystem == null) return;
+            
             Debug.Log("GraphVisualizer: Visualizing current connections...");
             
             var allNodes = graphSystem.GetVisibleNodes();
@@ -614,6 +626,8 @@ namespace Scalar
         /// </summary>
         private void OnNewChunkGenerated(int chunkId)
         {
+            if (graphSystem == null) return;
+            
             Debug.Log($"GraphVisualizer: New chunk {chunkId} generated, updating visualization...");
             
             // Get all newly generated nodes

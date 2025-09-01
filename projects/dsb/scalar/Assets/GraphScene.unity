@@ -269,6 +269,7 @@ GameObject:
   - component: {fileID: 1359317447}
   - component: {fileID: 1359317446}
   - component: {fileID: 1359317450}
+  - component: {fileID: 1359317451}
   m_Layer: 0
   m_Name: GraphSystem
   m_TagString: Untagged
@@ -401,9 +402,38 @@ MonoBehaviour:
   cameraMoveSpeed: 5
   cameraHeight: 0.5
   cameraDistance: 15
-  autoCenterCamera: 1
-  autoCenterDelay: 0.5
   cameraOffset: {x: 0, y: 0, z: 0}
+--- !u!114 &1359317451
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1359317445}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d2c982b765c80e449c025c0aafa0854, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Scalar.CameraZoomSystem
+  targetCamera: {fileID: 133735902}
+  zoomSpeed: 5
+  minZoom: 1
+  maxZoom: 20
+  zoomSmoothness: 5
+  moveSpeed: 10
+  panSpeed: 15
+  edgeScrollThreshold: 20
+  enableEdgeScrolling: 1
+  enableWASD: 0
+  enableMousePan: 1
+  enableBoundaries: 1
+  minX: -50
+  maxX: 50
+  minZ: -50
+  maxZ: 50
+  followTarget: {fileID: 0}
+  followOffset: {x: 0, y: 15, z: 0}
+  followSpeed: 5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

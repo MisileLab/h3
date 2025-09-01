@@ -322,18 +322,75 @@ namespace Scalar
         }
         
         /// <summary>
-        /// Toggle auto-camera centering
+        /// Toggle auto-camera centering (deprecated - use CameraZoomSystem instead)
         /// </summary>
         public void ToggleAutoCameraCentering()
         {
-            var partyVisualizer = FindFirstObjectByType<PartyVisualizer>();
-            if (partyVisualizer != null)
+            Debug.Log("Auto-camera centering is deprecated. Use CameraZoomSystem for camera controls.");
+        }
+        
+        /// <summary>
+        /// Reset camera to default position and zoom
+        /// </summary>
+        public void ResetCamera()
+        {
+            var cameraSystem = FindFirstObjectByType<CameraZoomSystem>();
+            if (cameraSystem != null)
             {
-                partyVisualizer.ToggleAutoCenterCamera();
+                cameraSystem.ResetCamera();
+                Debug.Log("Camera reset to default position and zoom");
             }
             else
             {
-                Debug.LogWarning("No PartyVisualizer found in scene");
+                Debug.LogWarning("No CameraZoomSystem found in scene");
+            }
+        }
+        
+        /// <summary>
+        /// Toggle edge scrolling
+        /// </summary>
+        public void ToggleEdgeScrolling()
+        {
+            var cameraSystem = FindFirstObjectByType<CameraZoomSystem>();
+            if (cameraSystem != null)
+            {
+                cameraSystem.ToggleEdgeScrolling();
+            }
+            else
+            {
+                Debug.LogWarning("No CameraZoomSystem found in scene");
+            }
+        }
+        
+        /// <summary>
+        /// Toggle WASD movement
+        /// </summary>
+        public void ToggleWASD()
+        {
+            var cameraSystem = FindFirstObjectByType<CameraZoomSystem>();
+            if (cameraSystem != null)
+            {
+                cameraSystem.ToggleWASD();
+            }
+            else
+            {
+                Debug.LogWarning("No CameraZoomSystem found in scene");
+            }
+        }
+        
+        /// <summary>
+        /// Toggle mouse panning
+        /// </summary>
+        public void ToggleMousePan()
+        {
+            var cameraSystem = FindFirstObjectByType<CameraZoomSystem>();
+            if (cameraSystem != null)
+            {
+                cameraSystem.ToggleMousePan();
+            }
+            else
+            {
+                Debug.LogWarning("No CameraZoomSystem found in scene");
             }
         }
         
@@ -345,11 +402,42 @@ namespace Scalar
             var partyVisualizer = FindFirstObjectByType<PartyVisualizer>();
             if (partyVisualizer != null)
             {
-                partyVisualizer.DebugCameraPositions();
+                Debug.Log($"PartyVisualizer camera target: {partyVisualizer.GetCurrentCameraTarget()}");
+                Debug.Log($"PartyVisualizer camera moving: {partyVisualizer.IsCameraMoving()}");
             }
             else
             {
                 Debug.LogWarning("No PartyVisualizer found in scene");
+            }
+            
+            var cameraSystem = FindFirstObjectByType<CameraZoomSystem>();
+            if (cameraSystem != null)
+            {
+                Debug.Log($"CameraZoomSystem target position: {cameraSystem.GetTargetPosition()}");
+                Debug.Log($"CameraZoomSystem target zoom: {cameraSystem.GetTargetZoom()}");
+                Debug.Log($"CameraZoomSystem following: {cameraSystem.IsFollowing()}");
+                Debug.Log($"CameraZoomSystem panning: {cameraSystem.IsPanning()}");
+            }
+            else
+            {
+                Debug.LogWarning("No CameraZoomSystem found in scene");
+            }
+        }
+        
+        /// <summary>
+        /// Focus camera on main party
+        /// </summary>
+        public void FocusOnMainParty()
+        {
+            var cameraSystem = FindFirstObjectByType<CameraZoomSystem>();
+            if (cameraSystem != null)
+            {
+                cameraSystem.FocusOnMainPartyPublic();
+                Debug.Log("IncrementalGenerationTest: Focused camera on main party");
+            }
+            else
+            {
+                Debug.LogWarning("IncrementalGenerationTest: No CameraZoomSystem found, cannot focus on main party");
             }
         }
         
