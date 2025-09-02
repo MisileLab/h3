@@ -5,7 +5,7 @@ description = "A program that automatically gets responses from the google form 
 readme = "README.md"
 requires-python = ">=3.13.5"
 dependencies = [
-  "google-api-python-client==2.179.0",
+  "google-api-python-client==2.181.0",
   "google-auth-httplib2==0.2.0",
   "google-auth-oauthlib==1.2.2",
   "openpyxl>=3.1.5",
