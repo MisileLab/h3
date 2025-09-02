@@ -68,29 +68,17 @@ namespace Scalar
             
             // Setup Input System
             SetupInputSystem();
-            
-            // Focus on main party after a short delay to ensure everything is initialized
-            StartCoroutine(FocusOnMainPartyDelayed());
+
+            var graphSystem = FindFirstObjectByType<GraphSystem>();
+            if (graphSystem != null)
+            {
+                graphSystem.OnGraphInitialized.AddListener(FocusOnMainParty);
+            }
             
             Debug.Log("CameraZoomSystem: Initialized successfully");
         }
         
-        /// <summary>
-        /// Focus on the main party after initialization
-        /// </summary>
-        private IEnumerator FocusOnMainPartyDelayed()
-        {
-            // Wait a frame to ensure GraphSystem and PartyVisualizer are initialized
-            yield return null;
-            
-            // Wait additional time to ensure GraphVisualizer has created its visualization
-            Debug.Log("CameraZoomSystem: Waiting for GraphVisualizer to create visualization...");
-            yield return new WaitForSeconds(1.0f);
-            
-            // Try to find and focus on the main party
-            Debug.Log("CameraZoomSystem: Ready to focus on main party");
-            FocusOnMainParty();
-        }
+        
         
         /// <summary>
         /// Focus on the main party

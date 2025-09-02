@@ -151,6 +151,7 @@ namespace Scalar
         public UnityEvent<Machine> OnMachineDestroyed;
         public UnityEvent<Machine> OnMachineRepaired;
         public UnityEvent<int> OnNewChunkGenerated; // New event for chunk generation
+        public UnityEvent OnGraphInitialized; // New event for when the graph is fully generated
         
         // Core systems
         private Dictionary<Vector2Int, ExplorationNode> nodeGrid;
@@ -262,6 +263,7 @@ namespace Scalar
             
             isGraphGenerated = true;
             Debug.Log($"Graph generated with {nodeGrid.Count} nodes");
+            OnGraphInitialized?.Invoke();
             
             // Debug: Print some node states
             Debug.Log("GenerateInitialGraph: Sample node states:");
@@ -1079,6 +1081,32 @@ namespace Scalar
         public bool IsChunkGenerated(int chunkId)
         {
             return generatedChunks.ContainsKey(chunkId) && generatedChunks[chunkId];
+        }
+
+        public void GenerateNextChunk()
+        {
+            if (lastGeneratedDepth >= maxGeneratedDepth) return;
+
+            int nextChunkStart = lastGeneratedDepth;
+            GenerateChunk(nextChunkStart, chunkSize);
+            lastGeneratedDepth = nextChunkStart + chunkSize;
+
+            Debug.Log($"Generated next chunk. Total depth now: {lastGeneratedDepth}");
+        }
+
+        public int GetLastGeneratedDepth()
+        {
+            return lastGeneratedDepth;
+        }
+
+        public int GetChunkSize()
+        {
+            return chunkSize;
+        }
+
+        public int GetMaxGeneratedDepth()
+        {
+            return maxGeneratedDepth;
         }
     }
 }

@@ -21,6 +21,7 @@ namespace Scalar
         
         private GraphSystem graphSystem;
         private GraphVisualizer graphVisualizer;
+        private CameraZoomSystem cameraZoomSystem;
         private Camera mainCamera;
         
         void Start()
@@ -28,6 +29,7 @@ namespace Scalar
             // Find required components
             graphSystem = FindFirstObjectByType<GraphSystem>();
             graphVisualizer = FindFirstObjectByType<GraphVisualizer>();
+            cameraZoomSystem = FindFirstObjectByType<CameraZoomSystem>();
             mainCamera = Camera.main;
             
             if (graphSystem == null)
@@ -200,26 +202,9 @@ namespace Scalar
         private void GenerateNextChunk()
         {
             if (graphSystem == null) return;
-            
-            // Use reflection to access the GenerateChunkManually method
-            var method = graphSystem.GetType().GetMethod("GenerateChunkManually", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
-            if (method != null)
-            {
-                // Get the next chunk ID
-                var lastGeneratedDepth = graphSystem.GetType().GetField("lastGeneratedDepth", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(graphSystem);
-                var chunkSize = graphSystem.GetType().GetField("chunkSize", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(graphSystem);
-                
-                if (lastGeneratedDepth != null && chunkSize != null)
-                {
-                    int nextChunkId = (int)lastGeneratedDepth / (int)chunkSize;
-                    method.Invoke(graphSystem, new object[] { nextChunkId });
-                    Debug.Log($"Manually generated chunk {nextChunkId}");
-                }
-            }
-            else
-            {
-                Debug.Log("GenerateChunkManually method not found on GraphSystem");
-            }
+
+            graphSystem.GenerateNextChunk();
+            Debug.Log("Manually generated next chunk.");
         }
 
         /// <summary>
@@ -234,159 +219,7 @@ namespace Scalar
             }
         }
         
-        /// <summary>
-        /// Center camera on the main party
-        /// </summary>
-        public void CenterCameraOnMainParty()
-        {
-            var partyVisualizer = FindFirstObjectByType<PartyVisualizer>();
-            if (partyVisualizer != null)
-            {
-                partyVisualizer.CenterCameraOnParty("party_main");
-                Debug.Log("Centered camera on main party");
-            }
-            else
-            {
-                Debug.LogWarning("No PartyVisualizer found in scene");
-            }
-        }
         
-        /// <summary>
-        /// Center camera on main party and make it look at the party
-        /// </summary>
-        public void CenterCameraOnMainPartyAndLookAt()
-        {
-            var partyVisualizer = FindFirstObjectByType<PartyVisualizer>();
-            if (partyVisualizer != null)
-            {
-                partyVisualizer.CenterCameraOnPartyAndLookAt("party_main");
-                Debug.Log("Centered camera on main party and will look at it");
-            }
-            else
-            {
-                Debug.LogWarning("No PartyVisualizer found in scene");
-            }
-        }
-        
-        /// <summary>
-        /// Toggle auto-camera centering (deprecated - use CameraZoomSystem instead)
-        /// </summary>
-        public void ToggleAutoCameraCentering()
-        {
-            Debug.Log("Auto-camera centering is deprecated. Use CameraZoomSystem for camera controls.");
-        }
-        
-        /// <summary>
-        /// Reset camera to default position and zoom
-        /// </summary>
-        public void ResetCamera()
-        {
-            var cameraSystem = FindFirstObjectByType<CameraZoomSystem>();
-            if (cameraSystem != null)
-            {
-                cameraSystem.ResetCamera();
-                Debug.Log("Camera reset to default position and zoom");
-            }
-            else
-            {
-                Debug.LogWarning("No CameraZoomSystem found in scene");
-            }
-        }
-        
-        /// <summary>
-        /// Toggle edge scrolling
-        /// </summary>
-        public void ToggleEdgeScrolling()
-        {
-            var cameraSystem = FindFirstObjectByType<CameraZoomSystem>();
-            if (cameraSystem != null)
-            {
-                cameraSystem.ToggleEdgeScrolling();
-            }
-            else
-            {
-                Debug.LogWarning("No CameraZoomSystem found in scene");
-            }
-        }
-        
-        /// <summary>
-        /// Toggle WASD movement
-        /// </summary>
-        public void ToggleWASD()
-        {
-            var cameraSystem = FindFirstObjectByType<CameraZoomSystem>();
-            if (cameraSystem != null)
-            {
-                cameraSystem.ToggleWASD();
-            }
-            else
-            {
-                Debug.LogWarning("No CameraZoomSystem found in scene");
-            }
-        }
-        
-        /// <summary>
-        /// Toggle mouse panning
-        /// </summary>
-        public void ToggleMousePan()
-        {
-            var cameraSystem = FindFirstObjectByType<CameraZoomSystem>();
-            if (cameraSystem != null)
-            {
-                cameraSystem.ToggleMousePan();
-            }
-            else
-            {
-                Debug.LogWarning("No CameraZoomSystem found in scene");
-            }
-        }
-        
-        /// <summary>
-        /// Update party visual state
-        /// </summary>
-        public void UpdatePartyState()
-        {
-            var partyVisualizer = FindFirstObjectByType<PartyVisualizer>();
-            if (partyVisualizer != null)
-            {
-                partyVisualizer.UpdatePartyState("party_main");
-                Debug.Log("Updated main party visual state");
-            }
-            else
-            {
-                Debug.LogWarning("No PartyVisualizer found in scene");
-            }
-        }
-        
-        /// <summary>
-        /// Debug camera positions
-        /// </summary>
-        public void DebugCameraPositions()
-        {
-            var partyVisualizer = FindFirstObjectByType<PartyVisualizer>();
-            if (partyVisualizer != null)
-            {
-                Debug.Log($"PartyVisualizer camera target: {partyVisualizer.GetCurrentCameraTarget()}");
-                Debug.Log($"PartyVisualizer camera moving: {partyVisualizer.IsCameraMoving()}");
-            }
-            else
-            {
-                Debug.LogWarning("No PartyVisualizer found in scene");
-            }
-            
-            var cameraSystem = FindFirstObjectByType<CameraZoomSystem>();
-            if (cameraSystem != null)
-            {
-                Debug.Log($"CameraZoomSystem target position: {cameraSystem.GetTargetPosition()}");
-                Debug.Log($"CameraZoomSystem target zoom: {cameraSystem.GetTargetZoom()}");
-                Debug.Log($"CameraZoomSystem following: {cameraSystem.IsFollowing()}");
-                Debug.Log($"CameraZoomSystem panning: {cameraSystem.IsPanning()}");
-            }
-            else
-            {
-                Debug.LogWarning("No CameraZoomSystem found in scene");
-            }
-        }
         
         /// <summary>
         /// Handle mouse clicks for node selection
@@ -465,15 +298,8 @@ namespace Scalar
             Debug.Log($"Graph Generated: {graphSystem.IsGraphGenerated()}");
             
             // Show incremental generation info
-            var lastGeneratedDepth = graphSystem.GetType().GetField("lastGeneratedDepth", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(graphSystem);
-            var chunkSize = graphSystem.GetType().GetField("chunkSize", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(graphSystem);
-            var maxGeneratedDepth = graphSystem.GetType().GetField("maxGeneratedDepth", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(graphSystem);
-            
-            if (lastGeneratedDepth != null && chunkSize != null && maxGeneratedDepth != null)
-            {
-                Debug.Log($"Incremental Generation: {lastGeneratedDepth}/{maxGeneratedDepth} (Chunk Size: {chunkSize})");
-                Debug.Log($"Generated Chunks: {((int)lastGeneratedDepth / (int)chunkSize)}");
-            }
+            Debug.Log($"Incremental Generation: {graphSystem.GetLastGeneratedDepth()}/{graphSystem.GetMaxGeneratedDepth()} (Chunk Size: {graphSystem.GetChunkSize()})");
+            Debug.Log($"Generated Chunks: {(graphSystem.GetLastGeneratedDepth() / graphSystem.GetChunkSize())}");
             
             var parties = graphSystem.GetAllParties();
             foreach (var party in parties)
@@ -539,15 +365,8 @@ namespace Scalar
             info += $"Depth: {graphSystem.GetCurrentDepth()}\n";
             
             // Add incremental generation info
-            var lastGeneratedDepth = graphSystem.GetType().GetField("lastGeneratedDepth", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(graphSystem);
-            var chunkSize = graphSystem.GetType().GetField("chunkSize", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(graphSystem);
-            var maxGeneratedDepth = graphSystem.GetType().GetField("maxGeneratedDepth", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(graphSystem);
-            
-            if (lastGeneratedDepth != null && chunkSize != null && maxGeneratedDepth != null)
-            {
-                info += $"Incremental Generation: {lastGeneratedDepth}/{maxGeneratedDepth}\n";
-                info += $"Generated Chunks: {((int)lastGeneratedDepth / (int)chunkSize)}\n";
-            }
+            info += $"Incremental Generation: {graphSystem.GetLastGeneratedDepth()}/{graphSystem.GetMaxGeneratedDepth()}\n";
+            info += $"Generated Chunks: {(graphSystem.GetLastGeneratedDepth() / graphSystem.GetChunkSize())}\n";
             
             info += "\n";
             

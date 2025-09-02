@@ -12,6 +12,9 @@ public class Conversation : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI _textField;
 
+    [SerializeField]
+    private GameObject _choiceButtonContainerPrefab;
+
     private VerticalLayoutGroup _choiceButtonContainer;
 
     [SerializeField]
@@ -25,61 +28,19 @@ public class Conversation : MonoBehaviour
 
     void Start()
     {
-        CreateChoiceButtonContainer();
-        StartStory();
-    }
-
-    private void CreateChoiceButtonContainer()
-    {
-        // Create a GameObject for the choice button container
-        GameObject containerObject = new GameObject("ChoiceButtonContainer");
-        
-        // Find the Canvas to parent the container to (for screen-relative positioning)
-        Canvas canvas = FindFirstObjectByType<Canvas>();
-        if (canvas != null)
+        if (_choiceButtonContainerPrefab != null)
         {
-            containerObject.transform.SetParent(canvas.transform, false);
+            var containerObject = Instantiate(_choiceButtonContainerPrefab, transform);
+            _choiceButtonContainer = containerObject.GetComponent<VerticalLayoutGroup>();
         }
         else
         {
-            // Fallback: parent to this GameObject if no Canvas found
-            containerObject.transform.SetParent(this.transform, false);
-            Debug.LogWarning("No Canvas found. Choice buttons will be positioned relative to the Conversation GameObject.");
+            Debug.LogError("ChoiceButtonContainerPrefab is not set in the inspector.");
         }
-        
-        // Add VerticalLayoutGroup component
-        _choiceButtonContainer = containerObject.AddComponent<VerticalLayoutGroup>();
-        
-        // Configure the layout properties
-        _choiceButtonContainer.spacing = 10f; // Space between buttons
-        _choiceButtonContainer.padding = new RectOffset(20, 20, 10, 10); // Padding around the container
-        _choiceButtonContainer.childAlignment = TextAnchor.UpperCenter; // Center buttons horizontally
-        _choiceButtonContainer.childControlWidth = false; // Let ContentSizeFitter control width
-        _choiceButtonContainer.childControlHeight = false; // Let ContentSizeFitter control height
-        _choiceButtonContainer.childForceExpandWidth = false; // Don't force buttons to expand
-        _choiceButtonContainer.childForceExpandHeight = false; // Don't force buttons to expand vertically
-        
-        // Add ContentSizeFitter to auto-resize based on content
-        ContentSizeFitter contentSizeFitter = containerObject.AddComponent<ContentSizeFitter>();
-        contentSizeFitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-        contentSizeFitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
-        
-        // Add RectTransform and set it up for UI
-        RectTransform rectTransform = containerObject.GetComponent<RectTransform>();
-        if (rectTransform == null)
-        {
-            rectTransform = containerObject.AddComponent<RectTransform>();
-        }
-        
-        // Position the container in the center of the screen
-        rectTransform.anchorMin = new Vector2(0.5f, 0.5f); // Center anchor
-        rectTransform.anchorMax = new Vector2(0.5f, 0.5f); // Center anchor
-        rectTransform.pivot = new Vector2(0.5f, 0.5f); // Center pivot
-        rectTransform.anchoredPosition = new Vector2(0f, 0f); // Exact center of screen
-        rectTransform.sizeDelta = new Vector2(400f, 300f); // Container size (increased for better visibility)
-        
-        Debug.Log("Choice button container created programmatically.");
+        StartStory();
     }
+
+    
 
     private void StartStory()
     {

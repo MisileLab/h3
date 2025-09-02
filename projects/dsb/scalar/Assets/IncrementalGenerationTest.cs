@@ -24,6 +24,7 @@ namespace Scalar
         
         private GraphSystem graphSystem;
         private GraphVisualizer graphVisualizer;
+        private CameraZoomSystem cameraZoomSystem;
         private Coroutine autoGenerateCoroutine;
         
         void Start()
@@ -31,6 +32,7 @@ namespace Scalar
             // Find required components
             graphSystem = FindFirstObjectByType<GraphSystem>();
             graphVisualizer = FindFirstObjectByType<GraphVisualizer>();
+            cameraZoomSystem = FindFirstObjectByType<CameraZoomSystem>();
             
             if (graphSystem == null)
             {
@@ -102,17 +104,10 @@ namespace Scalar
                 status += $"Current Depth: {graphSystem.GetCurrentDepth()}\n";
                 status += $"Graph Generated: {graphSystem.IsGraphGenerated()}\n";
                 
-                // Add incremental generation info using reflection
-                var lastGeneratedDepth = graphSystem.GetType().GetField("lastGeneratedDepth", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(graphSystem);
-                var chunkSize = graphSystem.GetType().GetField("chunkSize", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(graphSystem);
-                var maxGeneratedDepth = graphSystem.GetType().GetField("maxGeneratedDepth", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(graphSystem);
-                
-                if (lastGeneratedDepth != null && chunkSize != null && maxGeneratedDepth != null)
-                {
-                    status += $"Incremental Generation: {lastGeneratedDepth}/{maxGeneratedDepth}\n";
-                    status += $"Generated Chunks: {((int)lastGeneratedDepth / (int)chunkSize)}\n";
-                    status += $"Chunk Size: {chunkSize}\n";
-                }
+                // Add incremental generation info
+                status += $"Incremental Generation: {graphSystem.GetLastGeneratedDepth()}/{graphSystem.GetMaxGeneratedDepth()}\n";
+                status += $"Generated Chunks: {(graphSystem.GetLastGeneratedDepth() / graphSystem.GetChunkSize())}\n";
+                status += $"Chunk Size: {graphSystem.GetChunkSize()}\n";
                 
                 statusText.text = status;
             }
@@ -120,27 +115,15 @@ namespace Scalar
             // Update progress bar
             if (progressSlider != null)
             {
-                var lastGeneratedDepth = graphSystem.GetType().GetField("lastGeneratedDepth", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(graphSystem);
-                var maxGeneratedDepth = graphSystem.GetType().GetField("maxGeneratedDepth", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(graphSystem);
-                
-                if (lastGeneratedDepth != null && maxGeneratedDepth != null)
-                {
-                    float progress = (float)(int)lastGeneratedDepth / (int)maxGeneratedDepth;
-                    progressSlider.value = progress;
-                }
+                float progress = (float)graphSystem.GetLastGeneratedDepth() / graphSystem.GetMaxGeneratedDepth();
+                progressSlider.value = progress;
             }
             
             // Update progress text
             if (progressText != null)
             {
-                var lastGeneratedDepth = graphSystem.GetType().GetField("lastGeneratedDepth", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(graphSystem);
-                var maxGeneratedDepth = graphSystem.GetType().GetField("maxGeneratedDepth", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(graphSystem);
-                
-                if (lastGeneratedDepth != null && maxGeneratedDepth != null)
-                {
-                    float progress = (float)(int)lastGeneratedDepth / (int)maxGeneratedDepth * 100f;
-                    progressText.text = $"Progress: {progress:F1}%";
-                }
+                float progress = (float)graphSystem.GetLastGeneratedDepth() / graphSystem.GetMaxGeneratedDepth() * 100f;
+                progressText.text = $"Progress: {progress:F1}%";
             }
         }
         
@@ -150,20 +133,9 @@ namespace Scalar
         public void GenerateNextChunk()
         {
             if (graphSystem == null) return;
-            
-            var method = graphSystem.GetType().GetMethod("GenerateChunkManually", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
-            if (method != null)
-            {
-                var lastGeneratedDepth = graphSystem.GetType().GetField("lastGeneratedDepth", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(graphSystem);
-                var chunkSize = graphSystem.GetType().GetField("chunkSize", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)?.GetValue(graphSystem);
-                
-                if (lastGeneratedDepth != null && chunkSize != null)
-                {
-                    int nextChunkId = (int)lastGeneratedDepth / (int)chunkSize;
-                    method.Invoke(graphSystem, new object[] { nextChunkId });
-                    Debug.Log($"Manually generated chunk {nextChunkId}");
-                }
-            }
+
+            graphSystem.GenerateNextChunk();
+            Debug.Log("Manually generated next chunk.");
         }
         
         /// <summary>
@@ -287,142 +259,7 @@ namespace Scalar
             }
         }
         
-        /// <summary>
-        /// Center camera on the main party
-        /// </summary>
-        public void CenterCameraOnMainParty()
-        {
-            var partyVisualizer = FindFirstObjectByType<PartyVisualizer>();
-            if (partyVisualizer != null)
-            {
-                partyVisualizer.CenterCameraOnParty("party_main");
-                Debug.Log("Centered camera on main party");
-            }
-            else
-            {
-                Debug.LogWarning("No PartyVisualizer found in scene");
-            }
-        }
         
-        /// <summary>
-        /// Center camera on main party and make it look at the party
-        /// </summary>
-        public void CenterCameraOnMainPartyAndLookAt()
-        {
-            var partyVisualizer = FindFirstObjectByType<PartyVisualizer>();
-            if (partyVisualizer != null)
-            {
-                partyVisualizer.CenterCameraOnPartyAndLookAt("party_main");
-                Debug.Log("Centered camera on main party and will look at it");
-            }
-            else
-            {
-                Debug.LogWarning("No PartyVisualizer found in scene");
-            }
-        }
-        
-        /// <summary>
-        /// Toggle auto-camera centering (deprecated - use CameraZoomSystem instead)
-        /// </summary>
-        public void ToggleAutoCameraCentering()
-        {
-            Debug.Log("Auto-camera centering is deprecated. Use CameraZoomSystem for camera controls.");
-        }
-        
-        /// <summary>
-        /// Reset camera to default position and zoom
-        /// </summary>
-        public void ResetCamera()
-        {
-            var cameraSystem = FindFirstObjectByType<CameraZoomSystem>();
-            if (cameraSystem != null)
-            {
-                cameraSystem.ResetCamera();
-                Debug.Log("Camera reset to default position and zoom");
-            }
-            else
-            {
-                Debug.LogWarning("No CameraZoomSystem found in scene");
-            }
-        }
-        
-        /// <summary>
-        /// Toggle edge scrolling
-        /// </summary>
-        public void ToggleEdgeScrolling()
-        {
-            var cameraSystem = FindFirstObjectByType<CameraZoomSystem>();
-            if (cameraSystem != null)
-            {
-                cameraSystem.ToggleEdgeScrolling();
-            }
-            else
-            {
-                Debug.LogWarning("No CameraZoomSystem found in scene");
-            }
-        }
-        
-        /// <summary>
-        /// Toggle WASD movement
-        /// </summary>
-        public void ToggleWASD()
-        {
-            var cameraSystem = FindFirstObjectByType<CameraZoomSystem>();
-            if (cameraSystem != null)
-            {
-                cameraSystem.ToggleWASD();
-            }
-            else
-            {
-                Debug.LogWarning("No CameraZoomSystem found in scene");
-            }
-        }
-        
-        /// <summary>
-        /// Toggle mouse panning
-        /// </summary>
-        public void ToggleMousePan()
-        {
-            var cameraSystem = FindFirstObjectByType<CameraZoomSystem>();
-            if (cameraSystem != null)
-            {
-                cameraSystem.ToggleMousePan();
-            }
-            else
-            {
-                Debug.LogWarning("No CameraZoomSystem found in scene");
-            }
-        }
-        
-        /// <summary>
-        /// Debug camera positions
-        /// </summary>
-        public void DebugCameraPositions()
-        {
-            var partyVisualizer = FindFirstObjectByType<PartyVisualizer>();
-            if (partyVisualizer != null)
-            {
-                Debug.Log($"PartyVisualizer camera target: {partyVisualizer.GetCurrentCameraTarget()}");
-                Debug.Log($"PartyVisualizer camera moving: {partyVisualizer.IsCameraMoving()}");
-            }
-            else
-            {
-                Debug.LogWarning("No PartyVisualizer found in scene");
-            }
-            
-            var cameraSystem = FindFirstObjectByType<CameraZoomSystem>();
-            if (cameraSystem != null)
-            {
-                Debug.Log($"CameraZoomSystem target position: {cameraSystem.GetTargetPosition()}");
-                Debug.Log($"CameraZoomSystem target zoom: {cameraSystem.GetTargetZoom()}");
-                Debug.Log($"CameraZoomSystem following: {cameraSystem.IsFollowing()}");
-                Debug.Log($"CameraZoomSystem panning: {cameraSystem.IsPanning()}");
-            }
-            else
-            {
-                Debug.LogWarning("No CameraZoomSystem found in scene");
-            }
-        }
         
         /// <summary>
         /// Focus camera on main party
