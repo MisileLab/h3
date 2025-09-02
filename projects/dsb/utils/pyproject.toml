@@ -9,7 +9,7 @@ dependencies = [
   "httpx==0.28.1",
   "inquirer==3.4.1",
   "tqdm==4.67.1",
-  "pygithub==2.8.0",
+  "pygithub==2.8.1",
   "minio==7.2.16",
   "tomli==2.2.1",
 ]
