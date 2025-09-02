@@ -3,7 +3,7 @@ name = "tensor"
 version = "0.1.0"
 description = "FastAPI backend for game 'scalar'"
 readme = "README.md"
-requires-python = ">=3.13.5"
+requires-python = ">=3.13.6"
 dependencies = [
   "fastapi[standard]==0.116.1",
   "inquirer==3.4.1",
