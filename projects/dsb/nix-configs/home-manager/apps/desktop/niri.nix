@@ -36,6 +36,8 @@
 
         "Mod+T".action.spawn = ["${pkgs.ghostty}/bin/ghostty"];
         "Mod+D".action.spawn = ["${pkgs.rofi-wayland}/bin/rofi" "-show" "drun"];
+        "Mod+Slash".action.spawn = ["${pkgs.rofi-wayland}/bin/rofi" "-show" "run"];
+        "Mod+.".action.spawn = ["${pkgs.rofi-wayland}/bin/rofi" "-show" "window"];
         "Mod+Y".action.spawn = ["sh" "-c" "${pkgs.cliphist}/bin/cliphist list | ${pkgs.rofi-wayland}/bin/rofi -dmenu | ${pkgs.cliphist}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy"];
         "Mod+Shift+Y".action.spawn = ["sh" "-c" "${pkgs.cliphist}/bin/cliphist list | ${pkgs.rofi-wayland}/bin/rofi -dmenu | ${pkgs.cliphist}/bin/cliphist delete"];
         "Ctrl+Shift+Y".action.spawn = ["${pkgs.cliphist}/bin/cliphist" "wipe"];
