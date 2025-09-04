@@ -15,15 +15,23 @@ export interface Setting {
   value: string;
 }
 
+export interface FieldMapping {
+  questionId: string;
+  fieldName: string;
+  originalTitle?: string;
+}
+
 export class MySubClassedDexie extends Dexie {
   responses!: Table<FormResponse>; 
   settings!: Table<Setting>;
+  fieldMappings!: Table<FieldMapping>;
 
   constructor() {
     super('leadManagerDB');
-    this.version(1).stores({
+    this.version(2).stores({
       responses: '++id, &[email+name+create_time], email',
-      settings: '&key'
+      settings: '&key',
+      fieldMappings: 'questionId'
     });
   }
 }

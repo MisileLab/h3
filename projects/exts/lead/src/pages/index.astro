@@ -20,9 +20,16 @@
           <input type="text" id="clientId" placeholder="Enter your Google Web App Client ID" class="form-control" />
       </div>
 
+      <div id="mapping_div" style="display:none;">
+          <h3>Field Mapping</h3>
+          <div id="mapping_fields"></div>
+          <button id="save_mapping_button" class="btn btn-secondary">Save Mapping</button>
+      </div>
+
       <button id="authorize_button" style="display:none;">Authorize</button>
       <button id="signout_button" style="display:none;">Sign Out</button>
       <button id="fetch_button" class="btn btn-primary">Fetch Responses</button>
+      <button id="mapping_button" class="btn btn-secondary">Configure Mapping</button>
       <button id="export_button" class="btn btn-secondary">Export to Excel</button>
 
       <div id="content"></div>
@@ -41,10 +48,14 @@
       const authorize_button = document.getElementById('authorize_button');
       const signout_button = document.getElementById('signout_button');
       const fetch_button = document.getElementById('fetch_button');
+      const mapping_button = document.getElementById('mapping_button');
       const export_button = document.getElementById('export_button');
       const formIdInput = document.getElementById('formId');
       const clientIdInput = document.getElementById('clientId');
       const content = document.getElementById('content');
+      const mappingDiv = document.getElementById('mapping_div');
+      const mappingFields = document.getElementById('mapping_fields');
+      const saveMappingButton = document.getElementById('save_mapping_button');
 
       async function loadSettings() {
         const formId = await db.settings.get('formId');
@@ -59,6 +70,7 @@
 
       formIdInput.addEventListener('change', (e) => saveSetting('formId', e.target.value));
       clientIdInput.addEventListener('change', (e) => saveSetting('clientId', e.target.value));
+      saveMappingButton.addEventListener('click', saveFieldMappings);
 
       function gapiLoaded() {
         gapi.load('client', initializeGapiClient);
@@ -134,6 +146,10 @@
             formId: formId,
           });
           console.log('API Response:', response);
+          
+          // Show mapping UI after successful fetch
+          await loadFieldMappings();
+          
         } catch (err) {
           console.error('API Error:', err);
           content.innerText = err.message;
@@ -146,13 +162,9 @@
           return;
         }
         
+        const fieldMapping = await getCustomFieldMapping();
         const responses = result.responses.map(res => {
             const answers = {};
-            const fieldMapping = {
-                '7aef9547': 'name',
-                '71ef93f7': 'number', 
-                '61d54db6': 'email'
-            };
 
             if (res.createTime) {
               answers['create_time'] = new Date(res.createTime);
@@ -180,6 +192,83 @@
         }
       }
 
+      async function getCustomFieldMapping() {
+        const mappings = await db.fieldMappings.toArray();
+        const mappingObj = {};
+        mappings.forEach(mapping => {
+          mappingObj[mapping.questionId] = mapping.fieldName;
+        });
+        return mappingObj;
+      }
+
+      async function getFormQuestions() {
+        const formId = formIdInput.value;
+        if (!formId) return [];
+        
+        try {
+          const response = await gapi.client.forms.forms.get({
+            formId: formId,
+          });
+          
+          const questions = response.result.items || [];
+          return questions.map(item => ({
+            questionId: item.questionItem?.question?.questionId,
+            title: item.title || 'Unknown'
+          }));
+        } catch (error) {
+          console.error('Error fetching form questions:', error);
+          return [];
+        }
+      }
+
+      async function loadFieldMappings() {
+        const questions = await getFormQuestions();
+        const mappings = await db.fieldMappings.toArray();
+        
+        mappingFields.innerHTML = '';
+        
+        questions.forEach(question => {
+          if (!question.questionId) return;
+          
+          const existingMapping = mappings.find(m => m.questionId === question.questionId);
+          
+          const div = document.createElement('div');
+          div.className = 'form-group';
+          div.innerHTML = `
+            <label>${question.title} (ID: ${question.questionId})</label>
+            <input type="text" class="form-control mapping-input" 
+                   data-question-id="${question.questionId}" 
+                   value="${existingMapping ? existingMapping.fieldName : ''}"
+                   placeholder="Enter field name (e.g., email, name, phone)">
+          `;
+          mappingFields.appendChild(div);
+        });
+        
+        mappingDiv.style.display = questions.length > 0 ? 'block' : 'none';
+      }
+
+      async function saveFieldMappings() {
+        const inputs = mappingFields.querySelectorAll('.mapping-input');
+        const mappings = [];
+        
+        inputs.forEach(input => {
+          const fieldName = input.value.trim();
+          if (fieldName) {
+            mappings.push({
+              questionId: input.dataset.questionId,
+              fieldName: fieldName
+            });
+          }
+        });
+        
+        await db.fieldMappings.clear();
+        if (mappings.length > 0) {
+          await db.fieldMappings.bulkAdd(mappings);
+        }
+        
+        alert('Field mappings saved successfully!');
+      }
+
       function renderResponses(data) {
           if(data.length === 0) {
               content.innerHTML = '<h3>No responses found.</h3>';
@@ -202,6 +291,10 @@
 
       fetch_button.addEventListener('click', async () => {
         await listResponses();
+      });
+
+      mapping_button.addEventListener('click', async () => {
+        await loadFieldMappings();
       });
 
       export_button.addEventListener('click', async () => {
