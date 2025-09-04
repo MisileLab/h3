@@ -283,10 +283,48 @@ namespace Scalar
             {
                 var partyObj = partyObjects[party.id];
                 Vector3 targetPos = GetPartyWorldPosition(newPosition);
+                
+                Debug.Log($"PartyVisualizer: Moving party {party.id} from {partyObj.transform.position} to {targetPos}");
+                
+                // Set position immediately for responsive movement
                 partyObj.transform.position = targetPos;
+                
+                // Also trigger a visualizer update to ensure branch nodes are shown
+                if (graphVisualizer != null)
+                {
+                    // Wait a frame to ensure GraphSystem has updated node states
+                    StartCoroutine(UpdateVisualizerAfterMovement());
+                    Debug.Log($"PartyVisualizer: Scheduled GraphVisualizer update after party movement");
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"PartyVisualizer: No visual object found for party {party.id}");
             }
             
             // Camera movement is now handled by CameraZoomSystem
+        }
+
+        /// <summary>
+        /// Coroutine to update the GraphVisualizer after party movement
+        /// </summary>
+        private System.Collections.IEnumerator UpdateVisualizerAfterMovement()
+        {
+            // Wait a frame to ensure GraphSystem has processed the movement
+            yield return null;
+            
+            if (graphVisualizer != null)
+            {
+                Debug.Log("PartyVisualizer: Updating GraphVisualizer after party movement...");
+                
+                // First, check for any missing branch nodes
+                graphVisualizer.ForceRefreshBranchNodes();
+                
+                // Then update the entire visualization
+                graphVisualizer.UpdateVisualization();
+                
+                Debug.Log("PartyVisualizer: Completed GraphVisualizer update after party movement");
+            }
         }
         
         /// <summary>

@@ -191,9 +191,16 @@ namespace Scalar
                 graphVisualizer.ClearVisualization();
             }
             
-            // Note: In a real implementation, you'd need to add a method to regenerate the graph
-            // For now, we'll just log that this would happen
-            Debug.Log("Graph regeneration would happen here (not yet implemented)");
+            // Regenerate the graph using the GraphSystem
+            if (graphSystem != null)
+            {
+                graphSystem.RegenerateGraph();
+                Debug.Log("Graph regenerated successfully");
+            }
+            else
+            {
+                Debug.LogError("Cannot regenerate graph - GraphSystem not found");
+            }
         }
         
         /// <summary>
@@ -301,6 +308,26 @@ namespace Scalar
             Debug.Log($"Incremental Generation: {graphSystem.GetLastGeneratedDepth()}/{graphSystem.GetMaxGeneratedDepth()} (Chunk Size: {graphSystem.GetChunkSize()})");
             Debug.Log($"Generated Chunks: {(graphSystem.GetLastGeneratedDepth() / graphSystem.GetChunkSize())}");
             
+            // Show branch information
+            var allNodes = graphSystem.GetAllNodes();
+            int branchCount = 0;
+            int pathCount = 0;
+            foreach (var node in allNodes)
+            {
+                if (node.position.x > 0) // Not the start node
+                {
+                    if (node.position.y > 2 || node.position.y < 0) // Likely a branch
+                    {
+                        branchCount++;
+                    }
+                    else
+                    {
+                        pathCount++;
+                    }
+                }
+            }
+            Debug.Log($"Path Nodes: {pathCount}, Branch Nodes: {branchCount}");
+            
             var parties = graphSystem.GetAllParties();
             foreach (var party in parties)
             {
@@ -367,6 +394,26 @@ namespace Scalar
             // Add incremental generation info
             info += $"Incremental Generation: {graphSystem.GetLastGeneratedDepth()}/{graphSystem.GetMaxGeneratedDepth()}\n";
             info += $"Generated Chunks: {(graphSystem.GetLastGeneratedDepth() / graphSystem.GetChunkSize())}\n";
+            
+            // Add branch information
+            var allNodes = graphSystem.GetAllNodes();
+            int branchCount = 0;
+            int pathCount = 0;
+            foreach (var node in allNodes)
+            {
+                if (node.position.x > 0) // Not the start node
+                {
+                    if (node.position.y > 2 || node.position.y < 0) // Likely a branch
+                    {
+                        branchCount++;
+                    }
+                    else
+                    {
+                        pathCount++;
+                    }
+                }
+            }
+            info += $"Path Nodes: {pathCount}, Branch Nodes: {branchCount}\n";
             
             info += "\n";
             

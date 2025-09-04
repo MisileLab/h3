@@ -291,10 +291,22 @@ namespace Scalar
             AddNodeToGrid(startNode);
             Debug.Log($"GenerateMainPath: Created start node at {currentPos}");
             
-            // Generate path to max depth
+            // Generate path to max depth with more variety
             for (int depth = 0; depth < maxDepth; depth++)
             {
-                int pathsThisRow = Random.Range(minPathsPerRow, maxPathsPerRow + 1);
+                // Vary the number of paths per row more dynamically
+                int basePaths = Random.Range(minPathsPerRow, maxPathsPerRow + 1);
+                int pathsThisRow = basePaths;
+                
+                // Occasionally add extra paths for variety
+                if (Random.value < 0.3f && depth > 2)
+                {
+                    pathsThisRow += Random.Range(1, 3);
+                }
+                
+                // Ensure we don't exceed grid height
+                pathsThisRow = Mathf.Min(pathsThisRow, gridHeight - 1);
+                
                 Debug.Log($"GenerateMainPath: Depth {depth}, generating {pathsThisRow} paths");
                 
                 for (int path = 0; path < pathsThisRow; path++)
@@ -320,27 +332,41 @@ namespace Scalar
         {
             foreach (var pathNode in pathNodes)
             {
-                if (Random.value < 0.3f) // 30% chance to branch
+                // Allow multiple branches per path node (1-3 branches)
+                int branchCount = Random.Range(1, 4);
+                
+                for (int i = 0; i < branchCount; i++)
                 {
-                    // Generate branch positions within valid grid bounds
-                    int yOffset = Random.Range(-2, 3);
-                    Vector2Int branchPos = pathNode + new Vector2Int(0, yOffset);
-                    
-                    // Ensure the branch position is valid before creating the node
-                    if (!nodeGrid.ContainsKey(branchPos) && IsValidPosition(branchPos))
+                    if (Random.value < 0.4f) // 40% chance per branch attempt
                     {
-                        NodeType branchType = DetermineBranchNodeType(pathNode);
-                        var branchNode = new ExplorationNode(branchPos, branchType);
-                        branchNode.difficulty = CalculateDifficulty(pathNode.x);
-                        branchNode.rewardTier = CalculateRewardTier(pathNode.x);
-                        
-                        AddNodeToGrid(branchNode);
-                        branchNodes.Add(branchPos);
-                        Debug.Log($"GenerateBranches: Created branch node at {branchPos} from path node at {pathNode}");
-                    }
-                    else
-                    {
-                        Debug.Log($"GenerateBranches: Skipped branch at {branchPos} - already exists or invalid position");
+                        // Try multiple positions for each branch attempt
+                        for (int attempt = 0; attempt < 3; attempt++)
+                        {
+                            // Generate branch positions with more variety
+                            int yOffset = Random.Range(-3, 4); // Wider range
+                            Vector2Int branchPos = pathNode + new Vector2Int(0, yOffset);
+                            
+                            // Also try horizontal branches occasionally
+                            if (Random.value < 0.2f)
+                            {
+                                int xOffset = Random.Range(-1, 2);
+                                branchPos = pathNode + new Vector2Int(xOffset, yOffset);
+                            }
+                            
+                            // Ensure the branch position is valid and doesn't overlap
+                            if (!nodeGrid.ContainsKey(branchPos) && IsValidPosition(branchPos))
+                            {
+                                NodeType branchType = DetermineBranchNodeType(pathNode);
+                                var branchNode = new ExplorationNode(branchPos, branchType);
+                                branchNode.difficulty = CalculateDifficulty(pathNode.x);
+                                branchNode.rewardTier = CalculateRewardTier(pathNode.x);
+                                
+                                AddNodeToGrid(branchNode);
+                                branchNodes.Add(branchPos);
+                                Debug.Log($"GenerateBranches: Created branch node at {branchPos} from path node at {pathNode}");
+                                break; // Successfully created a branch, move to next branch attempt
+                            }
+                        }
                     }
                 }
             }
@@ -439,6 +465,9 @@ namespace Scalar
                 }
             }
             
+            // Add some cross-connections between branches for more variety
+            AddCrossConnections();
+            
             Debug.Log("ConnectNodes: Finished connecting nodes");
         }
         
@@ -475,6 +504,78 @@ namespace Scalar
             
             Debug.Log($"GetPotentialConnections: Found {connections.Count} valid connections for position {pos}");
             return connections;
+        }
+        
+        /// <summary>
+        /// Add cross-connections between branches for more variety
+        /// </summary>
+        private void AddCrossConnections()
+        {
+            // Add some diagonal connections between nearby branch nodes
+            foreach (var branchPos in branchNodes)
+            {
+                if (Random.value < 0.2f) // 20% chance to add cross-connection
+                {
+                    // Look for nearby branch nodes to connect to
+                    foreach (var otherBranchPos in branchNodes)
+                    {
+                        if (branchPos == otherBranchPos) continue;
+                        
+                        // Check if they're close enough and not already connected
+                        float distance = Vector2Int.Distance(branchPos, otherBranchPos);
+                        if (distance <= 3 && distance > 1) // Close but not adjacent
+                        {
+                            var node1 = nodeGrid[branchPos];
+                            var node2 = nodeGrid[otherBranchPos];
+                            
+                            // Add bidirectional connection
+                            if (!node1.connectedNodeIds.Contains(node2.nodeId))
+                            {
+                                node1.connectedNodeIds.Add(node2.nodeId);
+                                node2.connectedNodeIds.Add(node1.nodeId);
+                                Debug.Log($"AddCrossConnections: Added cross-connection between {branchPos} and {otherBranchPos}");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Add cross-connections for a specific chunk
+        /// </summary>
+        private void AddCrossConnectionsForChunk(int startDepth, int chunkDepth)
+        {
+            // Get branch nodes in this chunk
+            var chunkBranchNodes = branchNodes.Where(pos => pos.x >= startDepth && pos.x < startDepth + chunkDepth).ToList();
+            
+            foreach (var branchPos in chunkBranchNodes)
+            {
+                if (Random.value < 0.15f) // 15% chance to add cross-connection
+                {
+                    // Look for nearby branch nodes to connect to
+                    foreach (var otherBranchPos in chunkBranchNodes)
+                    {
+                        if (branchPos == otherBranchPos) continue;
+                        
+                        // Check if they're close enough and not already connected
+                        float distance = Vector2Int.Distance(branchPos, otherBranchPos);
+                        if (distance <= 3 && distance > 1) // Close but not adjacent
+                        {
+                            var node1 = nodeGrid[branchPos];
+                            var node2 = nodeGrid[otherBranchPos];
+                            
+                            // Add bidirectional connection
+                            if (!node1.connectedNodeIds.Contains(node2.nodeId))
+                            {
+                                node1.connectedNodeIds.Add(node2.nodeId);
+                                node2.connectedNodeIds.Add(node1.nodeId);
+                                Debug.Log($"AddCrossConnectionsForChunk: Added cross-connection between {branchPos} and {otherBranchPos}");
+                            }
+                        }
+                    }
+                }
+            }
         }
         
         /// <summary>
@@ -786,6 +887,14 @@ namespace Scalar
         }
         
         /// <summary>
+        /// Get all nodes in the graph
+        /// </summary>
+        public List<ExplorationNode> GetAllNodes()
+        {
+            return nodeGrid.Values.ToList();
+        }
+        
+        /// <summary>
         /// Check if the graph generation is complete
         /// </summary>
         public bool IsGraphGenerated()
@@ -840,7 +949,7 @@ namespace Scalar
         /// <summary>
         /// Generate the next chunk of the graph
         /// </summary>
-        private void GenerateNextChunk()
+        public void GenerateNextChunk()
         {
             if (lastGeneratedDepth >= maxGeneratedDepth) return;
             
@@ -892,7 +1001,18 @@ namespace Scalar
         {
             for (int depth = startDepth; depth < startDepth + chunkDepth && depth < maxGeneratedDepth; depth++)
             {
-                int pathsThisRow = Random.Range(minPathsPerRow, maxPathsPerRow + 1);
+                // Vary the number of paths per row more dynamically
+                int basePaths = Random.Range(minPathsPerRow, maxPathsPerRow + 1);
+                int pathsThisRow = basePaths;
+                
+                // Occasionally add extra paths for variety
+                if (Random.value < 0.3f && depth > startDepth + 2)
+                {
+                    pathsThisRow += Random.Range(1, 3);
+                }
+                
+                // Ensure we don't exceed grid height
+                pathsThisRow = Mathf.Min(pathsThisRow, gridHeight - 1);
                 
                 for (int path = 0; path < pathsThisRow; path++)
                 {
@@ -907,6 +1027,7 @@ namespace Scalar
                         node.rewardTier = CalculateRewardTier(depth);
                         
                         AddNodeToGrid(node);
+                        Debug.Log($"GenerateMainPathChunk: Created {nodeType} node at {nextPos}");
                     }
                 }
             }
@@ -922,19 +1043,40 @@ namespace Scalar
                 var nodesAtDepth = GetNodesAtDepth(depth);
                 foreach (var pathNode in nodesAtDepth)
                 {
-                    if (Random.value < 0.3f) // 30% chance to branch
+                    // Allow multiple branches per path node (1-3 branches)
+                    int branchCount = Random.Range(1, 4);
+                    
+                    for (int i = 0; i < branchCount; i++)
                     {
-                        Vector2Int branchPos = pathNode.position + new Vector2Int(0, Random.Range(-2, 3));
-                        
-                        if (!nodeGrid.ContainsKey(branchPos) && IsValidPosition(branchPos))
+                        if (Random.value < 0.4f) // 40% chance per branch attempt
                         {
-                            NodeType branchType = DetermineBranchNodeType(pathNode.position);
-                            var branchNode = new ExplorationNode(branchPos, branchType);
-                            branchNode.difficulty = CalculateDifficulty(depth);
-                            branchNode.rewardTier = CalculateRewardTier(depth);
-                            
-                            AddNodeToGrid(branchNode);
-                            branchNodes.Add(branchPos);
+                            // Try multiple positions for each branch attempt
+                            for (int attempt = 0; attempt < 3; attempt++)
+                            {
+                                // Generate branch positions with more variety
+                                int yOffset = Random.Range(-3, 4); // Wider range
+                                Vector2Int branchPos = pathNode.position + new Vector2Int(0, yOffset);
+                                
+                                // Also try horizontal branches occasionally
+                                if (Random.value < 0.2f)
+                                {
+                                    int xOffset = Random.Range(-1, 2);
+                                    branchPos = pathNode.position + new Vector2Int(xOffset, yOffset);
+                                }
+                                
+                                if (!nodeGrid.ContainsKey(branchPos) && IsValidPosition(branchPos))
+                                {
+                                    NodeType branchType = DetermineBranchNodeType(pathNode.position);
+                                    var branchNode = new ExplorationNode(branchPos, branchType);
+                                    branchNode.difficulty = CalculateDifficulty(depth);
+                                    branchNode.rewardTier = CalculateRewardTier(depth);
+                                    
+                                    AddNodeToGrid(branchNode);
+                                    branchNodes.Add(branchPos);
+                                    Debug.Log($"GenerateBranchesChunk: Created branch node at {branchPos} from path node at {pathNode.position}");
+                                    break; // Successfully created a branch, move to next branch attempt
+                                }
+                            }
                         }
                     }
                 }
@@ -1001,6 +1143,9 @@ namespace Scalar
                     }
                 }
             }
+            
+            // Add cross-connections for this chunk as well
+            AddCrossConnectionsForChunk(startDepth, chunkDepth);
         }
         
         /// <summary>
@@ -1083,20 +1228,24 @@ namespace Scalar
             return generatedChunks.ContainsKey(chunkId) && generatedChunks[chunkId];
         }
 
-        public void GenerateNextChunk()
+        /// <summary>
+        /// Regenerate the entire graph from scratch
+        /// </summary>
+        public void RegenerateGraph()
         {
-            if (lastGeneratedDepth >= maxGeneratedDepth) return;
-
-            int nextChunkStart = lastGeneratedDepth;
-            GenerateChunk(nextChunkStart, chunkSize);
-            lastGeneratedDepth = nextChunkStart + chunkSize;
-
-            Debug.Log($"Generated next chunk. Total depth now: {lastGeneratedDepth}");
-        }
-
-        public int GetLastGeneratedDepth()
-        {
-            return lastGeneratedDepth;
+            // Clear existing data
+            nodeGrid.Clear();
+            pathNodes.Clear();
+            generatedChunks.Clear();
+            
+            // Reset generation state
+            lastGeneratedDepth = 0;
+            
+            // Generate initial chunk
+            GenerateChunk(0, chunkSize);
+            lastGeneratedDepth = chunkSize;
+            
+            Debug.Log("Graph regenerated successfully");
         }
 
         public int GetChunkSize()

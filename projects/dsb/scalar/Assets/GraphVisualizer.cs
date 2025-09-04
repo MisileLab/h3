@@ -43,17 +43,143 @@ namespace Scalar
         private Dictionary<Vector2Int, GameObject> nodeObjects;
         private Dictionary<string, GameObject> connectionObjects;
         private Transform graphContainer;
+        private bool isInitialized = false;
+        private GameObject graphSystemGameObject; // Track the GraphSystem GameObject
         
         void Start()
         {
+            // Prevent this GameObject from being destroyed when scenes change
+            DontDestroyOnLoad(gameObject);
+            
             InitializeVisualizer();
             
+            // Validate required components
+            ValidateRequiredComponents();
+            
+            // Use a more robust approach to find GraphSystem
+            // Wait a frame to ensure GraphSystem is initialized
+            StartCoroutine(InitializeAfterGraphSystem());
+        }
+        
+        void OnDestroy()
+        {
+            Debug.LogWarning("GraphVisualizer: GameObject is being destroyed! This should not happen with DontDestroyOnLoad.");
+        }
+        
+        void OnApplicationPause(bool pauseStatus)
+        {
+            if (pauseStatus)
+            {
+                Debug.Log("GraphVisualizer: Application paused");
+            }
+            else
+            {
+                Debug.Log("GraphVisualizer: Application resumed");
+            }
+        }
+        
+        /// <summary>
+        /// Validate that required components are assigned
+        /// </summary>
+        private void ValidateRequiredComponents()
+        {
+            if (nodePrefab == null)
+            {
+                Debug.LogWarning("GraphVisualizer: No nodePrefab assigned! Will use default spheres.");
+            }
+            
+            if (connectionPrefab == null)
+            {
+                Debug.LogWarning("GraphVisualizer: No connectionPrefab assigned! Will use LineRenderer.");
+            }
+            
+            if (hiddenNodeMaterial == null)
+            {
+                Debug.LogWarning("GraphVisualizer: No hiddenNodeMaterial assigned!");
+            }
+            
+            if (visibleNodeMaterial == null)
+            {
+                Debug.LogWarning("GraphVisualizer: No visibleNodeMaterial assigned!");
+            }
+            
+            if (accessibleNodeMaterial == null)
+            {
+                Debug.LogWarning("GraphVisualizer: No accessibleNodeMaterial assigned!");
+            }
+            
+            if (completedNodeMaterial == null)
+            {
+                Debug.LogWarning("GraphVisualizer: No completedNodeMaterial assigned!");
+            }
+        }
+        
+        /// <summary>
+        /// Coroutine to initialize after GraphSystem is ready
+        /// </summary>
+        private System.Collections.IEnumerator InitializeAfterGraphSystem()
+        {
+            // Wait a few frames to ensure GraphSystem is initialized
+            yield return null;
+            yield return null;
+            
+            // Try to find GraphSystem
             graphSystem = FindFirstObjectByType<GraphSystem>();
             if (graphSystem == null)
             {
-                Debug.LogError("GraphVisualizer: No GraphSystem found in scene!");
-                return;
+                Debug.LogError("GraphVisualizer: No GraphSystem found in scene! Retrying...");
+                
+                // Wait a bit more and try again
+                yield return new WaitForSeconds(0.1f);
+                graphSystem = FindFirstObjectByType<GraphSystem>();
+                
+                if (graphSystem == null)
+                {
+                    Debug.LogError("GraphVisualizer: Still no GraphSystem found after retry!");
+                    yield break;
+                }
             }
+            
+            // Store reference to the GraphSystem GameObject
+            graphSystemGameObject = graphSystem.gameObject;
+            Debug.Log($"GraphVisualizer: Found GraphSystem on GameObject: {graphSystemGameObject.name}");
+            
+            // Check if the GraphSystem GameObject is active and enabled
+            if (!graphSystemGameObject.activeInHierarchy)
+            {
+                Debug.LogError("GraphVisualizer: GraphSystem GameObject is not active in hierarchy!");
+                yield break;
+            }
+            
+            if (!graphSystem.enabled)
+            {
+                Debug.LogError("GraphVisualizer: GraphSystem component is disabled!");
+                yield break;
+            }
+            
+            // Wait for GraphSystem to be fully initialized
+            while (!graphSystem.IsGraphGenerated())
+            {
+                Debug.Log("GraphVisualizer: Waiting for GraphSystem to generate graph...");
+                yield return new WaitForSeconds(0.1f);
+                
+                // Safety check - don't wait forever
+                if (Time.time > 10f)
+                {
+                    Debug.LogError("GraphVisualizer: Timeout waiting for GraphSystem to generate graph!");
+                    yield break;
+                }
+            }
+            
+            // Additional check - verify the graph actually has nodes
+            var nodeCount = graphSystem.GetTotalNodeCount();
+            if (nodeCount == 0)
+            {
+                Debug.LogError("GraphVisualizer: GraphSystem reports 0 nodes even though IsGraphGenerated() is true!");
+                yield break;
+            }
+            
+            Debug.Log($"GraphVisualizer: GraphSystem is ready with {nodeCount} nodes!");
             
             // Subscribe to graph events
             graphSystem.OnNodeDiscovered.AddListener(OnNodeDiscovered);
@@ -68,12 +194,51 @@ namespace Scalar
                     onNewChunkGenerated.AddListener(OnNewChunkGenerated);
                 }
             }
+            
+            Debug.Log("GraphVisualizer: Initialization complete!");
+            isInitialized = true; // Set flag after successful initialization
         }
         
         void Update()
         {
-            // Check if graphSystem is available before proceeding
-            if (graphSystem == null) return;
+            // If we lost the GraphSystem reference, try to find it again
+            if (isInitialized && graphSystem == null)
+            {
+                Debug.LogWarning("GraphVisualizer: Lost GraphSystem reference, attempting to reconnect...");
+                isInitialized = false;
+                StartCoroutine(InitializeAfterGraphSystem());
+                return;
+            }
+            
+            // Check if the GraphSystem GameObject is being destroyed
+            if (isInitialized && graphSystemGameObject == null)
+            {
+                Debug.LogError("GraphVisualizer: GraphSystem GameObject was destroyed! This should not happen.");
+                isInitialized = false;
+                graphSystem = null;
+                return;
+            }
+            
+            // Check if the GraphSystem component is still valid
+            if (isInitialized && graphSystem != null && graphSystem.Equals(null))
+            {
+                Debug.LogError("GraphVisualizer: GraphSystem component was destroyed! This should not happen.");
+                isInitialized = false;
+                graphSystem = null;
+                graphSystemGameObject = null;
+                return;
+            }
+            
+            // Check if visualizer is properly initialized before proceeding
+            if (!isInitialized || graphSystem == null) 
+            {
+                // Add debug info to help identify initialization issues
+                if (Time.frameCount % 60 == 0) // Log every 60 frames (about once per second)
+                {
+                    Debug.Log($"GraphVisualizer: Waiting for initialization... isInitialized={isInitialized}, graphSystem={graphSystem != null}, graphSystemGameObject={graphSystemGameObject != null}");
+                }
+                return;
+            }
             
             // Update graph visualization when it's ready
             // Note: Camera movement conflicts have been addressed by:
@@ -83,12 +248,21 @@ namespace Scalar
             {
                 if (nodeObjects.Count == 0)
                 {
+                    Debug.Log("GraphVisualizer: Graph is generated, creating visualization...");
                     CreateGraphVisualization();
                 }
                 else
                 {
                     // Continuously check for newly visible nodes
                     UpdateVisibleNodes();
+                }
+            }
+            else
+            {
+                // Add debug info to track graph generation status
+                if (Time.frameCount % 120 == 0) // Log every 120 frames (about every 2 seconds)
+                {
+                    Debug.Log($"GraphVisualizer: Waiting for graph generation... IsGraphGenerated={graphSystem.IsGraphGenerated()}");
                 }
             }
         }
@@ -111,10 +285,37 @@ namespace Scalar
         /// </summary>
         private void CreateGraphVisualization()
         {
-            if (graphSystem == null) return;
+            if (graphSystem == null) 
+            {
+                Debug.LogError("GraphVisualizer: Cannot create visualization - GraphSystem is null!");
+                return;
+            }
             
-            // Create all nodes
+            if (!graphSystem.IsGraphGenerated())
+            {
+                Debug.LogWarning("GraphVisualizer: Cannot create visualization - Graph is not yet generated!");
+                return;
+            }
+            
+            Debug.Log("GraphVisualizer: Starting to create graph visualization...");
+            
+            // Create all nodes - including branch nodes
             var allNodes = graphSystem.GetVisibleNodes();
+            Debug.Log($"GraphVisualizer: Found {allNodes.Count} visible nodes to visualize");
+            
+            // Log details about each node to help debug branch node issues
+            foreach (var node in allNodes)
+            {
+                Debug.Log($"GraphVisualizer: Node {node.nodeId}: type={node.type}, position={node.position}, state={node.state}, connections={node.connectedNodeIds.Count}");
+            }
+            
+            // Separate branch nodes for special handling
+            var branchNodes = allNodes.Where(n => n.position.y > 2 || n.position.y < 0).ToList();
+            var pathNodes = allNodes.Where(n => n.position.y <= 2 && n.position.y >= 0).ToList();
+            
+            Debug.Log($"GraphVisualizer: Found {pathNodes.Count} path nodes and {branchNodes.Count} branch nodes");
+            
+            // Create visuals for all nodes
             foreach (var node in allNodes)
             {
                 CreateNodeVisual(node);
@@ -126,7 +327,51 @@ namespace Scalar
             // Create connections
             CreateConnections();
             
-            Debug.Log($"GraphVisualizer: Created visualization with {nodeObjects.Count} nodes");
+            Debug.Log($"GraphVisualizer: Created visualization with {nodeObjects.Count} nodes and {connectionObjects.Count} connections");
+            
+            // Verify that all nodes have visuals
+            var missingNodes = allNodes.Where(n => !nodeObjects.ContainsKey(n.position)).ToList();
+            if (missingNodes.Count > 0)
+            {
+                Debug.LogWarning($"GraphVisualizer: {missingNodes.Count} nodes are missing visuals after creation!");
+                foreach (var missingNode in missingNodes)
+                {
+                    Debug.LogWarning($"  Missing visual for node {missingNode.nodeId} at {missingNode.position}");
+                }
+            }
+            else
+            {
+                Debug.Log("GraphVisualizer: All nodes have visuals created successfully");
+            }
+        }
+        
+        /// <summary>
+        /// Force refresh the entire visualization
+        /// Call this if the visualization seems broken or incomplete
+        /// </summary>
+        public void ForceRefreshVisualization()
+        {
+            Debug.Log("GraphVisualizer: Force refreshing entire visualization...");
+            
+            // Clear existing visualization
+            ClearVisualization();
+            
+            // Wait a frame and recreate
+            StartCoroutine(RefreshAfterDelay());
+        }
+        
+        private System.Collections.IEnumerator RefreshAfterDelay()
+        {
+            yield return null;
+            
+            if (graphSystem != null && graphSystem.IsGraphGenerated())
+            {
+                CreateGraphVisualization();
+            }
+            else
+            {
+                Debug.LogWarning("GraphVisualizer: Cannot refresh - GraphSystem not ready or graph not generated");
+            }
         }
         
         /// <summary>
@@ -454,9 +699,67 @@ namespace Scalar
         /// </summary>
         private void OnNodeDiscovered(ExplorationNode node)
         {
-            Debug.Log($"GraphVisualizer: Node discovered: {node.nodeId} at {node.position}");
-            CreateNodeVisual(node);
+            Debug.Log($"GraphVisualizer: Node discovered: {node.nodeId} at {node.position} (type: {node.type}, state: {node.state})");
+            
+            // Immediately create visual for the discovered node
+            if (!nodeObjects.ContainsKey(node.position))
+            {
+                CreateNodeVisual(node);
+                Debug.Log($"GraphVisualizer: Created visual for newly discovered node {node.nodeId}");
+            }
+            else
+            {
+                Debug.Log($"GraphVisualizer: Node {node.nodeId} already has a visual object");
+            }
+            
+            // Update connections to include the new node
             UpdateConnections();
+            
+            // Force update of all visible nodes to catch any branch nodes that might have been revealed
+            UpdateVisibleNodes();
+            
+            // Also check if this node reveals any connected nodes that should be visualized
+            CheckAndRevealConnectedNodes(node);
+        }
+
+        /// <summary>
+        /// Check if a discovered node reveals any connected nodes that should be visualized
+        /// </summary>
+        private void CheckAndRevealConnectedNodes(ExplorationNode discoveredNode)
+        {
+            if (graphSystem == null) return;
+            
+            Debug.Log($"GraphVisualizer: Checking connected nodes for {discoveredNode.nodeId} at {discoveredNode.position}");
+            
+            var allVisibleNodes = graphSystem.GetVisibleNodes();
+            var connectedNodes = new List<ExplorationNode>();
+            
+            // Find all nodes that are connected to the discovered node
+            foreach (var connectedId in discoveredNode.connectedNodeIds)
+            {
+                var connectedNode = allVisibleNodes.FirstOrDefault(n => n.nodeId == connectedId);
+                if (connectedNode != null)
+                {
+                    connectedNodes.Add(connectedNode);
+                    Debug.Log($"GraphVisualizer: Found connected node {connectedNode.nodeId} at {connectedNode.position} (type: {connectedNode.type}, state: {connectedNode.state})");
+                }
+            }
+            
+            // Create visuals for any connected nodes that don't have them
+            foreach (var connectedNode in connectedNodes)
+            {
+                if (!nodeObjects.ContainsKey(connectedNode.position))
+                {
+                    Debug.Log($"GraphVisualizer: Creating visual for connected node {connectedNode.nodeId} at {connectedNode.position}");
+                    CreateNodeVisual(connectedNode);
+                }
+            }
+            
+            // Update connections if we added new nodes
+            if (connectedNodes.Any(n => !nodeObjects.ContainsKey(n.position)))
+            {
+                UpdateConnections();
+            }
         }
         
         /// <summary>
@@ -732,6 +1035,38 @@ namespace Scalar
         }
 
         /// <summary>
+        /// Force refresh branch nodes specifically
+        /// Call this when you suspect branch nodes are not being shown
+        /// </summary>
+        public void ForceRefreshBranchNodes()
+        {
+            Debug.Log("GraphVisualizer: Force refreshing branch nodes...");
+            
+            if (graphSystem == null) return;
+            
+            var allNodes = graphSystem.GetVisibleNodes();
+            var branchNodes = allNodes.Where(n => n.position.y > 2 || n.position.y < 0).ToList();
+            
+            Debug.Log($"GraphVisualizer: Found {branchNodes.Count} branch nodes to refresh");
+            
+            foreach (var branchNode in branchNodes)
+            {
+                if (!nodeObjects.ContainsKey(branchNode.position))
+                {
+                    Debug.Log($"GraphVisualizer: Creating missing visual for branch node {branchNode.nodeId} at {branchNode.position}");
+                    CreateNodeVisual(branchNode);
+                }
+                else
+                {
+                    Debug.Log($"GraphVisualizer: Branch node {branchNode.nodeId} already has visual at {branchNode.position}");
+                }
+            }
+            
+            // Update connections to include any new branch nodes
+            UpdateConnections();
+        }
+
+        /// <summary>
         /// Log current graph state for debugging
         /// </summary>
         public void LogGraphState()
@@ -762,8 +1097,150 @@ namespace Scalar
         public void UpdateVisualization()
         {
             Debug.Log("GraphVisualizer: Manual visualization update requested...");
+            
+            // First, check for any missing branch nodes
+            ForceRefreshBranchNodes();
+            
+            // Then update all visible nodes
             UpdateVisibleNodes();
+            
+            // Finally, update connections
             UpdateConnections();
+        }
+        
+        /// <summary>
+        /// Public method to manually trigger initialization
+        /// Call this if the visualizer needs to be reinitialized
+        /// </summary>
+        public void ManualInitialize()
+        {
+            if (isInitialized)
+            {
+                Debug.Log("GraphVisualizer: Already initialized, skipping manual initialization");
+                return;
+            }
+            
+            Debug.Log("GraphVisualizer: Manual initialization requested...");
+            StartCoroutine(InitializeAfterGraphSystem());
+        }
+        
+        /// <summary>
+        /// Check if the visualizer is properly initialized
+        /// </summary>
+        public bool IsInitialized()
+        {
+            return isInitialized && graphSystem != null;
+        }
+        
+        /// <summary>
+        /// Get the current GraphSystem reference
+        /// </summary>
+        public GraphSystem GetGraphSystem()
+        {
+            return graphSystem;
+        }
+
+        /// <summary>
+        /// Comprehensive debug method to diagnose visualizer issues
+        /// </summary>
+        public void DebugVisualizerState()
+        {
+            Debug.Log("=== GraphVisualizer Debug State ===");
+            Debug.Log($"isInitialized: {isInitialized}");
+            Debug.Log($"graphSystem: {(graphSystem != null ? "Found" : "NULL")}");
+            Debug.Log($"graphSystemGameObject: {(graphSystemGameObject != null ? "Found" : "NULL")}");
+            
+            if (graphSystem != null)
+            {
+                Debug.Log($"IsGraphGenerated: {graphSystem.IsGraphGenerated()}");
+                Debug.Log($"Total nodes in system: {graphSystem.GetTotalNodeCount()}");
+                Debug.Log($"Visible nodes in system: {graphSystem.GetVisibleNodes().Count}");
+                
+                var visibleNodes = graphSystem.GetVisibleNodes();
+                Debug.Log("Visible nodes details:");
+                foreach (var node in visibleNodes.Take(5)) // Show first 5 nodes
+                {
+                    Debug.Log($"  Node {node.nodeId}: type={node.type}, position={node.position}, state={node.state}");
+                }
+                if (visibleNodes.Count > 5)
+                {
+                    Debug.Log($"  ... and {visibleNodes.Count - 5} more nodes");
+                }
+                
+                // Check for branch nodes specifically
+                var branchNodes = visibleNodes.Where(n => n.position.y > 2 || n.position.y < 0).ToList();
+                Debug.Log($"Branch nodes: {branchNodes.Count} out of {visibleNodes.Count} visible nodes");
+                
+                foreach (var branchNode in branchNodes)
+                {
+                    var hasVisual = nodeObjects.ContainsKey(branchNode.position);
+                    Debug.Log($"  Branch node {branchNode.nodeId}: type={branchNode.type}, position={branchNode.position}, state={branchNode.state}, hasVisual={hasVisual}");
+                }
+            }
+            
+            if (graphSystemGameObject != null)
+            {
+                Debug.Log($"GraphSystem GameObject active: {graphSystemGameObject.activeInHierarchy}");
+                Debug.Log($"GraphSystem GameObject name: {graphSystemGameObject.name}");
+                Debug.Log($"GraphSystem GameObject position: {graphSystemGameObject.transform.position}");
+            }
+            
+            Debug.Log($"nodeObjects count: {nodeObjects.Count}");
+            Debug.Log($"connectionObjects count: {connectionObjects.Count}");
+            Debug.Log($"graphContainer: {(graphContainer != null ? "Exists" : "NULL")}");
+            
+            if (graphContainer != null)
+            {
+                Debug.Log($"graphContainer child count: {graphContainer.childCount}");
+                Debug.Log($"graphContainer position: {graphContainer.position}");
+            }
+            
+            Debug.Log($"Current frame: {Time.frameCount}");
+            Debug.Log($"Current time: {Time.time}");
+            Debug.Log("=== End Debug State ===");
+        }
+
+        /// <summary>
+        /// Check for visualization mismatches and fix them
+        /// </summary>
+        public void DiagnoseAndFixVisualization()
+        {
+            Debug.Log("GraphVisualizer: Diagnosing visualization issues...");
+            
+            if (graphSystem == null)
+            {
+                Debug.LogError("GraphVisualizer: Cannot diagnose - GraphSystem is null");
+                return;
+            }
+            
+            var visibleNodes = graphSystem.GetVisibleNodes();
+            var missingNodes = new List<ExplorationNode>();
+            
+            foreach (var node in visibleNodes)
+            {
+                if (!nodeObjects.ContainsKey(node.position))
+                {
+                    missingNodes.Add(node);
+                    Debug.Log($"GraphVisualizer: Missing visual for node {node.nodeId} at {node.position}");
+                }
+            }
+            
+            if (missingNodes.Count > 0)
+            {
+                Debug.Log($"GraphVisualizer: Found {missingNodes.Count} missing node visuals, creating them...");
+                
+                foreach (var node in missingNodes)
+                {
+                    CreateNodeVisual(node);
+                }
+                
+                UpdateConnections();
+                Debug.Log("GraphVisualizer: Fixed missing node visuals");
+            }
+            else
+            {
+                Debug.Log("GraphVisualizer: No missing node visuals found");
+            }
         }
     }
     
