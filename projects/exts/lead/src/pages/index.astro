@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Google Form Leads</h1>
+      <p>This page will allow you to fetch and manage leads from a Google Form.</p>
+
+      <div class="form-group">
+        <label for="formId">Google Form ID:</label>
+        <input type="text" id="formId" placeholder="Enter your Google Form ID" class="form-control" />
+      </div>
+
+      <div class="form-group">
+          <label for="clientId">Google Client ID:</label>
+          <input type="text" id="clientId" placeholder="Enter your Google Web App Client ID" class="form-control" />
+      </div>
+
+      <button id="authorize_button" style="display:none;">Authorize</button>
+      <button id="signout_button" style="display:none;">Sign Out</button>
+      <button id="fetch_button" class="btn btn-primary">Fetch Responses</button>
+      <button id="export_button" class="btn btn-secondary">Export to Excel</button>
+
+      <div id="content"></div>
+    </div>
+
+    <script is:inline src="https://apis.google.com/js/api.js"></script>
+    <script is:inline src="https://accounts.google.com/gsi/client"></script>
+    <script>
+      import * as XLSX from 'xlsx';
+      import { db } from '../lib/db';
+
+      let tokenClient;
+      let gapiInited = false;
+      let gisInited = false;
+
+      const authorize_button = document.getElementById('authorize_button');
+      const signout_button = document.getElementById('signout_button');
+      const fetch_button = document.getElementById('fetch_button');
+      const export_button = document.getElementById('export_button');
+      const formIdInput = document.getElementById('formId');
+      const clientIdInput = document.getElementById('clientId');
+      const content = document.getElementById('content');
+
+      async function loadSettings() {
+        const formId = await db.settings.get('formId');
+        const clientId = await db.settings.get('clientId');
+        if (formId) formIdInput.value = formId.value;
+        if (clientId) clientIdInput.value = clientId.value;
+      }
+
+      async function saveSetting(key, value) {
+        await db.settings.put({ key, value });
+      }
+
+      formIdInput.addEventListener('change', (e) => saveSetting('formId', e.target.value));
+      clientIdInput.addEventListener('change', (e) => saveSetting('clientId', e.target.value));
+
+      function gapiLoaded() {
+        gapi.load('client', initializeGapiClient);
+      }
+
+      async function initializeGapiClient() {
+        await gapi.client.init({
+          discoveryDocs: ["https://forms.googleapis.com/$discovery/rest?version=v1"],
+        });
+        gapiInited = true;
+        maybeEnableButtons();
+      }
+
+      function gisLoaded() {
+        const CLIENT_ID = clientIdInput.value;
+        if (!CLIENT_ID) {
+            // Don't alert here, as it will fire on page load if no client ID is saved
+            console.log("Please enter a Client ID");
+            return;
+        }
+        tokenClient = google.accounts.oauth2.initTokenClient({
+          client_id: CLIENT_ID,
+          scope: 'https://www.googleapis.com/auth/forms.responses.readonly',
+          callback: '', // defined later
+        });
+        gisInited = true;
+        maybeEnableButtons();
+      }
+
+      function maybeEnableButtons() {
+        if (gapiInited && gisInited) {
+          authorize_button.style.display = 'block';
+        }
+      }
+
+      authorize_button.onclick = () => {
+          tokenClient.callback = async (resp) => {
+            if (resp.error !== undefined) {
+              throw (resp);
+            }
+            signout_button.style.display = 'block';
+            authorize_button.innerText = 'Refresh';
+          };
+
+          if (gapi.client.getToken() === null) {
+            tokenClient.requestAccessToken({prompt: 'consent'});
+          } else {
+            tokenClient.requestAccessToken({prompt: ''});
+          }
+      };
+
+      signout_button.onclick = () => {
+          const token = gapi.client.getToken();
+          if (token !== null) {
+            google.accounts.oauth2.revoke(token.access_token);
+            gapi.client.setToken('');
+            content.innerText = '';
+            authorize_button.innerText = 'Authorize';
+            signout_button.style.display = 'none';
+          }
+      };
+      
+      async function listResponses() {
+        const formId = formIdInput.value;
+        console.log('Form ID:', formId);
+        if (!formId) {
+          alert("Please enter a Form ID");
+          return;
+        }
+        let response;
+        try {
+          response = await gapi.client.forms.forms.responses.list({
+            formId: formId,
+          });
+          console.log('API Response:', response);
+        } catch (err) {
+          console.error('API Error:', err);
+          content.innerText = err.message;
+          return;
+        }
+        const result = response.result;
+        console.log('API Result:', result);
+        if (!result.responses || result.responses.length == 0) {
+          content.innerText = 'No responses found.';
+          return;
+        }
+        
+        const responses = result.responses.map(res => {
+            const answers = {};
+            const fieldMapping = {
+                '7aef9547': 'name',
+                '71ef93f7': 'number', 
+                '61d54db6': 'email'
+            };
+
+            if (res.createTime) {
+              answers['create_time'] = new Date(res.createTime);
+            }
+            if (res.lastSubmittedTime) {
+              answers['last_submitted_time'] = new Date(res.lastSubmittedTime);
+            }
+
+            for (const [questionId, questionData] of Object.entries(res.answers)) {
+                const answer_value = questionData.textAnswers.answers[0].value;
+                const field_name = fieldMapping[questionId] || questionId;
+                answers[field_name] = answer_value;
+            }
+            return answers;
+        });
+
+        await db.responses.bulkPut(responses);
+        await loadResponsesFromDB();
+      }
+
+      async function loadResponsesFromDB() {
+        const responses = await db.responses.toArray();
+        if (responses.length > 0) {
+          renderResponses(responses);
+        }
+      }
+
+      function renderResponses(data) {
+          if(data.length === 0) {
+              content.innerHTML = '<h3>No responses found.</h3>';
+              return;
+          }
+          let html = '<h3>Responses:</h3><table class="table"><thead><tr>';
+          const headers = Object.keys(data[0]);
+          headers.forEach(h => html += `<th>${h}</th>`);
+          html += '</tr></thead><tbody>';
+
+          data.forEach(row => {
+              html += '<tr>';
+              headers.forEach(h => html += `<td>${row[h] || ''}</td>`);
+              html += '</tr>';
+          });
+
+          html += '</tbody></table>';
+          content.innerHTML = html;
+      }
+
+      fetch_button.addEventListener('click', async () => {
+        await listResponses();
+      });
+
+      export_button.addEventListener('click', async () => {
+          const responses = await db.responses.toArray();
+          if(responses.length === 0) {
+              alert("No data to export");
+              return;
+          }
+          const worksheet = XLSX.utils.json_to_sheet(responses);
+          const workbook = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(workbook, worksheet, "Form Responses");
+          XLSX.writeFile(workbook, "form_responses.xlsx");
+      });
+
+      (async function() {
+          await loadSettings();
+          gisLoaded();
+          gapiLoaded();
+          await loadResponsesFromDB();
+      })();
+
+    </script>
+    <style>
+    .container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    .form-control {
+      width: 100%;
+      padding: 0.5rem;
+      font-size: 1rem;
+    }
+    .btn {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .table th, .table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+    </style>
+  </body>
+</html>
