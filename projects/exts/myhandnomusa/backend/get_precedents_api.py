@@ -140,8 +140,7 @@ async def main():
             print("수집된 판례가 없습니다. 스크립트를 종료합니다.")
             return
 
-        print(f"
-총 {len(all_serial_numbers)}개의 판례 상세 정보 수집을 시작합니다.")
+        print(f"총 {len(all_serial_numbers)}개의 판례 상세 정보 수집을 시작합니다.")
 
         # 2. 병렬/비동기 처리를 통한 상세 정보 수집
         progress_bar = tqdm_asyncio(total=len(all_serial_numbers), desc="판례 상세 정보 수집 중")
