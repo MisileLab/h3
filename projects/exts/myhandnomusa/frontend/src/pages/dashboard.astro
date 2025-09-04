@@ -1,0 +1,56 @@
+---
+import MainLayout from '../layouts/main.astro';
+---
+
+<MainLayout title="대시보드">
+  <div class="container mx-auto px-6 py-12">
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">대시보드</h1>
+    <p class="text-gray-600 mb-8">환영합니다! 이곳에서 근로계약서를 업로드하고 분석 결과를 확인하세요.</p>
+
+    <div class="bg-white p-8 rounded-lg shadow-md">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">새로운 계약서 분석하기</h2>
+      <form action="/report" method="GET">
+        <div class="border-dashed border-2 border-gray-300 rounded-lg p-8 text-center mb-4">
+          <label for="contract-upload" class="cursor-pointer">
+            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+              <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+            <p class="mt-2 text-sm text-gray-600">파일을 끌어다 놓거나 클릭하여 업로드하세요</p>
+            <p class="text-xs text-gray-500">PNG, JPG, PDF up to 10MB</p>
+          </label>
+          <input id="contract-upload" name="contract-upload" type="file" class="sr-only">
+        </div>
+        <div class="text-right">
+          <button type="submit" class="bg-blue-500 text-white px-6 py-3 rounded-md font-semibold hover:bg-blue-600">분석 시작하기</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="mt-12">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">이전 분석 기록</h2>
+        <div class="bg-white p-4 rounded-lg shadow-md">
+            <ul>
+                <li class="border-b border-gray-200 last:border-b-0">
+                    <a href="/report" class="flex justify-between items-center p-4 hover:bg-gray-50">
+                        <div>
+                            <p class="font-semibold">근로계약서_20250904.pdf</p>
+                            <p class="text-sm text-gray-500">분석일: 2025년 9월 4일</p>
+                        </div>
+                        <div class="text-sm text-green-600 font-bold">안전</div>
+                    </a>
+                </li>
+                <li class="border-b border-gray-200 last:border-b-0">
+                    <a href="/report" class="flex justify-between items-center p-4 hover:bg-gray-50">
+                        <div>
+                            <p class="font-semibold">아르바이트_계약서.jpg</p>
+                            <p class="text-sm text-gray-500">분석일: 2025년 8월 15일</p>
+                        </div>
+                        <div class="text-sm text-red-600 font-bold">위험</div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+  </div>
+</MainLayout>

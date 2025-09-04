@@ -1,0 +1,88 @@
+---
+import MainLayout from '../layouts/main.astro';
+
+const dummyReport = {
+  fileName: '근로계약서_20250904.pdf',
+  analysisDate: '2025년 9월 4일',
+  overallRisk: '주의',
+  summary: '계약서에서 3개의 잠재적 법적 위험 요소가 발견되었습니다. 최저임금, 퇴직금, 및 근로시간 관련 조항을 면밀히 검토해야 합니다.',
+  clauses: [
+    {
+      id: 1,
+      title: '제 3조 (임금)',
+      content: '월 2,000,000원의 급여를 지급한다. 이는 기본급, 주휴수당을 포함한 금액이다.',
+      risk: '위험',
+      comment: '2025년 최저임금 기준(시급 10,170원, 월 2,125,530원)에 미달할 수 있습니다. 주 40시간 근로 기준 시급을 재계산해야 합니다.',
+    },
+    {
+      id: 2,
+      title: '제 5조 (근로시간)',
+      content: '근로시간은 오전 9시부터 오후 6시까지로 하며, 휴게시간은 1시간을 부여한다.',
+      risk: '안전',
+      comment: '법정 근로시간 및 휴게시간 기준을 준수합니다.',
+    },
+    {
+      id: 3,
+      title: '제 8조 (퇴직금)',
+      content: '퇴직금은 별도의 내부 규정에 따른다.',
+      risk: '주의',
+      comment: '퇴직금 지급 규정을 명확히 하지 않으면 향후 분쟁의 소지가 있습니다. 근로자퇴직급여 보장법에 따른 기준을 명시하는 것이 안전합니다.',
+    },
+    {
+      id: 4,
+      title: '제 10조 (계약의 해지)',
+      content: '업무 성과가 저조할 경우 회사는 즉시 계약을 해지할 수 있다.',
+      risk: '위험',
+      comment: '객관적이고 합리적인 이유 없는 해고는 부당해고에 해당할 수 있습니다. 구체적인 해지 사유를 명시해야 합니다.',
+    },
+  ],
+};
+---
+
+<MainLayout title="계약서 분석 리포트">
+  <div class="container mx-auto px-6 py-12">
+    <div class="bg-white p-8 rounded-lg shadow-md">
+      <!-- Report Header -->
+      <div class="border-b pb-4 mb-6">
+        <h1 class="text-3xl font-bold text-gray-800">분석 리포트</h1>
+        <p class="text-sm text-gray-500 mt-2">파일: {dummyReport.fileName} | 분석일: {dummyReport.analysisDate}</p>
+      </div>
+
+      <!-- Summary -->
+      <div class="mb-8 p-6 rounded-lg bg-yellow-50 border border-yellow-200">
+        <h2 class="text-2xl font-bold text-yellow-800 mb-2">종합 평가: <span class="text-red-600">{dummyReport.overallRisk}</span></h2>
+        <p class="text-gray-700">{dummyReport.summary}</p>
+      </div>
+
+      <!-- Clause by Clause Analysis -->
+      <div>
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">주요 조항 분석</h2>
+        <div class="space-y-6">
+          {dummyReport.clauses.map(clause => (
+            <div class="border rounded-lg p-6 transition-shadow hover:shadow-lg">
+              <div class="flex justify-between items-start">
+                <h3 class="text-xl font-semibold text-gray-800">{clause.title}</h3>
+                <span class={`px-3 py-1 text-sm font-bold rounded-full ${clause.risk === '위험' ? 'bg-red-100 text-red-800' : clause.risk === '주의' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}`}>
+                  {clause.risk}
+                </span>
+              </div>
+              <p class="text-gray-600 mt-4 bg-gray-50 p-4 rounded">"{clause.content}"</p>
+              <div class="mt-4 p-4 rounded-lg bg-blue-50 border border-blue-200">
+                <p class="font-semibold text-blue-800">AI 코멘트:</p>
+                <p class="text-gray-700">{clause.comment}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Call to Action -->
+      <div class="mt-12 text-center p-8 bg-gray-100 rounded-lg">
+        <h2 class="text-2xl font-bold text-gray-800">전문가의 도움이 필요하신가요?</h2>
+        <p class="text-gray-600 mt-2 mb-6">AI 분석만으로 해결하기 어려운 복잡한 문제가 있다면, 전문 노무사/변호사와 상담하세요.</p>
+        <a href="#" class="bg-blue-500 text-white px-8 py-4 rounded-md text-lg font-semibold hover:bg-blue-600">전문가 연결하기</a>
+      </div>
+
+    </div>
+  </div>
+</MainLayout>

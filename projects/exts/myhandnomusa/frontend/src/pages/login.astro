@@ -1,0 +1,25 @@
+---
+import MainLayout from '../layouts/main.astro';
+---
+
+<MainLayout title="로그인">
+  <div class="container mx-auto px-6 py-12 h-full flex justify-center items-center">
+    <div class="md:w-8/12 lg:w-5/12 bg-white px-8 py-10 rounded-lg shadow-md">
+      <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">로그인</h2>
+      <form action="#" method="POST">
+        <div class="mb-6">
+          <input type="email" placeholder="이메일 주소" class="w-full px-4 py-3 rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 text-sm" />
+        </div>
+        <div class="mb-6">
+          <input type="password" placeholder="비밀번호" class="w-full px-4 py-3 rounded-md bg-gray-100 border-transparent focus:border-gray-500 focus:bg-white focus:ring-0 text-sm" />
+        </div>
+        <div class="mb-6">
+          <button type="submit" class="w-full bg-blue-500 text-white px-4 py-3 rounded-md text-lg font-semibold hover:bg-blue-600">로그인</button>
+        </div>
+        <div class="text-center">
+          <a href="/register" class="text-sm text-gray-600 hover:text-gray-800">계정이 없으신가요? 회원가입</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</MainLayout>
