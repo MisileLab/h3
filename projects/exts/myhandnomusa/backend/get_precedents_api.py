@@ -16,7 +16,7 @@ API_KEY = os.environ.get("LAW_API_KEY", "YOUR_API_KEY")
 # 검색할 키워드
 SEARCH_QUERY = "노동"
 # 결과를 저장할 파일명
-OUTPUT_PARQUET_FILE = "korean_labor_precedents.parquet"
+OUTPUT_PARQUET_FILE = "korean_labor_precedents_with_content.parquet"
 # 한 페이지에 요청할 판례 수 (최대 100)
 DISPLAY_COUNT = 100
 MAX_CONCURRENT_REQUESTS = 5  # 동시 요청 수 (API 서버 정책에 따라 조절)
@@ -24,6 +24,9 @@ MAX_CONCURRENT_REQUESTS = 5  # 동시 요청 수 (API 서버 정책에 따라 �
 # --- API 정보 ---
 # 판례 목록 조회 API URL
 PRECEDENT_LIST_URL = "http://www.law.go.kr/DRF/lawSearch.do"
+# 판례 본문 조회 API URL
+PRECEDENT_DETAIL_URL = "http://www.law.go.kr/DRF/lawService.do"
+
 
 def parse_precedent_list(json_data):
     """판례 목록 JSON 응답에서 판례 리스트를 추출합니다."""
@@ -61,17 +64,51 @@ def parse_precedent_list(json_data):
         print(f"JSON 파싱 오류: {e}\n데이터: {json_data}")
         return [], 0
 
+def parse_precedent_detail(json_data):
+    """판례 본문 JSON 응답에서 판례 상세 정보를 추출합니다."""
+    try:
+        data = json.loads(json_data)
+        if "ERROR" in data:
+            print(f"API 상세 정보 오류: {data['ERROR']['MESSAGE']}")
+            return None
+        if "faultInfo" in data:
+            print(f"API 상세 정보 오류: {data['faultInfo']['message']}")
+            return None
+        return data
+    except json.JSONDecodeError as e:
+        print(f"상세 정보 JSON 파싱 오류: {e}\n데이터: {json_data}")
+        return None
+
+async def fetch_precedent_detail(client, precedent_id):
+    """지정된 판례 ID의 상세 정보(본문 포함)를 비동기적으로 가져옵니다."""
+    params = {
+        "OC": API_KEY,
+        "target": "prec",
+        "ID": precedent_id,
+        "type": "JSON"
+    }
+    try:
+        response = await client.get(PRECEDENT_DETAIL_URL, params=params, timeout=30)
+        response.raise_for_status()
+        return parse_precedent_detail(response.text)
+    except httpx.HTTPStatusError as e:
+        print(f"HTTP 오류 (ID: {precedent_id}): {e.response.status_code}")
+        return None
+    except Exception as e:
+        print(f"판례 본문 요청 실패 (ID: {precedent_id}): {e}")
+        return None
+
 async def main():
     """메인 실행 함수"""
     print("=" * 50)
-    print("법제처 Open API 기반 판례 목록 크롤링 스크립트")
+    print("법제처 Open API 기반 판례 본문 크롤링 스크립트")
     print("=" * 50)
 
     if API_KEY == "YOUR_API_KEY":
         print("오류: API 키 미설정. 환경 변수 'LAW_API_KEY'를 설정하세요.")
         return
 
-    all_precedents = []
+    all_precedents_list = []
     page = 1
     total_count = 0
     
@@ -80,7 +117,6 @@ async def main():
     async with httpx.AsyncClient() as client:
         print(f"'{SEARCH_QUERY}' 키워드로 전체 판례 목록을 가져오는 중...")
         while True:
-            # target을 'prec'로 설정
             params = {"OC": API_KEY, "target": "prec", "query": SEARCH_QUERY, "display": DISPLAY_COUNT, "page": page, "type": "JSON"}
             try:
                 response = await client.get(PRECEDENT_LIST_URL, params=params, timeout=30)
@@ -100,15 +136,15 @@ async def main():
                         progress_bar.update(progress_bar.total - progress_bar.n)
                     break
                 
-                all_precedents.extend(precedents)
+                all_precedents_list.extend(precedents)
                 if progress_bar:
                     progress_bar.update(len(precedents))
                 
-                if len(all_precedents) >= total_count:
+                if len(all_precedents_list) >= total_count:
                     break
                 
                 page += 1
-                await asyncio.sleep(0.5) # API 서버 부하 감소
+                await asyncio.sleep(0.5)
 
             except Exception as e:
                 print(f"판례 목록 요청 실패 (페이지 {page}): {e}")
@@ -117,17 +153,36 @@ async def main():
     if progress_bar:
         progress_bar.close()
 
-    if not all_precedents:
+    if not all_precedents_list:
         print("수집된 판례가 없습니다.")
         return
 
-    print(f"\n총 {len(all_precedents)}개의 판례 정보 수집 완료.")
+    print(f"\n총 {len(all_precedents_list)}개의 판례 목록 수집 완료. 이제 본문을 가져옵니다.")
+
+    detailed_precedents = []
+    semaphore = asyncio.Semaphore(MAX_CONCURRENT_REQUESTS)
+
+    async def fetch_and_add(p_id):
+        async with semaphore:
+            detail = await fetch_precedent_detail(client, p_id)
+            if detail:
+                detailed_precedents.append(detail)
+
+    tasks = [fetch_and_add(p['판례일련번호']) for p in all_precedents_list]
+    await tqdm_asyncio.gather(*tasks, desc="판례 본문 수집 중")
+
+    if not detailed_precedents:
+        print("판례 본문을 하나도 가져오지 못했습니다.")
+        return
+
+    print(f"\n총 {len(detailed_precedents)}개의 판례 본문 수집 완료.")
 
     try:
-        # 데이터프레임의 모든 값을 문자열로 변환
-        df = pl.DataFrame(all_precedents).select([pl.all().cast(pl.Utf8)])
+        df = pl.DataFrame(detailed_precedents)
+        # 데이터프레임의 모든 값을 문자열로 변환하여 저장
+        df = df.select([pl.all().cast(pl.Utf8)])
         df.write_parquet(OUTPUT_PARQUET_FILE)
-        print(f"\n총 {len(df)}개 판례 목록을 '{OUTPUT_PARQUET_FILE}'에 저장했습니다.")
+        print(f"\n총 {len(df)}개 판례 상세 정보를 '{OUTPUT_PARQUET_FILE}'에 저장했습니다.")
     except Exception as e:
         print(f"\nParquet 파일 저장 오류: {e}")
 
