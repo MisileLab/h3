@@ -1,0 +1,11 @@
+version: "1"
+
+processes:
+  backend:
+    command: cd backend && uv run uvicorn main:app --reload --port 8000
+    environment:
+      - OPENAI_API_KEY=$AVANTE_OPENROUTER_API_KEY
+      - OPENROUTER_API_KEY=$AVANTE_OPENROUTER_API_KEY
+
+  frontend:
+    command: cd frontend && yarn dev

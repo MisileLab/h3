@@ -5,25 +5,30 @@ import MainLayout from '../layouts/main.astro';
 <MainLayout title="대시보드">
   <div class="container mx-auto px-6 py-12">
     <h1 class="text-3xl font-bold text-gray-800 mb-2">대시보드</h1>
-    <p class="text-gray-600 mb-8">환영합니다! 이곳에서 근로계약서를 업로드하고 분석 결과를 확인하세요.</p>
+    <p class="text-gray-600 mb-8">아래 텍스트 상자에 근로계약서 내용을 붙여넣고 분석을 시작하세요.</p>
 
-    <div class="bg-white p-8 rounded-lg shadow-md">
+    <div class="bg-white p-8 rounded-lg shadow-md relative">
       <h2 class="text-2xl font-bold text-gray-800 mb-4">새로운 계약서 분석하기</h2>
-      <form action="/report" method="GET">
-        <div class="border-dashed border-2 border-gray-300 rounded-lg p-8 text-center mb-4">
-          <label for="contract-upload" class="cursor-pointer">
-            <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-              <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-            </svg>
-            <p class="mt-2 text-sm text-gray-600">파일을 끌어다 놓거나 클릭하여 업로드하세요</p>
-            <p class="text-xs text-gray-500">PNG, JPG, PDF up to 10MB</p>
-          </label>
-          <input id="contract-upload" name="contract-upload" type="file" class="sr-only">
+      <form id="analysis-form">
+        <div class="mb-4">
+          <label for="contract-text" class="block text-sm font-medium text-gray-700 mb-2">계약서 내용</label>
+          <textarea id="contract-text" name="contract-text" rows="15" class="w-full p-3 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="여기에 계약서 내용을 붙여넣으세요..."></textarea>
         </div>
         <div class="text-right">
-          <button type="submit" class="bg-blue-500 text-white px-6 py-3 rounded-md font-semibold hover:bg-blue-600">분석 시작하기</button>
+          <button type="submit" class="bg-blue-500 text-white px-6 py-3 rounded-md font-semibold hover:bg-blue-600 disabled:bg-gray-400">
+            분석 시작하기
+          </button>
         </div>
       </form>
+      <div id="loading-overlay" class="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center hidden">
+        <div class="flex items-center space-x-2">
+          <svg class="animate-spin h-8 w-8 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span class="text-lg font-semibold text-gray-700">AI가 계약서를 분석 중입니다...</span>
+        </div>
+      </div>
     </div>
 
     <div class="mt-12">
@@ -39,18 +44,60 @@ import MainLayout from '../layouts/main.astro';
                         <div class="text-sm text-green-600 font-bold">안전</div>
                     </a>
                 </li>
-                <li class="border-b border-gray-200 last:border-b-0">
-                    <a href="/report" class="flex justify-between items-center p-4 hover:bg-gray-50">
-                        <div>
-                            <p class="font-semibold">아르바이트_계약서.jpg</p>
-                            <p class="text-sm text-gray-500">분석일: 2025년 8월 15일</p>
-                        </div>
-                        <div class="text-sm text-red-600 font-bold">위험</div>
-                    </a>
-                </li>
             </ul>
         </div>
     </div>
 
   </div>
 </MainLayout>
+
+<script>
+  const form = document.getElementById('analysis-form');
+  const contractText = document.getElementById('contract-text');
+  const loadingOverlay = document.getElementById('loading-overlay');
+  const submitButton = form.querySelector('button[type="submit"]');
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const text = contractText.value;
+    if (!text.trim()) {
+      alert('계약서 내용을 입력해주세요.');
+      return;
+    }
+
+    // Show loading indicator
+    loadingOverlay.classList.remove('hidden');
+    submitButton.disabled = true;
+
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/analyze', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ text }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const reportData = await response.json();
+
+      // Store the report data in sessionStorage to pass it to the report page
+      sessionStorage.setItem('analysisReport', JSON.stringify(reportData));
+
+      // Redirect to the report page
+      window.location.href = '/report';
+
+    } catch (error) {
+      console.error('Analysis failed:', error);
+      alert('분석에 실패했습니다. 잠시 후 다시 시도해주세요.');
+    } finally {
+      // Hide loading indicator
+      loadingOverlay.classList.add('hidden');
+      submitButton.disabled = false;
+    }
+  });
+</script>
