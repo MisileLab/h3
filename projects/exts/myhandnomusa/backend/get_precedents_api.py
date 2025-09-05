@@ -114,8 +114,11 @@ async def main():
     
     progress_bar = None
 
-    async with httpx.AsyncClient() as client:
+    # 클라이언트를 더 오래 유지하도록 수정
+    async with httpx.AsyncClient(timeout=httpx.Timeout(30.0, read=60.0)) as client:
         print(f"'{SEARCH_QUERY}' 키워드로 전체 판례 목록을 가져오는 중...")
+        
+        # 1단계: 판례 목록 수집
         while True:
             params = {"OC": API_KEY, "target": "prec", "query": SEARCH_QUERY, "display": DISPLAY_COUNT, "page": page, "type": "JSON"}
             try:
@@ -150,27 +153,37 @@ async def main():
                 print(f"판례 목록 요청 실패 (페이지 {page}): {e}")
                 break
     
-    if progress_bar:
-        progress_bar.close()
+        if progress_bar:
+            progress_bar.close()
 
-    if not all_precedents_list:
-        print("수집된 판례가 없습니다.")
-        return
+        if not all_precedents_list:
+            print("수집된 판례가 없습니다.")
+            return
 
-    print(f"\n총 {len(all_precedents_list)}개의 판례 목록 수집 완료. 이제 본문을 가져옵니다.")
+        print(f"\n총 {len(all_precedents_list)}개의 판례 목록 수집 완료. 이제 본문을 가져옵니다.")
 
-    detailed_precedents = []
-    semaphore = asyncio.Semaphore(MAX_CONCURRENT_REQUESTS)
+        # 2단계: 판례 본문 수집 (같은 클라이언트 내에서)
+        detailed_precedents = []
+        semaphore = asyncio.Semaphore(MAX_CONCURRENT_REQUESTS)
 
-    async def fetch_and_add(p_id):
-        async with semaphore:
-            detail = await fetch_precedent_detail(client, p_id)
-            if detail:
-                detailed_precedents.append(detail)
+        async def fetch_and_add(precedent_info):
+            async with semaphore:
+                precedent_id = precedent_info['판례일련번호']
+                detail = await fetch_precedent_detail(client, precedent_id)
+                if detail:
+                    detailed_precedents.append(detail)
+                await asyncio.sleep(0.1)  # 약간의 딜레이 추가
 
-    tasks = [fetch_and_add(p['판례일련번호']) for p in all_precedents_list]
-    await tqdm_asyncio.gather(*tasks, desc="판례 본문 수집 중")
+        # 모든 태스크를 같은 클라이언트 컨텍스트 내에서 실행
+        tasks = [fetch_and_add(p) for p in all_precedents_list]
+        
+        # 진행률 표시와 함께 실행
+        with tqdm_asyncio(total=len(tasks), desc="판례 본문 수집 중") as pbar:
+            for task in asyncio.as_completed(tasks):
+                await task
+                pbar.update(1)
 
+    # 클라이언트가 닫힌 후에 결과 처리
     if not detailed_precedents:
         print("판례 본문을 하나도 가져오지 못했습니다.")
         return
