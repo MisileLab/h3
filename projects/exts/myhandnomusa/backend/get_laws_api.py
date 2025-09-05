@@ -30,20 +30,28 @@ def parse_law_list(json_data):
     """법령 목록 JSON 응답에서 법령 리스트를 추출합니다."""
     try:
         data = json.loads(json_data)
-        # API 응답에서 법령 목록은 'law' 키 아래에 리스트 형태로 제공됩니다.
-        if "law" in data:
-            items = data["law"]
-            total_count = int(data.get("totalCnt", "0"))
+        # API 응답은 'LawSearch' 키 아래에 중첩되어 있을 수 있습니다.
+        if "LawSearch" in data:
+            law_search_data = data["LawSearch"]
+            items = law_search_data.get("law", [])
+            total_count = int(law_search_data.get("totalCnt", "0"))
             return items, total_count
+        # 일부 오류 응답은 최상위 레벨에 있습니다.
+        elif "ERROR" in data:
+            print(f"API 오류: {data['ERROR']['MESSAGE']}")
+            return [], 0
+        elif "faultInfo" in data:
+            print(f"API 오류: {data['faultInfo']['message']}")
+            return [], 0
         else:
-            # API가 반환하는 표준 오류 메시지 형식 처리
-            if "ERROR" in data:
-                print(f"API 오류: {data['ERROR']['MESSAGE']}")
-            elif "faultInfo" in data:
-                print(f"API 오류: {data['faultInfo']['message']}")
+            # 'law' 키가 최상위 레벨에 있는 원래의 경우도 처리합니다.
+            if "law" in data:
+                items = data["law"]
+                total_count = int(data.get("totalCnt", "0"))
+                return items, total_count
             else:
                 print(f"알 수 없는 오류 또는 데이터 없음: {json_data}")
-            return [], 0
+                return [], 0
     except json.JSONDecodeError as e:
         print(f"JSON 파싱 오류: {e}\n데이터: {json_data}")
         return [], 0
