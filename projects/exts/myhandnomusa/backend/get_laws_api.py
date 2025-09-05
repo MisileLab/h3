@@ -98,8 +98,7 @@ def parse_law_detail(json_data):
                 flat_list = [
                     item for sublist in reason_content for item in sublist
                 ]
-                texts.append(f"[제개정 이유]\n{'
-'.join(flat_list)}\n")
+                texts.append(f"[제개정 이유]\n{'\n'.join(flat_list)}\n")
 
         # 조문
         articles_info = law_data.get("조문")
