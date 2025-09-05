@@ -10,7 +10,7 @@
       # Development
       gel d2 pre-commit just mongosh tabnine
       snyk radicle-node infisical poop binsider
-      typst act gh crush godot
+      typst act gh crush godot process-compose
 
       # Language tools
       pnpm yarn-berry
