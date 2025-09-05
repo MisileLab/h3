@@ -58,32 +58,97 @@ def parse_law_list(json_data):
 
 def parse_law_detail(json_data):
     """법령 본문 JSON 응답에서 주요 텍스트 정보를 하나의 문자열로 결합합니다."""
+
+    def _parse_recursive(items):
+        """항, 호, 목 등을 재귀적으로 파싱하여 텍스트 리스트로 반환"""
+        texts = []
+        if not isinstance(items, list):
+            return texts
+        for item in items:
+            if "항내용" in item:
+                texts.append(item["항내용"])
+                if "호" in item:
+                    texts.extend(_parse_recursive(item["호"]))
+            elif "호내용" in item:
+                texts.append(item["호내용"])
+                if "목" in item:
+                    texts.extend(_parse_recursive(item["목"]))
+            elif "목내용" in item:
+                texts.append(item["목내용"])
+        return texts
+
     try:
         data = json.loads(json_data)
+        law_data = data.get("법령")
+
+        if not law_data:
+            if "ERROR" in data:
+                return f"API 오류: {data['ERROR']['MESSAGE']}"
+            if "faultInfo" in data:
+                return f"API 오류: {data['faultInfo']['message']}"
+            return "법령 상세 데이터 없음"
+
         texts = []
 
-        reason = data.get("제개정이유내용")
-        if reason: texts.append(f"[제개정 이유]\n{reason}\n")
+        # 제개정 이유
+        reason_info = law_data.get("제개정이유")
+        if reason_info and "제개정이유내용" in reason_info:
+            reason_content = reason_info["제개정이유내용"]
+            if isinstance(reason_content, list):
+                flat_list = [
+                    item for sublist in reason_content for item in sublist
+                ]
+                texts.append(f"[제개정 이유]\n{'
+'.join(flat_list)}\n")
 
-        articles = data.get("조문", [])
-        article_texts = [f"{a.get('조문제목', '')}\n{a.get('조문내용', '')}" for a in articles]
-        if article_texts: texts.append("[조문]\n" + "\n\n".join(article_texts))
+        # 조문
+        articles_info = law_data.get("조문")
+        if articles_info and "조문단위" in articles_info:
+            article_texts = []
+            for article in articles_info["조문단위"]:
+                article_text_parts = []
+                if article.get("조문제목"):
+                    article_text_parts.append(article["조문제목"])
+                if article.get("조문내용"):
+                    article_text_parts.append(article["조문내용"])
 
-        addenda = data.get("부칙", [])
-        addenda_texts = [item.get("부칙내용", "") for item in addenda]
-        if addenda_texts: texts.append("[부칙]\n" + "\n\n".join(addenda_texts))
-            
+                if "항" in article:
+                    article_text_parts.extend(_parse_recursive(article["항"]))
+
+                article_texts.append("\n".join(article_text_parts))
+
+            if article_texts:
+                texts.append("[조문]\n" + "\n\n".join(article_texts))
+
+        # 부칙
+        addenda_info = law_data.get("부칙")
+        if addenda_info and "부칙단위" in addenda_info:
+            addenda_texts = []
+            for addendum in addenda_info["부칙단위"]:
+                if "부칙내용" in addendum:
+                    addendum_content = addendum["부칙내용"]
+                    if isinstance(addendum_content, list):
+                        flat_list = [
+                            item for sublist in addendum_content for item in sublist
+                        ]
+                        addenda_texts.append("\n".join(flat_list))
+            if addenda_texts:
+                texts.append("[부칙]\n" + "\n\n".join(addenda_texts))
+
         return "\n".join(texts) if texts else "상세 내용 없음"
 
     except json.JSONDecodeError:
         return "상세 내용 파싱 오류"
-    except Exception:
+    except Exception as e:
         try:
             error_data = json.loads(json_data)
-            if "ERROR" in error_data: return f"API 오류: {error_data['ERROR']['MESSAGE']}"
-            if "faultInfo" in error_data: return f"API 오류: {error_data['faultInfo']['message']}"
-        except: pass
-        return "상세 내용 파싱 중 알 수 없는 오류"
+            if "ERROR" in error_data:
+                return f"API 오류: {error_data['ERROR']['MESSAGE']}"
+            if "faultInfo" in error_data:
+                return f"API 오류: {error_data['faultInfo']['message']}"
+        except:
+            pass
+        return f"상세 내용 파싱 중 알 수 없는 오류: {str(e)}"
 
 async def fetch_law_details(client, law_item, pbar):
     """법령 ID를 사용해 상세 정보를 가져와 원본 딕셔너리에 추가합니다."""
