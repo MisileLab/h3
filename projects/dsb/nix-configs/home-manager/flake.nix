@@ -35,7 +35,8 @@
       system = "x86_64-linux"; # replace with your system
       overlays = [
         (final: prev: {
-          webkitgtk = stablep.webkitgtk;
+          telegram-desktop = stablep.telegram-desktop;
+          vala-language-server = stablep.vala-language-server;
           dart = prev.dart.overrideAttrs (old: {
             installPhase = ''
               runHook preInstall
