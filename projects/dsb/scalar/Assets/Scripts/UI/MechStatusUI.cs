@@ -44,7 +44,7 @@ public class MechStatusUI : MonoBehaviour
         bodyPartUIs.Clear();
         
         // 부위별 UI 생성
-        foreach (MechBodyPart part in mech.bodyParts)
+        foreach (BodyPart part in mech.bodyParts)
         {
             GameObject partUI = Instantiate(bodyPartStatusPrefab, bodyPartsContainer);
             BodyPartStatusUI partStatusUI = partUI.GetComponent<BodyPartStatusUI>();
@@ -80,12 +80,12 @@ public class MechStatusUI : MonoBehaviour
         // AP 표시
         if (apSlider != null)
         {
-            apSlider.value = (float)mech.stats.currentAP / mech.stats.maxAP;
+            apSlider.value = mech.actionPoints != null ? mech.actionPoints.GetAPRatio() : 0f;
         }
         
         if (apText != null)
         {
-            apText.text = $"{mech.stats.currentAP}/{mech.stats.maxAP}";
+            apText.text = mech.actionPoints != null ? $"{mech.actionPoints.currentAP}/{mech.actionPoints.maxAP}" : "0/0";
         }
         
         // 상태 표시

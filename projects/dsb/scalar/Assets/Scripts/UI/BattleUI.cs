@@ -64,10 +64,10 @@ public class BattleUI : MonoBehaviour
         if (retreatButton != null) retreatButton.onClick.AddListener(OnRetreatClicked);
         if (endTurnButton != null) endTurnButton.onClick.AddListener(OnEndTurnClicked);
         
-        // 초기 상태 설정
-        if (battlePanel != null) battlePanel.SetActive(false);
-        if (actionPanel != null) actionPanel.SetActive(false);
-        if (cooperationPanel != null) cooperationPanel.SetActive(false);
+        // 초기 상태 설정 - 테스트를 위해 UI를 활성화 상태로 유지
+        if (battlePanel != null) battlePanel.SetActive(true);   // 전투 패널 활성화
+        if (actionPanel != null) actionPanel.SetActive(true);   // 액션 패널 활성화 (테스트용)
+        if (cooperationPanel != null) cooperationPanel.SetActive(false); // 협력 패널은 필요시에만
     }
     
     private void SubscribeToEvents()
@@ -194,8 +194,8 @@ public class BattleUI : MonoBehaviour
         // AP에 따른 버튼 활성화/비활성화
         bool canAct = currentMech.CanAct();
         
-        if (attackButton != null) attackButton.interactable = canAct && currentMech.stats.currentAP >= 1;
-        if (defendButton != null) defendButton.interactable = canAct && currentMech.stats.currentAP >= 1;
+        if (attackButton != null) attackButton.interactable = canAct && currentMech.actionPoints.currentAP >= 1;
+        if (defendButton != null) defendButton.interactable = canAct && currentMech.actionPoints.currentAP >= 1;
         if (skillButton != null) skillButton.interactable = canAct;
         if (cooperationButton != null) cooperationButton.interactable = canAct;
         if (endTurnButton != null) endTurnButton.interactable = true;
@@ -203,16 +203,34 @@ public class BattleUI : MonoBehaviour
     
     private void UpdateAPDisplay()
     {
-        if (currentMech == null) return;
+        if (currentMech == null) 
+        {
+            Debug.LogWarning("UpdateAPDisplay: currentMech가 null입니다!");
+            return;
+        }
+        
+        if (currentMech.actionPoints == null)
+        {
+            Debug.LogWarning($"UpdateAPDisplay: {currentMech.mechName}의 actionPoints가 null입니다!");
+            return;
+        }
         
         if (apText != null)
         {
-            apText.text = $"AP: {currentMech.stats.currentAP}/{currentMech.stats.maxAP}";
+            apText.text = $"AP: {currentMech.actionPoints.currentAP}/{currentMech.actionPoints.maxAP}";
+        }
+        else
+        {
+            Debug.LogWarning("UpdateAPDisplay: apText UI 요소가 없습니다!");
         }
         
         if (apSlider != null)
         {
-            apSlider.value = (float)currentMech.stats.currentAP / currentMech.stats.maxAP;
+            apSlider.value = currentMech.actionPoints.GetAPRatio();
+        }
+        else
+        {
+            Debug.LogWarning("UpdateAPDisplay: apSlider UI 요소가 없습니다!");
         }
     }
     
@@ -273,15 +291,24 @@ public class BattleUI : MonoBehaviour
         // 타겟 선택 UI 구현
         Debug.Log(message);
         
-        // 임시로 가장 가까운 적을 타겟으로 선택
+        if (currentMech == null)
+        {
+            Debug.LogWarning("공격할 기계가 없습니다!");
+            ShowDialogue("시스템", "공격할 기계가 없습니다!");
+            return;
+        }
+        
+        // 살아있는 적들 찾기
         EnemyAI[] enemies = FindObjectsOfType<EnemyAI>();
         EnemyAI nearestEnemy = null;
         float shortestDistance = float.MaxValue;
         
+        int aliveEnemyCount = 0;
         foreach (EnemyAI enemy in enemies)
         {
             if (enemy.isAlive)
             {
+                aliveEnemyCount++;
                 float distance = Vector3.Distance(currentMech.transform.position, enemy.transform.position);
                 if (distance < shortestDistance)
                 {
@@ -291,17 +318,34 @@ public class BattleUI : MonoBehaviour
             }
         }
         
-        if (nearestEnemy != null)
+        if (nearestEnemy != null && aliveEnemyCount > 0)
         {
+            // AP 체크
+            if (currentMech.actionPoints.currentAP < 1)
+            {
+                Debug.LogWarning($"{currentMech.mechName}의 AP가 부족합니다!");
+                ShowDialogue(currentMech.mechName, "AP가 부족해서 공격할 수 없다!");
+                return;
+            }
+            
             // 공격 실행
             float damage = currentMech.stats.attack;
+            string attackMessage = $"{currentMech.mechName}이(가) {nearestEnemy.enemyName}을(를) {damage} 데미지로 공격!";
+            
+            Debug.Log(attackMessage);
+            ShowDialogue(currentMech.mechName, "공격한다!");
+            
             nearestEnemy.TakeDamage(damage);
             currentMech.ConsumeAP(1);
             
-            currentMech.TriggerDialogue("공격", "공격한다!");
-            
             UpdateActionButtons();
             UpdateAPDisplay();
+            UpdateMechStatusUIs();
+        }
+        else
+        {
+            Debug.LogWarning("공격할 적이 없습니다!");
+            ShowDialogue("시스템", "공격할 적이 없습니다!");
         }
     }
     
@@ -322,7 +366,8 @@ public class BattleUI : MonoBehaviour
             RexMech rex = currentMech as RexMech;
             if (rex != null)
             {
-                rex.ProtectiveStance();
+                // 기존 ProtectiveStance 호출 대신 가디언 실드 사용으로 대체
+                rex.UseGuardianShield();
             }
         }
         else if (currentMech.mechType == MechType.Luna)
@@ -346,7 +391,8 @@ public class BattleUI : MonoBehaviour
                 
                 if (mostDamaged != null)
                 {
-                    luna.NanoRepair(mostDamaged, BodyPartType.Torso);
+                    // 기존 NanoRepair 호출 대신 새 메서드명 사용
+                    luna.UseNanoRepair(mostDamaged, BodyPartType.Torso);
                 }
             }
         }
@@ -432,6 +478,94 @@ public class BattleUI : MonoBehaviour
         if (dialoguePanel != null)
         {
             dialoguePanel.SetActive(false);
+        }
+    }
+    
+    // 테스트용 메서드들
+    [ContextMenu("UI 테스트 - 공격 버튼")]
+    public void TestAttackButton()
+    {
+        Debug.Log("공격 버튼 테스트 - OnAttackClicked() 호출");
+        OnAttackClicked();
+    }
+    
+    [ContextMenu("UI 테스트 - 방어 버튼")]
+    public void TestDefendButton()
+    {
+        Debug.Log("방어 버튼 테스트 - OnDefendClicked() 호출");
+        OnDefendClicked();
+    }
+    
+    [ContextMenu("UI 테스트 - 대화창 표시")]
+    public void TestShowDialogue()
+    {
+        ShowDialogue("테스트", "이것은 테스트 대화입니다!");
+    }
+    
+    [ContextMenu("UI 테스트 - 모든 패널 활성화")]
+    public void TestActivateAllPanels()
+    {
+        if (battlePanel != null) 
+        {
+            battlePanel.SetActive(true);
+            Debug.Log("BattlePanel 활성화됨");
+        }
+        if (actionPanel != null) 
+        {
+            actionPanel.SetActive(true);
+            Debug.Log("ActionPanel 활성화됨");
+        }
+        if (statusPanel != null) 
+        {
+            statusPanel.SetActive(true);
+            Debug.Log("StatusPanel 활성화됨");
+        }
+        if (dialoguePanel != null) 
+        {
+            dialoguePanel.SetActive(true);
+            Debug.Log("DialoguePanel 활성화됨");
+        }
+    }
+    
+    [ContextMenu("UI 테스트 - 테스트용 기계 생성")]
+    public void CreateTestMech()
+    {
+        if (currentMech == null)
+        {
+            // 테스트용 기계 생성
+            GameObject testMechObj = new GameObject("TestMech");
+            currentMech = testMechObj.AddComponent<RexMech>();
+            
+            // 기본 설정
+            currentMech.mechName = "테스트 렉스";
+            currentMech.mechType = MechType.Rex;
+            currentMech.isAlive = true;
+            
+            // 스탯 설정
+            currentMech.stats = new MechStats
+            {
+                maxHP = 100,
+                currentHP = 80,
+                attack = 25,
+                defense = 15
+            };
+            
+            // AP 설정
+            currentMech.actionPoints = new ActionPoint
+            {
+                maxAP = 3,
+                currentAP = 2
+            };
+            
+            Debug.Log($"테스트용 기계 생성: {currentMech.mechName} (HP: {currentMech.stats.currentHP}/{currentMech.stats.maxHP}, AP: {currentMech.actionPoints.currentAP}/{currentMech.actionPoints.maxAP})");
+            
+            // UI 업데이트
+            UpdateActionButtons();
+            UpdateAPDisplay();
+        }
+        else
+        {
+            Debug.Log($"현재 기계가 이미 설정됨: {currentMech.mechName}");
         }
     }
 }

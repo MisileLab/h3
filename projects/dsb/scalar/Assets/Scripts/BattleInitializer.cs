@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.UI;
+using System.Linq;
 
 public class BattleInitializer : MonoBehaviour
 {
@@ -14,7 +16,7 @@ public class BattleInitializer : MonoBehaviour
     
     [Header("테스트 적들")]
     public GameObject enemyPrefab;
-    public int enemyCount = 2;
+    public int enemyCount = 2;  // 적 스폰 포인트와 동일하게 설정
     
     [Header("스폰 위치")]
     public Transform[] playerSpawnPoints;
@@ -23,16 +25,34 @@ public class BattleInitializer : MonoBehaviour
     [Header("자동 생성 설정")]
     public bool createDummyDataIfEmpty = true;
     public bool createGridSystem = true;
-    public Vector3[] defaultPlayerSpawns = {
-        new Vector3(-3.5f, 0.5f, 0),  // 렉스 (격자 안쪽)
-        new Vector3(-2.5f, 0.5f, 0),  // 루나
-        new Vector3(-1.5f, 0.5f, 0),  // 제로
-        new Vector3(0.5f, 1.5f, 0)    // 노바
+    public bool createUIAutomatically = true;
+    
+    [System.Serializable]
+    public struct GridPosition
+    {
+        public int x;
+        public int y;
+        public GridPosition(int x, int y) { this.x = x; this.y = y; }
+    }
+    
+    [Header("격자 기반 스폰 위치")]
+    public GridPosition[] defaultPlayerGridPositions = {
+        new GridPosition(1, 0),  // 렉스
+        new GridPosition(2, 0),  // 루나  
+        new GridPosition(3, 0),  // 제로
+        new GridPosition(4, 0)   // 노바
     };
-    public Vector3[] defaultEnemySpawns = {
-        new Vector3(3.5f, 0.5f, 0),   // 적1 (격자 안쪽)
-        new Vector3(4.5f, 1.5f, 0)    // 적2
+    public GridPosition[] defaultEnemyGridPositions = {
+        new GridPosition(8, 0),  // 적1
+        new GridPosition(9, 0)   // 적2
     };
+    
+    [Header("UI 자동 생성 설정")]
+    public Font defaultFont;
+    
+    // UI 생성 시 사용할 private 필드들
+    private UIAutoGenerator uiGenerator;
+    private BattleUI battleUI;
     
     private void Start()
     {
@@ -42,27 +62,147 @@ public class BattleInitializer : MonoBehaviour
         }
     }
     
+    /// <summary>
+    /// 격자 좌표를 월드 중앙 위치로 변환하는 헬퍼 메서드
+    /// BattleGridManager를 참조해서 정확한 좌표 계산
+    /// </summary>
+    /// <param name="gridX">격자 X 좌표 (0~9)</param>
+    /// <param name="gridY">격자 Y 좌표 (0~9)</param>
+    /// <returns>격자 칸의 중앙 월드 좌표</returns>
+    public Vector3 GetGridCenterWorldPosition(int gridX, int gridY)
+    {
+        // BattleGridManager를 찾아서 정확한 좌표 계산
+        BattleGridManager gridManager = FindObjectOfType<BattleGridManager>();
+        if (gridManager != null)
+        {
+            Vector3 gridCorner = gridManager.GetWorldPosition(gridX, gridY);
+            return gridCorner + new Vector3(0.5f, 0.5f, 0f); // 격자 칸의 중앙으로 이동
+        }
+        
+        // 폴백: 기본 계산
+        Vector3 gridStartPos = new Vector3(-5f, -5f, 0f);
+        return gridStartPos + new Vector3(gridX + 0.5f, gridY + 0.5f, 0f);
+    }
+    
+    /// <summary>
+    /// 기존에 생성된 오브젝트들을 정리합니다 (가운데 적 포함)
+    /// </summary>
+    private void ClearExistingObjects()
+    {
+        Debug.Log("=== 기존 오브젝트 정리 시작 ===");
+        
+        // 모든 GameObject 검사해서 의심스러운 것들 제거
+        GameObject[] allObjects = FindObjectsOfType<GameObject>();
+        int removedCount = 0;
+        
+        foreach (GameObject obj in allObjects)
+        {
+            // null이거나 시스템 오브젝트는 건드리지 않음
+            if (obj == null || obj == this.gameObject) continue;
+            
+            // 제거 대상 체크
+            bool shouldRemove = false;
+            string removeReason = "";
+            
+            // 1. EnemyAI 컴포넌트가 있는 경우
+            if (obj.GetComponent<EnemyAI>() != null)
+            {
+                shouldRemove = true;
+                removeReason = "EnemyAI 컴포넌트";
+            }
+            // 2. 기계 관련 컴포넌트가 있는 경우  
+            else if (obj.GetComponent<RexMech>() != null || obj.GetComponent<LunaMech>() != null || 
+                     obj.GetComponent<ZeroMech>() != null || obj.GetComponent<NovaMech>() != null)
+            {
+                shouldRemove = true;
+                removeReason = "기계 컴포넌트";
+            }
+            // 3. 이름 패턴으로 확인
+            else if (obj.name.Contains("Rex") || obj.name.Contains("Luna") || 
+                     obj.name.Contains("Zero") || obj.name.Contains("Nova") ||
+                     obj.name.Contains("Dummy") || obj.name.Contains("Enemy") ||
+                     obj.name.Contains("Test") || obj.name.Contains("Spawn"))
+            {
+                shouldRemove = true;
+                removeReason = $"이름 패턴: {obj.name}";
+            }
+            // 4. 부모가 없는 Quad나 Cube (격자 제외)
+            else if (obj.transform.parent == null && 
+                     (obj.name.Contains("Quad") || obj.name.Contains("Cube")) &&
+                     !obj.name.Contains("Grid") && !obj.name.Contains("Background"))
+            {
+                shouldRemove = true;
+                removeReason = $"고아 프리미티브: {obj.name}";
+            }
+            // 5. 렌더러가 있고 빨간색이나 파란색인 경우 (격자 제외)
+            else if (obj.GetComponent<Renderer>() != null && !obj.name.Contains("Grid"))
+            {
+                Renderer renderer = obj.GetComponent<Renderer>();
+                if (renderer.material != null)
+                {
+                    Color color = renderer.material.color;
+                    if ((color == Color.red || color == Color.blue) && obj.transform.parent == null)
+                    {
+                        shouldRemove = true;
+                        removeReason = $"색상 매치: {color}";
+                    }
+                }
+            }
+            // 6. 가운데 위치(0,0,0 근처)에 있는 모든 렌더러 오브젝트 (격자 제외)
+            else if (obj.GetComponent<Renderer>() != null && !obj.name.Contains("Grid") && !obj.name.Contains("Background"))
+            {
+                Vector3 pos = obj.transform.position;
+                if (Vector3.Distance(pos, Vector3.zero) < 1f) // 중앙에서 1 유닛 이내
+                {
+                    shouldRemove = true;
+                    removeReason = $"중앙 위치: {pos}";
+                }
+            }
+            
+            if (shouldRemove)
+            {
+                Debug.Log($"오브젝트 제거: {obj.name} (이유: {removeReason})");
+                DestroyImmediate(obj);
+                removedCount++;
+            }
+        }
+        
+        Debug.Log($"=== 기존 오브젝트 정리 완료: {removedCount}개 제거 ===");
+    }
+    
     public void InitializeAndStartBattle()
     {
-        // 격자 시스템 생성
+        // 0. 기존 오브젝트들 정리
+        ClearExistingObjects();
+        
+        // 1. 격자 시스템 먼저 생성
         if (createGridSystem)
         {
             CreateGridSystem();
         }
         
-        // 더미 데이터 자동 생성
+        // 2. 더미 데이터 자동 생성 (프리팹만)
         if (createDummyDataIfEmpty)
         {
             CreateDummyDataIfNeeded();
         }
         
-        // 플레이어 기계들 생성
+        // 3. 격자 시스템이 생성된 후 스폰 포인트 생성
+        CreateDefaultSpawnPoints();
+        
+        // 4. 플레이어 기계들 생성
         CreatePlayerMechs();
         
-        // 적들 생성
+        // 5. 적들 생성
         CreateEnemies();
         
-        // 전투 시작
+        // 6. UI 자동 생성
+        if (createUIAutomatically)
+        {
+            CreateBattleUI();
+        }
+        
+        // 7. 전투 시작
         StartBattle();
     }
     
@@ -76,22 +216,19 @@ public class BattleInitializer : MonoBehaviour
         
         // 적 프리팹이 없으면 더미 적 생성
         if (enemyPrefab == null) enemyPrefab = CreateDummyEnemy();
-        
-        // 더미 데이터를 사용할 때는 항상 기본 스폰 포인트 생성
-        CreateDefaultSpawnPoints();
     }
     
     private GameObject CreateDummyMech(string name, MechType mechType)
     {
         GameObject dummyMech = new GameObject(name);
-        dummyMech.transform.position = Vector3.zero;
+        dummyMech.transform.position = new Vector3(-1000, -1000, 0); // 화면 밖으로 임시 이동
         
         // 2D용 시각적 표현을 위한 쿼드 생성
         GameObject visualQuad = GameObject.CreatePrimitive(PrimitiveType.Quad);
         visualQuad.name = "VisualQuad";
         visualQuad.transform.parent = dummyMech.transform;
         visualQuad.transform.localPosition = Vector3.zero;
-        visualQuad.transform.localScale = new Vector3(1f, 1f, 1); // 격자 한 칸과 똑같은 크기
+        visualQuad.transform.localScale = new Vector3(0.9f, 0.9f, 1); // 격자 칸에 딱 맞게 (약간 여백)
         
         // 파란색 머티리얼 적용 (아군) - 캐릭터가 앞에 보이도록 설정
         Renderer renderer = visualQuad.GetComponent<Renderer>();
@@ -131,14 +268,14 @@ public class BattleInitializer : MonoBehaviour
     private GameObject CreateDummyEnemy()
     {
         GameObject dummyEnemy = new GameObject("DummyEnemy");
-        dummyEnemy.transform.position = Vector3.zero;
+        dummyEnemy.transform.position = new Vector3(-1000, -1000, 0); // 화면 밖으로 임시 이동
         
         // 2D용 시각적 표현을 위한 쿼드 생성
         GameObject visualQuad = GameObject.CreatePrimitive(PrimitiveType.Quad);
         visualQuad.name = "VisualQuad";
         visualQuad.transform.parent = dummyEnemy.transform;
         visualQuad.transform.localPosition = Vector3.zero;
-        visualQuad.transform.localScale = new Vector3(1f, 1f, 1); // 격자 한 칸과 똑같은 크기
+        visualQuad.transform.localScale = new Vector3(0.9f, 0.9f, 1); // 격자 칸에 딱 맞게 (약간 여백)
         
         // 빨간색 머티리얼 적용 (적) - 캐릭터가 앞에 보이도록 설정
         Renderer renderer = visualQuad.GetComponent<Renderer>();
@@ -172,26 +309,30 @@ public class BattleInitializer : MonoBehaviour
     {
         // 플레이어 스폰 포인트 생성
         GameObject playerSpawnParent = new GameObject("PlayerSpawnPoints");
-        playerSpawnPoints = new Transform[defaultPlayerSpawns.Length];
+        playerSpawnPoints = new Transform[defaultPlayerGridPositions.Length];
         
-        for (int i = 0; i < defaultPlayerSpawns.Length; i++)
+        for (int i = 0; i < defaultPlayerGridPositions.Length; i++)
         {
             GameObject spawnPoint = new GameObject($"PlayerSpawn_{i}");
             spawnPoint.transform.parent = playerSpawnParent.transform;
-            spawnPoint.transform.position = defaultPlayerSpawns[i];
+            Vector3 worldPos = GetGridCenterWorldPosition(defaultPlayerGridPositions[i].x, defaultPlayerGridPositions[i].y);
+            spawnPoint.transform.position = worldPos;
             playerSpawnPoints[i] = spawnPoint.transform;
+            Debug.Log($"플레이어 스폰 {i}: 격자({defaultPlayerGridPositions[i].x},{defaultPlayerGridPositions[i].y}) -> 월드{worldPos}");
         }
         
         // 적 스폰 포인트 생성
         GameObject enemySpawnParent = new GameObject("EnemySpawnPoints");
-        enemySpawnPoints = new Transform[defaultEnemySpawns.Length];
+        enemySpawnPoints = new Transform[defaultEnemyGridPositions.Length];
         
-        for (int i = 0; i < defaultEnemySpawns.Length; i++)
+        for (int i = 0; i < defaultEnemyGridPositions.Length; i++)
         {
             GameObject spawnPoint = new GameObject($"EnemySpawn_{i}");
             spawnPoint.transform.parent = enemySpawnParent.transform;
-            spawnPoint.transform.position = defaultEnemySpawns[i];
+            Vector3 worldPos = GetGridCenterWorldPosition(defaultEnemyGridPositions[i].x, defaultEnemyGridPositions[i].y);
+            spawnPoint.transform.position = worldPos;
             enemySpawnPoints[i] = spawnPoint.transform;
+            Debug.Log($"적 스폰 {i}: 격자({defaultEnemyGridPositions[i].x},{defaultEnemyGridPositions[i].y}) -> 월드{worldPos}");
         }
         
         Debug.Log("기본 스폰 포인트 생성 완료");
@@ -280,7 +421,10 @@ public class BattleInitializer : MonoBehaviour
     
     private void CreateEnemies()
     {
-        for (int i = 0; i < enemyCount; i++)
+        // 적 생성 개수를 스폰 포인트 개수로 제한
+        int actualEnemyCount = Mathf.Min(enemyCount, enemySpawnPoints != null ? enemySpawnPoints.Length : 0);
+        
+        for (int i = 0; i < actualEnemyCount; i++)
         {
             if (enemyPrefab != null && enemySpawnPoints != null && enemySpawnPoints.Length > i)
             {
@@ -303,6 +447,8 @@ public class BattleInitializer : MonoBehaviour
                 Debug.Log($"적 {i + 1} 생성 완료: {enemyAI.enemyName} - 위치: {enemySpawnPoints[i].position}");
             }
         }
+        
+        Debug.Log($"적 생성 완료 - 총 {actualEnemyCount}마리 (요청: {enemyCount}, 스폰 포인트: {(enemySpawnPoints != null ? enemySpawnPoints.Length : 0)})");
     }
     
     private void StartBattle()
@@ -333,5 +479,61 @@ public class BattleInitializer : MonoBehaviour
     {
         CreatePlayerMechs();
         CreateEnemies();
+    }
+    
+    [ContextMenu("UI만 생성")]
+    public void CreateUIOnly()
+    {
+        CreateBattleUI();
+    }
+    
+    [ContextMenu("중앙 오브젝트 제거")]
+    public void ClearCenterObjects()
+    {
+        Debug.Log("=== 중앙 오브젝트 제거 시작 ===");
+        
+        GameObject[] allObjects = FindObjectsOfType<GameObject>();
+        int removedCount = 0;
+        
+        foreach (GameObject obj in allObjects)
+        {
+            if (obj == null || obj == this.gameObject) continue;
+            
+            // 중앙 근처에 있는 렌더러 오브젝트 제거 (격자 및 시스템 오브젝트 제외)
+            if (obj.GetComponent<Renderer>() != null && 
+                !obj.name.Contains("Grid") && 
+                !obj.name.Contains("Background") &&
+                !obj.name.Contains("Camera") &&
+                !obj.name.Contains("Light"))
+            {
+                Vector3 pos = obj.transform.position;
+                if (Vector3.Distance(pos, Vector3.zero) < 2f) // 중앙에서 2 유닛 이내
+                {
+                    Debug.Log($"중앙 오브젝트 제거: {obj.name} (위치: {pos})");
+                    DestroyImmediate(obj);
+                    removedCount++;
+                }
+            }
+        }
+        
+        Debug.Log($"=== 중앙 오브젝트 제거 완료: {removedCount}개 제거 ===");
+    }
+    
+    /// <summary>
+    /// 전투 UI를 자동으로 생성합니다
+    /// </summary>
+    private void CreateBattleUI()
+    {
+        Debug.Log("=== UI 자동 생성 시작 ===");
+        
+        // UI 자동 생성기 생성
+        GameObject uiGeneratorObj = new GameObject("UIAutoGenerator");
+        uiGenerator = uiGeneratorObj.AddComponent<UIAutoGenerator>();
+        uiGenerator.defaultFont = defaultFont;
+        
+        // UI 자동 생성
+        battleUI = uiGenerator.CreateBattleUI();
+        
+        Debug.Log("=== UI 자동 생성 완료 ===");
     }
 }

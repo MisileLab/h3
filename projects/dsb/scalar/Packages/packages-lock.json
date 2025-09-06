@@ -9,6 +9,15 @@
       },
       "hash": "38fecf55e4fd94ccfe58a92ed8ad1a529ba1694e"
     },
+    "com.coplaydev.unity-mcp": {
+      "version": "https://github.com/CoplayDev/unity-mcp.git?path=/UnityMcpBridge",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.nuget.newtonsoft-json": "3.0.2"
+      },
+      "hash": "741b4f76711dc9d0880321beee59319244adacc5"
+    },
     "com.unity.2d.animation": {
       "version": "12.0.2",
       "depth": 0,
@@ -163,7 +172,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.collab-proxy": {
-      "version": "2.9.1",
+      "version": "2.9.3",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
