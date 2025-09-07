@@ -28,7 +28,7 @@
 		"@animotion/core": "1.1.8",
 		"@animotion/motion": "2.0.1",
 		"@fontsource-variable/jetbrains-mono": "5.2.6",
-		"@fontsource-variable/manrope": "5.2.6",
+		"@fontsource-variable/manrope": "5.2.7",
 		"@tailwindcss/vite": "4.1.13",
 		"reveal.js": "5.2.1",
 		"tailwindcss": "4.1.13"
