@@ -98,7 +98,7 @@
     #     };
     #   };
     # };
-    # virtualbox.host.enable = true;
+    virtualbox.host.enable = true;
   };
 
   nixpkgs.config.allowUnfree = true;
