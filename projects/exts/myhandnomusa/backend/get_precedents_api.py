@@ -170,7 +170,7 @@ async def main():
             async with semaphore:
                 precedent_id = precedent_info['판례일련번호']
                 detail = await fetch_precedent_detail(client, precedent_id)
-                if detail:
+                if detail and detail.get("precservice"):
                     detailed_precedents.append(detail)
                 await asyncio.sleep(0.1)  # 약간의 딜레이 추가
 
