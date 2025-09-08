@@ -170,8 +170,15 @@ async def main():
             async with semaphore:
                 precedent_id = precedent_info['판례일련번호']
                 detail = await fetch_precedent_detail(client, precedent_id)
-                if detail and detail.get("precservice"):
-                    detailed_precedents.append(detail)
+                if detail:
+                    # API 응답에서 'PrecService' 또는 'precService' 키로 실제 판례 데이터를 추출합니다.
+                    precedent_content = detail.get("PrecService") or detail.get("precService")
+                    if precedent_content:
+                        # 데이터가 리스트 형태이면 extend를, 딕셔너리 형태이면 append를 사용합니다.
+                        if isinstance(precedent_content, list):
+                            detailed_precedents.extend(precedent_content)
+                        elif isinstance(precedent_content, dict):
+                            detailed_precedents.append(precedent_content)
                 await asyncio.sleep(0.1)  # 약간의 딜레이 추가
 
         # 모든 태스크를 같은 클라이언트 컨텍스트 내에서 실행
