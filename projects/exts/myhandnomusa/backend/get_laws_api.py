@@ -62,9 +62,18 @@ def parse_law_detail(json_data):
     def _parse_recursive(items):
         """항, 호, 목 등을 재귀적으로 파싱하여 텍스트 리스트로 반환"""
         texts = []
+        # API가 단일 항목에 대해 리스트 대신 dict를 반환하는 경우 처리
+        if isinstance(items, dict):
+            items = [items]
+
         if not isinstance(items, list):
             return texts
+
         for item in items:
+            # 리스트 내에 dict가 아닌 항목(예: 문자열)이 있는 경우 건너뜀
+            if not isinstance(item, dict):
+                continue
+
             if "항내용" in item:
                 texts.append(item["항내용"])
                 if "호" in item:
@@ -92,45 +101,61 @@ def parse_law_detail(json_data):
 
         # 제개정 이유
         reason_info = law_data.get("제개정이유")
-        if reason_info and "제개정이유내용" in reason_info:
+        if isinstance(reason_info, dict) and "제개정이유내용" in reason_info:
             reason_content = reason_info["제개정이유내용"]
             if isinstance(reason_content, list):
                 flat_list = [
                     item for sublist in reason_content for item in sublist
                 ]
                 texts.append(f"[제개정 이유]\n{'\n'.join(flat_list)}\n")
+            elif isinstance(reason_content, str):
+                texts.append(f"[제개정 이유]\n{reason_content}\n")
 
         # 조문
         articles_info = law_data.get("조문")
-        if articles_info and "조문단위" in articles_info:
+        if isinstance(articles_info, dict) and "조문단위" in articles_info:
             article_texts = []
-            for article in articles_info["조문단위"]:
-                article_text_parts = []
-                if article.get("조문제목"):
-                    article_text_parts.append(article["조문제목"])
-                if article.get("조문내용"):
-                    article_text_parts.append(article["조문내용"])
+            article_units = articles_info["조문단위"]
+            if isinstance(article_units, dict):
+                article_units = [article_units]
 
-                if "항" in article:
-                    article_text_parts.extend(_parse_recursive(article["항"]))
+            if isinstance(article_units, list):
+                for article in article_units:
+                    if not isinstance(article, dict):
+                        continue
+                    article_text_parts = []
+                    if article.get("조문제목"):
+                        article_text_parts.append(article["조문제목"])
+                    if article.get("조문내용"):
+                        article_text_parts.append(article["조문내용"])
 
-                article_texts.append("\n".join(article_text_parts))
+                    if "항" in article:
+                        article_text_parts.extend(_parse_recursive(article["항"]))
 
-            if article_texts:
-                texts.append("[조문]\n" + "\n\n".join(article_texts))
+                    article_texts.append("\n".join(article_text_parts))
+
+                if article_texts:
+                    texts.append("[조문]\n" + "\n\n".join(article_texts))
 
         # 부칙
         addenda_info = law_data.get("부칙")
-        if addenda_info and "부칙단위" in addenda_info:
+        if isinstance(addenda_info, dict) and "부칙단위" in addenda_info:
             addenda_texts = []
-            for addendum in addenda_info["부칙단위"]:
-                if "부칙내용" in addendum:
-                    addendum_content = addendum["부칙내용"]
-                    if isinstance(addendum_content, list):
-                        flat_list = [
-                            item for sublist in addendum_content for item in sublist
-                        ]
-                        addenda_texts.append("\n".join(flat_list))
+            addenda_units = addenda_info["부칙단위"]
+            if isinstance(addenda_units, dict):
+                addenda_units = [addenda_units]
+
+            if isinstance(addenda_units, list):
+                for addendum in addenda_units:
+                    if isinstance(addendum, dict) and "부칙내용" in addendum:
+                        addendum_content = addendum["부칙내용"]
+                        if isinstance(addendum_content, list):
+                            flat_list = [
+                                item for sublist in addendum_content for item in sublist
+                            ]
+                            addenda_texts.append("\n".join(flat_list))
+                        elif isinstance(addendum_content, str):
+                            addenda_texts.append(addendum_content)
             if addenda_texts:
                 texts.append("[부칙]\n" + "\n\n".join(addenda_texts))
 
