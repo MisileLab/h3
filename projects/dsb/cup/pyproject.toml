@@ -8,7 +8,7 @@ dependencies = [
   "click==8.2.1",
   "langchain==0.3.27",
   "langchain-openai==0.3.32",
-  "numpy==2.3.2",
+  "numpy==2.3.3",
   "openai==1.107.0",
   "opencv-python-headless==4.12.0.88",
   "polars==1.33.1",
