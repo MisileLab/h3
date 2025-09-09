@@ -35,7 +35,8 @@
       system = "x86_64-linux"; # replace with your system
       overlays = [
         (final: prev: {
-          nodejs = stablep.nodejs;
+          snyk = stablep.snyk;
+          wineWowPackages.stable = stablep.wineWowPackages.stable;
           dart = prev.dart.overrideAttrs (old: {
             installPhase = ''
               runHook preInstall
