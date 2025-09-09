@@ -11,7 +11,7 @@ dependencies = [
   "numpy==2.3.2",
   "openai==1.107.0",
   "opencv-python-headless==4.12.0.88",
-  "polars==1.33.0",
+  "polars==1.33.1",
   "pdf2image==1.17.0",
   "pillow==11.3.0",
   "pypdf==6.0.0",
