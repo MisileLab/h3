@@ -35,7 +35,7 @@
       system = "x86_64-linux"; # replace with your system
       overlays = [
         (final: prev: {
-          nodejs_24 = stablep.nodejs_24;
+          nodejs = stablep.nodejs;
           dart = prev.dart.overrideAttrs (old: {
             installPhase = ''
               runHook preInstall
