@@ -5,7 +5,7 @@ description = "LLM that do things"
 readme = "README.md"
 requires-python = ">=3.13.4"
 dependencies = [
-  "gradio==5.44.1",
+  "gradio==5.45.0",
   "inquirer==3.4.1",
   "langchain-memgraph==0.1.6",
   "mem0ai[graph]@git+https://github.com/misilelab/mem0",
