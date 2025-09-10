@@ -36,6 +36,7 @@
       overlays = [
         (final: prev: {
           snyk = stablep.snyk;
+          ungoogled-chromium = stablep.ungoogled-chromium;
           wineWowPackages.stable = stablep.wineWowPackages.stable;
           dart = prev.dart.overrideAttrs (old: {
             installPhase = ''
