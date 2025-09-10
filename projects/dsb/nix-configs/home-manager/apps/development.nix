@@ -24,7 +24,7 @@
       yaml-language-server
       kotlin kotlin-language-server android-studio gradle
       go gopls
-      python313Full uv mypy pixi
+      python313 uv mypy pixi
       nasm
       deno bun
       hvm bend
