@@ -23,6 +23,7 @@
         ({ stablep, ... }: {
           nixpkgs.overlays = [(final: prev: {
             linuxPackages_latest = stablep.linuxPackages_latest;
+            lix = stablep.lix;
           })];
         })
         # lanzaboote.nixosModules.lanzaboote
