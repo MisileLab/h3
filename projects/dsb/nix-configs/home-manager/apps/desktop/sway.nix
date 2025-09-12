@@ -101,7 +101,6 @@ titlebar_padding 1
         display-Network = " 󰤨  Network";
         sidebar-mode = true;
       };
-      package = pkgs.rofi-wayland;
     };
     swaylock.enable = true;
     waybar = {
