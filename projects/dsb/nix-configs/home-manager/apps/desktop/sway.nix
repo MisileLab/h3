@@ -66,7 +66,7 @@ titlebar_padding 1
         {command = "${pkgs.wl-clipboard}/bin/wl-paste -t text --watch ${pkgs.clipman}/bin/clipman store --no-persist";}
         {command = "${pkgs.avizo}/bin/avizo-service";}
       ];
-      menu = "${pkgs.rofi-wayland}/bin/rofi -show drun";
+      menu = "${pkgs.rofi}/bin/rofi -show drun";
       terminal = "${pkgs.ghostty}/bin/ghostty";
       fonts = {
         names = ["FiraCode Nerd Font Mono" "NanumSquare"];
