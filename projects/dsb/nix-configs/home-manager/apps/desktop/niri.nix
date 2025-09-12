@@ -35,11 +35,11 @@
         "Mod+Shift+Slash".action.show-hotkey-overlay = {};
 
         "Mod+T".action.spawn = ["${pkgs.ghostty}/bin/ghostty"];
-        "Mod+D".action.spawn = ["${pkgs.rofi-wayland}/bin/rofi" "-show" "drun"];
-        "Mod+Shift+D".action.spawn = ["${pkgs.rofi-wayland}/bin/rofi" "-show" "run"];
-        "Mod+Slash".action.spawn = ["${pkgs.rofi-wayland}/bin/rofi" "-show" "window"];
-        "Mod+Y".action.spawn = ["sh" "-c" "${pkgs.cliphist}/bin/cliphist list | ${pkgs.rofi-wayland}/bin/rofi -dmenu | ${pkgs.cliphist}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy"];
-        "Mod+Shift+Y".action.spawn = ["sh" "-c" "${pkgs.cliphist}/bin/cliphist list | ${pkgs.rofi-wayland}/bin/rofi -dmenu | ${pkgs.cliphist}/bin/cliphist delete"];
+        "Mod+D".action.spawn = ["${pkgs.rofi}/bin/rofi" "-show" "drun"];
+        "Mod+Shift+D".action.spawn = ["${pkgs.rofi}/bin/rofi" "-show" "run"];
+        "Mod+Slash".action.spawn = ["${pkgs.rofi}/bin/rofi" "-show" "window"];
+        "Mod+Y".action.spawn = ["sh" "-c" "${pkgs.cliphist}/bin/cliphist list | ${pkgs.rofi}/bin/rofi -dmenu | ${pkgs.cliphist}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy"];
+        "Mod+Shift+Y".action.spawn = ["sh" "-c" "${pkgs.cliphist}/bin/cliphist list | ${pkgs.rofi}/bin/rofi -dmenu | ${pkgs.cliphist}/bin/cliphist delete"];
         "Ctrl+Shift+Y".action.spawn = ["${pkgs.cliphist}/bin/cliphist" "wipe"];
         "Super+Alt+L".action.spawn = "${pkgs.swaylock}/bin/swaylock";
 
