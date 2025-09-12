@@ -22,7 +22,7 @@
         {_module.args = {stablep = import stablep { system = "x86_64-linux"; };};}
         ({ stablep, ... }: {
           nixpkgs.overlays = [(final: prev: {
-            libgepub = stablep.libgepub;
+            linuxPackages_latest = stablep.linuxPackages_latest;
           })];
         })
         # lanzaboote.nixosModules.lanzaboote
