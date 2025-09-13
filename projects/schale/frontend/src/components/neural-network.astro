@@ -87,11 +87,6 @@
       <span id="output-result"></span>
     </div>
   </div>
-  
-  <!-- Loading indicator -->
-  <div id="loading-indicator" class="mt-4 sm:mt-8 text-indigo-300 text-sm sm:text-lg text-center">
-    Initializing Neural Network...
-  </div>
 </div>
 
 <style>
@@ -172,7 +167,6 @@
     neurons: NodeListOf<Element>;
     connections: NodeListOf<Element>;
     outputElement: HTMLElement | null;
-    loadingIndicator: HTMLElement | null;
     words: string[];
     currentWordIndex: number;
     onComplete: (() => void) | null;
@@ -181,7 +175,6 @@
       this.neurons = document.querySelectorAll('.neuron');
       this.connections = document.querySelectorAll('.connection');
       this.outputElement = document.getElementById('output-result');
-      this.loadingIndicator = document.getElementById('loading-indicator');
       
       this.words = ['misile', 'project', 'developer', 'python', 'astrojs', 'creator'];
       this.currentWordIndex = 0;
@@ -192,9 +185,6 @@
     }
     
     async startAnimation() {
-      if (this.loadingIndicator) {
-        this.loadingIndicator.textContent = 'Processing...';
-      }
       if (this.outputElement) {
         this.outputElement.textContent = '';
       }
@@ -209,11 +199,6 @@
       
       // Start forward propagation
       await this.forwardPropagate();
-      
-      // Hide loading indicator
-      if (this.loadingIndicator) {
-        this.loadingIndicator.style.display = 'none';
-      }
       
       // Wait a moment before calling completion callback
       await this.wait(500);
