@@ -15,8 +15,8 @@ importers:
         specifier: 2.0.1
         version: 2.0.1(svelte@5.38.10)
       '@fontsource-variable/jetbrains-mono':
-        specifier: 5.2.6
-        version: 5.2.6
+        specifier: 5.2.7
+        version: 5.2.7
       '@fontsource-variable/manrope':
         specifier: 5.2.7
         version: 5.2.7
@@ -241,8 +241,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@fontsource-variable/jetbrains-mono@5.2.6':
-    resolution: {integrity: sha512-1pvtyK6H1paBOixbtZ9xfQgArVQ4SJMW3WSGZPOd5PiW3yg0t8umwKnjDMzW2ofb7qSdiXnsnIaHPT36vEOdlg==}
+  '@fontsource-variable/jetbrains-mono@5.2.7':
+    resolution: {integrity: sha512-vwU6O4wv1h1BvEJUWaylorj0WZ3+GB3uVsgUH7IpGX/euSXm0UyTu6MWusk1pph562F8cBvuv41P4jufRogF4Q==}
 
   '@fontsource-variable/manrope@5.2.7':
     resolution: {integrity: sha512-BIEjvyUBcd2dya41h/6XKh4Uof91VjwrcgGA6yYMiDbBLZkizEjKSBQXsavmBApNydHSuteBESv4MLF4y6PzuQ==}
@@ -1331,7 +1331,7 @@ snapshots:
   '@esbuild/win32-x64@0.25.9':
     optional: true
 
-  '@fontsource-variable/jetbrains-mono@5.2.6': {}
+  '@fontsource-variable/jetbrains-mono@5.2.7': {}
 
   '@fontsource-variable/manrope@5.2.7': {}
 
