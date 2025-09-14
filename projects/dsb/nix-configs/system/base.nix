@@ -36,7 +36,7 @@ DNS=2a07:a8c0::#$NEXTDNS_ID.dns.nextdns.io
 DNS=45.90.30.0#$NEXTDNS_ID.dns.nextdns.io
 DNS=2a07:a8c1::#$NEXTDNS_ID.dns.nextdns.io
 DNSOverTLS=yes
-DNSSEC=yes
+DNSSEC=no
 Domains=~.
 EOF
     '';
