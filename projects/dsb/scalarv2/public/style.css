@@ -1,0 +1,168 @@
+:root {
+    --background: #1a1a2e;
+    --primary: #2a2d43;
+    --secondary: #4a4e69;
+    --text: #f2e9e4;
+    --accent: #e94560;
+    --hover: #9a8c98;
+    --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-main);
+    background-color: var(--background);
+    color: var(--text);
+    overflow: hidden;
+}
+
+#app {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+}
+
+#game-container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+#title-header {
+    text-align: center;
+    margin-bottom: 20px;
+    flex-shrink: 0;
+}
+
+#title-header h1 {
+    font-size: 2.5rem;
+    color: var(--accent);
+    letter-spacing: 5px;
+}
+
+#title-header p {
+    font-size: 1rem;
+    color: var(--hover);
+}
+
+#game-board {
+    flex-grow: 1;
+    background-color: var(--primary);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5) inset;
+    min-height: 0; /* Important for flexbox child sizing */
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+}
+
+#ui-panel {
+    width: 350px;
+    flex-shrink: 0;
+    background-color: var(--primary);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    box-shadow: -5px 0 15px rgba(0,0,0,0.3);
+}
+
+#ui-panel h2, #ui-panel h3 {
+    color: var(--accent);
+    border-bottom: 1px solid var(--secondary);
+    padding-bottom: 10px;
+    letter-spacing: 2px;
+}
+
+#ui-panel h2 {
+    text-align: center;
+    font-size: 1.8rem;
+}
+
+#party-status p, #resources ul li {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text);
+}
+
+#resources ul {
+    list-style: none;
+}
+
+#resources ul li strong {
+    color: var(--hover);
+}
+
+.status-ok {
+    color: #52b788;
+    font-weight: bold;
+}
+
+.status-bad {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+#event-log {
+    flex-grow: 1;
+    background-color: var(--background);
+    border-radius: 5px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+#log-content {
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+#log-content p {
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--secondary);
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+#footer {
+    text-align: center;
+    color: var(--hover);
+    font-style: italic;
+}
+
+/* For smaller screens */
+@media (max-width: 1200px) {
+    #app {
+        flex-direction: column;
+    }
+
+    #ui-panel {
+        width: 100%;
+        height: 40vh;
+        flex-direction: row;
+        flex-wrap: wrap;
+        overflow-y: auto;
+    }
+
+    #game-container {
+        height: 60vh;
+    }
+
+    #party-status, #resources {
+        flex-basis: 50%;
+    }
+
+    #event-log {
+        flex-basis: 100%;
+    }
+}

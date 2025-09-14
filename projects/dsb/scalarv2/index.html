@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scalar</title>
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <div id="app">
+      <div id="game-container">
+        <div id="title-header">
+          <h1>SCALAR</h1>
+          <p>An AI Crystal's Journey</p>
+        </div>
+        <div id="game-board"></div>
+      </div>
+      <div id="ui-panel">
+        <h2>CRYSTAL OS</h2>
+        <div id="party-status">
+          <h3>Party: Alpha</h3>
+          <p>Location: (0, 2)</p>
+          <p>Status: <span class="status-ok">Nominal</span></p>
+        </div>
+        <div id="resources">
+          <h3>Resources</h3>
+          <ul>
+            <li><strong>Parts:</strong> <span id="res-parts">0</span></li>
+            <li><strong>Data:</strong> <span id="res-data">0</span></li>
+            <li><strong>Energy:</strong> <span id="res-energy">0</span></li>
+          </ul>
+        </div>
+        <div id="event-log">
+            <h3>Event Log</h3>
+            <div id="log-content">
+                <p>Initialized system. Ready for exploration.</p>
+            </div>
+        </div>
+        <div id="footer">
+          <p>"Every machine deserves a home."</p>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
