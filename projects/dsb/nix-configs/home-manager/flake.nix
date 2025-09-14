@@ -35,7 +35,7 @@
       system = "x86_64-linux"; # replace with your system
       overlays = [
         (final: prev: {
-          firefox = stablep.firefox;
+          firefox-unwrapped = stablep.firefox-unwrapped;
           dart = prev.dart.overrideAttrs (old: {
             installPhase = ''
               runHook preInstall
