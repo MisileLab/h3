@@ -11,7 +11,7 @@
       gel d2 pre-commit just mongosh tabnine
       snyk radicle-node infisical poop binsider
       typst act gh opencode godot process-compose
-      netlify-cli
+      netlify-cli cursor-cli
 
       # Language tools
       pnpm yarn-berry
