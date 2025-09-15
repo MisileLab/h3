@@ -25,6 +25,7 @@ public class BattleUI : MonoBehaviour
     public Button attackButton;
     public Button defendButton;
     public Button skillButton;
+    public Button moveButton;           // 새로 추가된 이동 버튼
     public Button cooperationButton;
     public Button retreatButton;
     public Button endTurnButton;
@@ -46,6 +47,11 @@ public class BattleUI : MonoBehaviour
     private MechCharacter currentMech;
     private List<MechCharacter> availableTargets = new List<MechCharacter>();
     
+    // 새로운 시스템 참조들
+    private ActionModeManager actionModeManager;
+    private RangeDisplay rangeDisplay;
+    private TargetSelector targetSelector;
+    
     private void Start()
     {
         InitializeUI();
@@ -56,10 +62,14 @@ public class BattleUI : MonoBehaviour
     {
         battleSystem = FindObjectOfType<BattleSystem>();
         
+        // 새로운 시스템들 초기화
+        InitializeNewSystems();
+        
         // 버튼 이벤트 연결
         if (attackButton != null) attackButton.onClick.AddListener(OnAttackClicked);
         if (defendButton != null) defendButton.onClick.AddListener(OnDefendClicked);
         if (skillButton != null) skillButton.onClick.AddListener(OnSkillClicked);
+        if (moveButton != null) moveButton.onClick.AddListener(OnMoveClicked);        // 이동 버튼 추가
         if (cooperationButton != null) cooperationButton.onClick.AddListener(OnCooperationClicked);
         if (retreatButton != null) retreatButton.onClick.AddListener(OnRetreatClicked);
         if (endTurnButton != null) endTurnButton.onClick.AddListener(OnEndTurnClicked);
@@ -68,6 +78,41 @@ public class BattleUI : MonoBehaviour
         if (battlePanel != null) battlePanel.SetActive(true);   // 전투 패널 활성화
         if (actionPanel != null) actionPanel.SetActive(true);   // 액션 패널 활성화 (테스트용)
         if (cooperationPanel != null) cooperationPanel.SetActive(false); // 협력 패널은 필요시에만
+    }
+    
+    /// <summary>
+    /// 새로운 시스템들을 초기화합니다
+    /// </summary>
+    private void InitializeNewSystems()
+    {
+        // ActionModeManager 찾기 또는 생성
+        actionModeManager = FindObjectOfType<ActionModeManager>();
+        if (actionModeManager == null)
+        {
+            GameObject actionModeObj = new GameObject("ActionModeManager");
+            actionModeManager = actionModeObj.AddComponent<ActionModeManager>();
+            Debug.Log("ActionModeManager 자동 생성됨");
+        }
+        
+        // RangeDisplay 찾기 또는 생성
+        rangeDisplay = FindObjectOfType<RangeDisplay>();
+        if (rangeDisplay == null)
+        {
+            GameObject rangeDisplayObj = new GameObject("RangeDisplay");
+            rangeDisplay = rangeDisplayObj.AddComponent<RangeDisplay>();
+            Debug.Log("RangeDisplay 자동 생성됨");
+        }
+        
+        // TargetSelector 찾기 또는 생성
+        targetSelector = FindObjectOfType<TargetSelector>();
+        if (targetSelector == null)
+        {
+            GameObject targetSelectorObj = new GameObject("TargetSelector");
+            targetSelector = targetSelectorObj.AddComponent<TargetSelector>();
+            Debug.Log("TargetSelector 자동 생성됨");
+        }
+        
+        Debug.Log("새로운 시스템 초기화 완료");
     }
     
     private void SubscribeToEvents()
@@ -197,6 +242,7 @@ public class BattleUI : MonoBehaviour
         if (attackButton != null) attackButton.interactable = canAct && currentMech.actionPoints.currentAP >= 1;
         if (defendButton != null) defendButton.interactable = canAct && currentMech.actionPoints.currentAP >= 1;
         if (skillButton != null) skillButton.interactable = canAct;
+        if (moveButton != null) moveButton.interactable = canAct && currentMech.actionPoints.currentAP >= 1;  // 이동 버튼 추가
         if (cooperationButton != null) cooperationButton.interactable = canAct;
         if (endTurnButton != null) endTurnButton.interactable = true;
     }
@@ -236,20 +282,50 @@ public class BattleUI : MonoBehaviour
     
     private void OnAttackClicked()
     {
-        if (currentMech == null) return;
+        if (currentMech == null) 
+        {
+            Debug.LogWarning("OnAttackClicked: 현재 기계가 설정되지 않았습니다!");
+            Debug.Log("테스트용 기계를 자동 생성합니다...");
+            CreateTestMech();
+            if (currentMech == null)
+            {
+                Debug.LogError("기계 생성에 실패했습니다!");
+                return;
+            }
+        }
         
-        // 공격 대상 선택 UI 표시
-        ShowTargetSelection("공격할 대상을 선택하세요", OnAttackTargetSelected);
+        if (actionModeManager != null)
+        {
+            actionModeManager.SetActionMode(ActionModeManager.ActionMode.Attack, currentMech);
+        }
+        else
+        {
+            Debug.LogError("ActionModeManager를 찾을 수 없습니다!");
+        }
     }
     
     private void OnDefendClicked()
     {
-        if (currentMech == null) return;
+        if (currentMech == null) 
+        {
+            Debug.LogWarning("OnDefendClicked: 현재 기계가 설정되지 않았습니다!");
+            Debug.Log("테스트용 기계를 자동 생성합니다...");
+            CreateTestMech();
+            if (currentMech == null)
+            {
+                Debug.LogError("기계 생성에 실패했습니다!");
+                return;
+            }
+        }
         
-        currentMech.isGuarding = true;
-        currentMech.ConsumeAP(1);
-        
-        currentMech.TriggerDialogue("방어", "방어 태세를 취한다!");
+        if (actionModeManager != null)
+        {
+            actionModeManager.SetActionMode(ActionModeManager.ActionMode.Defend, currentMech);
+        }
+        else
+        {
+            Debug.LogError("ActionModeManager를 찾을 수 없습니다!");
+        }
         
         UpdateActionButtons();
         UpdateAPDisplay();
@@ -257,10 +333,50 @@ public class BattleUI : MonoBehaviour
     
     private void OnSkillClicked()
     {
-        if (currentMech == null) return;
+        if (currentMech == null) 
+        {
+            Debug.LogWarning("OnSkillClicked: 현재 기계가 설정되지 않았습니다!");
+            Debug.Log("테스트용 기계를 자동 생성합니다...");
+            CreateTestMech();
+            if (currentMech == null)
+            {
+                Debug.LogError("기계 생성에 실패했습니다!");
+                return;
+            }
+        }
         
-        // 스킬 선택 UI 표시
-        ShowSkillSelection();
+        if (actionModeManager != null)
+        {
+            actionModeManager.SetActionMode(ActionModeManager.ActionMode.Skill, currentMech);
+        }
+        else
+        {
+            Debug.LogError("ActionModeManager를 찾을 수 없습니다!");
+        }
+    }
+    
+    private void OnMoveClicked()
+    {
+        if (currentMech == null) 
+        {
+            Debug.LogWarning("OnMoveClicked: 현재 기계가 설정되지 않았습니다!");
+            Debug.Log("테스트용 기계를 자동 생성합니다...");
+            CreateTestMech();
+            if (currentMech == null)
+            {
+                Debug.LogError("기계 생성에 실패했습니다!");
+                return;
+            }
+        }
+        
+        if (actionModeManager != null)
+        {
+            actionModeManager.SetActionMode(ActionModeManager.ActionMode.Move, currentMech);
+        }
+        else
+        {
+            Debug.LogError("ActionModeManager를 찾을 수 없습니다!");
+        }
     }
     
     private void OnCooperationClicked()
@@ -536,6 +652,9 @@ public class BattleUI : MonoBehaviour
             GameObject testMechObj = new GameObject("TestMech");
             currentMech = testMechObj.AddComponent<RexMech>();
             
+            // 아군 위치 (아래쪽)에 기계 배치
+            PositionMechInPlayerArea(testMechObj);
+            
             // 기본 설정
             currentMech.mechName = "테스트 렉스";
             currentMech.mechType = MechType.Rex;
@@ -566,6 +685,95 @@ public class BattleUI : MonoBehaviour
         else
         {
             Debug.Log($"현재 기계가 이미 설정됨: {currentMech.mechName}");
+            
+            // 기존 기계가 잘못된 위치에 있는지 확인
+            Vector3 currentPos = currentMech.transform.position;
+            if (Vector3.Distance(currentPos, Vector3.zero) < 0.5f)
+            {
+                Debug.Log("기존 기계가 중앙에 있어서 아군 지역으로 이동시킵니다.");
+                PositionMechInPlayerArea(currentMech.gameObject);
+            }
+        }
+    }
+    
+    /// <summary>
+    /// 기계를 아군 지역(격자 하단)에 배치합니다
+    /// </summary>
+    private void PositionMechInPlayerArea(GameObject mechObj)
+    {
+        BattleGridManager gridManager = FindObjectOfType<BattleGridManager>();
+        if (gridManager == null)
+        {
+            Debug.LogWarning("BattleGridManager를 찾을 수 없어서 기본 위치에 배치합니다.");
+            mechObj.transform.position = new Vector3(0, -3, 0); // 기본 아래쪽 위치
+            return;
+        }
+        
+        // 아군 지역 격자 좌표 (격자 하단 중앙부)
+        int playerGridX = 5;  // 격자 중앙 x좌표 (10x10 격자의 경우)
+        int playerGridY = 1;  // 격자 하단에서 약간 위
+        
+        // 격자 좌표를 월드 좌표로 변환
+        Vector3 worldPos = gridManager.GetWorldPosition(playerGridX, playerGridY);
+        Vector3 centerPos = worldPos + new Vector3(gridManager.gridSize / 2f, gridManager.gridSize / 2f, 0);
+        
+        // 기계를 해당 위치에 배치
+        mechObj.transform.position = centerPos;
+        
+        // 시각적 표현 추가 (파란색 쿼드)
+        CreateMechVisualRepresentation(mechObj, gridManager.gridSize);
+        
+        Debug.Log($"테스트 기계를 아군 지역에 배치: 격자({playerGridX}, {playerGridY}) -> 월드({centerPos})");
+    }
+    
+    /// <summary>
+    /// 기계의 시각적 표현을 생성합니다
+    /// </summary>
+    private void CreateMechVisualRepresentation(GameObject mechObj, float gridSize)
+    {
+        // 기존 시각적 표현 제거
+        Transform existing = mechObj.transform.Find("VisualQuad");
+        if (existing != null)
+        {
+            DestroyImmediate(existing.gameObject);
+        }
+        
+        // 2D용 시각적 표현을 위한 쿼드 생성
+        GameObject visualQuad = GameObject.CreatePrimitive(PrimitiveType.Quad);
+        visualQuad.name = "VisualQuad";
+        visualQuad.transform.parent = mechObj.transform;
+        visualQuad.transform.localPosition = Vector3.zero;
+        visualQuad.transform.localScale = new Vector3(gridSize * 0.9f, gridSize * 0.9f, 1);
+        
+        // 파란색 머티리얼 적용 (아군)
+        Renderer renderer = visualQuad.GetComponent<Renderer>();
+        Material blueMaterial = new Material(Shader.Find("Sprites/Default"));
+        blueMaterial.color = Color.blue;
+        blueMaterial.renderQueue = 2000; // 격자보다 앞에 렌더링
+        renderer.material = blueMaterial;
+        
+        // 콜라이더 제거 (시각적 표현만 필요)
+        Collider quadCollider = visualQuad.GetComponent<Collider>();
+        if (quadCollider != null)
+        {
+            DestroyImmediate(quadCollider);
+        }
+    }
+    
+    /// <summary>
+    /// 현재 기계를 아군 지역으로 재배치합니다
+    /// </summary>
+    [ContextMenu("기계 위치 재설정")]
+    public void ResetMechPosition()
+    {
+        if (currentMech != null)
+        {
+            Debug.Log("기계를 아군 지역으로 재배치합니다.");
+            PositionMechInPlayerArea(currentMech.gameObject);
+        }
+        else
+        {
+            Debug.LogWarning("재배치할 기계가 없습니다!");
         }
     }
 }

@@ -50,11 +50,41 @@ public class UIAutoGenerator : MonoBehaviour
         
         // 필수 UI 요소들 검증
         int missingCount = 0;
+        
+        // 패널 검증
         if (battleUI.battlePanel == null) { Debug.LogWarning("battlePanel이 null입니다!"); missingCount++; }
         if (battleUI.actionPanel == null) { Debug.LogWarning("actionPanel이 null입니다!"); missingCount++; }
+        if (battleUI.cooperationPanel == null) { Debug.LogWarning("cooperationPanel이 null입니다!"); missingCount++; }
+        if (battleUI.statusPanel == null) { Debug.LogWarning("statusPanel이 null입니다!"); missingCount++; }
+        if (battleUI.dialoguePanel == null) { Debug.LogWarning("dialoguePanel이 null입니다!"); missingCount++; }
+        
+        // 턴 정보 UI 검증
+        if (battleUI.turnInfoText == null) { Debug.LogWarning("turnInfoText가 null입니다!"); missingCount++; }
+        if (battleUI.currentActorText == null) { Debug.LogWarning("currentActorText가 null입니다!"); missingCount++; }
+        if (battleUI.turnProgressSlider == null) { Debug.LogWarning("turnProgressSlider가 null입니다!"); missingCount++; }
+        
+        // 버튼 검증
         if (battleUI.attackButton == null) { Debug.LogWarning("attackButton이 null입니다!"); missingCount++; }
+        if (battleUI.defendButton == null) { Debug.LogWarning("defendButton이 null입니다!"); missingCount++; }
+        if (battleUI.skillButton == null) { Debug.LogWarning("skillButton이 null입니다!"); missingCount++; }
+        if (battleUI.cooperationButton == null) { Debug.LogWarning("cooperationButton이 null입니다!"); missingCount++; }
+        if (battleUI.retreatButton == null) { Debug.LogWarning("retreatButton이 null입니다!"); missingCount++; }
+        if (battleUI.endTurnButton == null) { Debug.LogWarning("endTurnButton이 null입니다!"); missingCount++; }
+        
+        // AP 표시 UI 검증
         if (battleUI.apText == null) { Debug.LogWarning("apText가 null입니다!"); missingCount++; }
         if (battleUI.apSlider == null) { Debug.LogWarning("apSlider가 null입니다!"); missingCount++; }
+        
+        // 대화 UI 검증
+        if (battleUI.dialogueText == null) { Debug.LogWarning("dialogueText가 null입니다!"); missingCount++; }
+        if (battleUI.speakerName == null) { Debug.LogWarning("speakerName이 null입니다!"); missingCount++; }
+        if (battleUI.dialogueBackground == null) { Debug.LogWarning("dialogueBackground가 null입니다!"); missingCount++; }
+        
+        // 상태 및 협력 UI 검증
+        if (battleUI.mechStatusContainer == null) { Debug.LogWarning("mechStatusContainer가 null입니다!"); missingCount++; }
+        if (battleUI.cooperationContainer == null) { Debug.LogWarning("cooperationContainer가 null입니다!"); missingCount++; }
+        if (battleUI.mechStatusPrefab == null) { Debug.LogWarning("mechStatusPrefab이 null입니다!"); missingCount++; }
+        if (battleUI.cooperationOptionPrefab == null) { Debug.LogWarning("cooperationOptionPrefab이 null입니다!"); missingCount++; }
         
         if (missingCount == 0)
         {
@@ -172,11 +202,34 @@ public class UIAutoGenerator : MonoBehaviour
         battleUI.cooperationPanel = cooperationPanel;
         cooperationPanel.SetActive(false);
         
+        // 협력 옵션 컨테이너 생성
+        GameObject cooperationContainer = new GameObject("CooperationContainer");
+        cooperationContainer.transform.SetParent(cooperationPanel.transform, false);
+        
+        RectTransform coopContainerRect = cooperationContainer.AddComponent<RectTransform>();
+        coopContainerRect.anchorMin = Vector2.zero;
+        coopContainerRect.anchorMax = Vector2.one;
+        coopContainerRect.offsetMin = new Vector2(20, 20);
+        coopContainerRect.offsetMax = new Vector2(-20, -20);
+        
+        // 수직 레이아웃 그룹 추가
+        VerticalLayoutGroup layoutGroup = cooperationContainer.AddComponent<VerticalLayoutGroup>();
+        layoutGroup.spacing = 10f;
+        layoutGroup.childControlHeight = false;
+        layoutGroup.childControlWidth = true;
+        layoutGroup.childForceExpandHeight = false;
+        layoutGroup.childForceExpandWidth = true;
+        
+        battleUI.cooperationContainer = cooperationContainer.transform;
+        
         // 7. UI 요소들 생성
         CreateActionButtons(actionPanel);
         CreateTurnInfo(turnPanel, battleUI);
         CreateDialogueElements(dialoguePanel, battleUI);
         CreateStatusElements(statusPanel, battleUI);
+        
+        // 8. 프리팹 대체용 UI 요소들 생성
+        CreatePrefabPlaceholders(battleUI);
         
         // 초기 상태 설정 - UI를 즉시 볼 수 있도록 활성화
         battlePanel.SetActive(true);   // 전투 패널 활성화
@@ -270,8 +323,8 @@ public class UIAutoGenerator : MonoBehaviour
     
     private void CreateActionButtons(GameObject actionPanel)
     {
-        string[] buttonNames = {"공격", "방어", "스킬", "협력", "후퇴", "턴종료"};
-        float buttonWidth = 180f, buttonHeight = 60f, spacing = 20f;
+        string[] buttonNames = {"공격", "방어", "스킬", "이동", "협력", "후퇴", "턴종료"};  // 이동 버튼 추가
+        float buttonWidth = 160f, buttonHeight = 60f, spacing = 15f;  // 버튼 크기 조정
         float startX = -((buttonNames.Length - 1) * (buttonWidth + spacing)) / 2f;
         
         Button[] buttons = new Button[buttonNames.Length];
@@ -285,9 +338,10 @@ public class UIAutoGenerator : MonoBehaviour
         battleUI.attackButton = buttons[0];
         battleUI.defendButton = buttons[1];
         battleUI.skillButton = buttons[2];
-        battleUI.cooperationButton = buttons[3];
-        battleUI.retreatButton = buttons[4];
-        battleUI.endTurnButton = buttons[5];
+        battleUI.moveButton = buttons[3];      // 이동 버튼 연결
+        battleUI.cooperationButton = buttons[4];
+        battleUI.retreatButton = buttons[5];
+        battleUI.endTurnButton = buttons[6];
     }
     
     private void CreateTurnInfo(GameObject turnPanel, BattleUI ui)
@@ -302,21 +356,34 @@ public class UIAutoGenerator : MonoBehaviour
         currentActorObj.GetComponent<RectTransform>().anchoredPosition = new Vector2(-50, 0);
         ui.currentActorText = currentActorObj.GetComponent<Text>();
         
+        // 턴 진행 슬라이더 (BattleUI가 기대하는 필드)
+        GameObject turnProgressSliderObj = CreateSimpleSlider("TurnProgressSlider", turnPanel.transform, new Vector2(120, 15));
+        turnProgressSliderObj.GetComponent<RectTransform>().anchoredPosition = new Vector2(100, 0);
+        ui.turnProgressSlider = turnProgressSliderObj.GetComponent<Slider>();
+        
         // AP 표시 텍스트
         GameObject apTextObj = CreateText("APText", turnPanel.transform, "AP: 0/0", 18);
         apTextObj.GetComponent<RectTransform>().anchoredPosition = new Vector2(200, 0);
         ui.apText = apTextObj.GetComponent<Text>();
         
-        // AP 슬라이더 (간단한 버전)
+        // AP 슬라이더
         GameObject apSliderObj = CreateSimpleSlider("APSlider", turnPanel.transform, new Vector2(150, 20));
         apSliderObj.GetComponent<RectTransform>().anchoredPosition = new Vector2(320, 0);
         ui.apSlider = apSliderObj.GetComponent<Slider>();
         
-        Debug.Log("턴 정보 UI 생성 완료 (AP 표시 포함)");
+        Debug.Log("턴 정보 UI 생성 완료 (턴 진행 + AP 표시 포함)");
     }
     
     private void CreateDialogueElements(GameObject dialoguePanel, BattleUI ui)
     {
+        // 대화 배경 (패널 자체의 Image 컴포넌트 사용)
+        Image panelImage = dialoguePanel.GetComponent<Image>();
+        if (panelImage != null)
+        {
+            panelImage.color = new Color(0, 0, 0, 0.7f); // 더 어두운 배경
+            ui.dialogueBackground = panelImage;
+        }
+        
         // 화자 이름
         GameObject speakerObj = CreateText("Speaker", dialoguePanel.transform, "화자", 18);
         speakerObj.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 30);
@@ -327,7 +394,7 @@ public class UIAutoGenerator : MonoBehaviour
         dialogueObj.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -10);
         ui.dialogueText = dialogueObj.GetComponent<Text>();
         
-        Debug.Log("대화 UI 생성 완료");
+        Debug.Log("대화 UI 생성 완료 (배경 포함)");
     }
     
     private void CreateStatusElements(GameObject statusPanel, BattleUI ui)
@@ -426,6 +493,74 @@ public class UIAutoGenerator : MonoBehaviour
     }
     
     /// <summary>
+    /// 프리팹이 없을 때 사용할 대체 UI 요소들을 생성합니다
+    /// </summary>
+    private void CreatePrefabPlaceholders(BattleUI battleUI)
+    {
+        // 기계 상태 UI 프리팹 생성
+        battleUI.mechStatusPrefab = CreateMechStatusPrefab();
+        
+        // 협력 옵션 UI 프리팹 생성
+        battleUI.cooperationOptionPrefab = CreateCooperationOptionPrefab();
+        
+        Debug.Log("프리팹 대체 UI 요소들 생성 완료");
+    }
+    
+    /// <summary>
+    /// 기계 상태를 표시할 간단한 UI 프리팹을 생성합니다
+    /// </summary>
+    private GameObject CreateMechStatusPrefab()
+    {
+        GameObject statusPrefab = CreatePanel("MechStatusUI", null, new Vector2(280, 120));
+        statusPrefab.GetComponent<Image>().color = new Color(0.1f, 0.1f, 0.3f, 0.8f);
+        
+        // 기계 이름 텍스트
+        GameObject nameText = CreateText("MechName", statusPrefab.transform, "기계 이름", 16);
+        nameText.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 35);
+        
+        // HP 텍스트
+        GameObject hpText = CreateText("HPText", statusPrefab.transform, "HP: 100/100", 14);
+        hpText.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 10);
+        
+        // HP 슬라이더
+        GameObject hpSlider = CreateSimpleSlider("HPSlider", statusPrefab.transform, new Vector2(200, 15));
+        hpSlider.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -10);
+        hpSlider.GetComponent<Slider>().value = 1f;
+        
+        // AP 텍스트
+        GameObject apText = CreateText("APText", statusPrefab.transform, "AP: 3/3", 14);
+        apText.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -35);
+        
+        // MechStatusUI 컴포넌트 추가 (스크립트가 있다면)
+        // statusPrefab.AddComponent<MechStatusUI>();
+        
+        return statusPrefab;
+    }
+    
+    /// <summary>
+    /// 협력 옵션을 표시할 간단한 UI 프리팹을 생성합니다
+    /// </summary>
+    private GameObject CreateCooperationOptionPrefab()
+    {
+        GameObject optionPrefab = CreateButton("협력 행동", null, new Vector2(250, 60));
+        optionPrefab.name = "CooperationOptionUI";
+        optionPrefab.GetComponent<Image>().color = new Color(0.3f, 0.6f, 0.2f, 0.8f);
+        
+        // 버튼 텍스트 업데이트
+        Text buttonText = optionPrefab.GetComponentInChildren<Text>();
+        if (buttonText != null)
+        {
+            buttonText.fontSize = 14;
+            buttonText.text = "협력 옵션";
+        }
+        
+        // CooperationOptionUI 컴포넌트 추가 (스크립트가 있다면)
+        // optionPrefab.AddComponent<CooperationOptionUI>();
+        
+        return optionPrefab;
+    }
+    
+    /// <summary>
     /// EventSystem이 없으면 생성합니다 (UI 상호작용을 위해 필요)
     /// </summary>
     private void CreateEventSystemIfNeeded()
@@ -503,5 +638,45 @@ public class UIAutoGenerator : MonoBehaviour
                 Debug.LogWarning("Input System UI Module을 추가할 수 없어 StandaloneInputModule을 유지합니다. Player Settings에서 Input Handling을 'Both' 또는 'Input Manager (Old)'로 변경해보세요.");
             }
         }
+    }
+    
+    /// <summary>
+    /// 생성된 UI가 제대로 작동하는지 테스트합니다
+    /// </summary>
+    [ContextMenu("UI 기능 테스트")]
+    public void TestUIFunctionality()
+    {
+        if (battleUI == null)
+        {
+            Debug.LogError("BattleUI가 생성되지 않았습니다! CreateBattleUI()를 먼저 호출하세요.");
+            return;
+        }
+        
+        Debug.Log("=== UI 기능 테스트 시작 ===");
+        
+        // 버튼 테스트
+        Debug.Log("버튼 테스트 중...");
+        if (battleUI.attackButton != null && battleUI.attackButton.onClick != null)
+        {
+            Debug.Log("✅ 공격 버튼 정상");
+        }
+        else
+        {
+            Debug.LogWarning("❌ 공격 버튼 문제");
+        }
+        
+        // UI 표시 테스트
+        Debug.Log("UI 표시 테스트 중...");
+        if (battleUI.dialoguePanel != null)
+        {
+            battleUI.ShowDialogue("테스트", "UI 자동 생성이 완료되었습니다!");
+        }
+        
+        // 테스트용 기계 생성
+        Debug.Log("테스트용 기계 생성 중...");
+        battleUI.CreateTestMech();
+        
+        Debug.Log("=== UI 기능 테스트 완료 ===");
+        Debug.Log("Unity 에디터에서 Play 버튼을 눌러서 실제 동작을 확인하세요!");
     }
 }

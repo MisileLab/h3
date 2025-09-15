@@ -536,4 +536,73 @@ public class BattleInitializer : MonoBehaviour
         
         Debug.Log("=== UI 자동 생성 완료 ===");
     }
+    
+    /// <summary>
+    /// UI 생성 및 테스트를 위한 간단한 메서드 (인스펙터에서 호출 가능)
+    /// </summary>
+    [ContextMenu("UI만 생성하고 테스트")]
+    public void CreateAndTestUIOnly()
+    {
+        Debug.Log("=== UI 전용 생성 및 테스트 시작 ===");
+        
+        // 기존 UI 정리 먼저
+        BattleUI[] existingUIs = FindObjectsOfType<BattleUI>();
+        foreach (BattleUI ui in existingUIs)
+        {
+            if (ui != null)
+            {
+                DestroyImmediate(ui.gameObject);
+            }
+        }
+        
+        // UI만 생성
+        CreateBattleUI();
+        
+        // UI 테스트 실행
+        if (uiGenerator != null)
+        {
+            uiGenerator.TestUIFunctionality();
+        }
+        
+        Debug.Log("=== UI 전용 생성 및 테스트 완료 ===");
+        Debug.Log("이제 Unity Play 버튼을 눌러서 UI가 정상 작동하는지 확인하세요!");
+    }
+    
+    /// <summary>
+    /// 현재 생성된 UI 상태를 확인합니다
+    /// </summary>
+    [ContextMenu("UI 상태 확인")]
+    public void CheckUIStatus()
+    {
+        BattleUI[] uis = FindObjectsOfType<BattleUI>();
+        
+        if (uis.Length == 0)
+        {
+            Debug.LogWarning("생성된 BattleUI가 없습니다!");
+        }
+        else
+        {
+            Debug.Log($"발견된 BattleUI: {uis.Length}개");
+            foreach (BattleUI ui in uis)
+            {
+                Debug.Log($"- BattleUI: {ui.gameObject.name} (활성: {ui.gameObject.activeInHierarchy})");
+                
+                // 주요 UI 요소들 상태 확인
+                Debug.Log($"  └ 공격버튼: {(ui.attackButton != null ? "✅" : "❌")}");
+                Debug.Log($"  └ AP텍스트: {(ui.apText != null ? "✅" : "❌")}");
+                Debug.Log($"  └ 대화패널: {(ui.dialoguePanel != null ? "✅" : "❌")}");
+            }
+        }
+        
+        // Canvas 상태도 확인
+        Canvas[] canvases = FindObjectsOfType<Canvas>();
+        Debug.Log($"발견된 Canvas: {canvases.Length}개");
+        foreach (Canvas canvas in canvases)
+        {
+            if (canvas.name.Contains("Battle"))
+            {
+                Debug.Log($"- 전투 Canvas: {canvas.gameObject.name} (활성: {canvas.gameObject.activeInHierarchy})");
+            }
+        }
+    }
 }

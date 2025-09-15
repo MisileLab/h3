@@ -200,7 +200,7 @@ public class BattleGridManager : MonoBehaviour
         return mat;
     }
     
-    private Vector3 CalculateGridStartPosition()
+    public Vector3 CalculateGridStartPosition()
     {
         if (centerGrid)
         {
