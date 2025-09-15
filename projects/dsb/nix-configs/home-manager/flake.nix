@@ -37,6 +37,7 @@
         (final: prev: {
           electron = stablep.electron;
           nodejs_24 = stablep.nodejs_24;
+          ungoogled-chromium = stablep.ungoogled-chromium;
           dart = prev.dart.overrideAttrs (old: {
             installPhase = ''
               runHook preInstall
