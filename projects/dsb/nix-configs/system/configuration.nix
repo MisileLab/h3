@@ -83,26 +83,27 @@
 
   virtualisation = {
     docker.enable = true;
-    # libvirtd = {
-    #   enable = true;
-    #   qemu = {
-    #     package = pkgs.qemu_kvm;
-    #     runAsRoot = true;
-    #     swtpm.enable = true;
-    #     ovmf = {
-    #       enable = true;
-    #       packages = [(pkgs.OVMF.override {
-    #         secureBoot = true;
-    #         tpmSupport = true;
-    #       }).fd];
-    #     };
-    #   };
-    # };
+    libvirtd = {
+      enable = true;
+      qemu = {
+        package = pkgs.qemu_kvm;
+        runAsRoot = true;
+        swtpm.enable = true;
+        ovmf = {
+          enable = true;
+          packages = [(pkgs.OVMF.override {
+            secureBoot = true;
+            tpmSupport = true;
+          }).fd];
+        };
+      };
+    };
+    spiceUSBRedirection.enable = true;
     virtualbox.host.enable = true;
   };
 
   nixpkgs.config.allowUnfree = true;
-  environment.systemPackages = with pkgs; [kdiskmark auto-cpufreq];
+  environment.systemPackages = with pkgs; [kdiskmark auto-cpufreq gnome-boxes dnsmasq phodav];
   programs = {
     nix-ld.enable = true;
     dconf.enable = true;

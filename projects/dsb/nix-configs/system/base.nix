@@ -94,7 +94,9 @@ EOF
       extraGroups = ["wheel" "docker" "adbusers" "plugdev"];
       shell = pkgs.nushell;
     };
-    extraGroups.vboxusers.members = [ "user-with-access-to-virtualbox" ];
+    extraGroups.vboxusers.members = [ "misile" ];
+    extraGroups.libvirtd.members = [ "misile" ];
+    extraGroups.kvm.members = [ "misile" ];
     motd = "I use nixos btw";
   };
 
