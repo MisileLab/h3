@@ -1,3 +1,4 @@
+.env
 .cof
 .zig-cache/
 zig-out/
