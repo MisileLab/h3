@@ -103,7 +103,7 @@
   };
 
   nixpkgs.config.allowUnfree = true;
-  environment.systemPackages = with pkgs; [kdiskmark auto-cpufreq gnome-boxes dnsmasq phodav];
+  environment.systemPackages = with pkgs; [kdiskmark auto-cpufreq dnsmasq phodav];
   programs = {
     nix-ld.enable = true;
     dconf.enable = true;
