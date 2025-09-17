@@ -12,10 +12,10 @@
   "dependencies": {
     "@astrojs/check": "0.9.4",
     "@astrojs/node": "9.4.3",
-    "@astrojs/sitemap": "3.5.1",
+    "@astrojs/sitemap": "3.6.0",
     "@misile/satellite": "0.0.5",
     "@tailwindcss/vite": "4.1.13",
-    "astro": "5.13.7",
+    "astro": "5.13.8",
     "dayjs": "1.11.18",
     "mobile-device-detect": "0.4.3",
     "nanostores": "1.0.1",
