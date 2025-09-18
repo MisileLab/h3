@@ -38,9 +38,9 @@
           firefox-unwrapped = stablep.firefox-unwrapped;
           telegram-desktop = stablep.telegram-desktop;
           # quick and dirty way for https://github.com/NixOS/nixpkgs/pull/443986
-          opencode = prev.opencode.override {
+          opencode = prev.opencode.overrideAttrs (old: {
             outputHash = "sha256-fGf2VldMlxbr9pb3B6zVL+fW1S8bRjefJW+jliTO73A=";
-          };
+          });
           dart = prev.dart.overrideAttrs (old: {
             installPhase = ''
               runHook preInstall
