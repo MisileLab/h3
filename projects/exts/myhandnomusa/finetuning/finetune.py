@@ -7,7 +7,7 @@ from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 from safetensors.torch import save_file
 
 # --- Configuration ---
-MODEL_ID = "gpt-oss/gpt-oss-120b"  # Example model
+MODEL_ID = "openai/gpt-oss-120b"  # Example model
 MIN_VRAM_GB = 80  # Minimum required GPU VRAM
 OUTPUT_DIR = "./gpt-oss-120b-finetuned"
 HUB_DATASET_ID = "misilelab/korean-law-dataset"
