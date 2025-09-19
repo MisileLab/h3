@@ -28,13 +28,13 @@ def generate_on_start_script():
 
 echo "--- Starting automatic deployment script ---"
 
-# Clone the repository
-echo "Cloning repository: {GIT_REPO_URL}"
-# The provided git URL is non-standard. We'll try to clone it as is.
-# The /workspace directory is the default working directory in many Vast.ai images.
-git clone {GIT_REPO_URL} /workspace
-cd /workspace
-echo "Repository cloned."
+# Clone the repository into a new subdirectory
+REPO_DIR="/workspace/finetuning_repo"
+mkdir -p $REPO_DIR
+echo "Cloning repository: {GIT_REPO_URL} into $REPO_DIR"
+git clone {GIT_REPO_URL} $REPO_DIR
+cd $REPO_DIR
+echo "Repository cloned and moved into $REPO_DIR."
 
 # Install dependencies
 echo "Installing dependencies with uv..."
