@@ -72,7 +72,7 @@ def find_cheapest_instance(client):
     try:
         # The SDK expects a single query string with direct comparisons.
         # gpu_total_ram is in GB, disk_space is in GB.
-        query = f"gpu_total_ram >= {MIN_VRAM} disk_space >= {MIN_DISK_SPACE} rentable=true verified=true"
+        query = f"num_gpus == 1 gpu_total_ram >= {MIN_VRAM} disk_space >= {MIN_DISK_SPACE} rentable=true verified=true"
         print(f"DEBUG: Query string: {query}")
         
         
