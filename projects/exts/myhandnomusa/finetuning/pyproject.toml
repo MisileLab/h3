@@ -19,6 +19,7 @@ dependencies = [
     "safetensors>=0.6.2",
     "torch>=2.8.0",
     "tqdm>=4.67.1",
+    "trackio>=0.4.0",
     "transformers>=4.56.1",
     "vastai>=0.2.8",
 ]
