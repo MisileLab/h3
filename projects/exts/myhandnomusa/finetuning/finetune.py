@@ -95,20 +95,38 @@ def main():
     tokenized_dataset = dataset.map(tokenize_function, batched=True)
 
     # --- Model Loading and Configuration ---
-    quantization_config = BitsAndBytesConfig(
-        load_in_4bit=True,
-        bnb_4bit_use_double_quant=True,
-        bnb_4bit_quant_type="nf4",
-        bnb_4bit_compute_dtype=torch.bfloat16,
-    )
-
-    model = AutoModelForCausalLM.from_pretrained(
-        MODEL_ID,
-        quantization_config=quantization_config,
-        device_map="auto",  # 자동으로 여러 GPU에 모델 분산
-        torch_dtype=torch.bfloat16,
-        trust_remote_code=True,
-    )
+    # 모델이 이미 양자화되어 있는지 확인하고 적절히 로드
+    print("Loading model...")
+    
+    try:
+        # 먼저 기본 설정으로 모델 로드 시도 (이미 양자화된 모델의 경우)
+        model = AutoModelForCausalLM.from_pretrained(
+            MODEL_ID,
+            device_map="auto",  # 자동으로 여러 GPU에 모델 분산
+            dtype=torch.bfloat16,
+            trust_remote_code=True,
+        )
+        print("Model loaded successfully (using existing quantization)")
+        
+    except Exception as e:
+        print(f"Failed to load with existing quantization: {e}")
+        print("Trying with custom BitsAndBytesConfig...")
+        
+        # 사용자 정의 양자화 설정으로 다시 시도
+        quantization_config = BitsAndBytesConfig(
+            load_in_4bit=True,
+            bnb_4bit_use_double_quant=True,
+            bnb_4bit_quant_type="nf4",
+            bnb_4bit_compute_dtype=torch.bfloat16,
+        )
+        
+        model = AutoModelForCausalLM.from_pretrained(
+            MODEL_ID,
+            quantization_config=quantization_config,
+            device_map="auto",  # 자동으로 여러 GPU에 모델 분산
+            dtype=torch.bfloat16,
+            trust_remote_code=True,
+        )
 
     model = prepare_model_for_kbit_training(model)
 
