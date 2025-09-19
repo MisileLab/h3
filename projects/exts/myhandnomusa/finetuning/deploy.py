@@ -15,6 +15,7 @@ print(f"DEBUG: API_KEY after load_dotenv: {API_KEY}")
 
 # Server search criteria
 MIN_VRAM = 80  # in GB
+MIN_DISK_SPACE = 100  # in GB - minimum disk space required
 
 # Deployment configuration
 GIT_REPO_URL = "https://gith.misile.xyz/h3.git:/projects/exts/myhandnomusa/finetuning.git"
@@ -65,13 +66,13 @@ echo "Use 'vastai logs <instance_id>' to see live logs."
 
 def find_cheapest_instance(client):
     """Finds the cheapest available and reliable instance that meets the criteria using the SDK."""
-    print(f"Searching for instances with at least {MIN_VRAM}GB VRAM using SDK...")
+    print(f"Searching for instances with at least {MIN_VRAM}GB VRAM and {MIN_DISK_SPACE}GB disk space using SDK...")
     
     
     try:
         # The SDK expects a single query string with direct comparisons.
-        # gpu_total_ram is in GB.
-        query = f"gpu_total_ram >= {MIN_VRAM} rentable=true verified=true"
+        # gpu_total_ram is in GB, disk_space is in GB.
+        query = f"gpu_total_ram >= {MIN_VRAM} disk_space >= {MIN_DISK_SPACE} rentable=true verified=true"
         print(f"DEBUG: Query string: {query}")
         
         
@@ -86,6 +87,7 @@ def find_cheapest_instance(client):
 
         if not instances:
             print("No instances found matching the criteria.")
+            print(f"Tried searching for instances with >= {MIN_VRAM}GB VRAM and >= {MIN_DISK_SPACE}GB disk space")
             return None
         
         return instances[0]
@@ -130,6 +132,7 @@ def main():
     print(f"  ID: {cheapest['id']}")
     print(f"  GPU: {cheapest['num_gpus']}x {cheapest['gpu_name']}")
     print(f"  VRAM: {cheapest['gpu_total_ram'] / 1024:.1f} GB")
+    print(f"  Disk Space: {cheapest.get('disk_space', 'Unknown')} GB")
     print(f"  Price: ${cheapest['dph_total']:.4f}/hour")
     print(f"  Reliability: {cheapest['reliability2'] * 100:.2f}%")
     print(f"  Verified: {cheapest.get('verified', False)}")
