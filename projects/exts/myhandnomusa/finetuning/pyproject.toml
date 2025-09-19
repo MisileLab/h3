@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "accelerate>=1.10.1",
+    "bitsandbytes>=0.47.0",
     "datasets>=4.0.0",
     "gputil>=1.4.0",
     "httpx>=0.28.1",
