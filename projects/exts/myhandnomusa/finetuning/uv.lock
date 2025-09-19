@@ -351,6 +351,7 @@ dependencies = [
     { name = "gputil" },
     { name = "httpx" },
     { name = "huggingface-hub" },
+    { name = "kernels" },
     { name = "marimo" },
     { name = "numpy" },
     { name = "pandas" },
@@ -363,6 +364,7 @@ dependencies = [
     { name = "tqdm" },
     { name = "trackio" },
     { name = "transformers" },
+    { name = "triton" },
     { name = "vastai" },
 ]
 
@@ -374,6 +376,7 @@ requires-dist = [
     { name = "gputil", specifier = ">=1.4.0" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "huggingface-hub", specifier = ">=0.34.4" },
+    { name = "kernels", specifier = ">=0.10.1" },
     { name = "marimo", specifier = ">=0.15.3" },
     { name = "numpy", specifier = ">=2.3.3" },
     { name = "pandas", specifier = ">=2.3.2" },
@@ -386,6 +389,7 @@ requires-dist = [
     { name = "tqdm", specifier = ">=4.67.1" },
     { name = "trackio", specifier = ">=0.4.0" },
     { name = "transformers", specifier = ">=4.56.1" },
+    { name = "triton", specifier = ">=3.4.0" },
     { name = "vastai", specifier = ">=0.2.8" },
 ]
 
@@ -629,6 +633,20 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/df/bf/f7da0350254c0ed7c72f3e33cef02e048281fec7ecec5f032d4aac52226b/jinja2-3.1.6.tar.gz", hash = "sha256:0137fb05990d35f1275a587e9aee6d56da821fc83491a0fb838183be43f66d6d", size = 245115, upload-time = "2025-03-05T20:05:02.478Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/62/a1/3d680cbfd5f4b8f15abc1d571870c5fc3e594bb582bc3b64ea099db13e56/jinja2-3.1.6-py3-none-any.whl", hash = "sha256:85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67", size = 134899, upload-time = "2025-03-05T20:05:00.369Z" },
+]
+
+[[package]]
+name = "kernels"
+version = "0.10.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "huggingface-hub" },
+    { name = "packaging" },
+    { name = "pyyaml" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/84/6d/4055e6860c43a8745569ec6b8f4d54c2f75d7ff008f0137c5145d7c34caa/kernels-0.10.1.tar.gz", hash = "sha256:2ebe81114e5d4178b06a9ea3c263421c7ceee0a99588a7407ff827653007b919", size = 43241, upload-time = "2025-09-10T07:43:19.018Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c7/c9/fbfb470016365a56897b9f0faf9d3170fe3ecb584d4eb8f19f03210a6f9f/kernels-0.10.1-py3-none-any.whl", hash = "sha256:6a8c7867deb548279b1b312a1c02cc568125b57babdad14c3a757cba1ad8bf85", size = 37669, upload-time = "2025-09-10T07:43:17.927Z" },
 ]
 
 [[package]]
