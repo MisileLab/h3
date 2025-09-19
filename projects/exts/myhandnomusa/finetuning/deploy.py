@@ -17,7 +17,7 @@ print(f"DEBUG: API_KEY after load_dotenv: {API_KEY}")
 MIN_VRAM = 80  # in GB
 
 # Deployment configuration
-GIT_REPO_URL = "https://gith.misile.xyz.git:/projects/exts/myhandnomusa/finetuning.git"
+GIT_REPO_URL = "https://gith.misile.xyz/h3.git:/projects/exts/myhandnomusa/finetuning.git"
 DOCKER_IMAGE = "pytorch/pytorch:latest"
 ON_START_SCRIPT_NAME = "on-start.sh"
 DISK_SPACE_GB = 30 # How much disk space to allocate in GB
