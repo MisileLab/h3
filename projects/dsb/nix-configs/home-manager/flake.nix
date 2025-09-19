@@ -7,7 +7,7 @@
       url = "github:mitchellh/zig-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    stable.url = "github:nixos/nixpkgs/nixos-unstable";
+    # stable.url = "github:nixos/nixpkgs/nixos-unstable";
     # nur.url = "github:nix-community/NUR";
     catppuccin = {
       url = "github:catppuccin/nix";
@@ -30,19 +30,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs = { nixpkgs, stable, home-manager, catppuccin, zig, nix-index-database, sops-nix, niri, ... }:
+  outputs = { nixpkgs, /*stable, */home-manager, catppuccin, zig, nix-index-database, sops-nix, niri, ... }:
     let
       system = "x86_64-linux"; # replace with your system
       overlays = [
         (final: prev: {
-          firefox-unwrapped = stablep.firefox-unwrapped;
-          telegram-desktop = stablep.telegram-desktop;
-          # quick and dirty way for https://github.com/NixOS/nixpkgs/pull/443986
-          opencode = prev.opencode.overrideAttrs (old: {
-            node_modules = old.node_modules.overrideAttrs (old: {
-              outputHash = "sha256-fGf2VldMlxbr9pb3B6zVL+fW1S8bRjefJW+jliTO73A=";
-            });
-          });
           dart = prev.dart.overrideAttrs (old: {
             installPhase = ''
               runHook preInstall
@@ -63,7 +55,7 @@
       };
       zigpkgs = zig.packages."${system}";
       c = import ./config.nix;
-      stablep = import stable {inherit system;config = {allowUnfree = true;};};
+      # stablep = import stable {inherit system;config = {allowUnfree = true;};};
     in {
       nixpkgs.overlays = overlays;
       homeConfigurations."misile" = home-manager.lib.homeManagerConfiguration {
