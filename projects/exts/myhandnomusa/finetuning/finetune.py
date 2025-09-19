@@ -1,9 +1,10 @@
-
 import os
 import torch
 import trackio
-
 from datasets import load_dataset
+from transformers import AutoTokenizer, AutoModelForCausalLM, TrainingArguments, Trainer, BitsAndBytesConfig
+from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
+from safetensors.torch import save_file
 
 # --- Configuration ---
 MODEL_ID = "gpt-oss/gpt-oss-120b"  # Example model
@@ -16,7 +17,6 @@ def check_gpu_vram():
     if not torch.cuda.is_available():
         print("CUDA is not available. Fine-tuning requires a GPU.")
         return False
-
     total_vram = torch.cuda.get_device_properties(0).total_memory / (1024**3)
     if total_vram < MIN_VRAM_GB:
         print(f"Error: Insufficient GPU VRAM. Found {total_vram:.2f}GB, but require {MIN_VRAM_GB}GB.")
@@ -38,7 +38,6 @@ def main():
     """Main fine-tuning script."""
     if not check_gpu_vram():
         return
-
     print("Loading and preparing dataset...")
     dataset = load_and_prepare_data()
     if dataset is None:
