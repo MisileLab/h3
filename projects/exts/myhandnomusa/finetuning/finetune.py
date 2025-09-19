@@ -1,6 +1,6 @@
 import os
 import torch
-import trackio
+import trackio as wandb  # trackio는 wandb와 API 호환
 from datasets import load_dataset
 from transformers import AutoTokenizer, AutoModelForCausalLM, TrainingArguments, Trainer, BitsAndBytesConfig
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
@@ -33,10 +33,22 @@ def load_and_prepare_data():
     print("Dataset loaded successfully.")
     return dataset
 
-@trackio.track
 def main():
     """Main fine-tuning script."""
+    # trackio 실험 시작
+    wandb.init(
+        project="gpt-oss-finetuning",
+        name="korean-law-finetune",
+        config={
+            "model_id": MODEL_ID,
+            "dataset": HUB_DATASET_ID,
+            "min_vram_gb": MIN_VRAM_GB,
+            "output_dir": OUTPUT_DIR
+        }
+    )
+    
     if not check_gpu_vram():
+        wandb.finish()
         return
     print("Loading and preparing dataset...")
     dataset = load_and_prepare_data()
@@ -90,7 +102,7 @@ def main():
         fp16=True,
         logging_steps=10,
         save_total_limit=2,
-        report_to="none", # can be "wandb", "tensorboard"
+        report_to="none", # trackio 사용으로 wandb 리포팅 비활성화
     )
 
     trainer = Trainer(
@@ -102,6 +114,9 @@ def main():
     print("Starting fine-tuning...")
     trainer.train()
     print("Fine-tuning finished.")
+    
+    # 훈련 메트릭 로깅
+    wandb.log({"training_completed": True, "final_epoch": 1})
 
     # --- Save Model with SafeTensors ---
     print("Saving model with safetensors...")
@@ -115,6 +130,9 @@ def main():
     tokenizer.save_pretrained(OUTPUT_DIR)
     
     print(f"Model saved to {OUTPUT_DIR}")
+    
+    # trackio 실험 종료
+    wandb.finish()
 
 if __name__ == "__main__":
     main()
