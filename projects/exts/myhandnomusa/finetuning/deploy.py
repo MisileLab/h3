@@ -45,7 +45,7 @@ echo "Dependencies installed."
 
 # Start the fine-tuning process in the background
 echo "Starting fine-tuning process..."
-nohup uv run python finetuning.py > finetune.log 2>&1 &
+nohup uv run python finetune.py > finetune.log 2>&1 &
 
 echo "--- Finetuning started in the background. ---"
 echo "You can monitor the progress by checking the 'finetune.log' file."
