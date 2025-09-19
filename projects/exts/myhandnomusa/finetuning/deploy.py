@@ -14,7 +14,7 @@ API_KEY = os.environ.get("VAST_API_KEY")
 print(f"DEBUG: API_KEY after load_dotenv: {API_KEY}")
 
 # Server search criteria
-MIN_VRAM = 80  # in GB
+MIN_VRAM = 81  # in GB
 MIN_DISK_SPACE = 100  # in GB - minimum disk space required
 
 # Deployment configuration
