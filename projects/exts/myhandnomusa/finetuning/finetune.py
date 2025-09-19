@@ -112,6 +112,7 @@ def main():
     quantization_config = Mxfp4Config(dequantize=True)
     # GPT-OSS specific model loading (with Mxfp4 quantization)
     model_kwargs = {
+        "quantization_config": quantization_config,
         "attn_implementation": "eager",  # Better performance for training
         "dtype": "auto",
         "use_cache": False,  # Disable cache for training with gradient checkpointing
