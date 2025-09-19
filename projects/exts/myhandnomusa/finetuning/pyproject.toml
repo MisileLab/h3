@@ -9,7 +9,10 @@ dependencies = [
     "datasets>=4.0.0",
     "gputil>=1.4.0",
     "httpx>=0.28.1",
+    "huggingface-hub>=0.34.4",
     "marimo>=0.15.3",
+    "numpy>=2.3.3",
+    "pandas>=2.3.2",
     "polars>=1.33.1",
     "psutil>=7.0.0",
     "python-dotenv>=1.1.1",
@@ -17,4 +20,5 @@ dependencies = [
     "torch>=2.8.0",
     "tqdm>=4.67.1",
     "transformers>=4.56.1",
+    "vastai>=0.2.8",
 ]
