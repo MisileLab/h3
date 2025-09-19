@@ -21,7 +21,7 @@ MIN_DISK_SPACE = 100  # in GB - minimum disk space required
 GIT_REPO_URL = "https://gith.misile.xyz/h3.git:/projects/exts/myhandnomusa/finetuning.git"
 DOCKER_IMAGE = "pytorch/pytorch:latest"
 ON_START_SCRIPT_NAME = "on-start.sh"
-DISK_SPACE_GB = 30 # How much disk space to allocate in GB
+DISK_SPACE_GB = 100 # How much disk space to allocate in GB
 
 def generate_on_start_script():
     """Generates the shell script that will be run on instance startup."""
