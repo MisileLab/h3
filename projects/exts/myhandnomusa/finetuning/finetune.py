@@ -2,9 +2,9 @@ import os
 import torch
 import trackio as wandb  # trackio는 wandb와 API 호환
 from datasets import load_dataset
-from transformers import AutoTokenizer, AutoModelForCausalLM, TrainingArguments, Trainer, BitsAndBytesConfig
-from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
-from safetensors.torch import save_file
+from transformers import AutoTokenizer, AutoModelForCausalLM
+from peft import LoraConfig, get_peft_model
+from trl import SFTTrainer, SFTConfig
 
 # --- Configuration ---
 MODEL_ID = "openai/gpt-oss-120b"  # Updated model
@@ -43,11 +43,23 @@ def check_gpu_vram():
 def load_and_prepare_data():
     """Loads the training dataset from the Hugging Face Hub."""
     print(f"Loading dataset '{HUB_DATASET_ID}' from the Hub...")
-    # The Trainer API expects a single dataset for training.
-    # We load the 'train' split here.
+    # Load the 'train' split
     dataset = load_dataset(HUB_DATASET_ID, split="train")
     print("Dataset loaded successfully.")
     return dataset
+
+def format_dataset_for_gpt_oss(examples):
+    """Convert dataset to GPT-OSS format with messages structure."""
+    formatted_messages = []
+    
+    for text in examples["text"]:
+        # Create messages format for GPT-OSS
+        messages = [
+            {"role": "user", "content": text}
+        ]
+        formatted_messages.append(messages)
+    
+    return {"messages": formatted_messages}
 
 def main():
     """Main fine-tuning script."""
@@ -72,7 +84,6 @@ def main():
     per_device_batch_size = 4
     if num_gpus > 1:
         print(f"Multi-GPU setup detected. Using DataParallel across {num_gpus} GPUs")
-        # 멀티 GPU 환경에서는 총 배치 사이즈가 per_device_batch_size * num_gpus가 됨
         print(f"Effective batch size will be: {per_device_batch_size * num_gpus}")
     
     wandb.config.update({
@@ -80,91 +91,82 @@ def main():
         "per_device_batch_size": per_device_batch_size,
         "effective_batch_size": per_device_batch_size * num_gpus
     })
+    
     print("Loading and preparing dataset...")
     dataset = load_and_prepare_data()
     if dataset is None:
+        wandb.finish()
         return
 
-    # --- Tokenization ---
+    # Format dataset for GPT-OSS (convert to messages format)
+    print("Formatting dataset for GPT-OSS...")
+    formatted_dataset = dataset.map(format_dataset_for_gpt_oss, batched=True)
+
+    # --- Load Tokenizer ---
+    print("Loading tokenizer...")
     tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
-    tokenizer.pad_token = tokenizer.eos_token
-
-    def tokenize_function(examples):
-        return tokenizer(examples["text"], truncation=True, padding="max_length", max_length=512)
-
-    tokenized_dataset = dataset.map(tokenize_function, batched=True)
 
     # --- Model Loading and Configuration ---
-    # 모델이 이미 양자화되어 있는지 확인하고 적절히 로드
-    print("Loading model...")
+    print("Loading GPT-OSS model...")
     
-    try:
-        # 먼저 기본 설정으로 모델 로드 시도 (이미 양자화된 모델의 경우)
-        model = AutoModelForCausalLM.from_pretrained(
-            MODEL_ID,
-            device_map="auto",  # 자동으로 여러 GPU에 모델 분산
-            dtype=torch.bfloat16,
-            trust_remote_code=True,
-        )
-        print("Model loaded successfully (using existing quantization)")
-        
-    except Exception as e:
-        print(f"Failed to load with existing quantization: {e}")
-        print("Trying with custom BitsAndBytesConfig...")
-        
-        # 사용자 정의 양자화 설정으로 다시 시도
-        quantization_config = BitsAndBytesConfig(
-            load_in_4bit=True,
-            bnb_4bit_use_double_quant=True,
-            bnb_4bit_quant_type="nf4",
-            bnb_4bit_compute_dtype=torch.bfloat16,
-        )
-        
-        model = AutoModelForCausalLM.from_pretrained(
-            MODEL_ID,
-            quantization_config=quantization_config,
-            device_map="auto",  # 자동으로 여러 GPU에 모델 분산
-            dtype=torch.bfloat16,
-            trust_remote_code=True,
-        )
+    # GPT-OSS specific model loading (with Mxfp4 quantization)
+    model_kwargs = {
+        "attn_implementation": "eager",  # Better performance for training
+        "torch_dtype": "auto",
+        "use_cache": False,  # Disable cache for training with gradient checkpointing
+        "device_map": "auto",  # Distribute across GPUs
+        "trust_remote_code": True
+    }
+    
+    model = AutoModelForCausalLM.from_pretrained(MODEL_ID, **model_kwargs)
+    print("Model loaded successfully (using Mxfp4 quantization)")
 
-    model = prepare_model_for_kbit_training(model)
-
-    # --- LoRA Configuration ---
+    # --- LoRA Configuration for GPT-OSS ---
+    print("Setting up LoRA configuration...")
     lora_config = LoraConfig(
-        r=8,
-        lora_alpha=32,
-        target_modules=["q_proj", "v_proj"],
+        r=8,  # Low-rank dimension
+        lora_alpha=32,  # LoRA scaling parameter
+        target_modules="all-linear",  # Target all linear layers for MoE architecture
+        target_parameters=["mlp.experts.down_proj", "mlp.experts.gate_up_proj"],  # Expert-specific layers
         lora_dropout=0.05,
         bias="none",
         task_type="CAUSAL_LM",
     )
 
-    model = get_peft_model(model, lora_config)
+    # Apply LoRA to the model
+    peft_model = get_peft_model(model, lora_config)
+    print("LoRA configuration applied successfully")
 
-    # --- Training ---
-    training_args = TrainingArguments(
+    # --- Training Configuration ---
+    print("Setting up training configuration...")
+    training_args = SFTConfig(
         output_dir=OUTPUT_DIR,
+        learning_rate=2e-4,
+        gradient_checkpointing=True,
         num_train_epochs=1,
+        logging_steps=1,
         per_device_train_batch_size=per_device_batch_size,
         gradient_accumulation_steps=4,
-        learning_rate=2e-4,
-        fp16=True,
-        logging_steps=10,
-        save_total_limit=2,
-        report_to="none", # trackio 사용으로 wandb 리포팅 비활성화
-        dataloader_pin_memory=False,  # 멀티 GPU에서 메모리 효율성 향상
-        dataloader_num_workers=min(4, num_gpus * 2),  # GPU 개수에 따른 워커 수 조정
-        ddp_find_unused_parameters=False,  # DDP 최적화
+        max_length=2048,  # GPT-OSS specific sequence length
+        warmup_ratio=0.03,
+        lr_scheduler_type="cosine_with_min_lr",
+        lr_scheduler_kwargs={"min_lr_rate": 0.1},
+        report_to="none",  # Using trackio instead
         save_strategy="epoch",
-        eval_strategy="no",  # evaluation_strategy → eval_strategy로 변경
+        save_total_limit=2,
+        dataloader_pin_memory=False,
+        dataloader_num_workers=min(4, num_gpus * 2),
+        ddp_find_unused_parameters=False,
         remove_unused_columns=False,
     )
 
-    trainer = Trainer(
-        model=model,
+    # --- Training ---
+    print("Initializing SFTTrainer...")
+    trainer = SFTTrainer(
+        model=peft_model,
         args=training_args,
-        train_dataset=tokenized_dataset,
+        train_dataset=formatted_dataset,
+        processing_class=tokenizer,  # Use processing_class instead of tokenizer
     )
 
     print("Starting fine-tuning...")
@@ -174,24 +176,42 @@ def main():
     # 훈련 메트릭 로깅
     wandb.log({"training_completed": True, "final_epoch": 1})
 
-    # --- Save Model with SafeTensors ---
-    print("Saving model with safetensors...")
-    model.save_pretrained(OUTPUT_DIR)
-    # If you want to save only the LoRA weights
-    # save_file(model.state_dict(), os.path.join(OUTPUT_DIR, "adapter_model.safetensors"))
-    
-    # To save the full model, you might need to merge the weights first
-    merged_model = model.merge_and_unload()
-    save_file(merged_model.state_dict(), os.path.join(OUTPUT_DIR, "model.safetensors"))
+    # --- Save Model ---
+    print("Saving LoRA adapter...")
+    trainer.save_model(OUTPUT_DIR)
     tokenizer.save_pretrained(OUTPUT_DIR)
     
     print(f"Model saved to {OUTPUT_DIR}")
+    
+    # --- Test Generation ---
+    print("Testing generation with fine-tuned model...")
+    test_messages = [
+        {"role": "user", "content": "한국의 수도는 어디인가요?"}
+    ]
+    
+    input_ids = tokenizer.apply_chat_template(
+        test_messages,
+        add_generation_prompt=True,
+        return_tensors="pt",
+    ).to(peft_model.device)
+    
+    gen_kwargs = {
+        "max_new_tokens": 256,
+        "do_sample": True,
+        "temperature": 0.6,
+        "top_p": 0.9
+    }
+    
+    output_ids = peft_model.generate(input_ids, **gen_kwargs)
+    response = tokenizer.batch_decode(output_ids)[0]
+    print("Sample generation:")
+    print(response)
     
     # trackio 실험 종료
     wandb.finish()
 
 if __name__ == "__main__":
     # 멀티 GPU 환경을 위한 환경 변수 설정
-    os.environ["TOKENIZERS_PARALLELISM"] = "false"  # 토크나이저 병렬처리 비활성화 (워닝 방지)
+    os.environ["TOKENIZERS_PARALLELISM"] = "false"
     
     main()
