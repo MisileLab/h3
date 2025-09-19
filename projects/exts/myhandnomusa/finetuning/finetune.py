@@ -2,7 +2,7 @@ import os
 import torch
 import trackio as wandb  # trackio는 wandb와 API 호환
 from datasets import load_dataset
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import AutoTokenizer, AutoModelForCausalLM, Mxfp4Config
 from peft import LoraConfig, get_peft_model
 from trl import SFTTrainer, SFTConfig
 
@@ -108,11 +108,12 @@ def main():
 
     # --- Model Loading and Configuration ---
     print("Loading GPT-OSS model...")
-    
+   
+    quantization_config = Mxfp4Config(dequantize=True)
     # GPT-OSS specific model loading (with Mxfp4 quantization)
     model_kwargs = {
         "attn_implementation": "eager",  # Better performance for training
-        "torch_dtype": "auto",
+        "dtype": "auto",
         "use_cache": False,  # Disable cache for training with gradient checkpointing
         "device_map": "auto",  # Distribute across GPUs
         "trust_remote_code": True
