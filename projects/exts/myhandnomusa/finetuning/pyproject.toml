@@ -25,5 +25,6 @@ dependencies = [
     "trackio>=0.4.0",
     "transformers>=4.56.1",
     "triton>=3.4.0",
+    "trl>=0.23.0",
     "vastai>=0.2.8",
 ]
