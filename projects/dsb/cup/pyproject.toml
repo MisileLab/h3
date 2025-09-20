@@ -20,7 +20,7 @@ dependencies = [
   "surya-ocr==0.16.7",
   "tabula-py[jpype]==2.10.0",
   "tabulate==0.9.0",
-  "typer==0.18.0",
+  "typer==0.19.0",
   "httpx>=0.28.1",
   "pytest-asyncio>=1.1.0",
   "python-dotenv>=1.1.1",
