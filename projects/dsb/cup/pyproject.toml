@@ -14,7 +14,7 @@ dependencies = [
   "polars==1.33.1",
   "pdf2image==1.17.0",
   "pillow==11.3.0",
-  "pypdf==6.0.0",
+  "pypdf==6.1.0",
   "pydantic==2.11.9",
   "rich==14.1.0",
   "surya-ocr==0.16.7",
