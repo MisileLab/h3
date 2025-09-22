@@ -8,7 +8,7 @@ dependencies = [
   "beautifulsoup4==4.13.5",
   "flask==3.1.2",
   "httpx==0.28.1",
-  "lxml==6.0.1",
+  "lxml==6.0.2",
   "numpy==2.3.3",
   "pwntools==4.14.1",
   "requests==2.32.5",
