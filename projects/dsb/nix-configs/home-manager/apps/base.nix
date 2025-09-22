@@ -114,6 +114,9 @@ if $env.TERM == "linux" {
         '';
       };
     };
+    programs = {
+      fabric-ai.enable = true;
+    };
     services = {
       pueue.enable = true;
       gpg-agent = {
