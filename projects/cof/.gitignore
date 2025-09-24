@@ -3,5 +3,3 @@
 .zig-cache/
 zig-out/
 *.o
-test.txt
-test2.txt
