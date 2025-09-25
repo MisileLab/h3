@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js';
 
-// --- THEME & STYLING ---
+// --- THEME & STYLING (from Pixi) ---
 const THEME = {
     background: 0x1a1a2e,
     node: 0x4a4e69,
@@ -54,6 +54,7 @@ interface Unit {
     id: string;
     name: string;
     role: UnitRole;
+    description: string;
     isPlayer: boolean;
     hp: number;
     maxHp: number;
@@ -77,6 +78,7 @@ interface Party {
     mapSprite: PIXI.Graphics;
 }
 
+// Represents the state for a single mission
 interface GameState {
     map: Map<number, GameNode>;
     party: Party;
@@ -95,40 +97,43 @@ interface GameState {
     }
 }
 
+// Represents the persistent state of the player across all missions
+interface MetaState {
+    totalParts: number;
+    totalData: number;
+    totalEnergy: number;
+    availableUnits: Unit[];
+}
+
 // --- UI SELECTORS ---
+const setupContainer = document.getElementById('setup-container') as HTMLElement;
+const gameBoard = document.getElementById('game-board') as HTMLElement;
+const launchButton = document.getElementById('launch-button') as HTMLButtonElement;
+const unitList = document.getElementById('unit-list') as HTMLElement;
+const partsInput = document.getElementById('parts-input') as HTMLInputElement;
+const energyInput = document.getElementById('energy-input') as HTMLInputElement;
+const partsLabel = document.getElementById('parts-label') as HTMLLabelElement;
+const energyLabel = document.getElementById('energy-label') as HTMLLabelElement;
+
 const resPartsEl = document.getElementById('res-parts');
 const resDataEl = document.getElementById('res-data');
 const resEnergyEl = document.getElementById('res-energy');
 const logContentEl = document.getElementById('log-content');
-const partyLocationEl = document.querySelector('#party-status p:nth-child(2)');
 const partyStatusEl = document.querySelector('#party-status');
 
-
-// --- PIXI APP SETUP ---
-const gameBoard = document.getElementById('game-board') as HTMLElement;
-const app = new PIXI.Application();
-await app.init({
-    width: gameBoard.clientWidth,
-    height: gameBoard.clientHeight,
-    backgroundColor: THEME.background,
-    antialias: true,
-});
-gameBoard.appendChild(app.view as unknown as Node);
-
+// --- PIXI APP & CONTAINERS ---
+let app: PIXI.Application;
 const mapContainer = new PIXI.Container();
 const combatContainer = new PIXI.Container();
 const gridContainer = new PIXI.Container();
 const highlightContainer = new PIXI.Container();
-combatContainer.addChild(gridContainer, highlightContainer);
 
-combatContainer.visible = false;
-app.stage.addChild(mapContainer, combatContainer);
-
-// --- GAME STATE FACTORIES ---
-const createUnit = (id: string, name: string, role: UnitRole, isPlayer: boolean): Unit => ({
+// --- GAME STATE FACTORIES & DATA ---
+const createUnit = (id: string, name: string, role: UnitRole, description: string, isPlayer: boolean): Unit => ({
     id,
     name,
     role,
+    description,
     isPlayer,
     hp: 1,
     maxHp: 1,
@@ -147,33 +152,63 @@ const createUnit = (id: string, name: string, role: UnitRole, isPlayer: boolean)
     }
 });
 
-const rex = createUnit('rex', 'Rex', 'Guardian', true);
-rex.maxHp = 150; rex.hp = 150; rex.attack = 12; rex.range = 1; rex.speed = 30; rex.movement = 2;
-
-const luna = createUnit('luna', 'Luna', 'Supporter', true);
-luna.maxHp = 80; luna.hp = 80; luna.attack = 8; luna.range = 3; luna.speed = 50; luna.movement = 3;
-
-// --- GAME STATE ---
-const gameState: GameState = {
-    map: new Map(),
-    party: {
-        members: [rex, luna],
-        currentNodeId: -1,
-        previousNodeId: null,
-        mapSprite: new PIXI.Graphics(),
+const ALL_POSSIBLE_UNITS = {
+    rex: () => {
+        const unit = createUnit('rex', 'Rex', 'Guardian', 'A sturdy machine that can protect others.', true);
+        unit.maxHp = 150; unit.hp = 150; unit.attack = 12; unit.range = 1; unit.speed = 30; unit.movement = 2;
+        return unit;
     },
-    resources: { parts: 10, data: 5, energy: 20 },
-    isInCombat: false,
-    combat: {
-        enemies: [],
-        turnOrder: [],
-        turnIndex: 0,
-        grid: [],
-        activePlayerAction: null,
+    luna: () => {
+        const unit = createUnit('luna', 'Luna', 'Supporter', 'A nimble unit that can repair allies from a distance.', true);
+        unit.maxHp = 80; unit.hp = 80; unit.attack = 8; unit.range = 3; unit.speed = 50; unit.movement = 3;
+        return unit;
+    },
+    zero: () => {
+        const unit = createUnit('zero', 'Zero', 'Attacker', 'A high-damage attacker with moderate range.', true);
+        unit.maxHp = 100; unit.hp = 100; unit.attack = 20; unit.range = 2; unit.speed = 40; unit.movement = 3;
+        return unit;
+    },
+    nova: () => {
+        const unit = createUnit('nova', 'Scout', 'A fast-moving scout that can cover long distances.', true);
+        unit.maxHp = 70; unit.hp = 70; unit.attack = 10; unit.range = 1; nova.speed = 60; nova.movement = 4;
+        return unit;
     }
 };
 
-// --- COMBAT UI ELEMENTS ---
+// --- GAME STATE ---
+let gameState: GameState;
+let metaState: MetaState;
+
+const defaultMetaState: () => MetaState = () => ({
+    totalParts: 0,
+    totalData: 0,
+    totalEnergy: 0,
+    availableUnits: [ALL_POSSIBLE_UNITS.rex(), ALL_POSSIBLE_UNITS.luna()],
+});
+
+function saveMetaState() {
+    try {
+        localStorage.setItem('scalar_metaState', JSON.stringify(metaState));
+    } catch (e) {
+        console.error("Failed to save state:", e);
+    }
+}
+
+function loadMetaState() {
+    try {
+        const savedState = localStorage.getItem('scalar_metaState');
+        if (savedState) {
+            metaState = JSON.parse(savedState);
+        } else {
+            metaState = defaultMetaState();
+        }
+    } catch (e) {
+        console.error("Failed to load state:", e);
+        metaState = defaultMetaState();
+    }
+}
+
+// --- COMBAT UI (PIXI) ---
 const attackButton = new PIXI.Graphics().beginFill(THEME.accent).drawRoundedRect(0, 0, 100, 50, 10).endFill();
 const specialButton = new PIXI.Graphics().beginFill(THEME.resource).drawRoundedRect(0, 0, 100, 50, 10).endFill();
 const moveButton = new PIXI.Graphics().beginFill(THEME.guard).drawRoundedRect(0, 0, 100, 50, 10).endFill();
@@ -195,7 +230,6 @@ setupButton(specialButton, 'SPECIAL', () => setPlayerAction('special'));
 setupButton(moveButton, 'MOVE', () => setPlayerAction('move'));
 setupButton(fleeButton, 'FLEE', () => fleeCombat());
 
-
 // --- GAME LOGIC ---
 
 function logEvent(message: string) {
@@ -209,12 +243,18 @@ function logEvent(message: string) {
 }
 
 function updateUI() {
-    if (resPartsEl) resPartsEl.textContent = gameState.resources.parts.toString();
-    if (resDataEl) resDataEl.textContent = gameState.resources.data.toString();
-    if (resEnergyEl) resEnergyEl.textContent = gameState.resources.energy.toString();
+    // Update the right-hand UI panel with the current mission's stats
+    if (gameState && gameState.resources) {
+        if (resPartsEl) resPartsEl.textContent = gameState.resources.parts.toString();
+        if (resDataEl) resDataEl.textContent = gameState.resources.data.toString();
+        if (resEnergyEl) resEnergyEl.textContent = gameState.resources.energy.toString();
+    }
 
-    if (partyStatusEl) {
+    if (partyStatusEl && gameState && gameState.party) {
         partyStatusEl.innerHTML = '<h3>Party Status</h3>';
+        if (gameState.party.members.length === 0) {
+            partyStatusEl.innerHTML += '<p>No members in party.</p>';
+        }
         gameState.party.members.forEach(m => {
             const memberP = document.createElement('p');
             const status = m.hp > 0 ? `${m.hp} / ${m.maxHp} HP` : 'DESTROYED';
@@ -223,15 +263,10 @@ function updateUI() {
             partyStatusEl.appendChild(memberP);
         });
     }
-
-    const currentNode = gameState.map.get(gameState.party.currentNodeId);
-    if (partyLocationEl && currentNode) {
-        partyLocationEl.textContent = `Location: (${currentNode.col}, ${currentNode.row})`;
-    }
 }
 
 function generateMap() {
-    // ... (same as before, no changes needed here)
+    gameState.map.clear();
     let nodeIdCounter = 0;
     const tempMap: GameNode[][] = [];
 
@@ -269,14 +304,17 @@ function generateMap() {
         }
     }
 
-    // Create connections
-    for (let col = 0; col < MAP_COLS - 1; col++) {
+    // Create connections, avoiding straight horizontal paths
+    for (let col = 0; col < MAP_COLS - 2; col++) { // Go up to the third to last column
         for (const node of tempMap[col]) {
             const nextColNodes = tempMap[col + 1];
             if (nextColNodes.length > 0) {
                 const connections = Math.random() > 0.5 ? 1 : 2;
                 for(let i = 0; i < connections; i++) {
                     const targetNode = nextColNodes[Math.floor(Math.random() * nextColNodes.length)];
+                    // Prevent connections to nodes on the same "line" (row index)
+                    if (targetNode.row === node.row) continue;
+
                     if(!node.connections.includes(targetNode.id)) {
                        node.connections.push(targetNode.id);
                     }
@@ -284,8 +322,17 @@ function generateMap() {
             }
         }
     }
-     // Ensure at least one path
-    for (let col = 0; col < MAP_COLS - 1; col++) {
+
+    // Ensure all nodes in the second-to-last column connect to the final escape node
+    const finalNode = tempMap[MAP_COLS - 1][0];
+    for (const node of tempMap[MAP_COLS - 2]) {
+        if (!node.connections.includes(finalNode.id)) {
+            node.connections.push(finalNode.id);
+        }
+    }
+
+     // Ensure at least one path exists through the map
+    for (let col = 0; col < MAP_COLS - 2; col++) {
         const node = tempMap[col][Math.floor(Math.random() * tempMap[col].length)];
         if (node.connections.length === 0) {
             const nextColNodes = tempMap[col + 1];
@@ -294,7 +341,6 @@ function generateMap() {
         }
     }
 }
-
 
 function onNodeClick(node: GameNode) {
     if (gameState.isInCombat) return;
@@ -314,7 +360,11 @@ function onNodeClick(node: GameNode) {
         return;
     }
     
-    // Node event
+    if (node.type === 'ESCAPE') {
+        endMission(true); // Successful extraction
+        return;
+    }
+
     switch(node.type) {
         case 'RESOURCE':
             const parts = Math.floor(Math.random() * 10) + 5;
@@ -326,15 +376,10 @@ function onNodeClick(node: GameNode) {
             gameState.resources.data += data;
             logEvent(`Discovered <span style="color: ${THEME.event};">${data} Data</span> from an ancient terminal.`);
             break;
-        case 'ESCAPE':
-            logEvent(`Extraction successful! Mission complete.`);
-            break;
     }
 
     renderMap();
 }
-
-// --- COMBAT LOGIC ---
 
 function gridToPixels(x: number, y: number): { x: number, y: number } {
     const totalGridWidth = COMBAT_GRID_COLS * CELL_SIZE;
@@ -354,10 +399,8 @@ function initiateCombat() {
     
     gameState.party.members.forEach(m => m.isDefending = false);
 
-    // Create grid
     gameState.combat.grid = Array.from({ length: COMBAT_GRID_COLS }, () => Array(COMBAT_GRID_ROWS).fill(null));
 
-    // Place units
     gameState.party.members.forEach((m, i) => {
         m.gridX = 1;
         m.gridY = 2 + i;
@@ -366,7 +409,7 @@ function initiateCombat() {
 
     const numEnemies = Math.floor(Math.random() * 2) + 1;
     for (let i = 0; i < numEnemies; i++) {
-        const enemy = createUnit(`Scrapper-${i}`, `Scrapper-${i}`, 'Enemy', false);
+        const enemy = createUnit(`Scrapper-${i}`, `Scrapper-${i}`, 'Enemy', 'A hostile machine.', false);
         enemy.maxHp = 40 + Math.floor(Math.random() * 20);
         enemy.hp = enemy.maxHp;
         enemy.attack = 10 + Math.floor(Math.random() * 5);
@@ -609,12 +652,8 @@ function endCombat(victory: boolean) {
         logEvent(`Victory! Collected <span style="color: ${THEME.resource};">${parts} Parts</span>.`);
         gameState.party.members.forEach(m => m.hp = Math.max(m.hp, 1));
     } else {
-        const energyLoss = 20;
-        gameState.resources.energy = Math.max(0, gameState.resources.energy - energyLoss);
-        const startNode = Array.from(gameState.map.values()).find(n => n.type === 'START')!;
-        gameState.party.currentNodeId = startNode.id;
-        logEvent(`Party defeated! Lost ${energyLoss} energy. Returning to start.`);
-        gameState.party.members.forEach(m => m.hp = m.maxHp / 2);
+        logEvent(`Party defeated in combat!`);
+        endMission(false); // Mission failed due to combat loss
     }
     renderMap();
 }
@@ -675,7 +714,6 @@ function renderUnit(unit: Unit) {
 function renderCombat() {
     gridContainer.removeChildren();
 
-    // Draw Grid
     for (let x = 0; x < COMBAT_GRID_COLS; x++) {
         for (let y = 0; y < COMBAT_GRID_ROWS; y++) {
             const pos = gridToPixels(x, y);
@@ -686,10 +724,8 @@ function renderCombat() {
         }
     }
 
-    // Render units
     [...gameState.party.members, ...gameState.combat.enemies].forEach(renderUnit);
     
-    // Render buttons
     const btnY = app.screen.height - 60;
     attackButton.position.set(app.screen.width / 2 - 230, btnY);
     specialButton.position.set(app.screen.width / 2 - 110, btnY);
@@ -700,8 +736,6 @@ function renderCombat() {
     updateUI();
 }
 
-
-// --- MAP RENDERING ---
 
 function getNodeColor(type: NodeType): number {
     switch (type) {
@@ -720,7 +754,6 @@ function renderMap() {
     const currentNode = gameState.map.get(gameState.party.currentNodeId);
     const connectedNodes = currentNode ? currentNode.connections : [];
 
-    // Draw lines
     for (const node of gameState.map.values()) {
         for (const connectionId of node.connections) {
             const targetNode = gameState.map.get(connectionId);
@@ -735,7 +768,6 @@ function renderMap() {
         }
     }
 
-    // Draw nodes
     for (const node of gameState.map.values()) {
         const g = new PIXI.Graphics();
         const isReachable = connectedNodes.includes(node.id);
@@ -781,7 +813,6 @@ function renderMap() {
         mapContainer.addChild(g, text);
     }
     
-    // Draw party on map
     if (currentNode) {
         gameState.party.mapSprite.clear();
         gameState.party.mapSprite.beginFill(THEME.accent);
@@ -795,8 +826,24 @@ function renderMap() {
     updateUI();
 }
 
-// --- INITIALIZATION ---
-function initGame() {
+// --- INITIALIZATION & MISSION CYCLE ---
+
+async function initializePixiApp() {
+    if (app) return; // Don't re-initialize
+    app = new PIXI.Application();
+    await app.init({
+        width: gameBoard.clientWidth,
+        height: gameBoard.clientHeight,
+        backgroundColor: THEME.background,
+        antialias: true,
+    });
+    gameBoard.appendChild(app.view as unknown as Node);
+
+    combatContainer.addChild(gridContainer, highlightContainer);
+    app.stage.addChild(mapContainer, combatContainer);
+}
+
+function startMission() {
     generateMap();
     const startNode = Array.from(gameState.map.values()).find(n => n.type === 'START');
     if (startNode) {
@@ -809,4 +856,117 @@ function initGame() {
     renderMap();
 }
 
-initGame();
+function endMission(isSuccess: boolean) {
+    if (isSuccess) {
+        logEvent(`Extraction successful! Recovered resources.`);
+        // Add mission resources back to meta state
+        metaState.totalParts += gameState.resources.parts;
+        metaState.totalData += gameState.resources.data;
+        metaState.totalEnergy += gameState.resources.energy;
+    } else {
+        logEvent(`Mission failed. Returning to base.`);
+        // Optionally, you could have a penalty here, like losing the allocated resources
+    }
+
+    saveMetaState();
+
+    // Reset view to the setup screen
+    gameBoard.style.display = 'none';
+    if(app) app.destroy(true); // Destroy the pixi app
+    app = null as any;
+    setupContainer.style.display = 'flex';
+    
+    // Refresh the setup screen with updated metaState
+    setupPreExplorationScreen();
+}
+
+
+function setupPreExplorationScreen() {
+    // Clear previous elements
+    unitList.innerHTML = '';
+
+    // Update resource inputs based on metaState
+    partsInput.value = '0';
+    energyInput.value = '0';
+    partsInput.max = metaState.totalParts.toString();
+    energyInput.max = metaState.totalEnergy.toString();
+    partsLabel.textContent = `Parts: (Available: ${metaState.totalParts})`;
+    energyLabel.textContent = `Energy: (Available: ${metaState.totalEnergy})`;
+
+
+    // Populate unit selection
+    metaState.availableUnits.forEach(unit => {
+        const card = document.createElement('div');
+        card.className = 'unit-card';
+        card.dataset.unitId = unit.id;
+        card.innerHTML = `
+            <h3>${unit.name}</h3>
+            <p>${unit.role}</p>
+            <p>${unit.description}</p>
+        `;
+        card.addEventListener('click', () => {
+            card.classList.toggle('selected');
+        });
+        unitList.appendChild(card);
+    });
+}
+
+async function launchMission() {
+    // 1. Gather selections
+    const selectedUnitIds = Array.from(unitList.querySelectorAll('.unit-card.selected'))
+        .map(card => (card as HTMLElement).dataset.unitId);
+
+    if (selectedUnitIds.length === 0) {
+        alert('Please select at least one unit for the party.');
+        return;
+    }
+
+    const allocatedParts = parseInt(partsInput.value, 10) || 0;
+    const allocatedEnergy = parseInt(energyInput.value, 10) || 0;
+
+    if (allocatedParts > metaState.totalParts || allocatedEnergy > metaState.totalEnergy) {
+        alert('Cannot allocate more resources than available.');
+        return;
+    }
+
+    // 2. Create the GameState for this session
+    gameState = {
+        map: new Map(),
+        party: {
+            members: metaState.availableUnits.filter(u => selectedUnitIds.includes(u.id))
+                .map(u => ({...u})), // Create copies for the mission
+            currentNodeId: -1,
+            previousNodeId: null,
+            mapSprite: new PIXI.Graphics(),
+        },
+        resources: { parts: allocatedParts, data: 0, energy: allocatedEnergy },
+        isInCombat: false,
+        combat: { enemies: [], turnOrder: [], turnIndex: 0, grid: [], activePlayerAction: null, }
+    };
+
+    // 3. Deduct resources from metaState
+    metaState.totalParts -= allocatedParts;
+    metaState.totalEnergy -= allocatedEnergy;
+    saveMetaState();
+
+    // 4. Update UI panels
+    logContentEl!.innerHTML = '<p>> Mission Launched!</p>';
+    updateUI();
+
+    // 5. Transition to game view
+    setupContainer.style.display = 'none';
+    gameBoard.style.display = 'block';
+
+    // 6. Initialize Pixi and start the game
+    await initializePixiApp();
+    startMission();
+}
+
+// --- STARTUP ---
+function main() {
+    loadMetaState();
+    setupPreExplorationScreen();
+    launchButton.onclick = launchMission; // Assign event listener once
+}
+
+main();

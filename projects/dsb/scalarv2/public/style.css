@@ -166,3 +166,121 @@ canvas {
         flex-basis: 100%;
     }
 }
+
+/* --- Setup Screen --- */
+#setup-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 40px;
+    background-color: var(--primary);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5) inset;
+}
+
+.setup-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.setup-header h1 {
+    font-size: 3rem;
+    color: var(--accent);
+}
+
+.setup-content {
+    display: flex;
+    gap: 40px;
+    flex-grow: 1;
+}
+
+.setup-section {
+    background-color: var(--background);
+    padding: 20px;
+    border-radius: 8px;
+    flex-basis: 50%;
+}
+
+.setup-section h2 {
+    color: var(--accent);
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#unit-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+}
+
+.unit-card {
+    background-color: var(--secondary);
+    padding: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.unit-card.selected {
+    border-color: var(--accent);
+    box-shadow: 0 0 10px var(--accent);
+}
+
+.unit-card:hover {
+    background-color: var(--hover);
+}
+
+.unit-card h3 {
+    margin-bottom: 5px;
+}
+
+.unit-card p {
+    font-size: 0.8rem;
+    color: var(--text);
+}
+
+#resource-allocation .resource-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+#resource-allocation label {
+    font-size: 1.2rem;
+}
+
+#resource-allocation input {
+    width: 80px;
+    padding: 5px;
+    background-color: var(--background);
+    color: var(--text);
+    border: 1px solid var(--secondary);
+    border-radius: 4px;
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+.setup-footer {
+    text-align: center;
+    margin-top: 40px;
+}
+
+#launch-button {
+    padding: 15px 40px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--text);
+    background-color: var(--accent);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#launch-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px var(--accent);
+}

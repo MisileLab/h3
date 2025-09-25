@@ -10,18 +10,40 @@
   <body>
     <div id="app">
       <div id="game-container">
-        <div id="title-header">
-          <h1>SCALAR</h1>
-          <p>An AI Crystal's Journey</p>
+        <div id="setup-container">
+          <div class="setup-header">
+            <h1>MISSION SETUP</h1>
+            <p>Prepare your team for the expedition.</p>
+          </div>
+          <div class="setup-content">
+            <div class="setup-section" id="party-selection">
+              <h2>SELECT PARTY</h2>
+              <div id="unit-list">
+                <!-- Units will be populated by main.ts -->
+              </div>
+            </div>
+            <div class="setup-section" id="resource-allocation">
+              <h2>ALLOCATE RESOURCES</h2>
+              <div class="resource-item">
+                <label id="parts-label" for="parts-input">Parts:</label>
+                <input type="number" id="parts-input" value="10" min="0" max="50">
+              </div>
+              <div class="resource-item">
+                <label id="energy-label" for="energy-input">Energy:</label>
+                <input type="number" id="energy-input" value="20" min="0" max="100">
+              </div>
+            </div>
+          </div>
+          <div class="setup-footer">
+            <button id="launch-button">LAUNCH MISSION</button>
+          </div>
         </div>
-        <div id="game-board"></div>
+        <div id="game-board" style="display: none;"></div>
       </div>
       <div id="ui-panel">
         <h2>CRYSTAL OS</h2>
         <div id="party-status">
-          <h3>Party: Alpha</h3>
-          <p>Location: (0, 2)</p>
-          <p>Status: <span class="status-ok">Nominal</span></p>
+          <!-- Status will be populated by main.ts -->
         </div>
         <div id="resources">
           <h3>Resources</h3>
@@ -34,7 +56,7 @@
         <div id="event-log">
             <h3>Event Log</h3>
             <div id="log-content">
-                <p>Initialized system. Ready for exploration.</p>
+                <p>Awaiting mission start...</p>
             </div>
         </div>
         <div id="footer">
