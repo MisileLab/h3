@@ -59,17 +59,23 @@ def process_codesearchnet(tokenizer):
 def process_scicode(tokenizer):
     '''Loads and processes the validation/test data from SciCode.'''
     print("Processing validation/test data from SciCode1/SciCode...")
-    dataset = load_dataset("SciCode1/SciCode", split='test')
     
-    valid_test_split = dataset.train_test_split(test_size=0.5, seed=42)
+    validation_dataset = load_dataset("SciCode1/SciCode", split='validation')
+    test_dataset = load_dataset("SciCode1/SciCode", split='test')
     
-    def transform(example):
+    # --- Validation Set Processing ---
+    def transform_validation(example):
+        description = example['problem_description_main']
+        if description.lower().startswith('write a python function'):
+            text = description
+        else:
+            text = f"Write a Python function to solve the following problem: {description}"
         return {
-            "text": f"Write a Python function to solve the following problem: {example['problem_description_main']}",
+            "text": text,
             "target_code": example['general_solution']
         }
 
-    def filter_example(example):
+    def filter_validation(example):
         description = example['problem_description_main']
         solution = example['general_solution']
         if not description or not solution:
@@ -79,16 +85,35 @@ def process_scicode(tokenizer):
         code_tokens = tokenizer.encode(solution)
         return 5 <= len(code_tokens) <= 1024
 
+    # --- Test Set Processing ---
+    def transform_test(example):
+        description = example['problem_description_main']
+        if description.lower().startswith('write a python function'):
+            text = description
+        else:
+            text = f"Write a Python function to solve the following problem: {description}"
+        return {
+            "text": text,
+            "target_code": example['general_tests']
+        }
+
+    def filter_test(example):
+        description = example['problem_description_main']
+        tests = example['general_tests']
+        if not description or not tests:
+            return False
+        if not any(c.isalnum() for c in description):
+            return False
+        code_tokens = tokenizer.encode(tests)
+        return 5 <= len(code_tokens) <= 1024
+
     num_procs = os.cpu_count() or 1
     
-    validation_set = valid_test_split['train']
-    test_set = valid_test_split['test']
-
     print("Processing validation set...")
-    processed_validation = validation_set.filter(filter_example, num_proc=num_procs).map(transform, num_proc=num_procs, remove_columns=validation_set.column_names)
+    processed_validation = validation_dataset.filter(filter_validation, num_proc=num_procs).map(transform_validation, num_proc=num_procs, remove_columns=validation_dataset.column_names)
     
     print("Processing test set...")
-    processed_test = test_set.filter(filter_example, num_proc=num_procs).map(transform, num_proc=num_procs, remove_columns=test_set.column_names)
+    processed_test = test_dataset.filter(filter_test, num_proc=num_procs).map(transform_test, num_proc=num_procs, remove_columns=test_dataset.column_names)
     
     print("Finished processing validation/test data.")
     return processed_validation, processed_test

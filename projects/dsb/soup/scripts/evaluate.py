@@ -6,6 +6,8 @@ import sys
 import argparse
 import math
 import torch
+import subprocess
+import tempfile
 from torch.utils.data import DataLoader
 from torchtext.data.metrics import bleu_score
 from safetensors.torch import load_file
@@ -52,6 +54,9 @@ def greedy_decode(model, src, tokenizer, device, max_len=512):
             
     return tgt
 
+import subprocess
+import tempfile
+
 def evaluate(args):
     '''Main evaluation loop for the model.'''
     tokenizer = get_tokenizer()
@@ -60,7 +65,13 @@ def evaluate(args):
     device = torch.device("cuda" if torch.cuda.is_available() and not args.force_cpu else "cpu")
     print(f"Using device: {device}")
 
-    eval_dataset = CodeDataset(data_path="data/validation.parquet", tokenizer=tokenizer, max_length=args.max_seq_length)
+    if args.split == 'validation':
+        eval_dataset = CodeDataset(data_path="data/validation.parquet", tokenizer=tokenizer, max_length=args.max_seq_length)
+    elif args.split == 'test':
+        eval_dataset = CodeDataset(data_path="data/test.parquet", tokenizer=tokenizer, max_length=args.max_seq_length)
+    else:
+        raise ValueError("Invalid split specified. Choose 'validation' or 'test'.")
+
     eval_loader = DataLoader(eval_dataset, batch_size=1, collate_fn=collate_batch)
 
     model = CodeGenerationModel(
@@ -80,43 +91,95 @@ def evaluate(args):
         print(f"Warning: Model weights not found at {args.model_path}. Using a randomly initialized model for evaluation.")
 
     model.eval()
-    print("Starting evaluation...")
+    print(f"Starting evaluation on the {args.split} split...")
     
-    total_bleu = 0
-    num_batches = 0
+    if args.split == 'validation':
+        total_bleu = 0
+        num_batches = 0
 
-    with torch.no_grad():
-        for i, batch in enumerate(eval_loader):
-            if args.limit_eval_batches and i >= args.limit_eval_batches:
-                break
+        with torch.no_grad():
+            for i, batch in enumerate(eval_loader):
+                if args.limit_eval_batches and i >= args.limit_eval_batches:
+                    break
 
-            input_ids = batch['input_ids'].to(device)
-            
-            split_point = int(input_ids.size(1) * 0.3)
-            src = input_ids[:, :split_point]
-            reference_ids = batch['input_ids'].squeeze().tolist()
+                input_ids = batch['input_ids'].to(device)
+                
+                split_point = int(input_ids.size(1) * 0.3)
+                src = input_ids[:, :split_point]
+                reference_ids = batch['input_ids'].squeeze().tolist()
 
-            if src.size(1) == 0:
-                continue
+                if src.size(1) == 0:
+                    continue
 
-            generated_ids = greedy_decode(model, src, tokenizer, device, max_len=args.max_gen_length).squeeze().tolist()
-            
-            candidate_corpus = [str(tok) for tok in tokenizer.decode(generated_ids).split()]
-            reference_corpus = [[str(tok) for tok in tokenizer.decode(reference_ids).split()]]
-            
-            bleu = bleu_score([candidate_corpus], reference_corpus)
-            total_bleu += bleu
-            num_batches = i + 1
-            
-            if i % 10 == 0:
-                print(f"\n--- Example {i} ---")
-                print(f"  Source:    {tokenizer.decode(src.squeeze().tolist())}")
-                print(f"  Generated: {tokenizer.decode(generated_ids)}")
-                print(f"  Reference: {tokenizer.decode(reference_ids)}")
-                print(f"  BLEU: {bleu:.4f}")
+                generated_ids = greedy_decode(model, src, tokenizer, device, max_len=args.max_gen_length).squeeze().tolist()
+                
+                candidate_corpus = [str(tok) for tok in tokenizer.decode(generated_ids).split()]
+                reference_corpus = [[str(tok) for tok in tokenizer.decode(reference_ids).split()]]
+                
+                bleu = bleu_score([candidate_corpus], reference_corpus)
+                total_bleu += bleu
+                num_batches = i + 1
+                
+                if i % 10 == 0:
+                    print(f"\n--- Example {i} ---")
+                    print(f"  Source:    {tokenizer.decode(src.squeeze().tolist())}")
+                    print(f"  Generated: {tokenizer.decode(generated_ids)}")
+                    print(f"  Reference: {tokenizer.decode(reference_ids)}")
+                    print(f"  BLEU: {bleu:.4f}")
 
-    avg_bleu = total_bleu / num_batches if num_batches > 0 else 0
-    print(f"\nEvaluation complete. Average BLEU score: {avg_bleu:.4f}")
+        avg_bleu = total_bleu / num_batches if num_batches > 0 else 0
+        print(f"\nEvaluation complete. Average BLEU score: {avg_bleu:.4f}")
+    
+    elif args.split == 'test':
+        passed_count = 0
+        num_batches = 0
+
+        with torch.no_grad():
+            for i, batch in enumerate(eval_loader):
+                if args.limit_eval_batches and i >= args.limit_eval_batches:
+                    break
+
+                input_ids = batch['input_ids'].to(device)
+                
+                split_point = int(input_ids.size(1) * 0.3)
+                src = input_ids[:, :split_point]
+                test_code = tokenizer.decode(batch['input_ids'].squeeze().tolist())
+
+                if src.size(1) == 0:
+                    continue
+
+                generated_ids = greedy_decode(model, src, tokenizer, device, max_len=args.max_gen_length).squeeze().tolist()
+                generated_code = tokenizer.decode(generated_ids)
+                
+                full_code = generated_code + "\n" + test_code
+                
+                try:
+                    with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as f:
+                        f.write(full_code)
+                        temp_filename = f.name
+                    
+                    process = subprocess.run(['uv', 'run', 'python', temp_filename], capture_output=True, text=True, timeout=10)
+                    
+                    if process.returncode == 0:
+                        passed_count += 1
+                        print(f"--- Example {i}: PASSED ---")
+                    else:
+                        print(f"--- Example {i}: FAILED ---")
+                        print(f"  Stderr: {process.stderr}")
+
+                except subprocess.TimeoutExpired:
+                    print(f"--- Example {i}: TIMEOUT ---")
+                except Exception as e:
+                    print(f"--- Example {i}: ERROR ---")
+                    print(f"  Error: {e}")
+                finally:
+                    if 'temp_filename' in locals() and os.path.exists(temp_filename):
+                        os.remove(temp_filename)
+
+                num_batches = i + 1
+
+        pass_rate = passed_count / num_batches if num_batches > 0 else 0
+        print(f"\nEvaluation complete. Pass rate: {pass_rate:.4f}")
 
 def main():
     parser = argparse.ArgumentParser(description="Evaluate the code generation model.")
@@ -130,6 +193,7 @@ def main():
     parser.add_argument("--max_seq_length", type=int, default=2048, help="Maximum sequence length")
     
     # Evaluation config
+    parser.add_argument("--split", type=str, default="validation", choices=["validation", "test"], help="Dataset split to evaluate on")
     parser.add_argument("--model_path", type=str, default="codegen_model.pth", help="Path to the trained model weights")
     parser.add_argument("--max_gen_length", type=int, default=512, help="Maximum length of the generated sequence")
     parser.add_argument("--limit_eval_batches", type=int, default=None, help="Limit the number of batches for a quick test run")
