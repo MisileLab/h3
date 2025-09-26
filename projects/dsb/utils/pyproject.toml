@@ -10,6 +10,6 @@ dependencies = [
   "inquirer==3.4.1",
   "tqdm==4.67.1",
   "pygithub==2.8.1",
-  "minio==7.2.16",
+  "minio==7.2.17",
   "tomli==2.2.1",
 ]
