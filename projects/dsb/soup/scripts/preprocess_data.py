@@ -102,9 +102,17 @@ def process_scicode(tokenizer):
             text = full_description
         else:
             text = f"Write a Python function to solve the following problem: {full_description}"
+        
+        # Convert list of tests to string
+        tests = example['general_tests']
+        if isinstance(tests, list):
+            target_code = '\n'.join(tests)
+        else:
+            target_code = str(tests)
+            
         return {
             "text": text,
-            "target_code": example['general_tests']
+            "target_code": target_code
         }
 
     def filter_test(example):
