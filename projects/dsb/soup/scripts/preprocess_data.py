@@ -76,8 +76,7 @@ def process_scicode(tokenizer):
             return False
         if not any(c.isalnum() for c in description):
             return False
-        code_tokens = tokenizer.encode(solution)
-        return 10 <= len(code_tokens) <= 500
+        return 5 <= len(code_tokens) <= 1024
 
     num_procs = os.cpu_count() or 1
     
