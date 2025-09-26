@@ -171,7 +171,7 @@ def main():
 
     # Training Hyperparameters
     parser.add_argument("--epochs", type=int, default=5, help="Number of training epochs")
-    parser.add_argument("--batch_size", type=int, default=16, help="Effective batch size")
+    parser.add_argument("--batch_size", type=int, default=1, help="Effective batch size")
     parser.add_argument("--accumulation_steps", type=int, default=32, help="Gradient accumulation steps")
     parser.add_argument("--learning_rate", type=float, default=2e-4, help="Learning rate")
     parser.add_argument("--warmup_steps", type=int, default=10000, help="Number of warmup steps")
