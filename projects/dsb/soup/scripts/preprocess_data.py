@@ -123,6 +123,9 @@ def main():
     os.makedirs(output_dir, exist_ok=True)
 
     for split, data in final_datasets.items():
+        if len(data) == 0:
+            print(f"WARNING: The '{split}' split is empty after filtering and will be skipped.")
+            continue
         output_path = os.path.join(output_dir, f"{split}.parquet")
         print(f"Saving {split} split to {output_path}...")
         data.to_parquet(output_path)
