@@ -145,11 +145,11 @@ def process_scicode(tokenizer):
     num_procs = os.cpu_count() or 1
     
     print("Processing validation set...")
-    processed_validation = validation_dataset.filter(filter_validation, num_proc=num_procs).map(transform_validation, num_proc=num_procs, remove_columns=validation_dataset.column_names)
+    processed_validation = validation_dataset.map(transform_validation, num_proc=num_procs, remove_columns=validation_dataset.column_names).filter(filter_validation, num_proc=num_procs)
     
     print("Processing test set...")
     print(f"Test dataset size before filtering: {len(test_dataset)}")
-    processed_test = test_dataset.filter(filter_test, num_proc=num_procs).map(transform_test, num_proc=num_procs, remove_columns=test_dataset.column_names)
+    processed_test = test_dataset.map(transform_test, num_proc=num_procs, remove_columns=test_dataset.column_names).filter(filter_test, num_proc=num_procs)
     print(f"Test dataset size after filtering: {len(processed_test)}")
     
     print("Finished processing validation/test data.")
