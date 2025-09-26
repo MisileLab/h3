@@ -40,7 +40,7 @@ def process_codesearchnet(tokenizer):
     def filter_example(example):
         comment = example['comment']
         code = example['code']
-        if not comment or not code:
+        if not isinstance(comment, str) or not isinstance(code, str) or not comment or not code:
             return False
         stripped_comment = comment.strip().lower()
         if stripped_comment in ('// started', '// completed'):
@@ -66,10 +66,15 @@ def process_scicode(tokenizer):
     # --- Validation Set Processing ---
     def transform_validation(example):
         description = example['problem_description_main']
+        background = str(example.get('problem_background_main', ''))
+        full_description = description
+        if background:
+            full_description += "\n" + background
+
         if description.lower().startswith('write a python function'):
-            text = description
+            text = full_description
         else:
-            text = f"Write a Python function to solve the following problem: {description}"
+            text = f"Write a Python function to solve the following problem: {full_description}"
         return {
             "text": text,
             "target_code": example['general_solution']
@@ -78,7 +83,7 @@ def process_scicode(tokenizer):
     def filter_validation(example):
         description = example['problem_description_main']
         solution = example['general_solution']
-        if not description or not solution:
+        if not isinstance(description, str) or not isinstance(solution, str) or not description or not solution:
             return False
         if not any(c.isalnum() for c in description):
             return False
@@ -88,10 +93,15 @@ def process_scicode(tokenizer):
     # --- Test Set Processing ---
     def transform_test(example):
         description = example['problem_description_main']
+        background = str(example.get('problem_background_main', ''))
+        full_description = description
+        if background:
+            full_description += "\n" + background
+
         if description.lower().startswith('write a python function'):
-            text = description
+            text = full_description
         else:
-            text = f"Write a Python function to solve the following problem: {description}"
+            text = f"Write a Python function to solve the following problem: {full_description}"
         return {
             "text": text,
             "target_code": example['general_tests']
@@ -100,7 +110,7 @@ def process_scicode(tokenizer):
     def filter_test(example):
         description = example['problem_description_main']
         tests = example['general_tests']
-        if not description or not tests:
+        if not isinstance(description, str) or not isinstance(tests, str) or not description or not tests:
             return False
         if not any(c.isalnum() for c in description):
             return False
