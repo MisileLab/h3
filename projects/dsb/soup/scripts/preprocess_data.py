@@ -110,6 +110,20 @@ def process_scicode(tokenizer):
     def filter_test(example):
         description = example['problem_description_main']
         tests = example['general_tests']  # FIXED: Use general_tests instead of general_solution
+        
+        # Debug: Print first few examples
+        global test_debug_count
+        if not hasattr(filter_test, 'debug_count'):
+            filter_test.debug_count = 0
+        
+        if filter_test.debug_count < 5:
+            print(f"\n--- Test Example {filter_test.debug_count} Debug ---")
+            print(f"Description type: {type(description)}")
+            print(f"Tests type: {type(tests)}")
+            print(f"Description: {str(description)[:200]}..." if description else "None")
+            print(f"Tests: {str(tests)[:200]}..." if tests else "None")
+            filter_test.debug_count += 1
+        
         if not isinstance(description, str) or not isinstance(tests, str) or not description or not tests:
             return False
         if not any(c.isalnum() for c in description):
@@ -126,7 +140,9 @@ def process_scicode(tokenizer):
     processed_validation = validation_dataset.filter(filter_validation, num_proc=num_procs).map(transform_validation, num_proc=num_procs, remove_columns=validation_dataset.column_names)
     
     print("Processing test set...")
+    print(f"Test dataset size before filtering: {len(test_dataset)}")
     processed_test = test_dataset.filter(filter_test, num_proc=num_procs).map(transform_test, num_proc=num_procs, remove_columns=test_dataset.column_names)
+    print(f"Test dataset size after filtering: {len(processed_test)}")
     
     print("Finished processing validation/test data.")
     return processed_validation, processed_test
