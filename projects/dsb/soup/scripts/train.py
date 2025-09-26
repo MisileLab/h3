@@ -1,5 +1,5 @@
 '''
-Training script for the code generation model.
+Training script for the code generation model, adjusted for multi-GPU training.
 '''
 import os
 import sys
@@ -10,6 +10,11 @@ from torch.utils.data import DataLoader
 from torch.optim.lr_scheduler import SequentialLR, LinearLR, CosineAnnealingLR
 from safetensors.torch import save_file
 
+# --- DDP Imports ---
+import torch.distributed as dist
+from torch.nn.parallel import DistributedDataParallel as DDP
+from torch.utils.data.distributed import DistributedSampler
+
 # Add project root to path
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
@@ -17,8 +22,17 @@ from src.tokenizer import get_tokenizer
 from src.dataset import CodeDataset, collate_batch
 from src.model import CodeGenerationModel
 
+def setup_ddp():
+    """Initializes the distributed process group."""
+    dist.init_process_group(backend="nccl")
+    torch.cuda.set_device(int(os.environ["LOCAL_RANK"]))
+
+def cleanup_ddp():
+    """Cleans up the distributed process group."""
+    dist.destroy_process_group()
+
 def validate_epoch(model, val_loader, device, criterion, args):
-    '''Runs a validation loop for one epoch.'''
+    '''Runs a validation loop for one epoch on all GPUs and aggregates results.'''
     model.eval()
     total_val_loss = 0
     num_batches = 0
@@ -38,31 +52,51 @@ def validate_epoch(model, val_loader, device, criterion, args):
             if src.size(1) == 0 or tgt.size(1) <= 1:
                 continue
 
-            output, _, _ = model(src=src, tgt=tgt[:, :-1])
-            loss = criterion(output.reshape(-1, model.fc_out.out_features), tgt_labels[:, 1:].reshape(-1))
+            # Note: When using DDP, model.module is used to access the original model
+            output, _, _ = model.module(src=src, tgt=tgt[:, :-1])
+            loss = criterion(output.reshape(-1, model.module.fc_out.out_features), tgt_labels[:, 1:].reshape(-1))
             
             total_val_loss += loss.item()
-            num_batches = i + 1
+            num_batches += 1
 
-    return total_val_loss / num_batches if num_batches > 0 else 0
+    # --- Aggregate metrics across all GPUs ---
+    total_loss_tensor = torch.tensor([total_val_loss], dtype=torch.float64).to(device)
+    num_batches_tensor = torch.tensor([num_batches], dtype=torch.int64).to(device)
+    
+    dist.all_reduce(total_loss_tensor, op=dist.ReduceOp.SUM)
+    dist.all_reduce(num_batches_tensor, op=dist.ReduceOp.SUM)
+
+    global_avg_loss = total_loss_tensor.item() / num_batches_tensor.item() if num_batches_tensor.item() > 0 else 0
+    return global_avg_loss
 
 def train(args):
-    '''Main training loop for the code generation model.'''
-    # --- 1. Configuration ---
+    '''Main training loop for the code generation model with DDP support.'''
+    # --- 1. DDP Setup ---
+    setup_ddp()
+    local_rank = int(os.environ["LOCAL_RANK"])
+    world_size = int(os.environ["WORLD_SIZE"])
+    device = torch.device("cuda", local_rank)
+    
+    if local_rank == 0:
+        print(f"Initialized DDP on {world_size} GPUs.")
+
+    # --- 2. Configuration ---
     tokenizer = get_tokenizer()
     vocab_size = tokenizer.n_vocab
     
-    # --- 2. Setup ---
-    device = torch.device("cuda" if torch.cuda.is_available() and not args.force_cpu else "cpu")
-    print(f"Using device: {device}")
-
     # --- 3. Data ---
     train_dataset = CodeDataset(data_path="data/train.parquet", tokenizer=tokenizer, max_length=args.max_seq_length)
     val_dataset = CodeDataset(data_path="data/validation.parquet", tokenizer=tokenizer, max_length=args.max_seq_length)
     
+    # Use DistributedSampler to ensure each GPU sees a unique part of the data
+    train_sampler = DistributedSampler(train_dataset, num_replicas=world_size, rank=local_rank, shuffle=True)
+    val_sampler = DistributedSampler(val_dataset, num_replicas=world_size, rank=local_rank, shuffle=False)
+
+    # batch_size is now per-GPU
     loader_batch_size = max(1, args.batch_size // args.accumulation_steps)
-    train_loader = DataLoader(train_dataset, batch_size=loader_batch_size, shuffle=True, collate_fn=collate_batch)
-    val_loader = DataLoader(val_dataset, batch_size=loader_batch_size, shuffle=False, collate_fn=collate_batch)
+    # The shuffle argument must be False when using a Sampler
+    train_loader = DataLoader(train_dataset, batch_size=loader_batch_size, collate_fn=collate_batch, sampler=train_sampler)
+    val_loader = DataLoader(val_dataset, batch_size=loader_batch_size, collate_fn=collate_batch, sampler=val_sampler)
 
     # --- 4. Model ---
     model = CodeGenerationModel(
@@ -76,7 +110,12 @@ def train(args):
         max_seq_length=args.max_seq_length
     ).to(device)
     
-    print(f"Model created with {sum(p.numel() for p in model.parameters())/1e6:.2f}M parameters.")
+    # Wrap model with DDP
+    model = DDP(model, device_ids=[local_rank])
+    
+    if local_rank == 0:
+        # Calculate params from one model replica
+        print(f"Model created with {sum(p.numel() for p in model.module.parameters())/1e6:.2f}M parameters.")
 
     # --- 5. Training ---
     lm_criterion = nn.CrossEntropyLoss(ignore_index=-100)
@@ -85,17 +124,23 @@ def train(args):
     
     # LR Scheduler
     warmup_scheduler = LinearLR(optimizer, start_factor=0.001, end_factor=1.0, total_iters=args.warmup_steps)
-    total_steps = len(train_loader) * args.epochs
+    # Adjust total steps for DDP
+    total_steps = (len(train_loader) // world_size) * args.epochs
     cosine_scheduler = CosineAnnealingLR(optimizer, T_max=total_steps - args.warmup_steps, eta_min=args.learning_rate * 0.1)
     scheduler = SequentialLR(optimizer, schedulers=[warmup_scheduler, cosine_scheduler], milestones=[args.warmup_steps])
 
-    # Early Stopping
+    # Early Stopping (state managed by rank 0)
     best_val_loss = float('inf')
     epochs_no_improve = 0
 
-    print("Starting training...")
+    if local_rank == 0:
+        print("Starting training...")
+        
     for epoch in range(args.epochs):
         model.train()
+        # Set epoch for the sampler to ensure shuffling is different each epoch
+        train_sampler.set_epoch(epoch)
+        
         total_epoch_loss = 0
         num_batches = 0
         for i, batch in enumerate(train_loader):
@@ -112,16 +157,18 @@ def train(args):
 
             if src.size(1) == 0 or tgt.size(1) <= 1:
                 continue
-
+            
+            # Forward pass
             output, src_embedding, code_embedding = model(src=src, tgt=tgt[:, :-1])
             
+            # Loss calculation
             loss_lm = lm_criterion(output.reshape(-1, vocab_size), tgt_labels[:, 1:].reshape(-1))
             target = torch.ones(src_embedding.size(0)).to(device)
             loss_align = contrastive_criterion(src_embedding, code_embedding, target)
             loss = loss_lm + args.contrastive_loss_weight * loss_align
             
             loss = loss / args.accumulation_steps
-            loss.backward()
+            loss.backward() # DDP handles gradient synchronization
 
             if (i + 1) % args.accumulation_steps == 0:
                 torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
@@ -132,33 +179,53 @@ def train(args):
             total_epoch_loss += loss.item() * args.accumulation_steps
             num_batches = i + 1
 
-            if (i + 1) % (10 * args.accumulation_steps) == 0:
+            # Log only from the main process
+            if local_rank == 0 and (i + 1) % (10 * args.accumulation_steps) == 0:
                 print(f"Epoch [{epoch+1}/{args.epochs}], Step [{i+1}/{len(train_loader)}], LR: {scheduler.get_last_lr()[0]:.6f}, Loss: {loss.item() * args.accumulation_steps:.4f}")
 
-        avg_epoch_loss = total_epoch_loss / num_batches if num_batches > 0 else 0
+        # Sync all processes before validation
+        dist.barrier()
         
-        # --- Validation ---
+        # --- Validation (run on all GPUs, aggregate results) ---
         avg_val_loss = validate_epoch(model, val_loader, device, lm_criterion, args)
-        print(f"Epoch {epoch+1} finished. Avg Train Loss: {avg_epoch_loss:.4f}, Avg Val Loss: {avg_val_loss:.4f}")
 
-        # --- Early Stopping Check ---
-        if avg_val_loss < best_val_loss - args.early_stopping_delta:
-            best_val_loss = avg_val_loss
-            epochs_no_improve = 0
-            print(f"Validation loss improved. Saving model to {args.save_path}")
-            save_file(model.state_dict(), args.save_path)
+        # --- Logging and Saving (only on main process) ---
+        if local_rank == 0:
+            avg_epoch_loss = total_epoch_loss / num_batches if num_batches > 0 else 0
+            print(f"Epoch {epoch+1} finished. Avg Train Loss: {avg_epoch_loss:.4f}, Avg Val Loss: {avg_val_loss:.4f}")
+
+            # Early Stopping Check
+            if avg_val_loss < best_val_loss - args.early_stopping_delta:
+                best_val_loss = avg_val_loss
+                epochs_no_improve = 0
+                print(f"Validation loss improved. Saving model to {args.save_path}")
+                # Save the underlying model's state dict
+                save_file(model.module.state_dict(), args.save_path)
+            else:
+                epochs_no_improve += 1
+                print(f"Validation loss did not improve. Patience: {epochs_no_improve}/{args.early_stopping_patience}")
+
+            if epochs_no_improve >= args.early_stopping_patience:
+                print("Early stopping triggered.")
+                # Signal other processes to stop (optional, but good practice)
+                stop_training = torch.tensor([1]).to(device)
+            else:
+                stop_training = torch.tensor([0]).to(device)
         else:
-            epochs_no_improve += 1
-            print(f"Validation loss did not improve. Patience: {epochs_no_improve}/{args.early_stopping_patience}")
+            stop_training = torch.tensor([0]).to(device)
 
-        if epochs_no_improve >= args.early_stopping_patience:
-            print("Early stopping triggered.")
+        # Broadcast the stop signal from rank 0 to all other processes
+        dist.broadcast(stop_training, src=0)
+        if stop_training.item() == 1:
             break
 
-    print("Training complete.")
+    if local_rank == 0:
+        print("Training complete.")
+    
+    cleanup_ddp()
 
 def main():
-    parser = argparse.ArgumentParser(description="Train the code generation model.")
+    parser = argparse.ArgumentParser(description="Train the code generation model using DDP.")
     
     # Model Hyperparameters
     parser.add_argument("--d_model", type=int, default=1024, help="Model dimension")
@@ -171,7 +238,7 @@ def main():
 
     # Training Hyperparameters
     parser.add_argument("--epochs", type=int, default=5, help="Number of training epochs")
-    parser.add_argument("--batch_size", type=int, default=1, help="Effective batch size")
+    parser.add_argument("--batch_size", type=int, default=1, help="Per-GPU batch size")
     parser.add_argument("--accumulation_steps", type=int, default=32, help="Gradient accumulation steps")
     parser.add_argument("--learning_rate", type=float, default=2e-4, help="Learning rate")
     parser.add_argument("--warmup_steps", type=int, default=10000, help="Number of warmup steps")
@@ -185,7 +252,6 @@ def main():
     # Testing & Debugging
     parser.add_argument("--limit_train_batches", type=int, default=None, help="Limit training batches for a quick test run")
     parser.add_argument("--limit_eval_batches", type=int, default=None, help="Limit validation batches for a quick test run")
-    parser.add_argument("--force_cpu", action="store_true", help="Force use of CPU even if CUDA is available")
 
     args = parser.parse_args()
     train(args)
