@@ -14,7 +14,7 @@ from safetensors.torch import load_file
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from src.tokenizer import get_tokenizer
-from src.dataset import CodeDataset
+from src.dataset import CodeDataset, collate_batch
 from src.model import CodeGenerationModel
 
 def greedy_decode(model, src, tokenizer, device, max_len=512):
@@ -61,7 +61,7 @@ def evaluate(args):
     print(f"Using device: {device}")
 
     eval_dataset = CodeDataset(data_path="data/validation.parquet", tokenizer=tokenizer, max_length=args.max_seq_length)
-    eval_loader = DataLoader(eval_dataset, batch_size=1)
+    eval_loader = DataLoader(eval_dataset, batch_size=1, collate_fn=collate_batch)
 
     model = CodeGenerationModel(
         vocab_size=vocab_size,

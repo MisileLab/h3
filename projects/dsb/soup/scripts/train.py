@@ -14,7 +14,7 @@ from safetensors.torch import save_file
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from src.tokenizer import get_tokenizer
-from src.dataset import CodeDataset
+from src.dataset import CodeDataset, collate_batch
 from src.model import CodeGenerationModel
 
 def train(args):
@@ -30,7 +30,7 @@ def train(args):
     # --- 3. Data ---
     train_dataset = CodeDataset(data_path="data/train.parquet", tokenizer=tokenizer, max_length=args.max_seq_length)
     loader_batch_size = max(1, args.batch_size // args.accumulation_steps)
-    train_loader = DataLoader(train_dataset, batch_size=loader_batch_size, shuffle=True)
+    train_loader = DataLoader(train_dataset, batch_size=loader_batch_size, shuffle=True, collate_fn=collate_batch)
 
     # --- 4. Model ---
     model = CodeGenerationModel(

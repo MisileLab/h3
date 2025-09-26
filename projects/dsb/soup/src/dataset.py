@@ -4,7 +4,11 @@ PyTorch Dataset class for loading the preprocessed data.
 import os
 import torch
 from torch.utils.data import Dataset
+from torch.nn.utils.rnn import pad_sequence
 from datasets import load_dataset
+
+# Define the padding token ID. Using the ID for <|endoftext|> from the o200k_base tokenizer.
+PAD_TOKEN_ID = 199999
 
 class CodeDataset(Dataset):
     '''
@@ -21,16 +25,12 @@ class CodeDataset(Dataset):
         self.max_length = max_length
         
         if not os.path.exists(data_path):
-            # If the file doesn't exist, create a dummy dataset for demonstration
             print(f"Warning: Data file not found at {data_path}. Using a dummy dataset.")
             self.dataset = self._create_dummy_dataset()
         else:
-            # Load the dataset from the Parquet file using the datasets library.
-            # This creates a memory-mappable dataset, which is highly efficient.
             self.dataset = load_dataset('parquet', data_files=data_path, split='train')
 
     def _create_dummy_dataset(self):
-        '''Creates a small dummy dataset for testing purposes.'''
         from datasets import Dataset as HuggingFaceDataset
         dummy_data = {
             "text": ["Write a Python function that returns 'hello world'", "Create a JavaScript function to add two numbers"],
@@ -39,71 +39,68 @@ class CodeDataset(Dataset):
         return HuggingFaceDataset.from_dict(dummy_data)
 
     def __len__(self):
-        '''
-        Returns the number of samples in the dataset.
-        '''
         return len(self.dataset)
 
     def __getitem__(self, idx):
-        '''
-        Retrieves a single sample from the dataset and prepares it for the model.
-        '''
         sample = self.dataset[idx]
         text = sample['text']
         target_code = sample['target_code']
 
-        # Format the input text according to the model's training format
         input_text = f"<|startoftext|>{text}<|endoftext|><|startofcode|>{target_code}<|endofcode|>"
 
-        # Tokenize the input text
-        tokens = self.tokenizer.encode(input_text, allowed_special={'<|startoftext|>', '<|endoftext|>', '<|startofcode|>', '<|endofcode|>'})
-
-        # Truncate tokens to max_length
+        tokens = self.tokenizer.encode(input_text, allowed_special={'<|startoftext|>', '<|endoftext|>', '<|startofcode|>', '<|endofcode|>'} )
         tokens = tokens[:self.max_length]
 
-        # Create input and target tensors
         input_ids = torch.tensor(tokens, dtype=torch.long)
-        
-        # The target is the input shifted by one token. We use -100 for tokens to be ignored by the loss function.
         target_ids = input_ids.clone()
         target_ids[:-1] = input_ids[1:]
-        target_ids[-1] = -100 # The last token has no target
+        target_ids[-1] = -100
 
         return {
             "input_ids": input_ids,
             "labels": target_ids
         }
 
+def collate_batch(batch):
+    '''
+    Pads sequences in a batch to the length of the longest sequence.
+    '''
+    input_ids_list = [item['input_ids'] for item in batch]
+    labels_list = [item['labels'] for item in batch]
+
+    # Pad input_ids with the pad_token_id
+    padded_input_ids = pad_sequence(input_ids_list, batch_first=True, padding_value=PAD_TOKEN_ID)
+    
+    # Pad labels with -100, which is ignored by the loss function
+    padded_labels = pad_sequence(labels_list, batch_first=True, padding_value=-100)
+
+    return {
+        "input_ids": padded_input_ids,
+        "labels": padded_labels
+    }
+
 if __name__ == '__main__':
-    # This block is for demonstration purposes.
-    # You will need to install pandas and pyarrow: pip install pandas pyarrow
     import pandas as pd
     from tokenizer import get_tokenizer
+    from torch.utils.data import DataLoader
 
-    # Initialize tokenizer
     tokenizer = get_tokenizer()
-
-    # Create a dummy data file for testing
     dummy_data_path = "dummy_data.parquet"
     dummy_data = [
-        {"text": "Write a test function", "target_code": "def test(): pass"},
-        {"text": "Write another test function", "target_code": "def test2(): return 1"}
+        {"text": "Short function", "target_code": "def f(): pass"},
+        {"text": "A much longer function description for testing padding", "target_code": "def a_longer_function():\n    print('This is longer')\n    return True"}
     ]
     pd.DataFrame(dummy_data).to_parquet(dummy_data_path)
 
-    # Initialize dataset
-    print(f"Loading data from {dummy_data_path}...")
     dataset = CodeDataset(data_path=dummy_data_path, tokenizer=tokenizer)
+    
+    # Demonstrate the collate function
+    loader = DataLoader(dataset, batch_size=2, collate_fn=collate_batch)
+    batch = next(iter(loader))
 
-    # Get a sample
-    if len(dataset) > 0:
-        sample = dataset[0]
-        print("\nSample from CodeDataset:")
-        print(f"Input IDs: {sample['input_ids']}")
-        print(f"Labels: {sample['labels']}")
-        print(f"\nDecoded Input: {tokenizer.decode(sample['input_ids'].tolist())}")
-    else:
-        print("Dataset is empty.")
+    print("---")
+    print(f"Input IDs shape: {batch['input_ids'].shape}")
+    print(f"Labels shape: {batch['labels'].shape}")
+    print(f"Input IDs:\n{batch['input_ids']}")
 
-    # Clean up the dummy file
     os.remove(dummy_data_path)
