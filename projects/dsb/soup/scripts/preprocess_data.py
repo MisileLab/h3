@@ -47,8 +47,8 @@ def process_codesearchnet(tokenizer):
             return False
         if not any(c.isalnum() for c in comment):
             return False
-        code_tokens = tokenizer.encode(code)
-        return 10 <= len(code_tokens) <= 500
+        # Removed token length limits
+        return True
 
     num_procs = os.cpu_count() or 1
     filtered = dataset.filter(filter_example, num_proc=num_procs)
@@ -87,8 +87,8 @@ def process_scicode(tokenizer):
             return False
         if not any(c.isalnum() for c in description):
             return False
-        code_tokens = tokenizer.encode(solution)
-        return 5 <= len(code_tokens) <= 1024
+        # Removed token length limits
+        return True
 
     # --- Test Set Processing (FIXED) ---
     def transform_test(example):
@@ -117,11 +117,8 @@ def process_scicode(tokenizer):
         # Additional check: make sure general_tests is not empty/whitespace
         if not tests.strip():
             return False
-        try:
-            code_tokens = tokenizer.encode(tests)
-            return 5 <= len(code_tokens) <= 1024
-        except Exception:
-            return False
+        # Removed token length limits
+        return True
 
     num_procs = os.cpu_count() or 1
     
