@@ -81,8 +81,8 @@ def process_scicode(tokenizer):
         }
 
     def filter_validation(example):
-        description = example['problem_description_main']
-        solution = example['general_solution']
+        description = example['text']
+        solution = example['target_code']
         if not isinstance(description, str) or not isinstance(solution, str) or not description or not solution:
             return False
         if not any(c.isalnum() for c in description):
@@ -116,8 +116,8 @@ def process_scicode(tokenizer):
         }
 
     def filter_test(example):
-        description = example['problem_description_main']
-        tests = example['general_tests']  # FIXED: Use general_tests instead of general_solution
+        description = example['text']
+        tests = example['target_code']  # FIXED: Use general_tests instead of general_solution
         
         # Debug: Print first few examples
         global test_debug_count
