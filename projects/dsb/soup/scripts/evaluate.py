@@ -25,8 +25,9 @@ def greedy_decode(model, src, tokenizer, device, max_len=512):
     '''
     model.eval()
     
-    start_token = tokenizer.encode("<|startofcode|>").pop(0)
-    end_token = tokenizer.encode("<|endofcode|>").pop(0)
+    # Fix: Allow special tokens when encoding
+    start_token = tokenizer.encode("<|startofcode|>", allowed_special={"<|startofcode|>"}).pop(0)
+    end_token = tokenizer.encode("<|endofcode|>", allowed_special={"<|endofcode|>"}).pop(0)
 
     src = src.to(device)
     if src.dim() == 1:
