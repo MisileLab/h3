@@ -55,6 +55,33 @@ def greedy_decode(model, src, tokenizer, device, max_len=512):
             
     return tgt
 
+def load_model_weights(model, model_path, device):
+    '''Load model weights from either safetensors or PyTorch format.'''
+    if not os.path.exists(model_path):
+        print(f"Warning: Model weights not found at {model_path}. Using a randomly initialized model for evaluation.")
+        return False
+    
+    # Check if it's a safetensors file
+    if model_path.endswith('.safetensors'):
+        try:
+            state_dict = load_file(model_path, device=str(device))
+            model.load_state_dict(state_dict)
+            print(f"Model loaded from safetensors: {model_path}")
+            return True
+        except Exception as e:
+            print(f"Error loading safetensors file: {e}")
+            return False
+    else:
+        # Try loading as regular PyTorch file
+        try:
+            state_dict = torch.load(model_path, map_location=device)
+            model.load_state_dict(state_dict)
+            print(f"Model loaded from PyTorch checkpoint: {model_path}")
+            return True
+        except Exception as e:
+            print(f"Error loading PyTorch checkpoint: {e}")
+            return False
+
 import subprocess
 import tempfile
 
@@ -85,11 +112,8 @@ def evaluate(args):
         max_seq_length=args.max_seq_length
     ).to(device)
 
-    if os.path.exists(args.model_path):
-        model.load_state_dict(torch.load(args.model_path, map_location=device))
-        print(f"Model loaded from {args.model_path}")
-    else:
-        print(f"Warning: Model weights not found at {args.model_path}. Using a randomly initialized model for evaluation.")
+    # Load model weights using the new function
+    load_model_weights(model, args.model_path, device)
 
     model.eval()
     print(f"Starting evaluation on the {args.split} split...")
@@ -195,7 +219,7 @@ def main():
     
     # Evaluation config
     parser.add_argument("--split", type=str, default="validation", choices=["validation", "test"], help="Dataset split to evaluate on")
-    parser.add_argument("--model_path", type=str, default="codegen_model.pth", help="Path to the trained model weights")
+    parser.add_argument("--model_path", type=str, default="codegen_model.safetensors", help="Path to the trained model weights (.safetensors or .pth)")
     parser.add_argument("--max_gen_length", type=int, default=512, help="Maximum length of the generated sequence")
     parser.add_argument("--limit_eval_batches", type=int, default=None, help="Limit the number of batches for a quick test run")
     parser.add_argument("--force_cpu", action="store_true", help="Force use of CPU even if CUDA is available")
