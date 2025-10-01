@@ -41,18 +41,20 @@ def create_agent_prompt(problem: dict) -> str:
     
     prompt = (
         "You are an expert Python programmer. Your task is to solve a coding problem by writing a single Python script.\n"
-        "You have access to the following tools: write_file, read_file, run_python_script, list_directory.\n\n"
-        "write_file(filename: str, content: str) -> str: Writes content to a file.\n"
-        "read_file(filename: str) -> str: Reads and returns the content of a file.\n"
-        "run_python_script(filename: str) -> str: Executes a Python script and returns its output.\n"
-        "list_directory(path: str) -> str: Lists files in the specified directory.\n\n"
+        "You have access to the following tools: write_file, read_file, run_python_script, list_directory, run_tests.\n\n"
+        "write_file(filename: str, content: str) -> str: Writes content to a file in the agent_workspace directory.\n"
+        "read_file(filename: str) -> str: Reads and returns the content of a file from the agent_workspace directory.\n"
+        "run_python_script(filename: str) -> str: Executes a Python script from the agent_workspace directory and returns its output.\n"
+        "list_directory(path: str) -> str: Lists files in the specified directory (relative to agent_workspace).\n"
+        "run_tests() -> str: Runs the test suite against the code in agent_workspace/solution.py. Returns PASS or FAIL with details.\n\n"
         "IMPORTANT: When providing JSON for tool inputs, you must provide ONLY the raw JSON object, without any surrounding markdown formatting like ```json or ```.\n\n"
         "Follow these instructions carefully:\n"
-        f"1. Create a single Python script named `{SOLUTION_FILENAME}`.\n"
+        f"1. Create a single Python script named `agent_workspace/{SOLUTION_FILENAME}`.\n"
         "2. Implement all the functions described in the sub-steps within this single script.\n"
         "3. Ensure the script includes all necessary imports (like numpy, math, etc.).\n"
-        "4. Do not create separate test files. Just write the solution code.\n"
-        "5. After writing the code, your task is complete. Respond with a final answer.\n\n"
+        "4. After writing the code, use the `run_tests` tool to check your solution.\n"
+        "5. If the tests fail, read the error, modify the code in `agent_workspace/{SOLUTION_FILENAME}`, and run tests again.\n"
+        "6. Once all tests pass, respond with a final answer.\n\n"
         "--- MAIN PROBLEM ---\n"
         f"{problem_description}\n\n"
         "--- SUB-STEPS TO IMPLEMENT ---\n"
@@ -64,8 +66,56 @@ def create_agent_prompt(problem: dict) -> str:
             f"Function to implement:\n```python\n{step['function_header']}\n# Your code here...\n```\n"
         )
             
-    prompt += f"\nBegin by creating the `{SOLUTION_FILENAME}` file and implementing the functions for all the sub-steps."
+    prompt += f"\nBegin by creating the `agent_workspace/{SOLUTION_FILENAME}` file and implementing the functions for all the sub-steps."
     return prompt
+
+def run_llm_test(problem: dict) -> str:
+    """Runs the test suite against the code in solution.py and returns a detailed string output."""
+    solution_path = os.path.join(AGENT_WORKSPACE, SOLUTION_FILENAME)
+    if not os.path.exists(solution_path):
+        return "FAIL: No solution file found at {}".format(solution_path)
+
+    solution_code = open(solution_path, 'r').read()
+    
+    test_code = problem.get('required_dependencies', '') + "\n\n"
+    test_code += solution_code
+    test_code += "\n\n# --- Running Tests ---\n"
+    
+    all_tests_str = []
+    for step in problem['sub_steps']:
+        all_tests_str.extend(step['test_cases'])
+
+    if not all_tests_str:
+        return "SKIP: No test cases found for this problem."
+
+    for i, test in enumerate(all_tests_str):
+        test_code += f"\nprint(f'Running test {i+1}/{len(all_tests_str)}')\n"
+        test_code += f"try:\n    {test}\nexcept Exception as e:\n    print(f'Test {i+1} failed: {{e}}')\n    exit(1)\n"
+
+    test_code += "\nprint('All tests passed!')\n"
+
+    test_runner_path = os.path.join(AGENT_WORKSPACE, TEST_RUNNER_FILENAME)
+    with open(test_runner_path, 'w') as f:
+        f.write(test_code)
+
+    try:
+        result = subprocess.run(
+            ['python', test_runner_path],
+            capture_output=True, text=True, timeout=60
+        )
+        if result.returncode == 0 and "All tests passed!" in result.stdout:
+            return f"PASS\n{result.stdout}"
+        else:
+            output = f"FAIL\n"
+            if result.stdout:
+                output += f"--- STDOUT ---\n{result.stdout}\n"
+            if result.stderr:
+                output += f"--- STDERR ---\n{result.stderr}\n"
+            return output
+    except subprocess.TimeoutExpired:
+        return "FAIL: Test execution timed out after 60 seconds."
+    except Exception as e:
+        return f"FAIL: An unexpected error occurred during test execution: {e}"
 
 def run_tests_for_solution(problem: dict) -> bool:
     solution_path = os.path.join(AGENT_WORKSPACE, SOLUTION_FILENAME)
@@ -86,8 +136,6 @@ def run_tests_for_solution(problem: dict) -> bool:
     if not all_tests_str:
         print("  - Result: SKIP (No test cases found)")
         return True 
-
-
 
     for i, test in enumerate(all_tests_str):
         test_code += f"\nprint(f'Running test {i+1}/{len(all_tests_str)}')\n"
@@ -211,8 +259,7 @@ def main():
 
     llm = ChatOpenAI(model="gpt-4o", temperature=0).bind(stop=None)
     prompt_template = hub.pull("hwchase17/react")
-    tools = [Tool(name=t.__name__, func=t, description=t.__doc__) for t in coding_tools]
-    agent_runnable = create_react_agent(llm, tools, prompt_template)
+    base_tools = [Tool(name=t.__name__, func=t, description=t.__doc__) for t in coding_tools]
 
     optimizer_strategies = {
         "No Optimization": None,
@@ -230,24 +277,28 @@ def main():
             problem_name = problem['problem_name']
             print(f"\n--- Solving Problem {i+1}/{args.limit}: {problem_name} ---")
             
-            MAX_ATTEMPTS = 1
-            success = False
-            for attempt in range(MAX_ATTEMPTS):
-                print(f"\n--- Attempt {attempt + 1}/{MAX_ATTEMPTS} ---")
-                setup_workspace()
-                agent_prompt = create_agent_prompt(problem)
-                
-                run_agent_custom_loop(agent_runnable, tools, agent_prompt, optimizer_func)
-                
-                success = run_tests_for_solution(problem)
-                if success:
-                    print(f"Problem solved successfully on attempt {attempt + 1}.")
-                    break
-                
-                print(f"Attempt {attempt + 1} failed.")
-                if attempt < MAX_ATTEMPTS - 1:
-                    print("Retrying...")
-                    time.sleep(2)
+            setup_workspace()
+
+            # Create a dynamic tool for running tests for the current problem
+            llm_test_tool = Tool(
+                name="run_tests",
+                func=lambda: run_llm_test(problem),
+                description="Runs the test suite against the code in agent_workspace/solution.py. Returns PASS or FAIL with details."
+            )
+            current_tools = base_tools + [llm_test_tool]
+
+            # Re-create agent with the dynamic tool for this problem
+            agent_runnable = create_react_agent(llm, current_tools, prompt_template)
+            
+            agent_prompt = create_agent_prompt(problem)
+            
+            run_agent_custom_loop(agent_runnable, current_tools, agent_prompt, optimizer_func)
+            
+            success = run_tests_for_solution(problem)
+            if success:
+                print("Problem solved successfully.")
+            else:
+                print("Problem failed.")
 
             results.append(success)
 
