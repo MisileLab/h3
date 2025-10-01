@@ -137,7 +137,10 @@ def run_agent_custom_loop(
         print(f"\n--- Iteration {i+1}/{MAX_ITERATIONS} ---")
 
         if optimizer_func and intermediate_steps:
-            optimized_steps = optimizer_func(intermediate_steps, query=problem_prompt)
+            if optimizer_func.__name__ == "optimize_steps_with_llm_judge":
+                optimized_steps = optimizer_func(intermediate_steps, query=problem_prompt)
+            else:
+                optimized_steps = optimizer_func(intermediate_steps)
         else:
             optimized_steps = intermediate_steps
 
