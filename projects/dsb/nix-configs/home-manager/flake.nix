@@ -37,6 +37,8 @@
         (final: prev: {
           firefox = stablep.firefox;
           firefox-unwrapped = stablep.firefox-unwrapped;
+          # https://github.com/NixOS/nixpkgs/issues/447625
+          fish = stablep.fish;
           dart = prev.dart.overrideAttrs (old: {
             installPhase = ''
               runHook preInstall
