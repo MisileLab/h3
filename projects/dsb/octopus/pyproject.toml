@@ -5,9 +5,18 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "datasets>=4.1.1",
+    "ddgs>=9.6.0",
+    "duckduckgo-search>=8.1.1",
     "langchain>=0.3.27",
+    "langchain-community>=0.3.30",
+    "langchain-core>=0.3.76",
     "langchain-openai>=0.3.33",
     "langgraph>=0.6.8",
+    "numpy>=2.3.3",
+    "openai>=1.109.1",
     "polars>=1.33.1",
     "python-dotenv>=1.1.1",
+    "scikit-learn>=1.7.2",
+    "scipy>=1.16.2",
 ]

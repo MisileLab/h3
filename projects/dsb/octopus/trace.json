@@ -1,0 +1,40 @@
+{
+  "turns": [
+    {
+      "turn_id": 1,
+      "node_name": "planning_node",
+      "input": { "messages": [{ "content": "What is the capital of France?" }] },
+      "output": { "success": true, "result": "I should search for the capital of France." }
+    },
+    {
+      "turn_id": 2,
+      "node_name": "search_node",
+      "input": { "messages": [{ "content": "Search: capital of France" }] },
+      "output": { "success": true, "result": "Paris" }
+    },
+    {
+      "turn_id": 3,
+      "node_name": "search_node",
+      "input": { "messages": [{ "content": "Search: capital of France" }] },
+      "output": { "success": true, "result": "Paris" }
+    },
+    {
+      "turn_id": 4,
+      "node_name": "irrelevant_node",
+      "input": { "messages": [{ "content": "Thinking about something else" }] },
+      "output": { "success": true, "result": "" }
+    },
+    {
+      "turn_id": 5,
+      "node_name": "error_node",
+      "input": { "messages": [{ "content": "Perform a failing action" }] },
+      "output": { "success": false, "result": "Something went wrong." }
+    },
+    {
+      "turn_id": 6,
+      "node_name": "synthesis_node",
+      "input": { "messages": [{ "content": "Synthesize the final answer." }] },
+      "output": { "success": true, "result": "The capital of France is Paris." }
+    }
+  ]
+}

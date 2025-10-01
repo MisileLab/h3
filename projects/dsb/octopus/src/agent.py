@@ -8,15 +8,20 @@ from typing import TypedDict, List, Any, Dict
 from functools import wraps
 
 from langchain_core.messages import BaseMessage
+from langchain_openai import ChatOpenAI
 from langgraph.graph import StateGraph, END
 from dotenv import load_dotenv
 
 load_dotenv()
 
+# --- LLM Initialization ---
+# Using gpt-5 as the main model
+llm = ChatOpenAI(model="gpt-5", temperature=0)
+
 # --- State Definition ---
 class AgentState(TypedDict):
     query: str
-    messages: List[BaseMessage]
+    messages: list # Changed from List[BaseMessage] for broader compatibility
     intermediate_steps: list
     final_answer: str
     trace_log: List[dict]
@@ -89,25 +94,35 @@ def trace_node(node_func):
 # --- Nodes ---
 @trace_node
 def planning_node(state: AgentState):
-    """Decides the next action."""
+    """Decides the next action by calling the LLM."""
     print("---PLANNING---")
-    state['messages'].append({"role": "assistant", "content": "I will search the web."})
+    response = llm.invoke(state['messages'])
+    state['messages'].append(response)
     return state
 
 @trace_node
 def tool_execution_node(state: AgentState):
-    """Executes the chosen tool."""
+    """Executes the chosen tool (simulation)."""
     print("---TOOL EXECUTION---")
+    # This remains a simulation for now
     result = web_search(state['query'])
     state['intermediate_steps'].append(("web_search", result))
+    # Append a simulated tool output message for the next step
+    state['messages'].append({"role": "tool", "content": result})
     return state
 
 @trace_node
 def synthesis_node(state: AgentState):
-    """Synthesizes the final answer."""
+    """Synthesizes the final answer by calling the LLM."""
     print("---SYNTHESIS---")
-    state['final_answer'] = f"Based on the search, the answer to '{state['query']}' is synthesized."
-    state['messages'].append({"role": "assistant", "content": state['final_answer']})
+    # Create a new prompt for synthesis
+    synthesis_prompt = state['messages'] + [{
+        "role": "user", 
+        "content": "Based on the previous steps, provide a comprehensive final answer."
+    }]
+    response = llm.invoke(synthesis_prompt)
+    state['final_answer'] = response.content
+    state['messages'].append(response)
     return state
 
 # --- Graph Definition ---
@@ -118,6 +133,8 @@ workflow.add_node("tool_execution", tool_execution_node)
 workflow.add_node("synthesis", synthesis_node)
 
 workflow.set_entry_point("planning")
+
+# A simple router function could be added here for more complex logic
 workflow.add_edge("planning", "tool_execution")
 workflow.add_edge("tool_execution", "synthesis")
 workflow.add_edge("synthesis", END)
