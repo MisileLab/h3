@@ -3,6 +3,7 @@ import os
 import argparse
 import subprocess
 import time
+import json
 from dotenv import load_dotenv
 from datasets import load_dataset
 from langchain_openai import ChatOpenAI
@@ -45,6 +46,7 @@ def create_agent_prompt(problem: dict) -> str:
         "read_file(filename: str) -> str: Reads and returns the content of a file.\n"
         "run_python_script(filename: str) -> str: Executes a Python script and returns its output.\n"
         "list_directory(path: str) -> str: Lists files in the specified directory.\n\n"
+        "IMPORTANT: When providing JSON for tool inputs, you must provide ONLY the raw JSON object, without any surrounding markdown formatting like ```json or ```.\n\n"
         "Follow these instructions carefully:\n"
         f"1. Create a single Python script named `{SOLUTION_FILENAME}`.\n"
         "2. Implement all the functions described in the sub-steps within this single script.\n"
@@ -167,7 +169,19 @@ def run_agent_custom_loop(
         print(f"Action: {output.tool}, Input: {output.tool_input}")
         try:
             tool = next(t for t in tools if t.name == output.tool)
-            tool_output = tool.func(output.tool_input)
+            tool_input = output.tool_input
+            if isinstance(tool_input, str):
+                try:
+                    tool_input = json.loads(tool_input)
+                except json.JSONDecodeError:
+                    # Not a JSON string, pass it as is.
+                    pass
+            
+            if isinstance(tool_input, dict):
+                tool_output = tool.func(**tool_input)
+            else:
+                tool_output = tool.func(tool_input)
+
             print(f"Observation: {tool_output}")
         except Exception as e:
             print(f"Error executing tool {output.tool}: {e}")
