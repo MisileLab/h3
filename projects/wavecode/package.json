@@ -45,7 +45,7 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
-    "@types/react": "~19.1.14",
+    "@types/react": "~19.2.0",
     "eslint": "^9.36.0",
     "eslint-config-expo": "~10.0.0",
     "typescript": "~5.9.2"
