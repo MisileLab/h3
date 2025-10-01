@@ -41,6 +41,10 @@ def create_agent_prompt(problem: dict) -> str:
     prompt = (
         "You are an expert Python programmer. Your task is to solve a coding problem by writing a single Python script.\n"
         "You have access to the following tools: write_file, read_file, run_python_script, list_directory.\n\n"
+        "write_file(filename: str, content: str) -> str: Writes content to a file.\n"
+        "read_file(filename: str) -> str: Reads and returns the content of a file.\n"
+        "run_python_script(filename: str) -> str: Executes a Python script and returns its output.\n"
+        "list_directory(path: str) -> str: Lists files in the specified directory.\n\n"
         "Follow these instructions carefully:\n"
         f"1. Create a single Python script named `{SOLUTION_FILENAME}`.\n"
         "2. Implement all the functions described in the sub-steps within this single script.\n"
@@ -69,7 +73,7 @@ def run_tests_for_solution(problem: dict) -> bool:
 
     solution_code = open(solution_path, 'r').read()
     
-    test_code = "import numpy as np\nimport math\n\n"
+    test_code = problem.get('required_dependencies', '') + "\n\n"
     test_code += solution_code
     test_code += "\n\n# --- Running Tests ---\n"
     
