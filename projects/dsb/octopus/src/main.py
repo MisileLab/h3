@@ -87,9 +87,7 @@ def run_tests_for_solution(problem: dict) -> bool:
         print("  - Result: SKIP (No test cases found)")
         return True 
 
-    if any('target' in test for test in all_tests_str):
-         print("  - Result: SKIP (Test cases contain 'target' variable)")
-         return False 
+
 
     for i, test in enumerate(all_tests_str):
         test_code += f"\nprint(f'Running test {i+1}/{len(all_tests_str)}')\n"
@@ -232,7 +230,7 @@ def main():
             problem_name = problem['problem_name']
             print(f"\n--- Solving Problem {i+1}/{args.limit}: {problem_name} ---")
             
-            MAX_ATTEMPTS = 5
+            MAX_ATTEMPTS = 1
             success = False
             for attempt in range(MAX_ATTEMPTS):
                 print(f"\n--- Attempt {attempt + 1}/{MAX_ATTEMPTS} ---")
