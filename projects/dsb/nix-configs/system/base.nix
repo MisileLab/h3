@@ -70,7 +70,6 @@ EOF
       enable = true;
       extraPackages = with pkgs; [mesa];
     };
-    amdgpu.amdvlk.enable = true;
     enableAllFirmware = true;
     enableRedistributableFirmware = true;
     firmware = with pkgs; [alsa-firmware sof-firmware];
