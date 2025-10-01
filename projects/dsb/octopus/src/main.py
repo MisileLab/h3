@@ -20,7 +20,7 @@ load_dotenv()
 AGENT_WORKSPACE = "agent_workspace"
 SOLUTION_FILENAME = "solution.py"
 TEST_RUNNER_FILENAME = "test_runner.py"
-MAX_ITERATIONS = 25
+MAX_ITERATIONS = 5
 
 # --- Helper Functions ---
 def print_section_header(title):
