@@ -144,7 +144,12 @@ def run_agent_custom_loop(
 
         if optimizer_func and intermediate_steps:
             if optimizer_func.__name__ == "optimize_steps_with_llm_judge":
-                optimized_steps = optimizer_func(intermediate_steps, query=problem_prompt)
+                last_action_log = intermediate_steps[-1][0].log
+                optimized_steps = optimizer_func(
+                    intermediate_steps,
+                    query=problem_prompt,
+                    action=last_action_log
+                )
             else:
                 optimized_steps = optimizer_func(intermediate_steps)
         else:
@@ -227,14 +232,26 @@ def main():
             problem_name = problem['problem_name']
             print(f"\n--- Solving Problem {i+1}/{args.limit}: {problem_name} ---")
             
-            setup_workspace()
-            agent_prompt = create_agent_prompt(problem)
-            
-            run_agent_custom_loop(agent_runnable, tools, agent_prompt, optimizer_func)
-            
-            success = run_tests_for_solution(problem)
+            MAX_ATTEMPTS = 5
+            success = False
+            for attempt in range(MAX_ATTEMPTS):
+                print(f"\n--- Attempt {attempt + 1}/{MAX_ATTEMPTS} ---")
+                setup_workspace()
+                agent_prompt = create_agent_prompt(problem)
+                
+                run_agent_custom_loop(agent_runnable, tools, agent_prompt, optimizer_func)
+                
+                success = run_tests_for_solution(problem)
+                if success:
+                    print(f"Problem solved successfully on attempt {attempt + 1}.")
+                    break
+                
+                print(f"Attempt {attempt + 1} failed.")
+                if attempt < MAX_ATTEMPTS - 1:
+                    print("Retrying...")
+                    time.sleep(2)
+
             results.append(success)
-            time.sleep(2)
 
         final_results[name] = sum(results) / len(results) if results else 0.0
 
