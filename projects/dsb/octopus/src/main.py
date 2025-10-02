@@ -253,7 +253,7 @@ def main():
         print(f"Failed to load dataset: {e}")
         return
 
-    llm = ChatOpenAI(model="gpt-4o", temperature=0, reasoning_effort='high').bind(stop=None)
+    llm = ChatOpenAI(model="gpt-5", temperature=0, reasoning_effort='high').bind(stop=None)
     prompt_template = hub.pull("hwchase17/react")
     base_tools = [Tool(name=t.__name__, func=t, description=t.__doc__) for t in coding_tools]
 
