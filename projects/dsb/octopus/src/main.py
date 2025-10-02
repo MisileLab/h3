@@ -253,7 +253,7 @@ def main():
         print(f"Failed to load dataset: {e}")
         return
 
-    llm = ChatGoogleGenerativeAI(model="gemini-2.5-pro", temperature=0).bind(stop=None)
+    llm = ChatGoogleGenerativeAI(model="gemini-2.5-pro", temperature=0, google_api_key=os.getenv("GEMINI_API_KEY")).bind(stop=None)
     prompt_template = hub.pull("hwchase17/react")
     base_tools = [Tool(name=t.__name__, func=t, description=t.__doc__) for t in coding_tools]
 
