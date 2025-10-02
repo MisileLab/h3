@@ -4,7 +4,7 @@ from typing import List, Tuple, Any, Dict
 from langchain_core.agents import AgentAction, AgentFinish
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -45,15 +45,15 @@ def optimize_steps_with_llm_judge(
     query: str
 ) -> List[Tuple[AgentAction, Any]]:
     """
-    Uses gemini-2.5-flash-lite as a "judge" to decide which intermediate steps are essential for the next reasoning cycle.
+    Uses gpt-5-nano as a "judge" to decide which intermediate steps are essential for the next reasoning cycle.
     """
     if not steps:
         return []
 
-    logging.info("Optimizing steps with LLM judge (gemini-2.5-flash-lite)...")
+    logging.info("Optimizing steps with LLM judge (gpt-5-nano)...")
 
     try:
-        judge_llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash-lite", temperature=0).bind(stop=None)
+        judge_llm = ChatOpenAI(model="gpt-5-nano", temperature=0).bind(stop=None)
         prompt = ChatPromptTemplate.from_template(LLM_JUDGE_PROMPT_ONLINE)
         parser = JsonOutputParser()
         chain = prompt | judge_llm | parser
