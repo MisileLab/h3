@@ -10,8 +10,9 @@ from langchain_openai import ChatOpenAI
 from langchain.agents import Tool, create_react_agent
 from langchain_core.agents import AgentAction, AgentFinish
 from langchain import hub
+from langchain_community.callbacks import get_openai_callback
 from src.tools import coding_tools
-from src.optimizer import optimize_steps_with_rules, optimize_steps_with_llm_judge
+from src.optimizer import optimize_steps_with_llm_judge
 from typing import List, Tuple, Any, Union
 
 # Load environment variables
@@ -21,7 +22,7 @@ load_dotenv()
 AGENT_WORKSPACE = "agent_workspace"
 SOLUTION_FILENAME = "solution.py"
 TEST_RUNNER_FILENAME = "test_runner.py"
-MAX_ITERATIONS = 5
+MAX_ITERATIONS = 25
 
 # --- Helper Functions ---
 def print_section_header(title):
@@ -37,7 +38,6 @@ def setup_workspace():
 
 def create_agent_prompt(problem: dict) -> str:
     problem_description = problem['problem_description_main']
-    sub_steps = problem['sub_steps']
     
     prompt = (
         "You are an expert Python programmer. Your task is to solve a coding problem by writing a single Python script.\n"
@@ -50,23 +50,15 @@ def create_agent_prompt(problem: dict) -> str:
         "IMPORTANT: When providing JSON for tool inputs, you must provide ONLY the raw JSON object, without any surrounding markdown formatting like ```json or ```.\n\n"
         "Follow these instructions carefully:\n"
         f"1. Create a single Python script named `agent_workspace/{SOLUTION_FILENAME}`.\n"
-        "2. Implement all the functions described in the sub-steps within this single script.\n"
+        "2. Implement the solution for the problem in this single script.\n"
         "3. Ensure the script includes all necessary imports (like numpy, math, etc.).\n"
         "4. After writing the code, use the `run_tests` tool to check your solution.\n"
         "5. If the tests fail, read the error, modify the code in `agent_workspace/{SOLUTION_FILENAME}`, and run tests again.\n"
         "6. Once all tests pass, respond with a final answer.\n\n"
         "--- MAIN PROBLEM ---\n"
         f"{problem_description}\n\n"
-        "--- SUB-STEPS TO IMPLEMENT ---\n"
+        f"\nBegin by creating the `agent_workspace/{SOLUTION_FILENAME}` file and implementing the solution."
     )
-    
-    for i, step in enumerate(sub_steps, 1):
-        prompt += (
-            f"\n**Sub-step {i}: {step['step_description_prompt']}**\n"
-            f"Function to implement:\n```python\n{step['function_header']}\n# Your code here...\n```\n"
-        )
-            
-    prompt += f"\nBegin by creating the `agent_workspace/{SOLUTION_FILENAME}` file and implementing the functions for all the sub-steps."
     return prompt
 
 def run_llm_test(problem: dict) -> str:
@@ -251,7 +243,6 @@ def main():
 
     optimizer_strategies = {
         "No Optimization": None,
-        "Rule-Based Optimizer": optimize_steps_with_rules,
         "LLM Judge Optimizer": optimize_steps_with_llm_judge
     }
     
@@ -261,43 +252,55 @@ def main():
         print_section_header(f"Running Evaluation with: {name}")
         
         results = []
-        for i, problem in enumerate(eval_dataset):
-            problem_name = problem['problem_name']
-            print(f"\n--- Solving Problem {i+1}/{args.limit}: {problem_name} ---")
-            
-            setup_workspace()
+        with get_openai_callback() as cb:
+            for i, problem in enumerate(eval_dataset):
+                problem_name = problem['problem_name']
+                print(f"\n--- Solving Problem {i+1}/{args.limit}: {problem_name} ---")
+                
+                setup_workspace()
 
-            # Create a dynamic tool for running tests for the current problem
-            llm_test_tool = Tool(
-                name="run_tests",
-                func=lambda: run_llm_test(problem),
-                description="Runs the test suite against the code in agent_workspace/solution.py. Returns PASS or FAIL with details."
-            )
-            current_tools = base_tools + [llm_test_tool]
+                # Create a dynamic tool for running tests for the current problem
+                llm_test_tool = Tool(
+                    name="run_tests",
+                    func=lambda: run_llm_test(problem),
+                    description="Runs the test suite against the code in agent_workspace/solution.py. Returns PASS or FAIL with details."
+                )
+                current_tools = base_tools + [llm_test_tool]
 
-            # Re-create agent with the dynamic tool for this problem
-            agent_runnable = create_react_agent(llm, current_tools, prompt_template)
-            
-            agent_prompt = create_agent_prompt(problem)
-            
-            run_agent_custom_loop(agent_runnable, current_tools, agent_prompt, optimizer_func)
-            
-            success = run_tests_for_solution(problem)
-            if success:
-                print("Problem solved successfully.")
-            else:
-                print("Problem failed.")
+                # Re-create agent with the dynamic tool for this problem
+                agent_runnable = create_react_agent(llm, current_tools, prompt_template)
+                
+                agent_prompt = create_agent_prompt(problem)
+                
+                run_agent_custom_loop(agent_runnable, current_tools, agent_prompt, optimizer_func)
+                
+                success = run_tests_for_solution(problem)
+                if success:
+                    print("Problem solved successfully.")
+                else:
+                    print("Problem failed.")
 
-            results.append(success)
+                results.append(success)
 
-        final_results[name] = sum(results) / len(results) if results else 0.0
+            pass_rate = sum(results) / len(results) if results else 0.0
+            final_results[name] = {
+                "pass_rate": pass_rate,
+                "total_tokens": cb.total_tokens,
+                "prompt_tokens": cb.prompt_tokens,
+                "completion_tokens": cb.completion_tokens,
+                "total_cost": cb.total_cost,
+            }
 
     print_section_header("Final Comparative Results")
     print(f"Evaluated on {len(eval_dataset)} problems.")
-    print("-" * 40)
-    for name, pass_rate in final_results.items():
-        print(f"{name:<25} | Pass Rate: {pass_rate:.2%}")
-    print("-" * 40)
+    print("-" * 80)
+    for name, stats in final_results.items():
+        print(f"{name:<25} | Pass Rate: {stats['pass_rate']:.2%}")
+        print(f"  - Total Tokens: {stats['total_tokens']}")
+        print(f"  - Prompt Tokens: {stats['prompt_tokens']}")
+        print(f"  - Completion Tokens: {stats['completion_tokens']}")
+        print(f"  - Total Cost (USD): ${stats['total_cost']:.6f}")
+    print("-" * 80)
 
 
 if __name__ == "__main__":
