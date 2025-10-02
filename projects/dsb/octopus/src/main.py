@@ -7,7 +7,7 @@ import json
 from dotenv import load_dotenv
 from datasets import load_dataset
 from langchain_openai import ChatOpenAI
-from langchain.agents import Tool, create_react_agent
+from langchain.agents import Tool, create_openai_tools_agent
 from langchain_core.agents import AgentAction, AgentFinish
 from langchain import hub
 from langchain_community.callbacks import get_openai_callback
@@ -159,46 +159,25 @@ def run_tests_for_solution(problem: dict) -> bool:
         return False
 
 # --- Custom Agent Execution Loop ---
-def format_steps_to_scratchpad(intermediate_steps: List[Tuple[AgentAction, str]]) -> str:
-    """Formats intermediate steps into a string for the ReAct prompt."""
-    log = ""
-    for action, observation in intermediate_steps:
-        log += action.log
-        log += f"\nObservation: {observation}\n"
-    return log
+
 
 def run_agent_custom_loop(
     agent_runnable,
     tools: List[Tool],
-    problem_prompt: str,
-    optimizer_func=None
+    problem_prompt: str
 ) -> dict:
     """
-    Runs the agent using a custom loop to allow for online optimization.
+    Runs the agent using a custom loop.
     """
     intermediate_steps: List[Tuple[AgentAction, Any]] = []
     
     for i in range(MAX_ITERATIONS):
         print(f"\n--- Iteration {i+1}/{MAX_ITERATIONS} ---")
 
-        if optimizer_func and intermediate_steps:
-            if optimizer_func.__name__ == "optimize_steps_with_llm_judge":
-                last_action_log = intermediate_steps[-1][0].log
-                optimized_steps = optimizer_func(
-                    intermediate_steps,
-                    query=problem_prompt
-                )
-            else:
-                optimized_steps = optimizer_func(intermediate_steps)
-        else:
-            optimized_steps = intermediate_steps
-
         try:
-            agent_scratchpad = format_steps_to_scratchpad(optimized_steps)
             agent_input = {
                 "input": problem_prompt,
-                "agent_scratchpad": agent_scratchpad,
-                "intermediate_steps": optimized_steps  # Add the raw steps as well
+                "intermediate_steps": intermediate_steps
             }
             output = agent_runnable.invoke(agent_input)
         except Exception as e:
@@ -209,32 +188,54 @@ def run_agent_custom_loop(
             print(f"Agent finished with output:\n{output.return_values.get('output')}")
             return output.return_values
 
-        if output.tool == "mark_as_done":
-            print("Agent marked task as done. Exiting loop to run tests.")
-            break
-
-        print(f"Action: {output.tool}, Input: {output.tool_input}")
-        try:
-            tool = next(t for t in tools if t.name == output.tool)
-            tool_input = output.tool_input
-            if isinstance(tool_input, str):
+        if isinstance(output, list):
+            for action in output:
+                print(f"Action: {action.tool}, Input: {action.tool_input}")
                 try:
-                    tool_input = json.loads(tool_input)
-                except json.JSONDecodeError:
-                    # Not a JSON string, pass it as is.
-                    pass
-            
-            if isinstance(tool_input, dict):
-                tool_output = tool.func(**tool_input)
-            else:
-                tool_output = tool.func(tool_input)
+                    tool = next(t for t in tools if t.name == action.tool)
+                    tool_input = action.tool_input
+                    if isinstance(tool_input, str):
+                        try:
+                            tool_input = json.loads(tool_input)
+                        except json.JSONDecodeError:
+                            # Not a JSON string, pass it as is.
+                            pass
+                    
+                    if isinstance(tool_input, dict):
+                        tool_output = tool.func(**tool_input)
+                    else:
+                        tool_output = tool.func(tool_input)
 
-            print(f"Observation: {tool_output}")
-        except Exception as e:
-            print(f"Error executing tool {output.tool}: {e}")
-            tool_output = f"Error: {e}"
+                    print(f"Observation: {tool_output}")
+                except Exception as e:
+                    print(f"Error executing tool {action.tool}: {e}")
+                    tool_output = f"Error: {e}"
 
-        intermediate_steps.append((output, tool_output))
+                intermediate_steps.append((action, tool_output))
+        else:
+            action = output
+            print(f"Action: {action.tool}, Input: {action.tool_input}")
+            try:
+                tool = next(t for t in tools if t.name == action.tool)
+                tool_input = action.tool_input
+                if isinstance(tool_input, str):
+                    try:
+                        tool_input = json.loads(tool_input)
+                    except json.JSONDecodeError:
+                        # Not a JSON string, pass it as is.
+                        pass
+                
+                if isinstance(tool_input, dict):
+                    tool_output = tool.func(**tool_input)
+                else:
+                    tool_output = tool.func(tool_input)
+
+                print(f"Observation: {tool_output}")
+            except Exception as e:
+                print(f"Error executing tool {action.tool}: {e}")
+                tool_output = f"Error: {e}"
+
+            intermediate_steps.append((action, tool_output))
 
     return {"output": "Agent reached maximum iterations."}
 
@@ -254,60 +255,54 @@ def main():
         return
 
     llm = ChatOpenAI(model="gpt-5", temperature=0, reasoning_effort='high').bind(stop=None)
-    prompt_template = hub.pull("hwchase17/react")
+    
     base_tools = [Tool(name=t.__name__, func=t, description=t.__doc__) for t in coding_tools]
 
-    optimizer_strategies = {
-        "No Optimization": None,
-        "LLM Judge Optimizer": optimize_steps_with_llm_judge
-    }
-    
     final_results = {}
 
-    for name, optimizer_func in optimizer_strategies.items():
-        print_section_header(f"Running Evaluation with: {name}")
-        
-        results = []
-        with get_openai_callback() as cb:
-            for i, problem in enumerate(eval_dataset):
-                problem_name = problem['problem_name']
-                print(f"\n--- Solving Problem {i+1}/{args.limit}: {problem_name} ---")
-                
-                setup_workspace()
+    print_section_header(f"Running Evaluation")
+    
+    results = []
+    with get_openai_callback() as cb:
+        for i, problem in enumerate(eval_dataset):
+            problem_name = problem['problem_name']
+            print(f"\n--- Solving Problem {i+1}/{args.limit}: {problem_name} ---")
+            
+            setup_workspace()
 
-                # Create a dynamic tool for running tests for the current problem
-                llm_test_tool = Tool(
-                    name="run_tests",
-                    func=lambda: run_llm_test(problem),
-                    description="Runs the test suite against the code in agent_workspace/solution.py. Returns PASS or FAIL with details."
-                )
-                current_tools = base_tools + [llm_test_tool]
+            # Create a dynamic tool for running tests for the current problem
+            llm_test_tool = Tool(
+                name="run_tests",
+                func=lambda: run_llm_test(problem),
+                description="Runs the test suite against the code in agent_workspace/solution.py. Returns PASS or FAIL with details."
+            )
+            current_tools = base_tools + [llm_test_tool]
 
-                # Re-create agent with the dynamic tool for this problem
-                agent_runnable = create_react_agent(llm, current_tools, prompt_template)
-                
-                agent_prompt = create_agent_prompt(problem)
-                
-                run_agent_custom_loop(agent_runnable, current_tools, agent_prompt, optimizer_func)
-                
-                success = run_tests_for_solution(problem)
-                if success:
-                    print("Problem solved successfully.")
-                else:
-                    print("Problem failed.")
+            # Re-create agent with the dynamic tool for this problem
+            agent_runnable = create_openai_tools_agent(llm, current_tools)
+            
+            agent_prompt = create_agent_prompt(problem)
+            
+            run_agent_custom_loop(agent_runnable, current_tools, agent_prompt)
+            
+            success = run_tests_for_solution(problem)
+            if success:
+                print("Problem solved successfully.")
+            else:
+                print("Problem failed.")
 
-                results.append(success)
+            results.append(success)
 
-            pass_rate = sum(results) / len(results) if results else 0.0
-            final_results[name] = {
-                "pass_rate": pass_rate,
-                "total_tokens": cb.total_tokens,
-                "prompt_tokens": cb.prompt_tokens,
-                "completion_tokens": cb.completion_tokens,
-                "total_cost": cb.total_cost,
-            }
+        pass_rate = sum(results) / len(results) if results else 0.0
+        final_results["OpenAI Tools Agent"] = {
+            "pass_rate": pass_rate,
+            "total_tokens": cb.total_tokens,
+            "prompt_tokens": cb.prompt_tokens,
+            "completion_tokens": cb.completion_tokens,
+            "total_cost": cb.total_cost,
+        }
 
-    print_section_header("Final Comparative Results")
+    print_section_header("Final Results")
     print(f"Evaluated on {len(eval_dataset)} problems.")
     print("-" * 80)
     for name, stats in final_results.items():
