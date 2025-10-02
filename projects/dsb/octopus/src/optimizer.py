@@ -1,6 +1,5 @@
 
 import logging
-import os
 from typing import List, Tuple, Any, Dict
 from langchain_core.agents import AgentAction, AgentFinish
 from langchain_core.prompts import ChatPromptTemplate
@@ -54,7 +53,7 @@ def optimize_steps_with_llm_judge(
     logging.info("Optimizing steps with LLM judge (gemini-2.5-flash-lite)...")
 
     try:
-        judge_llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash-lite", temperature=0, google_api_key=os.getenv("GEMINI_API_KEY")).bind(stop=None)
+        judge_llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash-lite", temperature=0).bind(stop=None)
         prompt = ChatPromptTemplate.from_template(LLM_JUDGE_PROMPT_ONLINE)
         parser = JsonOutputParser()
         chain = prompt | judge_llm | parser
