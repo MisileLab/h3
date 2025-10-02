@@ -53,7 +53,7 @@ def optimize_steps_with_llm_judge(
     logging.info("Optimizing steps with LLM judge (gpt-5-nano)...")
 
     try:
-        judge_llm = ChatOpenAI(model="gpt-5-nano", temperature=0).bind(stop=None)
+        judge_llm = ChatOpenAI(model="gpt-5-nano", temperature=1).bind(stop=None)
         prompt = ChatPromptTemplate.from_template(LLM_JUDGE_PROMPT_ONLINE)
         parser = JsonOutputParser()
         chain = prompt | judge_llm | parser

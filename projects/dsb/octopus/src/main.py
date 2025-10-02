@@ -253,7 +253,8 @@ def main():
         print(f"Failed to load dataset: {e}")
         return
 
-    llm = ChatOpenAI(model="gpt-5", temperature=0, reasoning_effort='high').bind(stop=None)
+    # https://github.com/langchain-ai/langchain/blob/langchain-openai%3D%3D0.3.33/libs/partners/openai/langchain_openai/chat_models/base.py#L731
+    llm = ChatOpenAI(model="gpt-5", temperature=1, reasoning_effort='high').bind(stop=None)
     prompt_template = hub.pull("hwchase17/react")
     base_tools = [Tool(name=t.__name__, func=t, description=t.__doc__) for t in coding_tools]
 
