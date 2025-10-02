@@ -5,11 +5,11 @@ description = "LLM that do things"
 readme = "README.md"
 requires-python = ">=3.13.4"
 dependencies = [
-  "gradio==5.47.2",
+  "gradio==5.48.0",
   "inquirer==3.4.1",
   "langchain-memgraph==0.1.9",
   "mem0ai[graph]@git+https://github.com/misilelab/mem0",
   "puremagic==1.30",
-  "pydantic-ai-slim[duckduckgo,logfire,openai,mcp]==1.0.12",
+  "pydantic-ai-slim[duckduckgo,logfire,openai,mcp]==1.0.13",
   "rich==14.1.0",
 ]
