@@ -86,7 +86,7 @@ def run_llm_test(problem: dict) -> str:
 
     try:
         result = subprocess.run(
-            ['python', test_runner_path],
+            ['direnv', 'exec', '.', 'python', test_runner_path],
             capture_output=True, text=True, timeout=60
         )
         if result.returncode == 0 and "All tests passed!" in result.stdout:
@@ -129,7 +129,7 @@ def run_tests_for_solution(problem: dict) -> bool:
 
     try:
         result = subprocess.run(
-            ['python', test_runner_path],
+            ['direnv', 'exec', '.', 'python', test_runner_path],
             capture_output=True, text=True, timeout=60
         )
         if result.returncode == 0 and "All tests passed!" in result.stdout:
