@@ -88,12 +88,6 @@ def run_llm_test(problem: dict) -> str:
     if not all_tests_str:
         return "SKIP: No test cases found for this problem."
 
-    for i, test in enumerate(all_tests_str):
-        test_code += f"\nprint(f'Running test {i+1}/{len(all_tests_str)}')\n"
-        test_code += f"try:\n    {test}\nexcept Exception as e:\n    print(f'Test {i+1} failed: {{e}}')\n    exit(1)\n"
-
-    test_code += "\nprint('All tests passed!')\n"
-
     test_runner_path = os.path.join(AGENT_WORKSPACE, TEST_RUNNER_FILENAME)
     with open(test_runner_path, 'w') as f:
         f.write(test_code)
@@ -135,13 +129,7 @@ def run_tests_for_solution(problem: dict) -> bool:
 
     if not all_tests_str:
         print("  - Result: SKIP (No test cases found)")
-        return True 
-
-    for i, test in enumerate(all_tests_str):
-        test_code += f"\nprint(f'Running test {i+1}/{len(all_tests_str)}')\n"
-        test_code += f"try:\n    {test}\nexcept Exception as e:\n    print(f'Test {i+1} failed: {{e}}')\n    exit(1)\n"
-
-    test_code += "\nprint('All tests passed!')\n"
+        return True
 
     test_runner_path = os.path.join(AGENT_WORKSPACE, TEST_RUNNER_FILENAME)
     with open(test_runner_path, 'w') as f:
