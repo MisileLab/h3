@@ -279,7 +279,8 @@ def main():
             current_tools = base_tools + [llm_test_tool]
 
             # Re-create agent with the dynamic tool for this problem
-            agent_runnable = create_openai_tools_agent(llm, current_tools)
+            prompt = hub.pull("hwchase17/openai-tools-agent")
+            agent_runnable = create_openai_tools_agent(llm, current_tools, prompt)
             
             agent_prompt = create_agent_prompt(problem)
             
