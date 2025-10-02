@@ -173,8 +173,7 @@ def run_agent_custom_loop(
                 last_action_log = intermediate_steps[-1][0].log
                 optimized_steps = optimizer_func(
                     intermediate_steps,
-                    query=problem_prompt,
-                    action=last_action_log
+                    query=problem_prompt
                 )
             else:
                 optimized_steps = optimizer_func(intermediate_steps)
