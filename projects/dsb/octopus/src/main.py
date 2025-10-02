@@ -6,11 +6,11 @@ import time
 import json
 from dotenv import load_dotenv
 from datasets import load_dataset
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
 from langchain.agents import Tool, create_react_agent
 from langchain_core.agents import AgentAction, AgentFinish
 from langchain import hub
-# from langchain_community.callbacks import get_openai_callback
+from langchain_community.callbacks import get_openai_callback
 from src.tools import coding_tools
 from src.optimizer import optimize_steps_with_llm_judge
 from typing import List, Tuple, Any, Union
@@ -253,7 +253,7 @@ def main():
         print(f"Failed to load dataset: {e}")
         return
 
-    llm = ChatGoogleGenerativeAI(model="gemini-2.5-pro", temperature=0).bind(stop=None)
+    llm = ChatOpenAI(model="gpt-5", temperature=0, reasoning_effort='high').bind(stop=None)
     prompt_template = hub.pull("hwchase17/react")
     base_tools = [Tool(name=t.__name__, func=t, description=t.__doc__) for t in coding_tools]
 
@@ -268,45 +268,44 @@ def main():
         print_section_header(f"Running Evaluation with: {name}")
         
         results = []
-        # get_openai_callback is not available for non-OpenAI models.
-        # The code is modified to run without it, so token/cost stats will be zero.
-        for i, problem in enumerate(eval_dataset):
-            problem_name = problem['problem_name']
-            print(f"\n--- Solving Problem {i+1}/{args.limit}: {problem_name} ---")
-            
-            setup_workspace()
+        with get_openai_callback() as cb:
+            for i, problem in enumerate(eval_dataset):
+                problem_name = problem['problem_name']
+                print(f"\n--- Solving Problem {i+1}/{args.limit}: {problem_name} ---")
+                
+                setup_workspace()
 
-            # Create a dynamic tool for running tests for the current problem
-            llm_test_tool = Tool(
-                name="run_tests",
-                func=lambda: run_llm_test(problem),
-                description="Runs the test suite against the code in agent_workspace/solution.py. Returns PASS or FAIL with details."
-            )
-            current_tools = base_tools + [llm_test_tool]
+                # Create a dynamic tool for running tests for the current problem
+                llm_test_tool = Tool(
+                    name="run_tests",
+                    func=lambda: run_llm_test(problem),
+                    description="Runs the test suite against the code in agent_workspace/solution.py. Returns PASS or FAIL with details."
+                )
+                current_tools = base_tools + [llm_test_tool]
 
-            # Re-create agent with the dynamic tool for this problem
-            agent_runnable = create_react_agent(llm, current_tools, prompt_template)
-            
-            agent_prompt = create_agent_prompt(problem)
-            
-            run_agent_custom_loop(agent_runnable, current_tools, agent_prompt, optimizer_func)
-            
-            success = run_tests_for_solution(problem)
-            if success:
-                print("Problem solved successfully.")
-            else:
-                print("Problem failed.")
+                # Re-create agent with the dynamic tool for this problem
+                agent_runnable = create_react_agent(llm, current_tools, prompt_template)
+                
+                agent_prompt = create_agent_prompt(problem)
+                
+                run_agent_custom_loop(agent_runnable, current_tools, agent_prompt, optimizer_func)
+                
+                success = run_tests_for_solution(problem)
+                if success:
+                    print("Problem solved successfully.")
+                else:
+                    print("Problem failed.")
 
-            results.append(success)
+                results.append(success)
 
-        pass_rate = sum(results) / len(results) if results else 0.0
-        final_results[name] = {
-            "pass_rate": pass_rate,
-            "total_tokens": 0,
-            "prompt_tokens": 0,
-            "completion_tokens": 0,
-            "total_cost": 0.0,
-        }
+            pass_rate = sum(results) / len(results) if results else 0.0
+            final_results[name] = {
+                "pass_rate": pass_rate,
+                "total_tokens": cb.total_tokens,
+                "prompt_tokens": cb.prompt_tokens,
+                "completion_tokens": cb.completion_tokens,
+                "total_cost": cb.total_cost,
+            }
 
     print_section_header("Final Comparative Results")
     print(f"Evaluated on {len(eval_dataset)} problems.")
