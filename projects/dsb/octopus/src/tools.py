@@ -77,5 +77,13 @@ def list_directory(path: str = '.') -> str:
     except Exception as e:
         return f"An error occurred: {e}"
 
+def mark_as_done() -> str:
+    """
+    Signals that the agent has finished its work and is ready for the solution to be tested.
+    Returns:
+        str: A confirmation message.
+    """
+    return "Agent has marked the task as done. Proceeding to test."
+
 # It's good practice to group tools into a list for the agent
-coding_tools = [write_file, read_file, run_python_script, list_directory]
+coding_tools = [write_file, read_file, run_python_script, list_directory, mark_as_done]

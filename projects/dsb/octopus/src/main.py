@@ -41,12 +41,13 @@ def create_agent_prompt(problem: dict) -> str:
     
     prompt = (
         "You are an expert Python programmer. Your task is to solve a coding problem by writing a single Python script.\n"
-        "You have access to the following tools: write_file, read_file, run_python_script, list_directory, run_tests.\n\n"
+        "You have access to the following tools: write_file, read_file, run_python_script, list_directory, run_tests, mark_as_done.\n\n"
         "write_file(filename: str, content: str) -> str: Writes content to a file in the agent_workspace directory.\n"
         "read_file(filename: str) -> str: Reads and returns the content of a file from the agent_workspace directory.\n"
         "run_python_script(filename: str) -> str: Executes a Python script from the agent_workspace directory and returns its output.\n"
         "list_directory(path: str) -> str: Lists files in the specified directory (relative to agent_workspace).\n"
-        "run_tests() -> str: Runs the test suite against the code in agent_workspace/solution.py. Returns PASS or FAIL with details.\n\n"
+        "run_tests() -> str: Runs the test suite against the code in agent_workspace/solution.py. Returns PASS or FAIL with details.\n"
+        "mark_as_done() -> str: Signals that you have finished your work and are ready for the solution to be tested.\n\n"
         "IMPORTANT: When providing JSON for tool inputs, you must provide ONLY the raw JSON object, without any surrounding markdown formatting like ```json or ```.\n\n"
         "Follow these instructions carefully:\n"
         f"1. Create a single Python script named `agent_workspace/{SOLUTION_FILENAME}`.\n"
@@ -54,7 +55,7 @@ def create_agent_prompt(problem: dict) -> str:
         "3. Ensure the script includes all necessary imports (like numpy, math, etc.).\n"
         "4. After writing the code, use the `run_tests` tool to check your solution.\n"
         "5. If the tests fail, read the error, modify the code in `agent_workspace/{SOLUTION_FILENAME}`, and run tests again.\n"
-        "6. Once all tests pass, respond with a final answer.\n\n"
+        "6. Once the tests pass, use the `mark_as_done` tool to indicate you are finished.\n\n"
         "--- MAIN PROBLEM ---\n"
         f"{problem_description}\n\n"
         f"\nBegin by creating the `agent_workspace/{SOLUTION_FILENAME}` file and implementing the solution."
@@ -195,6 +196,10 @@ def run_agent_custom_loop(
         if isinstance(output, AgentFinish):
             print(f"Agent finished with output:\n{output.return_values.get('output')}")
             return output.return_values
+
+        if output.tool == "mark_as_done":
+            print("Agent marked task as done. Exiting loop to run tests.")
+            break
 
         print(f"Action: {output.tool}, Input: {output.tool_input}")
         try:
