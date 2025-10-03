@@ -27,7 +27,7 @@ tonic = "0.14"
 prost = "0.14"
 
 # Data structures and algorithms
-dashmap = "5.5"
+dashmap = "6.0"
 crossbeam = "0.8"
 parking_lot = "0.12"
 rayon = "1.8"
