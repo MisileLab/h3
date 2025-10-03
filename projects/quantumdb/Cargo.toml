@@ -19,7 +19,7 @@ description = "Neural compression-powered vector database with 192x compression 
 [workspace.dependencies]
 # Core ML framework
 burn = { version = "0.18", features = ["std", "wgpu", "train", "tch"] }
-safetensors = "0.4"
+safetensors = "0.6"
 
 # Async and networking
 tokio = { version = "1.0", features = ["full"] }
