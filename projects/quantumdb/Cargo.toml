@@ -61,7 +61,7 @@ pyo3 = { version = "0.26", features = ["extension-module"], optional = true }
 numpy = { version = "0.26", optional = true }
 
 # Arrow/Parquet for data processing
-arrow = "51.0"
+arrow = "56.0"
 parquet = "51.0"
 
 # HTTP server (optional)
