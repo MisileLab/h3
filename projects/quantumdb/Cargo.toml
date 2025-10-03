@@ -65,7 +65,7 @@ arrow = "51.0"
 parquet = "51.0"
 
 # HTTP server (optional)
-axum = { version = "0.7", optional = true }
+axum = { version = "0.8", optional = true }
 
 [profile.release]
 opt-level = 3
