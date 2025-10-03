@@ -58,7 +58,7 @@ tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
 # Python bindings (optional)
 pyo3 = { version = "0.20", features = ["extension-module"], optional = true }
-numpy = { version = "0.20", optional = true }
+numpy = { version = "0.26", optional = true }
 
 # Arrow/Parquet for data processing
 arrow = "51.0"
