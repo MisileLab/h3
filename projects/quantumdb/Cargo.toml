@@ -1,0 +1,84 @@
+[workspace]
+members = [
+    "crates/quantumdb-core",
+    "crates/quantumdb-server", 
+    "crates/quantumdb-cli",
+    "crates/quantumdb-python",
+]
+resolver = "2"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["QuantumDB Team"]
+license = "MIT"
+repository = "https://github.com/quantumdb/quantumdb"
+homepage = "https://quantumdb.ai"
+description = "Neural compression-powered vector database with 192x compression ratio"
+
+[workspace.dependencies]
+# Core ML framework
+burn = { version = "0.14", features = ["std", "wgpu", "train", "tch"] }
+safetensors = "0.4"
+
+# Async and networking
+tokio = { version = "1.0", features = ["full"] }
+tonic = "0.11"
+prost = "0.12"
+
+# Data structures and algorithms
+dashmap = "5.5"
+crossbeam = "0.8"
+parking_lot = "0.12"
+rayon = "1.8"
+
+# SIMD and performance
+portable-simd = "0.7"
+
+# Memory and storage
+memmap2 = "0.9"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Math and numerics
+ndarray = "0.15"
+num-traits = "0.2"
+ordered-float = "4.2"
+
+# CLI and parsing
+clap = { version = "4.4", features = ["derive"] }
+
+# Error handling
+anyhow = "1.0"
+thiserror = "1.0"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Python bindings (optional)
+pyo3 = { version = "0.20", features = ["extension-module"], optional = true }
+numpy = { version = "0.20", optional = true }
+
+# Arrow/Parquet for data processing
+arrow = "51.0"
+parquet = "51.0"
+
+# HTTP server (optional)
+axum = { version = "0.7", optional = true }
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = true
+
+[profile.release.package."*"]
+opt-level = 3
+
+[features]
+default = ["core"]
+core = []
+server = ["dep:axum", "dep:tonic", "dep:prost"]
+python = ["dep:pyo3", "dep:numpy"]
