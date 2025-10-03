@@ -115,6 +115,7 @@ EOF
     command-not-found.enable = false;
     appimage.binfmt = true;
     adb.enable = true;
+    steam.enable = true;
   };
   services.udev.packages = [ pkgs.android-udev-rules ];
 
