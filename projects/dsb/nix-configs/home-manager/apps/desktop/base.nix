@@ -14,7 +14,7 @@
       imagemagick loupe xfce.thunar
       galaxy-buds-client firefoxpwa gparted
       gimp3 telegram-desktop xournalpp zotero headsetcontrol
-      appflowy virt-manager
+      appflowy virt-manager prismlauncher
     ] ++ (with kdePackages; [filelight okular merkuro]);
     pointerCursor = {
       name = "Adwaita";
