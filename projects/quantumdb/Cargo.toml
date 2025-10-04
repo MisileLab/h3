@@ -43,7 +43,7 @@ serde_json = "1.0"
 # Math and numerics
 ndarray = "0.16"
 num-traits = "0.2"
-ordered-float = "4.2"
+ordered-float = "5.0"
 
 # CLI and parsing
 clap = { version = "4.4", features = ["derive"] }
