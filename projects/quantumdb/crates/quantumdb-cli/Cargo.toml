@@ -32,4 +32,4 @@ tracing-subscriber = { workspace = true }
 indicatif = "0.17"
 
 # File system
-dirs = "5.0"
+dirs = "6.0"
