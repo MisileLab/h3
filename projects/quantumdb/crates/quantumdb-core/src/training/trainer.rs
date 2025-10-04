@@ -1,14 +1,15 @@
 //! Training pipeline for QuantumDB models
 
 use burn::{
-    backend::Backend,
+    prelude::Backend,
     tensor::Tensor,
     train::{TrainOutput, TrainStep, ValidStep},
-    optim::AdamW,
+    optim::{AdamW, AdamWConfig},
 };
 use std::collections::HashMap;
 use crate::{
     models::QuantumCompressor,
+    models::compressor::QuantumCompressorConfig,
     training::{TrainingConfig, TrainingData, CompressionLoss},
     storage::SafeTensorsStorage,
     Result, QuantumDBError,
@@ -44,7 +45,7 @@ impl<B: Backend> Trainer<B> {
     /// Initialize model and optimizer
     fn initialize(&mut self) -> Result<()> {
         // Create model
-        let model_config = crate::models::QuantumCompressorConfig::new(
+        let model_config = QuantumCompressorConfig::new(
             self.config.input_dim,
             self.config.target_dim,
             self.config.n_subvectors,
@@ -199,110 +200,7 @@ impl<B: Backend> Trainer<B> {
     }
 }
 
-/// Training configuration
-#[derive(Debug, Clone)]
-pub struct TrainingConfig {
-    /// Input dimension
-    pub input_dim: usize,
-    /// Target dimension
-    pub target_dim: usize,
-    /// Number of subvectors
-    pub n_subvectors: usize,
-    /// Number of epochs
-    pub epochs: usize,
-    /// Batch size
-    pub batch_size: usize,
-    /// Learning rate
-    pub learning_rate: f32,
-    /// Enable auto-tuning
-    pub auto_tune: bool,
-    /// Number of training samples
-    pub num_samples: Option<usize>,
-}
 
-impl Default for TrainingConfig {
-    fn default() -> Self {
-        Self {
-            input_dim: 768,
-            target_dim: 256,
-            n_subvectors: 16,
-            epochs: 25,
-            batch_size: 512,
-            learning_rate: 5e-4,
-            auto_tune: false,
-            num_samples: None,
-        }
-    }
-}
-
-/// Training data container
-pub struct TrainingData {
-    /// Embeddings data
-    embeddings: Vec<Vec<f32>>,
-    /// Current position
-    position: usize,
-}
-
-impl TrainingData {
-    /// Create synthetic training data
-    /// 
-    /// # Arguments
-    /// * `num_samples` - Number of samples
-    /// * `dim` - Dimension
-    /// 
-    /// # Returns
-    /// Training data
-    pub fn synthetic(num_samples: usize, dim: usize) -> Result<Self> {
-        let mut embeddings = Vec::with_capacity(num_samples);
-        
-        for i in 0..num_samples {
-            let mut embedding = Vec::with_capacity(dim);
-            for j in 0..dim {
-                // Create structured patterns
-                let value = if j < 50 {
-                    // First 50 dimensions encode the ID
-                    (i as f32 / num_samples as f32) * (j as f32 + 1.0)
-                } else {
-                    // Rest is noise
-                    rand::random::<f32>() * 0.1
-                };
-                embedding.push(value);
-            }
-            embeddings.push(embedding);
-        }
-        
-        Ok(Self {
-            embeddings,
-            position: 0,
-        })
-    }
-    
-    /// Get the number of samples
-    pub fn len(&self) -> usize {
-        self.embeddings.len()
-    }
-    
-    /// Get a batch of data
-    /// 
-    /// # Arguments
-    /// * `start` - Start index
-    /// * `end` - End index
-    /// 
-    /// # Returns
-    /// Batch data as TensorData
-    pub fn get_batch(&self, start: usize, end: usize) -> Result<burn::tensor::TensorData> {
-        let batch: Vec<f32> = self.embeddings[start..end]
-            .iter()
-            .flatten()
-            .copied()
-            .collect();
-        
-        Ok(burn::tensor::TensorData::new(
-            batch,
-            burn::tensor::Shape::new([end - start, self.embeddings[0].len()]),
-        ))
-    }
-}
 
 #[cfg(test)]
 mod tests {

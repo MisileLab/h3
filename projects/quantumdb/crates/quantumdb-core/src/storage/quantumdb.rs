@@ -8,12 +8,11 @@ use std::{
     path::Path,
     sync::Arc,
 };
-use burn::{
-    backend::Backend,
+use burn::{prelude::Backend,
     tensor::Tensor,
 };
 use crate::{
-    models::{QuantumCompressor, CompressionModel},
+    models::{QuantumCompressor, CompressionModel, compressor::QuantumCompressorConfig},
     index::{HNSWGraph, SearchConfig},
     storage::{MemoryMappedStorage, SafeTensorsStorage, IndexMetadata},
     utils::SIMDDistance,
@@ -139,7 +138,7 @@ impl<B: Backend> QuantumDB<B> {
         // Convert compressed tensor to codes
         let compressed_data = compressed.into_data();
         let compressed_vecs: Vec<Vec<u8>> = compressed_data
-            .value
+            .bytes
             .iter()
             .map(|&x| x as u8)
             .collect();
@@ -174,13 +173,13 @@ impl<B: Backend> QuantumDB<B> {
         ef_search: Option<usize>,
     ) -> Result<Vec<crate::index::SearchResult>> {
         // Compress query
-        let query_batch = query.clone().unsqueeze::<2>(0);
+        let query_batch = query.clone().unsqueeze::<2>();
         let compressed_query = self.compressor.compress(query_batch);
         
         // Convert to compressed codes
         let compressed_data = compressed_query.into_data();
         let compressed_vec: Vec<u8> = compressed_data
-            .value
+            .bytes
             .iter()
             .map(|&x| x as u8)
             .collect();
@@ -241,7 +240,7 @@ impl<B: Backend> QuantumDB<B> {
         // from the saved weights
         
         // For now, create a default compressor
-        let config = crate::models::QuantumCompressorConfig::new(768, 256, 16);
+        let config = QuantumCompressorConfig::new(768, 256, 16);
         Ok(config.init(device))
     }
     

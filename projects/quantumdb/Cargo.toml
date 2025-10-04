@@ -32,9 +32,6 @@ crossbeam = "0.8"
 parking_lot = "0.12"
 rayon = "1.8"
 
-# SIMD and performance
-portable-simd = "0.7"
-
 # Memory and storage
 memmap2 = "0.9"
 serde = { version = "1.0", features = ["derive"] }
@@ -56,16 +53,9 @@ thiserror = "2.0"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
-# Python bindings (optional)
-pyo3 = { version = "0.26", features = ["extension-module"], optional = true }
-numpy = { version = "0.26", optional = true }
-
 # Arrow/Parquet for data processing
 arrow = "56.0"
 parquet = "51.0"
-
-# HTTP server (optional)
-axum = { version = "0.8", optional = true }
 
 [profile.release]
 opt-level = 3
@@ -76,9 +66,3 @@ strip = true
 
 [profile.release.package."*"]
 opt-level = 3
-
-[features]
-default = ["core"]
-core = []
-server = ["dep:axum", "dep:tonic", "dep:prost"]
-python = ["dep:pyo3", "dep:numpy"]

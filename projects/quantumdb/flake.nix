@@ -17,17 +17,7 @@ pkgs = import nixpkgs {
   inherit system;
 };
 
-        rustToolchain = with fenix.packages.${system};
-          combine (
-            with stable;
-            [
-              clippy
-              rustc
-              cargo
-              rustfmt
-              rust-src
-            ]
-          );
+        rustToolchain = fenix.packages.${system}.default.toolchain;
 
         nativeBuildInputs = with pkgs; [
           rustToolchain

@@ -1,3 +1,4 @@
+#![feature(portable_simd)]
 //! QuantumDB Core Library
 //! 
 //! Neural compression-powered vector database with 192x compression ratio.
@@ -20,7 +21,7 @@ pub mod utils;
 // Re-export main types
 pub use models::{QuantumCompressor, NeuralEncoder, LearnablePQ};
 pub use index::{HNSWGraph, SearchConfig};
-pub use storage::{QuantumDB, QuantumDBStorage};
+pub use storage::{QuantumDB};
 pub use training::{Trainer, TrainingConfig};
 pub use utils::{SIMDDistance, Metrics};
 

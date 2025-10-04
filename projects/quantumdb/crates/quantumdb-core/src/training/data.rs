@@ -2,9 +2,8 @@
 
 use std::path::Path;
 use arrow::record_batch::RecordBatch;
-use parquet::arrow::ArrowReader;
-use parquet::file::reader::SerializedFileReader;
-use crate::{Result, QuantumDBError};
+use parquet::arrow::arrow_reader;
+use parquet::arrow::ParquetRecordBatchReaderBuilder;
 
 /// Data loader for training
 pub struct DataLoader {
@@ -27,12 +26,12 @@ impl DataLoader {
     /// Data loader
     pub fn from_parquet<P: AsRef<Path>>(path: P, batch_size: usize) -> Result<Self> {
         let file = std::fs::File::open(path)?;
-        let reader = SerializedFileReader::new(file)?;
-        let mut arrow_reader = arrow::ParquetFileArrowReader::new(reader);
+        let builder = ParquetRecordBatchReaderBuilder::try_new(file)?;
+        let mut reader = builder.build()?;
         
         let mut batches = Vec::new();
-        while let Some(batch) = arrow_reader.get_next_record_batch(1024)? {
-            batches.push(batch);
+        while let Some(batch) = reader.next() {
+            batches.push(batch.map_err(|e| QuantumDBError::Storage(e.into()))?);
         }
         
         Ok(Self {

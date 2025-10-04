@@ -4,6 +4,7 @@
 //! using memory-mapped files with proper alignment and caching.
 
 use memmap2::{Mmap, MmapMut, MmapOptions};
+use serde::{Deserialize, Serialize};
 use std::{
     fs::{File, OpenOptions},
     io::Write,
@@ -257,7 +258,7 @@ impl MemoryMappedStorageMut {
 
 /// Index metadata stored in memory-mapped file
 #[repr(C)]
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct IndexMetadata {
     /// Number of vectors in the index
     pub num_vectors: usize,

@@ -17,9 +17,6 @@ crossbeam = { workspace = true }
 parking_lot = { workspace = true }
 rayon = { workspace = true }
 
-# SIMD
-portable-simd = { workspace = true }
-
 # Memory and storage
 memmap2 = { workspace = true }
 serde = { workspace = true }
@@ -40,18 +37,12 @@ tracing = { workspace = true }
 # Data processing
 arrow = { workspace = true }
 parquet = { workspace = true }
+rand = "0.9.2"
 
 [dev-dependencies]
 criterion = { version = "0.7", features = ["html_reports"] }
 
 [[bench]]
-name = "training"
-harness = false
-
-[[bench]]
-name = "inference" 
-harness = false
-
-[[bench]]
 name = "search"
+path = "../../benches/search.rs"
 harness = false

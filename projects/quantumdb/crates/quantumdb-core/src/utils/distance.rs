@@ -12,6 +12,7 @@ use crate::config;
 /// - Query: full precision (768d float32)
 /// - Database: compressed (16 uint8 codes)
 /// - Distance: computed via table lookup (O(1) per subvector)
+#[derive(Debug, Clone)]
 pub struct SIMDDistance {
     /// Precomputed lookup table: [n_subvectors × codebook_size]
     lookup_table: Vec<f32>,

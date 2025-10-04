@@ -65,7 +65,7 @@ impl<B: Backend> CompressionLoss<B> {
     /// Reconstruction loss: ||x - decode(encode(x))||²
     fn reconstruction_loss(input: &Tensor<B, 2>, reconstructed: &Tensor<B, 2>) -> Tensor<B, 1> {
         (input.clone() - reconstructed.clone())
-            .pow_scalar(2.0)
+            .powf_scalar(2.0)
             .mean()
     }
     
@@ -79,7 +79,7 @@ impl<B: Backend> CompressionLoss<B> {
     /// Commitment loss (VQ-VAE style)
     fn commitment_loss(input: &Tensor<B, 2>, reconstructed: &Tensor<B, 2>) -> Tensor<B, 1> {
         (input.clone() - reconstructed.clone())
-            .pow_scalar(2.0)
+            .powf_scalar(2.0)
             .mean()
     }
     
@@ -113,7 +113,7 @@ impl<B: Backend> CompressionLoss<B> {
     /// Compute distance between code sequences
     fn code_distance(codes1: &Tensor<B, 2>, codes2: &Tensor<B, 2>) -> Tensor<B, 1> {
         (codes1.clone() - codes2.clone())
-            .pow_scalar(2.0)
+            .powf_scalar(2.0)
             .sum_dim(1)
             .mean()
     }

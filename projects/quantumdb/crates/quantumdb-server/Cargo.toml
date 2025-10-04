@@ -12,9 +12,9 @@ quantumdb-core = { path = "../quantumdb-core" }
 
 # Async and networking
 tokio = { workspace = true }
-tonic = { workspace = true }
-prost = { workspace = true }
-axum = { workspace = true, optional = true }
+tonic = { workspace = true, optional = true }
+prost = { workspace = true, optional = true }
+axum = { version = "0.8", optional = true }
 
 # Serialization
 serde = { workspace = true }

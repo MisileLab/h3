@@ -3,7 +3,7 @@
 //! Provides zero-copy loading and saving of neural models and
 //! compressed indices using the SafeTensors format.
 
-use safetensors::{SafeTensors, Dtype, TensorInfo};
+use safetensors::{SafeTensors, Dtype, tensor::TensorInfo};
 use serde::{Deserialize, Serialize};
 use std::{
     collections::HashMap,
