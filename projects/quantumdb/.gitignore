@@ -1,6 +1,8 @@
 # Custom
 collections/
 qdrant_storage/
+*.safetensors
+*.parquet
 
 # Python.gitignore by ignofierplus
 __pycache__/

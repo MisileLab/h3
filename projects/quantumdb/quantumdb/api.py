@@ -143,7 +143,11 @@ class QuantumDB:
             raise FileNotFoundError(f"Model file not found: {model_path}")
 
         # Load metadata if available
-        metadata_path = model_path.with_suffix(".json")
+        metadata_path = Path(str(model_path).replace(".safetensors", "_metadata.json"))
+        if not metadata_path.exists():
+            # Fallback for older metadata naming
+            metadata_path = model_path.with_suffix(".json")
+
         if metadata_path.exists():
             with open(metadata_path, "r") as f:
                 metadata = json.load(f)

@@ -2,7 +2,7 @@
 Trainer for learnable product quantization models.
 
 This module provides a comprehensive training pipeline with support for
-hyperparameter tuning, experiment tracking, and model evaluation.
+hyperparameter tuning, experiment tracking, model evaluation and early stopping.
 """
 
 import os
@@ -55,7 +55,7 @@ class Trainer:
     Trainer for LearnablePQ models with support for hyperparameter tuning.
 
     This class handles the complete training pipeline including data loading,
-    model training, validation, and experiment tracking.
+    model training, validation, early stopping and experiment tracking.
     """
 
     def __init__(
@@ -140,11 +140,14 @@ class Trainer:
         # Create validation split if not provided
         if val_data is None:
             n_val = int(len(train_data) * val_split)
-            indices = np.random.permutation(len(train_data))
-            val_indices, train_indices = indices[:n_val], indices[n_val:]
+            if n_val > 0:
+                indices = np.random.permutation(len(train_data))
+                val_indices, train_indices = indices[:n_val], indices[n_val:]
 
-            val_data = train_data[val_indices]
-            train_data = train_data[train_indices]
+                val_data = train_data[val_indices]
+                train_data = train_data[train_indices]
+            else:
+                val_data = None
 
         # Create datasets
         train_dataset = VectorDataset(train_data)
@@ -233,7 +236,7 @@ class Trainer:
         avg_loss = total_loss / len(train_loader)
         avg_components = {k: v / len(train_loader) for k, v in loss_components.items()}
 
-        # Update learning rate
+        # Update learning rate (once per epoch)
         if scheduler:
             scheduler.step()
 
@@ -289,6 +292,9 @@ class Trainer:
         loss_weights: Optional[Dict[str, float]] = None,
         save_best: bool = True,
         save_dir: str = "models",
+        early_stopping: bool = True,
+        patience: int = 10,
+        min_delta: float = 0.0,
     ) -> Dict[str, List[float]]:
         """
         Train the model.
@@ -303,6 +309,9 @@ class Trainer:
             loss_weights: Weights for different loss components
             save_best: Whether to save the best model
             save_dir: Directory to save models
+            early_stopping: Whether to apply early stopping
+            patience: Number of epochs with no improvement before stopping
+            min_delta: Minimum change in the monitored metric to qualify as improvement
 
         Returns:
             history: Training history
@@ -337,6 +346,12 @@ class Trainer:
         # Training loop
         history = {"train_loss": [], "val_loss": []}
 
+        # Early stopping state
+        epochs_no_improve = 0
+        # Initialize best_loss such that is bigger than any real loss
+        # If using internal state from previous calls, we still want to start fresh here
+        best_monitored = float("inf")
+
         for epoch in range(epochs):
             self.current_epoch = epoch
 
@@ -350,38 +365,62 @@ class Trainer:
             if val_loader:
                 val_metrics = self.validate(val_loader, loss_fn)
 
+            # Determine monitored metric (prefer val_loss if available)
+            if val_metrics:
+                monitored_value = val_metrics["total_loss"]
+                monitor_name = "val_loss"
+            else:
+                monitored_value = train_metrics["total_loss"]
+                monitor_name = "train_loss"
+
             # Update history
             history["train_loss"].append(train_metrics["total_loss"])
             if val_metrics:
                 history["val_loss"].append(val_metrics["total_loss"])
 
+            # Check improvement
+            improved = (best_monitored - monitored_value) > min_delta
+            if improved:
+                best_monitored = monitored_value
+                epochs_no_improve = 0
+                # Save best model immediately
+                if save_best:
+                    self.best_loss = best_monitored
+                    self.save_model(save_dir, f"{self.experiment_name}_best")
+            else:
+                epochs_no_improve += 1
+
             # Log metrics
-            log_msg = f"Epoch {epoch + 1}/{epochs} - Train Loss: {train_metrics['total_loss']:.4f}"
+            log_msg = (
+                f"Epoch {epoch + 1}/{epochs} - Train Loss: {train_metrics['total_loss']:.4f}"
+            )
             if val_metrics:
                 log_msg += f" - Val Loss: {val_metrics['total_loss']:.4f}"
-
+            log_msg += f" - Monitored ({monitor_name}): {monitored_value:.4f}"
+            log_msg += f" - Best: {best_monitored:.4f}"
+            log_msg += f" - Epochs_no_improve: {epochs_no_improve}/{patience}"
             self.logger.info(log_msg)
 
             # Log to wandb
             if self.use_wandb:
-                wandb.log(
-                    {
-                        "epoch": epoch + 1,
-                        "train_loss": train_metrics["total_loss"],
-                        **{
-                            f"train_{k}": v
-                            for k, v in train_metrics.items()
-                            if k != "total_loss"
-                        },
-                        **{f"val_{k}": v for k, v in val_metrics.items()},
-                    }
-                )
+                wandb_log = {
+                    "epoch": epoch + 1,
+                    "train_loss": train_metrics["total_loss"],
+                    **{
+                        f"train_{k}": v
+                        for k, v in train_metrics.items()
+                        if k != "total_loss"
+                    },
+                    **{f"val_{k}": v for k, v in val_metrics.items()},
+                }
+                wandb.log(wandb_log)
 
-            # Save best model
-            if save_best and val_metrics:
-                if val_metrics["total_loss"] < self.best_loss:
-                    self.best_loss = val_metrics["total_loss"]
-                    self.save_model(save_dir, f"{self.experiment_name}_best")
+            # Early stopping check
+            if early_stopping and epochs_no_improve >= patience:
+                self.logger.info(
+                    f"Early stopping triggered (no improvement in {patience} epochs)."
+                )
+                break
 
         # Save final model
         if save_best:
@@ -394,7 +433,7 @@ class Trainer:
         from safetensors.torch import save_file
 
         save_path = Path(save_dir)
-        save_path.mkdir(exist_ok=True)
+        save_path.mkdir(exist_ok=True, parents=True)
 
         # Save model state
         state_dict = self.model.state_dict()
@@ -432,6 +471,9 @@ class Trainer:
         n_trials: int = 50,
         timeout: Optional[int] = None,
         study_name: str = "quantumdb_optimization",
+        early_stopping: bool = True,
+        patience: int = 5,
+        min_delta: float = 0.0,
     ) -> Dict[str, Any]:
         """
         Perform hyperparameter tuning using Optuna.
@@ -442,6 +484,9 @@ class Trainer:
             n_trials: Number of optimization trials
             timeout: Timeout in seconds
             study_name: Name of the Optuna study
+            early_stopping: Whether to use early stopping during trials
+            patience: Early stopping patience for trials
+            min_delta: Minimal improvement considered as progress
 
         Returns:
             best_params: Best hyperparameters found
@@ -493,6 +538,9 @@ class Trainer:
                 learning_rate=config["learning_rate"],
                 weight_decay=config["weight_decay"],
                 save_best=False,
+                early_stopping=early_stopping,
+                patience=patience,
+                min_delta=min_delta,
             )
 
             # Return best validation loss
@@ -518,3 +566,4 @@ class Trainer:
         self.logger.info(f"Best params: {study.best_trial.params}")
 
         return study.best_trial.params
+

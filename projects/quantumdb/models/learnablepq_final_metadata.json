@@ -1,0 +1,14 @@
+{
+  "model_config": {
+    "input_dim": 768,
+    "target_dim": 256,
+    "n_subvectors": 16,
+    "codebook_size": 256,
+    "compression_ratio": 192.0,
+    "model_size": 754817
+  },
+  "training_config": {
+    "best_loss": 3.0748441219329834,
+    "current_epoch": 11
+  }
+}

@@ -14,6 +14,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+import torch
 from torch.utils.data import Dataset
 from tqdm import tqdm
 
@@ -24,6 +25,13 @@ try:
     BEIR_AVAILABLE = True
 except ImportError:
     BEIR_AVAILABLE = False
+
+try:
+    import polars as pl
+
+    POLARS_AVAILABLE = True
+except ImportError:
+    POLARS_AVAILABLE = False
 
 
 class VectorDataset(Dataset):
@@ -172,6 +180,78 @@ class BEIRLoader:
         return list(self.queries.keys())
 
 
+class WikipediaParquetLoader:
+    """
+    Loader for Wikipedia Korean embeddings dataset.
+
+    Loads embeddings from the parquet file downloaded by simple_download.py.
+    """
+
+    def __init__(
+        self,
+        parquet_path: str = "data/wikipedia_ko_embeddings/wikipedia-22-12-ko-embeddings-100k.parquet",
+    ):
+        if not POLARS_AVAILABLE:
+            raise ImportError(
+                "polars is required for loading parquet files. Install with: pip install polars"
+            )
+
+        self.parquet_path = Path(parquet_path)
+        self.logger = logging.getLogger(__name__)
+
+        if not self.parquet_path.exists():
+            raise FileNotFoundError(f"Parquet file not found: {self.parquet_path}")
+
+    def load_data(
+        self, max_samples: Optional[int] = None
+    ) -> Tuple[np.ndarray, List[Dict[str, Any]]]:
+        """Load embeddings and metadata from parquet file."""
+        self.logger.info(f"Loading data from {self.parquet_path}")
+
+        # Read parquet file
+        df = pl.read_parquet(self.parquet_path)
+
+        if max_samples:
+            df = df.head(max_samples)
+
+        # Extract embeddings from JSON column
+        embeddings_list = []
+        for embedding_json in df["embedding_json"]:
+            # Parse JSON string to list and convert to numpy array
+            embedding = np.array(eval(embedding_json), dtype=np.float32)
+            embeddings_list.append(embedding)
+
+        embeddings = np.stack(embeddings_list)
+
+        # Create metadata
+        metadata = []
+        for i, row in enumerate(df.iter_rows(named=True)):
+            metadata.append(
+                {
+                    "id": f"wiki_{i}",
+                    "title": row["title"],
+                    "text": row["text"],
+                    "url": row.get("url", ""),
+                    "length": len(row["text"]),
+                }
+            )
+
+        self.logger.info(
+            f"Loaded {len(embeddings)} embeddings with shape {embeddings.shape}"
+        )
+        return embeddings, metadata
+
+    def get_embeddings(self, max_samples: Optional[int] = None) -> np.ndarray:
+        """Get only embeddings."""
+        embeddings, _ = self.load_data(max_samples)
+        return embeddings
+
+    def get_metadata(self, max_samples: Optional[int] = None) -> List[Dict[str, Any]]:
+        """Get only metadata."""
+        _, metadata = self.load_data(max_samples)
+        return metadata
+
+
 class EmbeddingCache:
     """Cache for storing and loading embeddings."""
 
@@ -311,6 +391,21 @@ def load_embeddings_from_file(file_path: str) -> np.ndarray:
                 )
             else:
                 return np.array(data)
+    elif file_path.suffix == ".parquet":
+        if not POLARS_AVAILABLE:
+            raise ImportError(
+                "polars is required for loading parquet files. Install with: pip install polars"
+            )
+
+        df = pl.read_parquet(file_path)
+        # Extract embeddings from JSON column
+        embeddings_list = []
+        for embedding_json in df["embedding_json"]:
+            # Parse JSON string to list and convert to numpy array
+            embedding = np.array(eval(embedding_json), dtype=np.float32)
+            embeddings_list.append(embedding)
+
+        return np.stack(embeddings_list)
     elif file_path.suffix in [".csv", ".tsv"]:
         delimiter = "," if file_path.suffix == ".csv" else "\t"
         df = pd.read_csv(file_path, delimiter=delimiter)

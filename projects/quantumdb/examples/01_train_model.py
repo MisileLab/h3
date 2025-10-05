@@ -11,7 +11,7 @@ import torch
 from pathlib import Path
 
 from quantumdb.training import LearnablePQ, Trainer
-from quantumdb.data import SyntheticDataGenerator
+from quantumdb.data import SyntheticDataGenerator, WikipediaParquetLoader
 
 
 def main():
@@ -29,6 +29,7 @@ def main():
         "epochs": 50,
         "batch_size": 512,
         "learning_rate": 1e-3,
+        "use_real_data": True,
     }
 
     print(f"Configuration:")
@@ -36,20 +37,42 @@ def main():
         print(f"  {key}: {value}")
     print()
 
-    # Generate synthetic training data
-    print("📊 Generating synthetic training data...")
-    data_generator = SyntheticDataGenerator(random_state=42)
+    # Load training data
+    train_vectors = None
+    if config["use_real_data"]:
+        print("📊 Loading real Wikipedia embeddings...")
+        try:
+            wiki_loader = WikipediaParquetLoader()
+            train_vectors = wiki_loader.get_embeddings(max_samples=config["n_samples"])
+            print(f"Loaded {len(train_vectors)} real Wikipedia embeddings")
+            print(f"Vector dimension: {train_vectors.shape[1]}")
+        except FileNotFoundError:
+            print("❌ Wikipedia parquet file not found!")
+            print(
+                "Please run 'python simple_download.py' first to download the dataset."
+            )
+            print("Falling back to synthetic data...")
+            config["use_real_data"] = False
+        except Exception as e:
+            print(f"❌ Error loading Wikipedia data: {e}")
+            print("Falling back to synthetic data...")
+            config["use_real_data"] = False
 
-    # Generate clustered vectors (more realistic than pure random)
-    train_vectors, _ = data_generator.generate_clustered_vectors(
-        n_samples=config["n_samples"],
-        dimension=config["input_dim"],
-        n_clusters=50,
-        cluster_std=0.1,
-    )
+    if train_vectors is None:
+        print("📊 Generating synthetic training data...")
+        data_generator = SyntheticDataGenerator(random_state=42)
 
-    print(f"Generated {len(train_vectors)} training vectors")
-    print(f"Vector dimension: {train_vectors.shape[1]}")
+        # Generate clustered vectors (more realistic than pure random)
+        train_vectors, _ = data_generator.generate_clustered_vectors(
+            n_samples=config["n_samples"],
+            dimension=config["input_dim"],
+            n_clusters=50,
+            cluster_std=0.1,
+        )
+
+        print(f"Generated {len(train_vectors)} training vectors")
+        print(f"Vector dimension: {train_vectors.shape[1]}")
+
     print()
 
     # Create model

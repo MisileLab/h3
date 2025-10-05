@@ -8,7 +8,7 @@ Recall@K, NDCG@K, MRR, Precision, and F1-score.
 import numpy as np
 from typing import List, Dict, Set, Tuple, Any
 from abc import ABC, abstractmethod
-
+from typing import List, Set, Dict, Any, Optional
 
 class BaseMetric(ABC):
     """Abstract base class for evaluation metrics."""
