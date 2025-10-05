@@ -19,7 +19,7 @@ pub mod storage;
 pub mod utils;
 
 // Re-export main types
-pub use models::{QuantumCompressor, NeuralEncoder, LearnablePQ};
+// pub use models::{QuantumCompressor, NeuralEncoder, LearnablePQ};
 pub use index::{HNSWGraph, SearchConfig};
 pub use storage::{QuantumDB};
 pub use training::{Trainer, TrainingConfig};
@@ -43,10 +43,13 @@ pub enum QuantumDBError {
     Serialization(#[from] serde_json::Error),
     
     #[error("SafeTensors error: {0}")]
-    SafeTensors(String),
+    SafeTensors(#[from] safetensors::SafeTensorError),
     
     #[error("Invalid configuration: {0}")]
     Config(String),
+
+    #[error("Parquet error: {0}")]
+    Parquet(#[from] parquet::errors::ParquetError),
 }
 
 pub type Result<T> = std::result::Result<T, QuantumDBError>;

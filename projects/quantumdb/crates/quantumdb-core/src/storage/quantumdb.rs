@@ -11,13 +11,7 @@ use std::{
 use burn::{prelude::Backend,
     tensor::Tensor,
 };
-use crate::{
-    models::{QuantumCompressor, CompressionModel, compressor::QuantumCompressorConfig},
-    index::{HNSWGraph, SearchConfig},
-    storage::{MemoryMappedStorage, SafeTensorsStorage, IndexMetadata},
-    utils::SIMDDistance,
-    Result, QuantumDBError,
-};
+use crate::{models::compressor::{QuantumCompressor, QuantumCompressorConfig}, index::{HNSWGraph, SearchConfig}, storage::{MemoryMappedStorage, SafeTensorsStorage, IndexMetadata}, utils::SIMDDistance, Result, QuantumDBError};
 
 /// Main QuantumDB interface
 /// 

@@ -55,7 +55,7 @@ tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
 # Arrow/Parquet for data processing
 arrow = "56.0"
-parquet = "51.0"
+parquet = "56.0"
 
 [profile.release]
 opt-level = 3

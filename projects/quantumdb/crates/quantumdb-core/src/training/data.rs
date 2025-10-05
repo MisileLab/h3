@@ -1,9 +1,9 @@
 //! Data loading and preprocessing for training
 
+use crate::QuantumDBError;
 use std::path::Path;
 use arrow::record_batch::RecordBatch;
-use parquet::arrow::arrow_reader;
-use parquet::arrow::ParquetRecordBatchReaderBuilder;
+use parquet::arrow::arrow_reader::{self, ParquetRecordBatchReaderBuilder};
 
 /// Data loader for training
 pub struct DataLoader {
@@ -17,69 +17,69 @@ pub struct DataLoader {
 
 impl DataLoader {
     /// Create a new data loader from Parquet file
-    /// 
+    ///
     /// # Arguments
     /// * `path` - Path to Parquet file
     /// * `batch_size` - Batch size
-    /// 
+    ///
     /// # Returns
     /// Data loader
-    pub fn from_parquet<P: AsRef<Path>>(path: P, batch_size: usize) -> Result<Self> {
+    pub fn from_parquet<P: AsRef<Path>>(path: P, batch_size: usize) -> Result<Self, QuantumDBError> {
         let file = std::fs::File::open(path)?;
         let builder = ParquetRecordBatchReaderBuilder::try_new(file)?;
         let mut reader = builder.build()?;
-        
+
         let mut batches = Vec::new();
         while let Some(batch) = reader.next() {
-            batches.push(batch.map_err(|e| QuantumDBError::Storage(e.into()))?);
+            batches.push(batch.map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e.to_string()))?);
         }
-        
+
         Ok(Self {
             batches,
             current_batch: 0,
             batch_size,
         })
     }
-    
+
     /// Get the next batch
-    /// 
+    ///
     /// # Returns
     /// Optional batch of embeddings
     pub fn next_batch(&mut self) -> Option<Vec<Vec<f32>>> {
         if self.current_batch >= self.batches.len() {
             return None;
         }
-        
+
         let batch = &self.batches[self.current_batch];
         self.current_batch += 1;
-        
+
         // Extract embeddings from batch
         // This assumes there's an 'embedding' column with float32 values
         if let Some(embedding_array) = batch.column_by_name("embedding") {
-            let embeddings = self.extract_embeddings(embedding_array)?;
+            let embeddings = self.extract_embeddings(embedding_array).ok()?;
             Some(embeddings)
         } else {
             None
         }
     }
-    
+
     /// Extract embeddings from arrow array
-    fn extract_embeddings(&self, array: &arrow::array::ArrayRef) -> Result<Vec<Vec<f32>>> {
+    fn extract_embeddings(&self, array: &arrow::array::ArrayRef) -> Result<Vec<Vec<f32>>, QuantumDBError> {
         use arrow::array::Float32Array;
-        
+
         let float_array = array.as_any().downcast_ref::<Float32Array>()
             .ok_or_else(|| QuantumDBError::Config("Expected Float32Array".to_string()))?;
-        
+
         let mut embeddings = Vec::new();
         let values = float_array.values();
-        
+
         // Assuming each embedding is a fixed size (e.g., 768)
         let embedding_dim = 768;
-        
+
         for chunk in values.chunks_exact(embedding_dim) {
             embeddings.push(chunk.to_vec());
         }
-        
+
         Ok(embeddings)
     }
     

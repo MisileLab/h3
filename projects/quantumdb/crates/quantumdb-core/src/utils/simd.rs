@@ -1,5 +1,7 @@
+#![feature(portable_simd)]
 //! SIMD utilities and vectorized operations
 
+use std::simd::num::SimdFloat;
 use std::simd::*;
 
 /// Vectorized operations for batch processing

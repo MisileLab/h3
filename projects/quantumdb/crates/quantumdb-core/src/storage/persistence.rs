@@ -3,7 +3,7 @@
 //! Provides zero-copy loading and saving of neural models and
 //! compressed indices using the SafeTensors format.
 
-use safetensors::{SafeTensors, Dtype, tensor::TensorInfo};
+use safetensors::{SafeTensors, Dtype, tensor::{TensorView, SafeTensorError}};
 use serde::{Deserialize, Serialize};
 use std::{
     collections::HashMap,
@@ -26,43 +26,12 @@ impl SafeTensorsStorage {
     /// * `tensors` - Map of tensor name to tensor data
     /// * `path` - Output file path
     pub fn save_model<P: AsRef<Path>>(
-        tensors: HashMap<&str, Vec<f32>>,
+        tensors: HashMap<String, TensorView>,
         path: P,
     ) -> Result<()> {
-        let mut tensor_data = HashMap::new();
-        
-        for (name, data) in tensors {
-            let shape = vec![data.len()];
-            tensor_data.insert(
-                name.to_string(),
-                TensorInfo::new(shape, Dtype::F32),
-            );
-        }
-        
-        // Create SafeTensors
-        let mut buffer = Vec::new();
-        
-        // Write header
-        let header = serde_json::to_string(&tensor_data)?;
-        let header_len = header.len() as u64;
-        buffer.write_all(&header_len.to_le_bytes())?;
-        buffer.write_all(header.as_bytes())?;
-        
-        // Write tensor data
-        for (_, data) in tensors {
-            let bytes = unsafe {
-                std::slice::from_raw_parts(
-                    data.as_ptr() as *const u8,
-                    data.len() * std::mem::size_of::<f32>(),
-                )
-            };
-            buffer.write_all(bytes)?;
-        }
-        
-        // Write to file
+        let buffer = safetensors::serialize(tensors.iter().map(|(k, v)| (k.as_str(), v)), &None)?;
         let mut file = File::create(path)?;
         file.write_all(&buffer)?;
-        
         Ok(())
     }
     
@@ -83,19 +52,18 @@ impl SafeTensorsStorage {
         let mut tensors = HashMap::new();
         
         for (name, info) in safetensors.tensors() {
-            let data = safetensors.tensor(name)?;
+            let data = safetensors.tensor(&name)?;
             
-            if info.dtype == Dtype::F32 {
-                let float_data: Vec<f32> = data
+            if info.dtype() == Dtype::F32 {
+                let float_data: Vec<f32> = data.get_data()
                     .chunks_exact(4)
                     .map(|chunk| f32::from_le_bytes([chunk[0], chunk[1], chunk[2], chunk[3]]))
                     .collect();
                 tensors.insert(name.to_string(), float_data);
             } else {
-                return Err(QuantumDBError::SafeTensors(format!(
-                    "Unsupported dtype: {:?}",
-                    info.dtype
-                )));
+                return Err(QuantumDBError::SafeTensors(SafeTensorError::UnsupportedDtype(format!("Unsupported dtype: {:?}",
+                    info.dtype()
+                ))));
             }
         }
         
@@ -162,8 +130,8 @@ impl SafeTensorsStorage {
     /// * `loss` - Current loss
     /// * `path` - Output file path
     pub fn save_checkpoint<P: AsRef<Path>>(
-        model_data: HashMap<&str, Vec<f32>>,
-        optimizer_data: HashMap<&str, Vec<f32>>,
+        model_data: HashMap<String, Vec<f32>>,
+        optimizer_data: HashMap<String, Vec<f32>>,
         epoch: usize,
         loss: f32,
         path: P,
@@ -243,11 +211,13 @@ mod tests {
         
         // Create test tensors
         let mut tensors = HashMap::new();
-        tensors.insert("encoder.weight", vec![1.0, 2.0, 3.0, 4.0]);
-        tensors.insert("encoder.bias", vec![0.1, 0.2]);
+        let tensor1 = TensorView::new(Dtype::F32, vec![4], &[1.0f32.to_le_bytes(), 2.0f32.to_le_bytes(), 3.0f32.to_le_bytes(), 4.0f32.to_le_bytes()].concat());
+        let tensor2 = TensorView::new(Dtype::F32, vec![2], &[0.1f32.to_le_bytes(), 0.2f32.to_le_bytes()].concat());
+        tensors.insert("encoder.weight".to_string(), tensor1);
+        tensors.insert("encoder.bias".to_string(), tensor2);
         
         // Save model
-        SafeTensorsStorage::save_model(tensors.clone(), &path).unwrap();
+        SafeTensorsStorage::save_model(tensors, &path).unwrap();
         
         // Load model
         let loaded_tensors = SafeTensorsStorage::load_model(&path).unwrap();
@@ -294,12 +264,12 @@ mod tests {
         let mut optimizer = HashMap::new();
         optimizer.insert("momentum".to_string(), vec![0.9]);
         
-        let checkpoint = Checkpoint::new(10, 0.123, model, optimizer);
+        let checkpoint = Checkpoint::new(10, 0.123, model.clone(), optimizer.clone());
         
         // Save checkpoint
         SafeTensorsStorage::save_checkpoint(
-            checkpoint.model.iter().map(|(k, v)| (k.as_str(), v.clone())).collect(),
-            checkpoint.optimizer.iter().map(|(k, v)| (k.as_str(), v.clone())).collect(),
+            model,
+            optimizer,
             checkpoint.epoch,
             checkpoint.loss,
             &path,

@@ -7,7 +7,6 @@ use memmap2::{Mmap, MmapMut, MmapOptions};
 use serde::{Deserialize, Serialize};
 use std::{
     fs::{File, OpenOptions},
-    io::Write,
     path::Path,
 };
 use crate::{Result, QuantumDBError};
@@ -238,20 +237,19 @@ impl MemoryMappedStorageMut {
     }
     
     /// Convert to immutable storage
-    pub fn into_immutable(self) -> Result<MemoryMappedStorage> {
+    pub fn into_immutable(mut self) -> Result<MemoryMappedStorage> {
         // Make sure all changes are flushed
-        let mut mutable = self;
-        mutable.flush()?;
-        
+        self.flush()?;
+
         // Convert to immutable mmaps
-        let codes_mmap = unsafe { Mmap::map(&mutable.codes_mmap)?? };
-        let metadata_mmap = unsafe { Mmap::map(&mutable.metadata_mmap)?? };
-        
+        let codes_mmap = self.codes_mmap.make_read_only()?;
+        let metadata_mmap = self.metadata_mmap.make_read_only()?;
+
         Ok(MemoryMappedStorage {
             codes_mmap,
             metadata_mmap,
-            num_vectors: mutable.num_vectors,
-            compressed_dim: mutable.compressed_dim,
+            num_vectors: self.num_vectors,
+            compressed_dim: self.compressed_dim,
         })
     }
 }

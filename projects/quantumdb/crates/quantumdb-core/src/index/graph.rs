@@ -154,7 +154,7 @@ pub enum GraphError {
     #[error("Node {0} not found")]
     NodeNotFound(usize),
     
-    #[error("Too many connections (max: {0})")]
+    #[error("Too many connections")]
     TooManyConnections,
     
     #[error("Layer {0} not found")]
