@@ -1,6 +1,6 @@
 [build-system]
-requires = ["setuptools>=61.0"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
 name = "quantumdb"
@@ -39,34 +39,14 @@ dependencies = [
     "pydantic>=2.0.0",
 ]
 
-[project.optional-dependencies]
-dev = [
-    "pytest>=7.0",
-    "pytest-cov>=4.0.0",
-    "ruff>=0.1.0",
-    "mypy>=1.0",
-    "black>=23.0.0",
-    "isort>=5.12.0",
-    "pre-commit>=3.0.0",
-]
-evaluation = [
-    "beir>=1.0.1",
-    "wandb>=0.15.0",
-    "matplotlib>=3.5.0",
-    "seaborn>=0.11.0",
-    "jupyter>=1.0.0",
-    "notebook>=6.4.0",
-]
-
 [project.urls]
 Homepage = "https://github.com/quantumdb/quantumdb"
 Repository = "https://github.com/quantumdb/quantumdb"
 Documentation = "https://quantumdb.readthedocs.io"
 "Bug Tracker" = "https://github.com/quantumdb/quantumdb/issues"
 
-[tool.setuptools.packages.find]
-where = ["."]
-include = ["quantumdb*"]
+[tool.hatch.build.targets.wheel]
+packages = ["quantumdb"]
 
 [tool.ruff]
 line-length = 88
@@ -95,3 +75,24 @@ python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 addopts = "--cov=quantumdb --cov-report=term-missing --cov-report=html"
+pythonpath = ["."]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+    "pytest-cov>=4.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "pre-commit>=3.0.0",
+]
+
+evaluation = [
+    "beir>=1.0.1",
+    "wandb>=0.15.0",
+    "matplotlib>=3.5.0",
+    "seaborn>=0.11.0",
+    "jupyter>=1.0.0",
+    "notebook>=6.4.0",
+]

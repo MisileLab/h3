@@ -393,7 +393,7 @@ class QuantumDB:
             info = self.client.get_collection(self.collection_name)
 
             return {
-                "name": info.name,
+                "name": self.collection_name,
                 "vectors_count": info.points_count,
                 "vector_size": info.config.params.vectors.size,
                 "distance": str(info.config.params.vectors.distance),

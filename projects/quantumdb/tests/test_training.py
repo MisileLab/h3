@@ -202,7 +202,16 @@ class TestTrainer:
         train_loader, _ = trainer.create_data_loaders(self.train_data, batch_size=32)
 
         optimizer = torch.optim.Adam(self.model.parameters(), lr=1e-3)
-        loss_fn = torch.nn.MSELoss()
+        from quantumdb.training.losses import CombinedLoss
+
+        loss_fn = CombinedLoss(
+            quantization_weight=1.0,
+            reconstruction_weight=1.0,
+            triplet_weight=0.0,
+            diversity_weight=0.1,
+            n_subvectors=self.model.n_subvectors,
+            codebook_size=self.model.codebook_size,
+        )
 
         metrics = trainer.train_epoch(train_loader, optimizer, loss_fn)
 
