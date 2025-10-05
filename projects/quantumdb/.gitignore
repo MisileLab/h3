@@ -1,6 +1,7 @@
 # Custom
 collections/
 qdrant_storage/
+benchmark_results/
 *.safetensors
 *.parquet
 

@@ -10,16 +10,30 @@ Drop-in replacement for your original example.
 """
 
 import time
-from pathlib import Path
 import uuid
+from pathlib import Path
+
 import numpy as np
+from pydantic import BaseModel
 
 from quantumdb import QuantumDB
 from quantumdb.data import (
     SyntheticDataGenerator,
     WikipediaParquetLoader,
-    create_embedder,
 )
+
+
+class Setting(BaseModel):
+  model_path: str = "models/learnablepq_final.safetensors"
+  collection_name: str = "demo_collection"
+  n_documents: int = 10000
+  dimension: int = 768
+  batch_size: int = 1000
+  use_real_data: bool = True
+  use_uuids_for_points: bool = False
+  compressed_dimension: int = 256
+  bytes_per_original_element: int = 4
+  bytes_per_compressed_element: int = 1
 
 
 def normalize_ids_for_db(ids, payloads):
@@ -100,31 +114,15 @@ def main():
     print("=" * 60)
 
     # Configuration
-    config = {
-        "model_path": "models/learnablepq_final.safetensors",
-        "collection_name": "demo_collection",
-        "n_documents": 10000,
-        "dimension": 768,
-        "batch_size": 1000,
-        "use_real_data": True,
-        # If you prefer UUIDs instead of integer mapping, set to True.
-        # (This script defaults to integer mapping for simplicity.)
-        "use_uuids_for_points": False,
-        # Compressed vector settings used for reporting compression ratio:
-        # set bytes_per_compressed_element to the bytes used to store each
-        # component of the compressed vector in your DB (adjust if needed).
-        "compressed_dimension": 256,
-        "bytes_per_original_element": 4,  # float32
-        "bytes_per_compressed_element": 1,  # e.g., 1 byte per codebook index (adjust to your system)
-    }
+    config = Setting()
 
     print("Configuration:")
-    for key, value in config.items():
+    for key, value in config.model_dump().items(): # pyright: ignore[reportAny]
         print(f"  {key}: {value}")
     print()
 
     # Check if model exists
-    model_path = Path(config["model_path"])
+    model_path = Path(config.model_path)
     if not model_path.exists():
         print(f"❌ Model file not found: {model_path}")
         print("Please run example 01 first to train a model.")
@@ -133,15 +131,15 @@ def main():
     # Load document data
     doc_vectors = None
     doc_metadata = None
-    doc_ids = None
+    doc_ids: list[str | int] = []
     data_generator = SyntheticDataGenerator(random_state=42)  # Initialize for fallback
 
-    if config["use_real_data"]:
+    if config.use_real_data:
         print("📄 Loading real Wikipedia document data...")
         try:
             wiki_loader = WikipediaParquetLoader()
             doc_vectors, wiki_metadata = wiki_loader.load_data(
-                max_samples=config["n_documents"]
+                max_samples=config.n_documents
             )
 
             # If loader returned metadata, attempt to extract numeric IDs where possible
@@ -169,22 +167,22 @@ def main():
             print("❌ Wikipedia parquet file not found!")
             print("Please run 'python simple_download.py' first to download the dataset.")
             print("Falling back to synthetic data...")
-            config["use_real_data"] = False
+            config.use_real_data = False
         except Exception as e:
             print(f"❌ Error loading Wikipedia data: {e}")
             print("Falling back to synthetic data...")
-            config["use_real_data"] = False
+            config.use_real_data = False
 
     if doc_vectors is None:
         print("📄 Generating synthetic document data...")
 
         # Generate document vectors
         doc_vectors = data_generator.generate_text_like_vectors(
-            n_samples=config["n_documents"], dimension=config["dimension"], sparsity=0.1
+            n_samples=config.n_documents, dimension=config.dimension, sparsity=0.1
         )
 
         # Generate document metadata
-        doc_ids = [f"doc_{i:06d}" for i in range(config["n_documents"])]
+        doc_ids = [f"doc_{i:06d}" for i in range(config.n_documents)]
         doc_metadata = [
             {
                 "title": f"Document {i}",
@@ -192,7 +190,7 @@ def main():
                 "length": int(np.random.randint(100, 5000)),
                 "timestamp": time.time() - np.random.randint(0, 86400 * 30),
             }
-            for i in range(config["n_documents"])
+            for i in range(config.n_documents)
         ]
 
         print(f"Generated {len(doc_vectors)} documents")
@@ -203,9 +201,9 @@ def main():
     # Initialize QuantumDB
     print("🚀 Initializing QuantumDB...")
     db = QuantumDB(
-        model_path=config["model_path"],
-        collection_name=config["collection_name"],
-        vector_size=config["compressed_dimension"],  # Compressed dimension
+        model_path=config.model_path,
+        collection_name=config.collection_name,
+        vector_size=config.compressed_dimension,  # Compressed dimension
         distance="cosine",
     )
 
@@ -218,18 +216,20 @@ def main():
     print()
 
     # Normalize IDs to DB-compatible values (and preserve original IDs)
-    if config["use_uuids_for_points"]:
+    if config.use_uuids_for_points:
         # Use UUIDs as point IDs (string form). Store original id in payload['orig_id'].
         print("🔁 Converting point IDs to UUIDs (preserving original IDs in payload)...")
-        new_ids = []
-        new_payloads = []
+        new_ids: list[str] = []
+        new_payloads: list[dict[str, str | int | float]] = []
+        if doc_ids is None:
+          raise ValueError("doc_ids must be provided to use UUIDs for points")
         for pid, pl in zip(doc_ids, doc_metadata or [{}] * len(doc_ids)):
             pl = dict(pl) if pl is not None else {}
             new_id = str(uuid.uuid4())
             pl["orig_id"] = pid
             new_ids.append(new_id)
             new_payloads.append(pl)
-        doc_ids = new_ids
+        doc_ids: list[str] = new_ids
         doc_metadata = new_payloads
     else:
         print("🔁 Normalizing point IDs to unsigned integers (preserving original IDs in payload)...")
@@ -245,11 +245,13 @@ def main():
     print("📚 Adding vectors to database...")
     start_time = time.time()
 
+    if doc_ids is None:
+      raise ValueError("doc_ids must be provided to add vectors to the database")
     result = db.add(
         vectors=doc_vectors,
-        ids=doc_ids,
+        ids=doc_ids, # pyright: ignore[reportArgumentType]
         payloads=doc_metadata,
-        batch_size=config["batch_size"],
+        batch_size=config.batch_size,
     )
 
     end_time = time.time()
@@ -274,7 +276,7 @@ def main():
 
     # Generate a test query (same dimensionality as original embedder input)
     query_vector = data_generator.generate_text_like_vectors(
-        n_samples=1, dimension=config["dimension"]
+        n_samples=1, dimension=config.dimension
     )[0]
 
     # Perform search
@@ -317,7 +319,7 @@ def main():
     # Test batch search
     print("🔍 Testing batch search...")
     batch_queries = data_generator.generate_text_like_vectors(
-        n_samples=5, dimension=config["dimension"]
+        n_samples=5, dimension=config.dimension
     )
 
     batch_start = time.time()
@@ -363,12 +365,12 @@ def main():
     # Performance summary
     print("📊 Performance Summary:")
     print(f"  Dataset size: {len(doc_vectors):,} vectors")
-    print(f"  Original dimension: {config['dimension']}")
-    print(f"  Compressed dimension: {config['compressed_dimension']}")
+    print(f"  Original dimension: {config.dimension}")
+    print(f"  Compressed dimension: {config.compressed_dimension}")
 
     # Compute compression ratio using configured bytes-per-element values.
-    orig_bytes = config["dimension"] * config["bytes_per_original_element"]
-    comp_bytes = config["compressed_dimension"] * config["bytes_per_compressed_element"]
+    orig_bytes = config.dimension * config.bytes_per_original_element
+    comp_bytes = config.compressed_dimension * config.bytes_per_compressed_element
     if comp_bytes > 0:
         compression_ratio = orig_bytes / comp_bytes
         print(f"  Compression ratio: {compression_ratio:.1f}x  (orig bytes: {orig_bytes}, compressed bytes: {comp_bytes})")
