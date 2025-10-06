@@ -37,6 +37,7 @@
         (final: prev: {
           # https://github.com/NixOS/nixpkgs/issues/449068
           avizo = stablep.avizo;
+          libreoffice = stablep.libreoffice;
           dart = prev.dart.overrideAttrs (old: {
             installPhase = ''
               runHook preInstall
