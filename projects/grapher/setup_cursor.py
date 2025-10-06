@@ -17,10 +17,10 @@ def get_cursor_config_path():
     
     # Try common locations for Cursor config
     cursor_paths = [
-        home / ".cursor" / "mcp_servers.json",
-        home / ".config" / "cursor" / "mcp_servers.json",
-        home / "AppData" / "Roaming" / "Cursor" / "mcp_servers.json" if sys.platform == "win32" else None,
-        home / "Library" / "Application Support" / "Cursor" / "mcp_servers.json" if sys.platform == "darwin" else None,
+        home / ".cursor" / "mcp.json",
+        home / ".config" / "cursor" / "mcp.json",
+        home / "AppData" / "Roaming" / "Cursor" / "mcp.json" if sys.platform == "win32" else None,
+        home / "Library" / "Application Support" / "Cursor" / "mcp.json" if sys.platform == "darwin" else None,
     ]
     
     for path in cursor_paths:

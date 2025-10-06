@@ -116,6 +116,126 @@ def add_class_node(graph: nx.DiGraph, class_info: Dict[str, Any], module_name: s
     return node_id
 
 
+def add_struct_node(graph: nx.DiGraph, struct_info: Dict[str, Any], module_name: str) -> str:
+    """
+    Add a Rust struct node to the graph.
+    
+    Args:
+        graph: NetworkX directed graph
+        struct_info: Struct information dictionary
+        module_name: Name of the containing module
+        
+    Returns:
+        str: Node ID of the added struct
+    """
+    node_id = create_node_id("struct", struct_info["name"], module_name)
+    
+    # Add node with struct properties
+    graph.add_node(node_id, **{
+        'type': 'struct',
+        'name': struct_info['name'],
+        'file_path': struct_info['file_path'],
+        'line_number': struct_info['line_number'],
+        'fields': struct_info.get('fields', []),
+        'docstring': struct_info.get('docstring', ''),
+        'visibility': struct_info.get('visibility', 'private'),
+        'is_unit_struct': struct_info.get('is_unit_struct', False),
+        'is_tuple_struct': struct_info.get('is_tuple_struct', False)
+    })
+    
+    logger.info(f"Added struct node: {node_id}")
+    return node_id
+
+
+def add_enum_node(graph: nx.DiGraph, enum_info: Dict[str, Any], module_name: str) -> str:
+    """
+    Add a Rust enum node to the graph.
+    
+    Args:
+        graph: NetworkX directed graph
+        enum_info: Enum information dictionary
+        module_name: Name of the containing module
+        
+    Returns:
+        str: Node ID of the added enum
+    """
+    node_id = create_node_id("enum", enum_info["name"], module_name)
+    
+    # Add node with enum properties
+    graph.add_node(node_id, **{
+        'type': 'enum',
+        'name': enum_info['name'],
+        'file_path': enum_info['file_path'],
+        'line_number': enum_info['line_number'],
+        'variants': enum_info.get('variants', []),
+        'docstring': enum_info.get('docstring', ''),
+        'visibility': enum_info.get('visibility', 'private')
+    })
+    
+    logger.info(f"Added enum node: {node_id}")
+    return node_id
+
+
+def add_trait_node(graph: nx.DiGraph, trait_info: Dict[str, Any], module_name: str) -> str:
+    """
+    Add a Rust trait node to the graph.
+    
+    Args:
+        graph: NetworkX directed graph
+        trait_info: Trait information dictionary
+        module_name: Name of the containing module
+        
+    Returns:
+        str: Node ID of the added trait
+    """
+    node_id = create_node_id("trait", trait_info["name"], module_name)
+    
+    # Add node with trait properties
+    graph.add_node(node_id, **{
+        'type': 'trait',
+        'name': trait_info['name'],
+        'file_path': trait_info['file_path'],
+        'line_number': trait_info['line_number'],
+        'methods': trait_info.get('methods', []),
+        'docstring': trait_info.get('docstring', ''),
+        'visibility': trait_info.get('visibility', 'private'),
+        'supertraits': trait_info.get('supertraits', [])
+    })
+    
+    logger.info(f"Added trait node: {node_id}")
+    return node_id
+
+
+def add_impl_node(graph: nx.DiGraph, impl_info: Dict[str, Any], module_name: str) -> str:
+    """
+    Add a Rust impl block node to the graph.
+    
+    Args:
+        graph: NetworkX directed graph
+        impl_info: Impl block information dictionary
+        module_name: Name of the containing module
+        
+    Returns:
+        str: Node ID of the added impl block
+    """
+    node_id = create_node_id("impl", f"{impl_info['type_name']}_impl", module_name)
+    
+    # Add node with impl properties
+    graph.add_node(node_id, **{
+        'type': 'impl',
+        'name': f"{impl_info['type_name']}_impl",
+        'file_path': impl_info['file_path'],
+        'line_number': impl_info['line_number'],
+        'trait_name': impl_info.get('trait_name', ''),
+        'type_name': impl_info.get('type_name', ''),
+        'methods': impl_info.get('methods', []),
+        'is_trait_impl': impl_info.get('is_trait_impl', False)
+    })
+    
+    logger.info(f"Added impl node: {node_id}")
+    return node_id
+
+
 def add_defined_in_edge(graph: nx.DiGraph, element_node_id: str, module_node_id: str, element_type: str):
     """
     Add a DEFINED_IN relationship between an element and its module.
@@ -262,6 +382,10 @@ def build_knowledge_graph(parsing_results: List[Dict[str, Any]]) -> nx.DiGraph:
     modules = [elem for elem in parsing_results if elem['type'] == 'module']
     functions = [elem for elem in parsing_results if elem['type'] == 'function']
     classes = [elem for elem in parsing_results if elem['type'] == 'class']
+    structs = [elem for elem in parsing_results if elem['type'] == 'struct']
+    enums = [elem for elem in parsing_results if elem['type'] == 'enum']
+    traits = [elem for elem in parsing_results if elem['type'] == 'trait']
+    impls = [elem for elem in parsing_results if elem['type'] == 'impl']
     
     # Create a mapping from file path to module
     file_to_module = {}
@@ -305,6 +429,70 @@ def build_knowledge_graph(parsing_results: List[Dict[str, Any]]) -> nx.DiGraph:
         
         # Add method relationships
         for method in cls.get('methods', []):
+            method_node_id = add_function_node(graph, method, module_name)
+            method_full_id = f"{module_name}.{method['name']}"
+            function_nodes[method_full_id] = method_node_id
+            add_has_method_edge(graph, node_id, method_node_id)
+    
+    # Add struct nodes and DEFINED_IN relationships
+    struct_nodes = {}
+    for struct in structs:
+        module_name = file_to_module.get(struct['file_path'], 'unknown')
+        node_id = add_struct_node(graph, struct, module_name)
+        struct_nodes[f"{module_name}.{struct['name']}"] = node_id
+        
+        # Add DEFINED_IN relationship
+        if module_name in module_nodes:
+            add_defined_in_edge(graph, node_id, module_nodes[module_name], 'struct')
+    
+    # Add enum nodes and DEFINED_IN relationships
+    enum_nodes = {}
+    for enum in enums:
+        module_name = file_to_module.get(enum['file_path'], 'unknown')
+        node_id = add_enum_node(graph, enum, module_name)
+        enum_nodes[f"{module_name}.{enum['name']}"] = node_id
+        
+        # Add DEFINED_IN relationship
+        if module_name in module_nodes:
+            add_defined_in_edge(graph, node_id, module_nodes[module_name], 'enum')
+    
+    # Add trait nodes and DEFINED_IN relationships
+    trait_nodes = {}
+    for trait in traits:
+        module_name = file_to_module.get(trait['file_path'], 'unknown')
+        node_id = add_trait_node(graph, trait, module_name)
+        trait_nodes[f"{module_name}.{trait['name']}"] = node_id
+        
+        # Add DEFINED_IN relationship
+        if module_name in module_nodes:
+            add_defined_in_edge(graph, node_id, module_nodes[module_name], 'trait')
+        
+        # Add supertrait relationships
+        for supertrait in trait.get('supertraits', []):
+            supertrait_id = resolve_function_reference(supertrait, graph, module_name)
+            if supertrait_id and graph.nodes[supertrait_id]['type'] == 'trait':
+                add_inherits_edge(graph, node_id, supertrait_id)
+        
+        # Add method relationships
+        for method in trait.get('methods', []):
+            method_node_id = add_function_node(graph, method, module_name)
+            method_full_id = f"{module_name}.{method['name']}"
+            function_nodes[method_full_id] = method_node_id
+            add_has_method_edge(graph, node_id, method_node_id)
+    
+    # Add impl nodes and DEFINED_IN relationships
+    impl_nodes = {}
+    for impl in impls:
+        module_name = file_to_module.get(impl['file_path'], 'unknown')
+        node_id = add_impl_node(graph, impl, module_name)
+        impl_nodes[f"{module_name}.{impl['type_name']}_impl"] = node_id
+        
+        # Add DEFINED_IN relationship
+        if module_name in module_nodes:
+            add_defined_in_edge(graph, node_id, module_nodes[module_name], 'impl')
+        
+        # Add method relationships
+        for method in impl.get('methods', []):
             method_node_id = add_function_node(graph, method, module_name)
             method_full_id = f"{module_name}.{method['name']}"
             function_nodes[method_full_id] = method_node_id

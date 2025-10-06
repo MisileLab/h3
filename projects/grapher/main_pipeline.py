@@ -12,6 +12,7 @@ import networkx as nx
 import logging
 
 from code_parser import parse_python_file
+from rust_parser import parse_rust_file
 from graph_builder import build_knowledge_graph
 from query_translator import translate_natural_language_to_query
 
@@ -20,29 +21,37 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-def find_python_files(project_path: str) -> List[str]:
+def find_code_files(project_path: str) -> Dict[str, List[str]]:
     """
-    Find all Python files in the given project path.
+    Find all code files (Python and Rust) in the given project path.
     
     Args:
         project_path: Path to the project directory
         
     Returns:
-        List[str]: List of Python file paths
+        Dict[str, List[str]]: Dictionary with 'python' and 'rust' keys containing file paths
     """
     python_files = []
+    rust_files = []
     
     # Use glob to find all .py files recursively
-    pattern = os.path.join(project_path, "**", "*.py")
-    python_files = glob.glob(pattern, recursive=True)
+    python_pattern = os.path.join(project_path, "**", "*.py")
+    python_files = glob.glob(python_pattern, recursive=True)
     
-    logger.info(f"Found {len(python_files)} Python files in {project_path}")
-    return python_files
+    # Use glob to find all .rs files recursively
+    rust_pattern = os.path.join(project_path, "**", "*.rs")
+    rust_files = glob.glob(rust_pattern, recursive=True)
+    
+    logger.info(f"Found {len(python_files)} Python files and {len(rust_files)} Rust files in {project_path}")
+    return {
+        'python': python_files,
+        'rust': rust_files
+    }
 
 
 def parse_project_files(project_path: str) -> List[Dict[str, Any]]:
     """
-    Parse all Python files in the project.
+    Parse all code files (Python and Rust) in the project.
     
     Args:
         project_path: Path to the project directory
@@ -50,19 +59,31 @@ def parse_project_files(project_path: str) -> List[Dict[str, Any]]:
     Returns:
         List[Dict]: List of all parsed code elements
     """
-    python_files = find_python_files(project_path)
+    code_files = find_code_files(project_path)
     all_results = []
     
-    for file_path in python_files:
+    # Parse Python files
+    for file_path in code_files['python']:
         try:
-            logger.info(f"Parsing file: {file_path}")
+            logger.info(f"Parsing Python file: {file_path}")
             parsing_results = parse_python_file(file_path)
             all_results.extend(parsing_results)
         except Exception as e:
-            logger.error(f"Error parsing {file_path}: {e}")
+            logger.error(f"Error parsing Python file {file_path}: {e}")
             continue
     
-    logger.info(f"Parsed {len(all_results)} code elements from {len(python_files)} files")
+    # Parse Rust files
+    for file_path in code_files['rust']:
+        try:
+            logger.info(f"Parsing Rust file: {file_path}")
+            parsing_results = parse_rust_file(file_path)
+            all_results.extend(parsing_results)
+        except Exception as e:
+            logger.error(f"Error parsing Rust file {file_path}: {e}")
+            continue
+    
+    total_files = len(code_files['python']) + len(code_files['rust'])
+    logger.info(f"Parsed {len(all_results)} code elements from {total_files} files ({len(code_files['python'])} Python, {len(code_files['rust'])} Rust)")
     return all_results
 
 
