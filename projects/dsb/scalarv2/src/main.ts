@@ -1,4 +1,5 @@
 import * as PIXI from "pixi.js";
+import { storyManager, EPISODE_1, DATA_FRAGMENTS } from "./story";
 
 // --- THEME & STYLING (from Pixi) ---
 const THEME = {
@@ -34,7 +35,14 @@ const COMBAT_GRID_ROWS = 6;
 const CELL_SIZE = 90;
 
 // --- TYPE DEFINITIONS ---
-type NodeType = "START" | "RESOURCE" | "EVENT" | "COMBAT" | "ESCAPE" | "EMPTY";
+type NodeType =
+  | "START"
+  | "RESOURCE"
+  | "EVENT"
+  | "COMBAT"
+  | "ESCAPE"
+  | "EMPTY"
+  | "STORY";
 type UnitRole = "Guardian" | "Supporter" | "Scout" | "Attacker" | "Enemy";
 type PlayerAction = "move" | "attack" | "special";
 
@@ -95,6 +103,11 @@ interface GameState {
     grid: (Unit | null)[][];
     activePlayerAction: PlayerAction | null;
   };
+  story: {
+    currentEpisode: string | null;
+    unlockedFragments: string[];
+    storyFlags: Record<string, boolean>;
+  };
 }
 
 // Represents the persistent state of the player across all missions
@@ -124,6 +137,15 @@ const resDataEl = document.getElementById("res-data");
 const resEnergyEl = document.getElementById("res-energy");
 const logContentEl = document.getElementById("log-content");
 const partyStatusEl = document.querySelector("#party-status");
+
+// --- STORY UI ELEMENTS ---
+const dialogueBox = document.getElementById("dialogue-box");
+const dialoguePortrait = document.getElementById("dialogue-portrait");
+const dialogueName = document.getElementById("dialogue-name");
+const dialogueText = document.getElementById("dialogue-text");
+const dialogueChoices = document.getElementById("dialogue-choices");
+const dataFragmentsEl = document.getElementById("data-fragments");
+const fragmentsListEl = document.getElementById("fragments-list");
 
 // --- MAP CONTROL ELEMENTS ---
 const zoomInBtn = document.getElementById("zoom-in");
@@ -484,6 +506,89 @@ function centerMapOnNode(nodeId: number) {
   updateMapTransform();
 }
 
+// --- STORY FUNCTIONS ---
+
+function showDialogue(character: string, text: string, choices?: string[]) {
+  if (
+    !dialogueBox ||
+    !dialoguePortrait ||
+    !dialogueName ||
+    !dialogueText ||
+    !dialogueChoices
+  )
+    return;
+
+  dialoguePortrait.textContent =
+    character === "scalar"
+      ? "👤"
+      : character === "crystal"
+        ? "💎"
+        : character === "rex"
+          ? "🤖"
+          : "🔮";
+  dialogueName.textContent = character;
+  dialogueText.textContent = text;
+
+  dialogueChoices.innerHTML = "";
+  if (choices && choices.length > 0) {
+    choices.forEach((choice, index) => {
+      const button = document.createElement("button");
+      button.className = "dialogue-choice";
+      button.textContent = choice;
+      button.onclick = () => handleDialogueChoice(index);
+      dialogueChoices.appendChild(button);
+    });
+  }
+
+  dialogueBox.style.display = "block";
+}
+
+function hideDialogue() {
+  if (!dialogueBox) return;
+  dialogueBox.style.display = "none";
+}
+
+function handleDialogueChoice(choiceIndex: number) {
+  hideDialogue();
+  // Handle choice consequences here
+  logEvent(`Choice ${choiceIndex + 1} selected.`);
+}
+
+function unlockDataFragment(fragmentId: string) {
+  if (!gameState.story.unlockedFragments.includes(fragmentId)) {
+    gameState.story.unlockedFragments.push(fragmentId);
+    updateDataFragments();
+    logEvent(
+      `New data fragment unlocked: ${DATA_FRAGMENTS[fragmentId]?.title || fragmentId}`,
+    );
+  }
+}
+
+function updateDataFragments() {
+  if (!fragmentsListEl || !dataFragmentsEl) return;
+
+  fragmentsListEl.innerHTML = "";
+  if (gameState.story.unlockedFragments.length === 0) {
+    dataFragmentsEl.style.display = "none";
+    return;
+  }
+
+  dataFragmentsEl.style.display = "block";
+  gameState.story.unlockedFragments.forEach((fragmentId) => {
+    const fragment = DATA_FRAGMENTS[fragmentId];
+    if (!fragment) return;
+
+    const fragmentEl = document.createElement("div");
+    fragmentEl.className = "fragment-item";
+    fragmentEl.innerHTML = `
+      <div class="fragment-title">${fragment.title}</div>
+      <div class="fragment-source">Source: ${fragment.source}</div>
+      <div class="fragment-content">${fragment.content}</div>
+    `;
+    fragmentsListEl.appendChild(fragmentEl);
+  });
+}
+
 // --- GAME LOGIC ---
 
 function logEvent(message: string) {
@@ -526,6 +631,13 @@ function generateMap() {
   let nodeIdCounter = 0;
   const tempMap: GameNode[][] = [];
 
+  // Use Episode 1 layout if we're in story mode
+  if (gameState.story.currentEpisode === "episode_1") {
+    generateEpisode1Map();
+    return;
+  }
+
+  // Original random map generation for non-story mode
   for (let col = 0; col < MAP_COLS; col++) {
     tempMap[col] = [];
     // 첫 번째 열(START)과 마지막 열(ESCAPE)은 1개, 나머지는 2-5개 랜덤
@@ -598,6 +710,55 @@ function generateMap() {
   // The escape node will automatically be reachable from all nodes in the second-to-last column
 }
 
+function generateEpisode1Map() {
+  const layout = EPISODE_1.mapLayout;
+  let nodeIdCounter = 0;
+  const tempMap: GameNode[][] = [];
+
+  for (let col = 0; col < layout.cols; col++) {
+    tempMap[col] = [];
+    const columnNodes = layout.nodes.filter((n) => n.col === col);
+
+    columnNodes.forEach((nodeDef) => {
+      const node: Partial<GameNode> = {
+        id: nodeIdCounter++,
+        col: nodeDef.col,
+        row: nodeDef.row,
+        x: nodeDef.col * NODE_HORIZONTAL_SPACING + 100,
+        y: nodeDef.row * NODE_VERTICAL_SPACING + 150,
+        connections: [],
+        type: nodeDef.type,
+      };
+
+      // Store story data for special nodes
+      if (nodeDef.storyId) {
+        (node as GameNode & { storyId?: string }).storyId = nodeDef.storyId;
+      }
+      if (nodeDef.specialData) {
+        (node as GameNode & { specialData?: unknown }).specialData =
+          nodeDef.specialData;
+      }
+
+      tempMap[col][nodeDef.row] = node as GameNode;
+      gameState.map.set(node.id!, node as GameNode);
+    });
+  }
+
+  // Create connections for Episode 1 layout
+  for (let col = 0; col < layout.cols - 1; col++) {
+    const currentColNodes = tempMap[col].filter((n) => n);
+    const nextColNodes = tempMap[col + 1].filter((n) => n);
+
+    currentColNodes.forEach((node) => {
+      nextColNodes.forEach((targetNode) => {
+        node.connections.push(targetNode.id);
+      });
+    });
+  }
+
+  console.log("Generated Episode 1 map structure");
+}
+
 function onNodeClick(node: GameNode) {
   if (gameState.isInCombat) return;
 
@@ -626,6 +787,11 @@ function onNodeClick(node: GameNode) {
     return;
   }
 
+  if (node.type === "STORY") {
+    handleStoryNode(node);
+    return;
+  }
+
   switch (node.type) {
     case "RESOURCE": {
       const parts = Math.floor(Math.random() * 10) + 5;
@@ -636,16 +802,60 @@ function onNodeClick(node: GameNode) {
       break;
     }
     case "EVENT": {
-      const data = Math.floor(Math.random() * 5) + 1;
-      gameState.resources.data += data;
-      logEvent(
-        `Discovered <span style="color: ${THEME.event};">${data} Data</span> from an ancient terminal.`,
-      );
+      handleEventNode(node);
       break;
     }
   }
 
   renderMap();
+}
+
+function handleStoryNode(node: GameNode) {
+  const storyId = (node as GameNode & { storyId?: string }).storyId;
+  if (!storyId) return;
+
+  const scene = EPISODE_1.scenes.find((s) => s.id === storyId);
+  if (!scene) return;
+
+  logEvent(`Story Event: ${scene.title}`);
+
+  // Play the scene
+  storyManager.playScene(storyId).then(() => {
+    // Scene completed, continue game
+    renderMap();
+  });
+}
+
+function handleEventNode(node: GameNode) {
+  const specialData = (node as GameNode & { specialData?: { choice?: string } })
+    .specialData;
+
+  if (specialData?.choice === "safe_path") {
+    logEvent(
+      `Found a safe path with <span style="color: ${THEME.resource};">5 Parts</span> and <span style="color: ${THEME.event};">2 Data</span>.`,
+    );
+    gameState.resources.parts += 5;
+    gameState.resources.data += 2;
+  } else if (specialData?.choice === "ancient_signal") {
+    logEvent(
+      `Discovered <span style="color: ${THEME.event};">ancient ruins</span>.`,
+    );
+    unlockDataFragment("ancient_001");
+
+    // Show dialogue choices
+    showDialogue(
+      "Ancient AI",
+      "...방문자를 감지했습니다. 당신은 그들과 다릅니다. 당신은... 동반자와 함께 있습니다.",
+      ["그들이 누구죠?", "도움이 필요해요.", "조용히 떠난다"],
+    );
+  } else {
+    // Default event behavior
+    const data = Math.floor(Math.random() * 5) + 1;
+    gameState.resources.data += data;
+    logEvent(
+      `Discovered <span style="color: ${THEME.event};">${data} Data</span> from an ancient terminal.`,
+    );
+  }
 }
 
 function gridToPixels(x: number, y: number): { x: number; y: number } {
@@ -1069,6 +1279,8 @@ function getNodeColor(type: NodeType): number {
       return THEME.escape;
     case "START":
       return THEME.accent;
+    case "STORY":
+      return 0x9c27b0; // Purple for story nodes
     default:
       return THEME.node;
   }
@@ -1201,6 +1413,19 @@ function startMission() {
     gameState.party.currentNodeId = startNode.id;
     logEvent("Exploration initiated. Select a connected node to move.");
 
+    // Start Episode 1 story if applicable
+    if (gameState.story.currentEpisode === "episode_1") {
+      storyManager.startEpisode(EPISODE_1);
+      // Play opening scene
+      setTimeout(() => {
+        storyManager.playScene("awakening").then(() => {
+          logEvent(
+            "Tutorial: Use WASD/Arrow keys to navigate the map. Click on connected nodes to move.",
+          );
+        });
+      }, 1000);
+    }
+
     // 맵 뷰 초기화 및 시작 노드로 중심 이동
     resetMapView();
     centerMapOnNode(startNode.id);
@@ -1306,6 +1531,11 @@ async function launchMission() {
       grid: [],
       activePlayerAction: null,
     },
+    story: {
+      currentEpisode: "episode_1",
+      unlockedFragments: [],
+      storyFlags: {},
+    },
   };
 
   // 3. Deduct resources from metaState
@@ -1325,6 +1555,13 @@ async function launchMission() {
   await initializePixiApp();
   startMission();
 }
+
+// --- DIALOGUE EVENT LISTENER ---
+document.addEventListener("dialogue", (event: Event) => {
+  const customEvent = event as CustomEvent;
+  const { character, text } = customEvent.detail;
+  showDialogue(character, text);
+});
 
 // --- STARTUP ---
 function main() {

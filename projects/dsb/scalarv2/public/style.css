@@ -1,326 +1,439 @@
 :root {
-    --background: #1a1a2e;
-    --primary: #2a2d43;
-    --secondary: #4a4e69;
-    --text: #f2e9e4;
-    --accent: #e94560;
-    --hover: #9a8c98;
-    --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --background: #1a1a2e;
+  --primary: #2a2d43;
+  --secondary: #4a4e69;
+  --text: #f2e9e4;
+  --accent: #e94560;
+  --hover: #9a8c98;
+  --font-main: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-    font-family: var(--font-main);
-    background-color: var(--background);
-    color: var(--text);
-    overflow: hidden;
+  font-family: var(--font-main);
+  background-color: var(--background);
+  color: var(--text);
+  overflow: hidden;
 }
 
 #app {
-    display: flex;
-    width: 100vw;
-    height: 100vh;
+  display: flex;
+  width: 100vw;
+  height: 100vh;
 }
 
 #game-container {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
 }
 
 #title-header {
-    text-align: center;
-    margin-bottom: 20px;
-    flex-shrink: 0;
+  text-align: center;
+  margin-bottom: 20px;
+  flex-shrink: 0;
 }
 
 #title-header h1 {
-    font-size: 2.5rem;
-    color: var(--accent);
-    letter-spacing: 5px;
+  font-size: 2.5rem;
+  color: var(--accent);
+  letter-spacing: 5px;
 }
 
 #title-header p {
-    font-size: 1rem;
-    color: var(--hover);
+  font-size: 1rem;
+  color: var(--hover);
 }
 
 #game-board {
-    flex-grow: 1;
-    background-color: var(--primary);
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.5) inset;
-    min-height: 0; /* Important for flexbox child sizing */
+  flex-grow: 1;
+  background-color: var(--primary);
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5) inset;
+  min-height: 0; /* Important for flexbox child sizing */
 }
 
 canvas {
-    width: 100%;
-    height: 100%;
-    border-radius: 10px;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
 }
 
 #ui-panel {
-    width: 350px;
-    flex-shrink: 0;
-    background-color: var(--primary);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-    box-shadow: -5px 0 15px rgba(0,0,0,0.3);
+  width: 350px;
+  flex-shrink: 0;
+  background-color: var(--primary);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
 }
 
-#ui-panel h2, #ui-panel h3 {
-    color: var(--accent);
-    border-bottom: 1px solid var(--secondary);
-    padding-bottom: 10px;
-    letter-spacing: 2px;
+#ui-panel h2,
+#ui-panel h3 {
+  color: var(--accent);
+  border-bottom: 1px solid var(--secondary);
+  padding-bottom: 10px;
+  letter-spacing: 2px;
 }
 
 #ui-panel h2 {
-    text-align: center;
-    font-size: 1.8rem;
+  text-align: center;
+  font-size: 1.8rem;
 }
 
-#party-status p, #resources ul li {
-    font-size: 1rem;
-    line-height: 1.6;
-    color: var(--text);
+#party-status p,
+#resources ul li {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text);
 }
 
 #resources ul {
-    list-style: none;
+  list-style: none;
 }
 
 #resources ul li strong {
-    color: var(--hover);
+  color: var(--hover);
 }
 
 .status-ok {
-    color: #52b788;
-    font-weight: bold;
+  color: #52b788;
+  font-weight: bold;
 }
 
 .status-bad {
-    color: #dc3545;
-    font-weight: bold;
+  color: #dc3545;
+  font-weight: bold;
 }
 
 #event-log {
-    flex-grow: 1;
-    background-color: var(--background);
-    border-radius: 5px;
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
+  flex-grow: 1;
+  background-color: var(--background);
+  border-radius: 5px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 #log-content {
-    overflow-y: auto;
-    flex-grow: 1;
+  overflow-y: auto;
+  flex-grow: 1;
 }
 
 #log-content p {
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--secondary);
-    margin-bottom: 8px;
-    font-size: 0.9rem;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--secondary);
+  margin-bottom: 8px;
+  font-size: 0.9rem;
 }
 
 #footer {
-    text-align: center;
-    color: var(--hover);
-    font-style: italic;
+  text-align: center;
+  color: var(--hover);
+  font-style: italic;
 }
 
 /* For smaller screens */
 @media (max-width: 1200px) {
-    #app {
-        flex-direction: column;
-    }
+  #app {
+    flex-direction: column;
+  }
 
-    #ui-panel {
-        width: 100%;
-        height: 40vh;
-        flex-direction: row;
-        flex-wrap: wrap;
-        overflow-y: auto;
-    }
+  #ui-panel {
+    width: 100%;
+    height: 40vh;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow-y: auto;
+  }
 
-    #game-container {
-        height: 60vh;
-    }
+  #game-container {
+    height: 60vh;
+  }
 
-    #party-status, #resources {
-        flex-basis: 50%;
-    }
+  #party-status,
+  #resources {
+    flex-basis: 50%;
+  }
 
-    #event-log {
-        flex-basis: 100%;
-    }
+  #event-log {
+    flex-basis: 100%;
+  }
 }
 
 /* --- Setup Screen --- */
 #setup-container {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    padding: 40px;
-    background-color: var(--primary);
-    border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.5) inset;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 40px;
+  background-color: var(--primary);
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5) inset;
 }
 
 .setup-header {
-    text-align: center;
-    margin-bottom: 40px;
+  text-align: center;
+  margin-bottom: 40px;
 }
 
 .setup-header h1 {
-    font-size: 3rem;
-    color: var(--accent);
+  font-size: 3rem;
+  color: var(--accent);
 }
 
 .setup-content {
-    display: flex;
-    gap: 40px;
-    flex-grow: 1;
+  display: flex;
+  gap: 40px;
+  flex-grow: 1;
 }
 
 .setup-section {
-    background-color: var(--background);
-    padding: 20px;
-    border-radius: 8px;
-    flex-basis: 50%;
+  background-color: var(--background);
+  padding: 20px;
+  border-radius: 8px;
+  flex-basis: 50%;
 }
 
 .setup-section h2 {
-    color: var(--accent);
-    text-align: center;
-    margin-bottom: 20px;
+  color: var(--accent);
+  text-align: center;
+  margin-bottom: 20px;
 }
 
 #unit-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 15px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 15px;
 }
 
 .unit-card {
-    background-color: var(--secondary);
-    padding: 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    border: 2px solid transparent;
-    transition: all 0.2s ease;
+  background-color: var(--secondary);
+  padding: 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
 }
 
 .unit-card.selected {
-    border-color: var(--accent);
-    box-shadow: 0 0 10px var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 10px var(--accent);
 }
 
 .unit-card:hover {
-    background-color: var(--hover);
+  background-color: var(--hover);
 }
 
 .unit-card h3 {
-    margin-bottom: 5px;
+  margin-bottom: 5px;
 }
 
 .unit-card p {
-    font-size: 0.8rem;
-    color: var(--text);
+  font-size: 0.8rem;
+  color: var(--text);
 }
 
 #resource-allocation .resource-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
 }
 
 #resource-allocation label {
-    font-size: 1.2rem;
+  font-size: 1.2rem;
 }
 
 #resource-allocation input {
-    width: 80px;
-    padding: 5px;
-    background-color: var(--background);
-    color: var(--text);
-    border: 1px solid var(--secondary);
-    border-radius: 4px;
-    font-size: 1.2rem;
-    text-align: center;
+  width: 80px;
+  padding: 5px;
+  background-color: var(--background);
+  color: var(--text);
+  border: 1px solid var(--secondary);
+  border-radius: 4px;
+  font-size: 1.2rem;
+  text-align: center;
 }
 
 .setup-footer {
-    text-align: center;
-    margin-top: 40px;
+  text-align: center;
+  margin-top: 40px;
 }
 
 #launch-button {
-    padding: 15px 40px;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: var(--text);
-    background-color: var(--accent);
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
+  padding: 15px 40px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--text);
+  background-color: var(--accent);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 #launch-button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 15px var(--accent);
+  transform: scale(1.05);
+  box-shadow: 0 0 15px var(--accent);
 }
 
 /* --- Map Controls --- */
 #map-controls {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    display: flex;
-    gap: 5px;
-    z-index: 1000;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 5px;
+  z-index: 1000;
 }
 
 #map-controls button {
-    width: 40px;
-    height: 40px;
-    background-color: var(--primary);
-    color: var(--text);
-    border: 2px solid var(--secondary);
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 18px;
-    font-weight: bold;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: var(--primary);
+  color: var(--text);
+  border: 2px solid var(--secondary);
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #map-controls button:hover {
-    background-color: var(--accent);
-    border-color: var(--accent);
-    transform: scale(1.1);
+  background-color: var(--accent);
+  border-color: var(--accent);
+  transform: scale(1.1);
 }
 
 #map-controls button:active {
-    transform: scale(0.95);
+  transform: scale(0.95);
 }
 
 #game-board {
-    position: relative;
+  position: relative;
+}
+
+/* --- Dialogue System --- */
+#dialogue-box {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  max-width: 800px;
+  background-color: rgba(26, 26, 46, 0.95);
+  border: 2px solid var(--accent);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 0 20px rgba(233, 69, 96, 0.5);
+  z-index: 1000;
+}
+
+#dialogue-character {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid var(--secondary);
+  padding-bottom: 10px;
+}
+
+#dialogue-portrait {
+  font-size: 2rem;
+}
+
+#dialogue-name {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--accent);
+  letter-spacing: 1px;
+}
+
+#dialogue-text {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 15px;
+  min-height: 60px;
+}
+
+#dialogue-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dialogue-choice {
+  background-color: var(--secondary);
+  border: 2px solid var(--hover);
+  border-radius: 5px;
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.dialogue-choice:hover {
+  background-color: var(--hover);
+  border-color: var(--accent);
+  transform: translateX(5px);
+}
+
+/* --- Data Fragments --- */
+#data-fragments {
+  background-color: var(--background);
+  border-radius: 5px;
+  padding: 15px;
+}
+
+#fragments-list {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.fragment-item {
+  background-color: var(--secondary);
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.fragment-item:hover {
+  background-color: var(--hover);
+}
+
+.fragment-title {
+  font-weight: bold;
+  color: var(--accent);
+  margin-bottom: 5px;
+}
+
+.fragment-source {
+  font-size: 0.8rem;
+  color: var(--hover);
+  font-style: italic;
+}
+
+.fragment-content {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  margin-top: 8px;
+  color: var(--text);
 }

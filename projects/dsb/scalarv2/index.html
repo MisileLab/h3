@@ -57,6 +57,14 @@
             <button id="zoom-reset" title="Reset Zoom (0)">⌂</button>
             <button id="center-map" title="Center on Current Node">◎</button>
           </div>
+          <div id="dialogue-box" style="display: none">
+            <div id="dialogue-character">
+              <span id="dialogue-portrait"></span>
+              <span id="dialogue-name"></span>
+            </div>
+            <div id="dialogue-text"></div>
+            <div id="dialogue-choices"></div>
+          </div>
         </div>
       </div>
       <div id="ui-panel">
@@ -77,6 +85,10 @@
           <div id="log-content">
             <p>Awaiting mission start...</p>
           </div>
+        </div>
+        <div id="data-fragments" style="display: none">
+          <h3>Data Fragments</h3>
+          <div id="fragments-list"></div>
         </div>
         <div id="footer">
           <p>"Every machine deserves a home."</p>
