@@ -2,7 +2,7 @@ from json import dumps
 from time import sleep
 from datetime import datetime, UTC
 from sys import stdout, argv
-from pyperclipfix import copy
+from pyperclip import copy
 
 argv = [i.lower() for i in argv]
 la = len(argv)
@@ -15,8 +15,8 @@ if la >= 3:
   if argv[2] == "copyf":
     copy(t.isoformat())
   else:
-    copy(int(datetime.now(UTC).replace(tzinfo=UTC).timestamp()))
-  stdout.flush()
+    copy(str(int(datetime.now(UTC).replace(tzinfo=UTC).timestamp())))
+  _ = stdout.flush()
   exit()
 
 while True:
@@ -28,6 +28,6 @@ while True:
     "class": "",
     "percentage": 0
   }, separators=(',', ':')))
-  stdout.flush()
+  _ = stdout.flush()
   sleep(1)
 
