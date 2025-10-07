@@ -41,6 +41,8 @@
           ghc = stablep.ghc;
           # https://github.com/NixOS/nixpkgs/pull/449279
           imagemagick = stablep.imagemagick;
+          libreoffice = stablep.libreoffice;
+          noto-fonts-color-emoji = stablep.noto-fonts-color-emoji;
           dart = prev.dart.overrideAttrs (old: {
             installPhase = ''
               runHook preInstall
