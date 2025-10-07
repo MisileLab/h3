@@ -37,7 +37,8 @@
         (final: prev: {
           # https://github.com/NixOS/nixpkgs/issues/449068
           avizo = stablep.avizo;
-          libreoffice = stablep.libreoffice;
+          # idk why but it stuck at the download phase
+          ghc = stablep.ghc;
           dart = prev.dart.overrideAttrs (old: {
             installPhase = ''
               runHook preInstall
