@@ -40,8 +40,8 @@ importers:
         specifier: 6.2.1
         version: 6.2.1(svelte@5.39.10)(vite@7.1.9(jiti@2.6.1)(lightningcss@1.30.1))
       '@types/reveal.js':
-        specifier: 5.2.0
-        version: 5.2.0
+        specifier: 5.2.1
+        version: 5.2.1
       prettier:
         specifier: 3.6.2
         version: 3.6.2
@@ -628,8 +628,8 @@ packages:
   '@types/mdast@4.0.4':
     resolution: {integrity: sha512-kGaNbPh1k7AFzgpud/gMdvIm5xuECykRR+JnWKQno9TAXVa6WIVCGTPvYGekIDL4uwCZQSYbUxNBSb1aUo79oA==}
 
-  '@types/reveal.js@5.2.0':
-    resolution: {integrity: sha512-IHO3Nc0YjI4CKQHeK/2U+6SinAJCC8/xiKCIDQnlFCiq02GMag+WrveIszll033zyv/mtXoCnWmYZITUngE2pA==}
+  '@types/reveal.js@5.2.1':
+    resolution: {integrity: sha512-egr+amW5iilXo94kEGyJv24bJozsu/XAOHnhMHLnaJkHVxoui2gsWqzByaltA5zfXDTH2F4WyWnAkhHRcpytIQ==}
 
   '@types/unist@3.0.3':
     resolution: {integrity: sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q==}
@@ -1657,7 +1657,7 @@ snapshots:
     dependencies:
       '@types/unist': 3.0.3
 
-  '@types/reveal.js@5.2.0': {}
+  '@types/reveal.js@5.2.1': {}
 
   '@types/unist@3.0.3': {}
 
