@@ -39,6 +39,8 @@
           avizo = stablep.avizo;
           # idk why but it stuck at the download phase
           ghc = stablep.ghc;
+          # https://github.com/NixOS/nixpkgs/pull/449279
+          imagemagick = stablep.imagemagick;
           dart = prev.dart.overrideAttrs (old: {
             installPhase = ''
               runHook preInstall
