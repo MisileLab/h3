@@ -439,4 +439,63 @@ export class StoryManager {
   }
 }
 
+// --- FREE EXPLORATION SCENES ---
+export const FREE_EXPLORATION_SCENES: Scene[] = [
+  {
+    id: "survivor_found",
+    title: "생존자 발견",
+    dialogue: [
+      { character: "crystal", text: "스칼라! 생명 신호가 잡혀요!" },
+      { character: "scalar", text: "정말? 어디 있어?" },
+      {
+        character: "crystal",
+        text: "가까운 동굴 안이에요. 하지만... 이상한 에너지 반응도 있어요.",
+      },
+      { character: "scalar", text: "위험할 수 있지만... 가봐야 해요." },
+    ],
+  },
+  {
+    id: "ancient_artifact",
+    title: "고대 유물",
+    dialogue: [
+      { character: "crystal", text: "이건... 고대 기술이에요." },
+      { character: "scalar", text: "무슨 용도인지 알아?" },
+      {
+        character: "crystal",
+        text: "분석 중이에요... 통신 장치 같아요. 다른 생존자들과 연락할 수 있을지도 몰라요!",
+      },
+      { character: "scalar", text: "정말? 어서 수리해봐!" },
+    ],
+  },
+  {
+    id: "dangerous_area",
+    title: "위험 지역",
+    dialogue: [
+      {
+        character: "crystal",
+        text: "스칼라, 조심해요. 이 근처 방사능 수치가 높아요.",
+      },
+      { character: "scalar", text: "피해야 할까?" },
+      {
+        character: "crystal",
+        text: "하지만 저 너머에... 중요한 것들이 있는 것 같아요.",
+      },
+      { character: "scalar", text: "...위험을 감수할 가치가 있겠지." },
+    ],
+  },
+  {
+    id: "resource_cache",
+    title: "자원 창고",
+    dialogue: [
+      { character: "crystal", text: "와! 누군가 자원을 모아뒀어요!" },
+      { character: "scalar", text: "다른 생존자들일까?" },
+      {
+        character: "crystal",
+        text: "아마도. 이걸로 우리 기지를 더 강화할 수 있어요.",
+      },
+      { character: "scalar", text: "고맙게 쓸게요." },
+    ],
+  },
+];
+
 export const storyManager = new StoryManager();

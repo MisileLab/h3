@@ -1,5 +1,17 @@
 import * as PIXI from "pixi.js";
-import { storyManager, EPISODE_1, DATA_FRAGMENTS } from "./story";
+import {
+  storyManager,
+  EPISODE_1,
+  DATA_FRAGMENTS,
+  FREE_EXPLORATION_SCENES,
+} from "./story";
+
+// Extend Window interface for our custom properties
+declare global {
+  interface Window {
+    pendingNewGame?: boolean;
+  }
+}
 
 // --- THEME & STYLING (from Pixi) ---
 const THEME = {
@@ -123,14 +135,6 @@ const setupContainer = document.getElementById(
   "setup-container",
 ) as HTMLElement;
 const gameBoard = document.getElementById("game-board") as HTMLElement;
-const launchButton = document.getElementById(
-  "launch-button",
-) as HTMLButtonElement;
-const unitList = document.getElementById("unit-list") as HTMLElement;
-const partsInput = document.getElementById("parts-input") as HTMLInputElement;
-const energyInput = document.getElementById("energy-input") as HTMLInputElement;
-const partsLabel = document.getElementById("parts-label") as HTMLLabelElement;
-const energyLabel = document.getElementById("energy-label") as HTMLLabelElement;
 
 const resPartsEl = document.getElementById("res-parts");
 const resDataEl = document.getElementById("res-data");
@@ -152,6 +156,9 @@ const zoomInBtn = document.getElementById("zoom-in");
 const zoomOutBtn = document.getElementById("zoom-out");
 const zoomResetBtn = document.getElementById("zoom-reset");
 const centerMapBtn = document.getElementById("center-map");
+const saveGameBtn = document.getElementById("save-game");
+const loadGameBtn = document.getElementById("load-game");
+const newGameBtn = document.getElementById("new-game");
 
 // --- PIXI APP & CONTAINERS ---
 let app: PIXI.Application;
@@ -301,6 +308,173 @@ function loadMetaState() {
   }
 }
 
+// --- GAME STATE SAVE/LOAD ---
+function saveGameState() {
+  if (!gameState) return;
+
+  try {
+    // Create a serializable version of gameState
+    const serializableState = {
+      map: Array.from(gameState.map.entries()).map(([, node]) => ({
+        id: node.id,
+        x: node.x,
+        y: node.y,
+        col: node.col,
+        row: node.row,
+        type: node.type,
+        connections: node.connections,
+        storyId: (node as GameNode & { storyId?: string }).storyId,
+        specialData: (node as GameNode & { specialData?: unknown }).specialData,
+      })),
+      party: {
+        members: gameState.party.members.map((member) => ({
+          id: member.id,
+          name: member.name,
+          role: member.role,
+          description: member.description,
+          isPlayer: member.isPlayer,
+          hp: member.hp,
+          maxHp: member.maxHp,
+          attack: member.attack,
+          range: member.range,
+          speed: member.speed,
+          movement: member.movement,
+          gridX: member.gridX,
+          gridY: member.gridY,
+          isDefending: member.isDefending,
+        })),
+        currentNodeId: gameState.party.currentNodeId,
+        previousNodeId: gameState.party.previousNodeId,
+      },
+      resources: gameState.resources,
+      isInCombat: gameState.isInCombat,
+      combat: gameState.combat,
+      story: gameState.story,
+    };
+
+    localStorage.setItem("scalar_gameState", JSON.stringify(serializableState));
+    console.log("Game state saved successfully");
+  } catch (e) {
+    console.error("Failed to save game state:", e);
+  }
+}
+
+function loadGameState(): boolean {
+  try {
+    const savedState = localStorage.getItem("scalar_gameState");
+    if (!savedState) {
+      console.log("No saved game state found");
+      return false;
+    }
+
+    const serializableState = JSON.parse(savedState);
+
+    // Reconstruct the map
+    const reconstructedMap = new Map<number, GameNode>();
+    serializableState.map.forEach(
+      (nodeData: {
+        id: number;
+        x: number;
+        y: number;
+        col: number;
+        row: number;
+        type: NodeType;
+        connections: number[];
+        storyId?: string;
+        specialData?: unknown;
+      }) => {
+        const node: GameNode = {
+          id: nodeData.id,
+          x: nodeData.x,
+          y: nodeData.y,
+          col: nodeData.col,
+          row: nodeData.row,
+          type: nodeData.type,
+          connections: nodeData.connections,
+          graphics: new PIXI.Graphics(),
+          text: new PIXI.Text("", { fill: THEME.text, fontSize: 20 }),
+        };
+
+        // Store additional data
+        if (nodeData.storyId) {
+          (node as GameNode & { storyId?: string }).storyId = nodeData.storyId;
+        }
+        if (nodeData.specialData) {
+          (node as GameNode & { specialData?: unknown }).specialData =
+            nodeData.specialData;
+        }
+
+        reconstructedMap.set(node.id, node);
+      },
+    );
+
+    // Reconstruct party members
+    const reconstructedMembers = serializableState.party.members.map(
+      (memberData: {
+        id: string;
+        name: string;
+        role: UnitRole;
+        description: string;
+        isPlayer: boolean;
+        hp: number;
+        maxHp: number;
+        attack: number;
+        range: number;
+        speed: number;
+        movement: number;
+        gridX: number;
+        gridY: number;
+        isDefending: boolean;
+      }) => {
+        const unit = createUnit(
+          memberData.id,
+          memberData.name,
+          memberData.role,
+          memberData.description,
+          memberData.isPlayer,
+        );
+
+        unit.hp = memberData.hp;
+        unit.maxHp = memberData.maxHp;
+        unit.attack = memberData.attack;
+        unit.range = memberData.range;
+        unit.speed = memberData.speed;
+        unit.movement = memberData.movement;
+        unit.gridX = memberData.gridX;
+        unit.gridY = memberData.gridY;
+        unit.isDefending = memberData.isDefending;
+
+        return unit;
+      },
+    );
+
+    // Reconstruct game state
+    gameState = {
+      map: reconstructedMap,
+      party: {
+        members: reconstructedMembers,
+        currentNodeId: serializableState.party.currentNodeId,
+        previousNodeId: serializableState.party.previousNodeId,
+        mapSprite: new PIXI.Graphics(),
+      },
+      resources: serializableState.resources,
+      isInCombat: serializableState.isInCombat,
+      combat: serializableState.combat,
+      story: serializableState.story,
+    };
+
+    console.log("Game state loaded successfully");
+    return true;
+  } catch (e) {
+    console.error("Failed to load game state:", e);
+    return false;
+  }
+}
+
+function hasSavedGame(): boolean {
+  return localStorage.getItem("scalar_gameState") !== null;
+}
+
 // --- COMBAT UI (PIXI) ---
 const attackButton = new PIXI.Graphics()
   .beginFill(THEME.accent)
@@ -378,6 +552,47 @@ function setupMapScrolling() {
     centerMapBtn.addEventListener("click", () => {
       if (gameState.isInCombat) return;
       centerMapOnNode(gameState.party.currentNodeId);
+    });
+  }
+
+  // Save/Load/New Game button event listeners
+  if (saveGameBtn) {
+    saveGameBtn.addEventListener("click", () => {
+      if (gameState.isInCombat) return;
+      saveGameState();
+      logEvent("Game saved manually!");
+      showDialogue("Crystal", "게임이 저장되었어요, 스칼라!", ["알겠어요"]);
+    });
+  }
+
+  if (loadGameBtn) {
+    loadGameBtn.addEventListener("click", () => {
+      if (gameState.isInCombat) return;
+      const loaded = loadGameState();
+      if (loaded) {
+        logEvent("Game loaded successfully!");
+        updateUI();
+        renderMap();
+        showDialogue("Crystal", "게임을 불러왔어요! 이전부터 계속해요.", [
+          "계속할게요",
+        ]);
+      } else {
+        logEvent("No saved game found!");
+        showDialogue("Crystal", "저장된 게임이 없네요...", ["알겠어요"]);
+      }
+    });
+  }
+
+  if (newGameBtn) {
+    newGameBtn.addEventListener("click", () => {
+      if (gameState.isInCombat) return;
+      // Set a flag for new game confirmation
+      window.pendingNewGame = true;
+      showDialogue(
+        "Crystal",
+        "정말로 새 게임을 시작할까요? 현재 진행 상황은 사라져요.",
+        ["새 게임 시작", "취소"],
+      );
     });
   }
 
@@ -550,6 +765,19 @@ function hideDialogue() {
 
 function handleDialogueChoice(choiceIndex: number) {
   hideDialogue();
+
+  // Check if this is a new game confirmation
+  if (window.pendingNewGame) {
+    window.pendingNewGame = false;
+    if (choiceIndex === 0) {
+      // Clear saved game and restart
+      localStorage.removeItem("scalar_gameState");
+      logEvent("Starting new game...");
+      startEpisode1Directly();
+    }
+    return;
+  }
+
   // Handle choice consequences here
   logEvent(`Choice ${choiceIndex + 1} selected.`);
 }
@@ -814,7 +1042,16 @@ function handleStoryNode(node: GameNode) {
   const storyId = (node as GameNode & { storyId?: string }).storyId;
   if (!storyId) return;
 
-  const scene = EPISODE_1.scenes.find((s) => s.id === storyId);
+  let scene;
+
+  // Check if it's an Episode 1 scene
+  scene = EPISODE_1.scenes.find((s) => s.id === storyId);
+
+  // If not found, check free exploration scenes
+  if (!scene) {
+    scene = FREE_EXPLORATION_SCENES.find((s) => s.id === storyId);
+  }
+
   if (!scene) return;
 
   logEvent(`Story Event: ${scene.title}`);
@@ -823,6 +1060,13 @@ function handleStoryNode(node: GameNode) {
   storyManager.playScene(storyId).then(() => {
     // Scene completed, continue game
     renderMap();
+
+    // Check if this is the final scene of Episode 1
+    if (storyId === "first_camp" || storyId === "first_night") {
+      setTimeout(() => {
+        startFreeExploration();
+      }, 2000);
+    }
   });
 }
 
@@ -1461,68 +1705,152 @@ function endMission(isSuccess: boolean) {
 }
 
 function setupPreExplorationScreen() {
-  // Clear previous elements
-  unitList.innerHTML = "";
+  // Legacy function - kept for compatibility but not used in direct start
+}
 
-  // Update resource inputs based on metaState
-  partsInput.value = "0";
-  energyInput.value = "0";
-  partsInput.max = metaState.totalParts.toString();
-  energyInput.max = metaState.totalEnergy.toString();
-  partsLabel.textContent = `Parts: (Available: ${metaState.totalParts})`;
-  energyLabel.textContent = `Energy: (Available: ${metaState.totalEnergy})`;
+// --- DIALOGUE EVENT LISTENER ---
+document.addEventListener("dialogue", (event: Event) => {
+  const customEvent = event as CustomEvent;
+  const { character, text } = customEvent.detail;
+  showDialogue(character, text);
+});
 
-  // Populate unit selection
-  metaState.availableUnits.forEach((unit) => {
-    const card = document.createElement("div");
-    card.className = "unit-card";
-    card.dataset.unitId = unit.id;
-    card.innerHTML = `
-            <h3>${unit.name}</h3>
-            <p>${unit.role}</p>
-            <p>${unit.description}</p>
-        `;
-    card.addEventListener("click", () => {
-      card.classList.toggle("selected");
-    });
-    unitList.appendChild(card);
+// --- STARTUP ---
+function main() {
+  loadMetaState();
+  // Skip setup screen and start Episode 1 directly
+  startEpisode1Directly();
+}
+
+async function startEpisode1Directly() {
+  // Hide setup container and show game board directly
+  setupContainer.style.display = "none";
+  gameBoard.style.display = "block";
+
+  // Check if there's a saved game and show choice
+  if (hasSavedGame()) {
+    // Show startup choice
+    await showStartupChoice();
+  } else {
+    // No saved game, start new game directly
+    await startNewGame();
+  }
+}
+
+async function showStartupChoice() {
+  return new Promise<void>((resolve) => {
+    // Create startup choice overlay
+    const choiceOverlay = document.createElement("div");
+    choiceOverlay.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+      font-family: monospace;
+      color: #f2e9e4;
+    `;
+
+    choiceOverlay.innerHTML = `
+      <h1 style="font-size: 48px; margin-bottom: 20px;">SCALAR</h1>
+      <p style="font-size: 18px; margin-bottom: 40px; text-align: center; max-width: 600px;">
+        스칼라, 당신의 여정이 기다리고 있습니다.<br>
+        이전에 저장된 게임을 발견했습니다.
+      </p>
+      <div style="display: flex; gap: 20px;">
+        <button id="continue-btn" style="
+          padding: 15px 30px;
+          font-size: 18px;
+          background: #22aadd;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          font-family: monospace;
+        ">계속하기</button>
+        <button id="new-game-btn" style="
+          padding: 15px 30px;
+          font-size: 18px;
+          background: #e94560;
+          color: white;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          font-family: monospace;
+        ">새 게임</button>
+      </div>
+    `;
+
+    document.body.appendChild(choiceOverlay);
+
+    // Add event listeners
+    const continueBtn = document.getElementById("continue-btn");
+    const newGameBtn = document.getElementById("new-game-btn");
+
+    const handleChoice = async (choice: "continue" | "new") => {
+      document.body.removeChild(choiceOverlay);
+
+      if (choice === "continue") {
+        await loadSavedGame();
+      } else {
+        await startNewGame();
+      }
+
+      resolve();
+    };
+
+    continueBtn?.addEventListener("click", () => handleChoice("continue"));
+    newGameBtn?.addEventListener("click", () => handleChoice("new"));
   });
 }
 
-async function launchMission() {
-  // 1. Gather selections
-  const selectedUnitIds = Array.from(
-    unitList.querySelectorAll(".unit-card.selected"),
-  ).map((card) => (card as HTMLElement).dataset.unitId);
+async function loadSavedGame() {
+  const loaded = loadGameState();
+  if (loaded) {
+    // Game loaded successfully
+    logContentEl!.innerHTML =
+      "<p>> Game Loaded! Continuing your adventure...</p>";
+    updateUI();
 
-  if (selectedUnitIds.length === 0) {
-    alert("Please select at least one unit for the party.");
-    return;
+    // Initialize Pixi and continue the game
+    await initializePixiApp();
+    renderMap();
+
+    // Show continue message
+    showDialogue(
+      "Crystal",
+      "스칼라, 다시 돌아왔네요! 우리의 여정을 계속해요.",
+      ["계속하기"],
+    );
+
+    // Auto-save every 30 seconds
+    setInterval(saveGameState, 30000);
+  } else {
+    // Failed to load, start new game
+    await startNewGame();
   }
+}
 
-  const allocatedParts = parseInt(partsInput.value, 10) || 0;
-  const allocatedEnergy = parseInt(energyInput.value, 10) || 0;
+async function startNewGame() {
+  // Create crash landing fade effect
+  await createCrashLandingEffect();
 
-  if (
-    allocatedParts > metaState.totalParts ||
-    allocatedEnergy > metaState.totalEnergy
-  ) {
-    alert("Cannot allocate more resources than available.");
-    return;
-  }
-
-  // 2. Create the GameState for this session
+  // Initialize game state with Episode 1
   gameState = {
     map: new Map(),
     party: {
-      members: metaState.availableUnits
-        .filter((u) => selectedUnitIds.includes(u.id))
-        .map((u) => ({ ...u })), // Create copies for the mission
+      members: [ALL_POSSIBLE_UNITS.rex()], // Rex only for initial party
       currentNodeId: -1,
       previousNodeId: null,
       mapSprite: new PIXI.Graphics(),
     },
-    resources: { parts: allocatedParts, data: 0, energy: allocatedEnergy },
+    resources: { parts: 10, data: 0, energy: 20 }, // Default resources
     isInCombat: false,
     combat: {
       enemies: [],
@@ -1538,36 +1866,266 @@ async function launchMission() {
     },
   };
 
-  // 3. Deduct resources from metaState
-  metaState.totalParts -= allocatedParts;
-  metaState.totalEnergy -= allocatedEnergy;
-  saveMetaState();
-
-  // 4. Update UI panels
-  logContentEl!.innerHTML = "<p>> Mission Launched!</p>";
+  // Update UI
+  logContentEl!.innerHTML = "<p>> Episode 1: 불시착 (Crash Landing)</p>";
   updateUI();
 
-  // 5. Transition to game view
-  setupContainer.style.display = "none";
-  gameBoard.style.display = "block";
-
-  // 6. Initialize Pixi and start the game
+  // Initialize Pixi and start the game
   await initializePixiApp();
   startMission();
+
+  // Auto-save every 30 seconds
+  setInterval(saveGameState, 30000);
 }
 
-// --- DIALOGUE EVENT LISTENER ---
-document.addEventListener("dialogue", (event: Event) => {
-  const customEvent = event as CustomEvent;
-  const { character, text } = customEvent.detail;
-  showDialogue(character, text);
-});
+async function createCrashLandingEffect() {
+  return new Promise<void>((resolve) => {
+    // Create black overlay
+    const blackOverlay = document.createElement("div");
+    blackOverlay.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: black;
+      z-index: 9999;
+      transition: opacity 1s ease-in-out;
+    `;
+    document.body.appendChild(blackOverlay);
 
-// --- STARTUP ---
-function main() {
-  loadMetaState();
-  setupPreExplorationScreen();
-  launchButton.onclick = launchMission; // Assign event listener once
+    // Create warning text
+    const warningText = document.createElement("div");
+    warningText.style.cssText = `
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #ff4444;
+      font-family: monospace;
+      font-size: 24px;
+      text-align: center;
+      z-index: 10000;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    `;
+    warningText.innerHTML = `
+      WARNING. Hull breach detected.<br>
+      Life support: 47 seconds remaining.
+    `;
+    document.body.appendChild(warningText);
+
+    // Start the crash landing sequence
+    setTimeout(() => {
+      // Show warning text
+      warningText.style.opacity = "1";
+
+      // Play warning sound effect (if available)
+      playWarningBeep();
+    }, 500);
+
+    setTimeout(() => {
+      // Hide warning text
+      warningText.style.opacity = "0";
+    }, 3000);
+
+    setTimeout(() => {
+      // Show crash text
+      warningText.innerHTML = "CRASH LANDING INITIATED";
+      warningText.style.color = "#ffaa00";
+      warningText.style.opacity = "1";
+    }, 3500);
+
+    setTimeout(() => {
+      // Hide crash text
+      warningText.style.opacity = "0";
+    }, 5000);
+
+    setTimeout(() => {
+      // Start fade out
+      blackOverlay.style.opacity = "0";
+      warningText.style.opacity = "0";
+    }, 6000);
+
+    setTimeout(() => {
+      // Remove overlay and resolve
+      document.body.removeChild(blackOverlay);
+      document.body.removeChild(warningText);
+      resolve();
+    }, 7000);
+  });
+}
+
+function playWarningBeep() {
+  // Create warning beep sound using Web Audio API
+  try {
+    const audioContext = new (window.AudioContext ||
+      (window as typeof window & { webkitAudioContext: typeof AudioContext })
+        .webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    oscillator.frequency.value = 800; // Warning frequency
+    oscillator.type = "square";
+
+    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(
+      0.01,
+      audioContext.currentTime + 0.1,
+    );
+
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.1);
+
+    // Play multiple beeps
+    setTimeout(() => {
+      const osc2 = audioContext.createOscillator();
+      const gain2 = audioContext.createGain();
+      osc2.connect(gain2);
+      gain2.connect(audioContext.destination);
+      osc2.frequency.value = 800;
+      osc2.type = "square";
+      gain2.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gain2.gain.exponentialRampToValueAtTime(
+        0.01,
+        audioContext.currentTime + 0.1,
+      );
+      osc2.start(audioContext.currentTime);
+      osc2.stop(audioContext.currentTime + 0.1);
+    }, 200);
+
+    setTimeout(() => {
+      const osc3 = audioContext.createOscillator();
+      const gain3 = audioContext.createGain();
+      osc3.connect(gain3);
+      gain3.connect(audioContext.destination);
+      osc3.frequency.value = 800;
+      osc3.type = "square";
+      gain3.gain.setValueAtTime(0.3, audioContext.currentTime);
+      gain3.gain.exponentialRampToValueAtTime(
+        0.01,
+        audioContext.currentTime + 0.1,
+      );
+      osc3.start(audioContext.currentTime);
+      osc3.stop(audioContext.currentTime + 0.1);
+    }, 400);
+  } catch {
+    // Audio not supported, continue without sound
+    console.log("Audio not supported, skipping warning beep");
+  }
+}
+
+function startFreeExploration() {
+  logEvent("Episode 1 Complete! Starting Free Exploration Mode...");
+  logEvent("Explore the planet, gather resources, and discover its secrets.");
+
+  // Update story state to free exploration
+  gameState.story.currentEpisode = "free_exploration";
+
+  // Generate a new random map for free exploration
+  generateFreeExplorationMap();
+
+  // Reset party position to new start node
+  const startNode = Array.from(gameState.map.values()).find(
+    (n) => n.type === "START",
+  );
+  if (startNode) {
+    gameState.party.currentNodeId = startNode.id;
+    gameState.party.previousNodeId = null;
+
+    // Center map on new position
+    resetMapView();
+    centerMapOnNode(startNode.id);
+  }
+
+  renderMap();
+
+  // Show free exploration message
+  showDialogue(
+    "Crystal",
+    "스칼라, 이제 우리의 새로운 시작이에요. 이 행성을 탐험하고 다른 생존자들을 찾아봐요. 조심하지만, 두려워하지 말고요.",
+    ["시작할게요!", "탐험 팁 알려줘"],
+  );
+}
+
+function generateFreeExplorationMap() {
+  gameState.map.clear();
+  let nodeIdCounter = 0;
+  const tempMap: GameNode[][] = [];
+
+  // Generate a larger, more complex map for free exploration
+  const FREE_COLS = 8;
+  const FREE_ROWS = 4;
+
+  for (let col = 0; col < FREE_COLS; col++) {
+    tempMap[col] = [];
+    // More varied node distribution for free exploration
+    const nodesInCol =
+      col === 0
+        ? 1
+        : col === FREE_COLS - 1
+          ? 1
+          : Math.floor(Math.random() * (FREE_ROWS - 1)) + 2;
+    const offsetY =
+      (gameBoard.clientHeight - (nodesInCol - 1) * NODE_VERTICAL_SPACING) / 2;
+
+    for (let row = 0; row < nodesInCol; row++) {
+      const node: Partial<GameNode> = {
+        id: nodeIdCounter++,
+        col,
+        row,
+        x: col * NODE_HORIZONTAL_SPACING + 100,
+        y: row * NODE_VERTICAL_SPACING + offsetY,
+        connections: [],
+      };
+
+      if (col === 0) {
+        node.type = "START";
+        node.y = gameBoard.clientHeight / 2;
+      } else if (col === FREE_COLS - 1) {
+        node.type = "ESCAPE";
+        if (nodesInCol === 1) {
+          node.y = gameBoard.clientHeight / 2;
+        }
+      } else {
+        // More balanced node type distribution for free exploration
+        const rand = Math.random();
+        if (rand < 0.3) node.type = "RESOURCE";
+        else if (rand < 0.5) node.type = "EVENT";
+        else if (rand < 0.7) node.type = "COMBAT";
+        else if (rand < 0.85) {
+          node.type = "STORY";
+          // Assign random story ID for free exploration
+          const storyIds = [
+            "survivor_found",
+            "ancient_artifact",
+            "dangerous_area",
+            "resource_cache",
+          ];
+          (node as GameNode & { storyId?: string }).storyId =
+            storyIds[Math.floor(Math.random() * storyIds.length)];
+        } else node.type = "EMPTY";
+      }
+
+      tempMap[col][row] = node as GameNode;
+      gameState.map.set(node.id!, node as GameNode);
+    }
+  }
+
+  // Create connections
+  for (let col = 0; col < FREE_COLS - 1; col++) {
+    for (const node of tempMap[col]) {
+      const nextColNodes = tempMap[col + 1];
+      for (const targetNode of nextColNodes) {
+        node.connections.push(targetNode.id);
+      }
+    }
+  }
+
+  console.log("Generated free exploration map structure");
 }
 
 main();
