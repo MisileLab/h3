@@ -37,8 +37,6 @@
         (final: prev: {
           # https://github.com/NixOS/nixpkgs/issues/449068
           avizo = stablep.avizo;
-          # idk why but it stuck at the download phase
-          ghc = stablep.ghc;
           # https://github.com/NixOS/nixpkgs/pull/449279
           imagemagick = stablep.imagemagick;
           libreoffice = stablep.libreoffice;
