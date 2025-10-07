@@ -22,8 +22,8 @@ importers:
         specifier: 8.5.6
         version: 8.5.6
       solid-devtools:
-        specifier: 0.34.3
-        version: 0.34.3(solid-js@1.9.9)(vite@7.1.9)
+        specifier: 0.34.4
+        version: 0.34.4(solid-js@1.9.9)(vite@7.1.9)
       tailwindcss:
         specifier: 4.1.14
         version: 4.1.14
@@ -658,11 +658,11 @@ packages:
     resolution: {integrity: sha512-RbcPH1n5cfwKrru7v7+zrZvjLurgHhGyso3HTyGtRivGWgYjbOmGuivCQaORNELjNONoK35nj28EoWul9sb1zQ==}
     engines: {node: '>=10'}
 
-  solid-devtools@0.34.3:
-    resolution: {integrity: sha512-ZQua959n+Zu3sLbm9g0IRjYUb1YYlYbu83PWLRoKbSsq0a3ItQNhnS2OBU7rQNmOKZiMexNo9Z3izas9BcOKDg==}
+  solid-devtools@0.34.4:
+    resolution: {integrity: sha512-/s/pPTLvTkuXGZhLfsuvp7ge/cdpEwrUPoRwoJPYgz74GTUSb5Ozi2V6Z6HkO0ILT7hXB04j16HbH1aaP5VFOA==}
     peerDependencies:
       solid-js: ^1.9.0
-      vite: ^2.2.3 || ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0
+      vite: ^2.2.3 || ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0
     peerDependenciesMeta:
       vite:
         optional: true
@@ -1331,7 +1331,7 @@ snapshots:
 
   seroval@1.3.2: {}
 
-  solid-devtools@0.34.3(solid-js@1.9.9)(vite@7.1.9):
+  solid-devtools@0.34.4(solid-js@1.9.9)(vite@7.1.9):
     dependencies:
       '@babel/core': 7.28.4
       '@babel/plugin-syntax-typescript': 7.27.1(@babel/core@7.28.4)
