@@ -11,7 +11,7 @@
       gel d2 pre-commit just mongosh tabnine
       snyk radicle-node infisical poop binsider
       typst act gh opencode godot process-compose
-      netlify-cli cursor-cli tree-sitter prisma-engines
+      netlify-cli cursor-cli tree-sitter prisma
 
       # Language tools
       pnpm yarn-berry
