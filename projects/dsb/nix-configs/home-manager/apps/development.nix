@@ -18,7 +18,7 @@
       dart
       vscode-langservers-extracted
       ruby_3_4 rubyPackages_3_4.ruby-lsp
-      # ghc cabal-install haskell-language-server
+      ghc cabal-install haskell-language-server
       cargo-update rustc cargo clippy rust-analyzer
       metals scala-next
       taplo
