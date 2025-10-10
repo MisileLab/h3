@@ -70,6 +70,7 @@
         extraSpecialArgs = {
           inherit c;
           inherit zigpkgs;
+          inherit stablep;
         };
       };
     };
