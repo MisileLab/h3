@@ -38,7 +38,6 @@
           electron_unwrapped = stablep.electron_unwrapped;
           electron = stablep.electron;
           nodejs_24 = stablep.nodejs_24;
-          ungoogled_chromium = stablep.ungoogled_chromium;
           dart = prev.dart.overrideAttrs (old: {
             installPhase = ''
               runHook preInstall
@@ -74,7 +73,7 @@
         extraSpecialArgs = {
           inherit c;
           inherit zigpkgs;
-          # inherit stablep;
+          inherit stablep;
         };
       };
     };
