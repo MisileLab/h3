@@ -38,6 +38,7 @@
           electron_unwrapped = stablep.electron_unwrapped;
           electron = stablep.electron;
           nodejs_24 = stablep.nodejs_24;
+          ungoogled_chromium = stablep.ungoogled_chromium;
           dart = prev.dart.overrideAttrs (old: {
             installPhase = ''
               runHook preInstall
