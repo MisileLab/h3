@@ -1,17 +1,22 @@
 """System tray application for Next Action Predictor."""
 
 import logging
+import os
+import subprocess
+import sys
 import threading
 import time
-from typing import Optional, Callable, Any
+from typing import Any, Callable, Optional
 
-from PIL import Image, ImageDraw
 import pystray
+from PIL import Image, ImageDraw
 
+from config import Config
 from database import DatabaseManager
 from monitor import ProcessMonitor
-from pattern_engine import PatternEngine
 from notifier import Notifier
+from pattern_engine import PatternEngine
+from windows_api import focus_process_by_name
 
 
 class TrayApp:
@@ -19,6 +24,7 @@ class TrayApp:
 
   def __init__(
     self,
+    config: Config,
     monitor: ProcessMonitor,
     engine: PatternEngine,
     notifier: Notifier,
@@ -27,18 +33,25 @@ class TrayApp:
     """Initialize tray application.
 
     Args:
+      config: Configuration object
       monitor: Process monitor instance
       engine: Pattern engine instance
       notifier: Notifier instance
       db_manager: Database manager instance
     """
-    self.monitor: ProcessMonitor = monitor
-    self.engine: PatternEngine = engine
-    self.notifier: Notifier = notifier
-    self.db: DatabaseManager = db_manager
+    self.config = config
+    self.monitor = monitor
+    self.engine = engine
+    self.notifier = notifier
+    self.db = db_manager
 
-    self.icon: Optional[pystray.Icon] = None
-    self.is_running: bool = False
+    self.icon = None
+    self.is_running = False
+    
+    # Tab key functionality
+    self.last_suggested_process = None
+    self.tab_listener_thread = None
+    self.tab_listener_running = False
 
     logging.info("Tray application initialized")
 
@@ -100,16 +113,46 @@ class TrayApp:
       pystray.Menu.SEPARATOR,
       pystray.MenuItem("View Statistics", self._show_stats),
       pystray.MenuItem("Recent Patterns", self._show_patterns),
+      pystray.MenuItem("View Logs", self._view_logs),
       pystray.MenuItem("Test Notification", self._test_notification),
       pystray.Menu.SEPARATOR,
       pystray.MenuItem("Analyze Now", self._analyze_patterns),
       pystray.MenuItem("Clear Cooldowns", self._clear_cooldowns),
+      pystray.Menu.SEPARATOR,
+      pystray.MenuItem("Reset All Data", self._reset_data),
       pystray.Menu.SEPARATOR,
       pystray.MenuItem("Settings", self._show_settings),
       pystray.MenuItem("Help", self._show_help),
       pystray.Menu.SEPARATOR,
       pystray.MenuItem("Exit", self._exit),
     ]
+
+  def _view_logs(self, icon: Optional[Any], item: Optional[Any]) -> None:
+    """Open the log file with the default application.
+
+    Args:
+      icon: Tray icon (unused)
+      item: Menu item (unused)
+    """
+    log_path = self.config.get_log_path()
+    logging.info(f"Opening log file: {log_path}")
+
+    try:
+      if not log_path.exists():
+        self.notifier.show_error(f"Log file not found at {log_path}")
+        logging.warning(f"Log file not found: {log_path}")
+        return
+
+      if sys.platform == "win32":
+        os.startfile(log_path)
+      elif sys.platform == "darwin":
+        subprocess.call(["open", log_path])
+      else:
+        subprocess.call(["xdg-open", log_path])
+
+    except Exception as e:
+      logging.error(f"Error opening log file: {e}")
+      self.notifier.show_error(f"Failed to open log file: {e}")
 
   def _show_status(self, icon: Optional[Any], item: Optional[Any]) -> None:
     """Show learning status notification.
@@ -287,6 +330,131 @@ class TrayApp:
       logging.error(f"Error showing settings: {e}")
       self.notifier.show_error(f"Failed to show settings: {e}")
 
+  def _reset_data(self, icon: Optional[Any], item: Optional[Any]) -> None:
+    """Reset all learned data.
+
+    Args:
+      icon: Tray icon (unused)
+      item: Menu item (unused)
+    """
+    try:
+      # Show confirmation dialog first
+      import tkinter as tk
+      from tkinter import messagebox, ttk
+      
+      root = tk.Tk()
+      root.withdraw()  # Hide the main window
+      root.attributes('-topmost', True)
+      
+      result = messagebox.askyesno(
+        "Confirm Reset",
+        "Are you sure you want to reset all learned data?\n\n"
+        "This will delete:\n"
+        "• All learned patterns\n"
+        "• All usage events\n"
+        "• All feedback data\n\n"
+        "This action cannot be undone!",
+        icon='warning'
+      )
+      
+      root.destroy()
+      
+      if result:
+        # Show progress dialog
+        progress_root = tk.Tk()
+        progress_root.title("Resetting Data")
+        progress_root.geometry("300x100")
+        progress_root.resizable(False, False)
+        progress_root.attributes('-topmost', True)
+        
+        # Center the window
+        progress_root.update_idletasks()
+        width = progress_root.winfo_width()
+        height = progress_root.winfo_height()
+        x = (progress_root.winfo_screenwidth() // 2) - (width // 2)
+        y = (progress_root.winfo_screenheight() // 2) - (height // 2)
+        progress_root.geometry(f'{width}x{height}+{x}+{y}')
+        
+        # Create progress bar
+        label = tk.Label(progress_root, text="Resetting all learned data...")
+        label.pack(pady=10)
+        
+        # Use simple progress bar instead of ttk
+        progress = tk.Canvas(progress_root, height=20, bg='white')
+        progress.pack(pady=10, padx=20, fill='x')
+        
+        # Create animated progress bar
+        progress_width = 260
+        progress.create_rectangle(0, 0, progress_width, 20, outline='gray', fill='lightgray')
+        
+        # Animation variables
+        progress_pos = 0
+        progress_rect = None
+        animation_running = True
+        
+        def animate_progress():
+          nonlocal progress_pos, progress_rect
+          if not animation_running:
+            return
+            
+          if progress_rect:
+            progress.delete(progress_rect)
+          
+          # Create moving rectangle
+          progress_rect = progress.create_rectangle(
+            progress_pos, 2, progress_pos + 30, 18, 
+            fill='#4CAF50', outline=''
+          )
+          
+          progress_pos += 5
+          if progress_pos > progress_width:
+            progress_pos = -30
+          
+          if animation_running:
+            progress_root.after(50, animate_progress)
+        
+        # Start animation
+        animate_progress()
+        
+        # Update UI
+        progress_root.update()
+        
+        def reset_in_background():
+          try:
+            logging.info("Starting database reset...")
+            self.db.reset_all_data()
+            logging.info("Database reset completed successfully")
+            # Stop animation and close window
+            progress_root.after(0, stop_progress_and_close)
+            self.notifier.show_success("All data has been reset successfully!")
+            logging.info("User reset all learned data")
+          except Exception as e:
+            logging.error(f"Error resetting data: {e}")
+            # Stop animation and close window
+            progress_root.after(0, stop_progress_and_close)
+            self.notifier.show_error(f"Failed to reset data: {e}")
+        
+        def stop_progress_and_close():
+          nonlocal animation_running
+          animation_running = False
+          progress_root.destroy()
+        
+        # Run reset in background thread
+        import threading
+        threading.Thread(target=reset_in_background, daemon=True).start()
+        
+        # Show progress dialog
+        try:
+          progress_root.mainloop()
+        except KeyboardInterrupt:
+          progress_root.destroy()
+      else:
+        logging.info("User cancelled data reset")
+        
+    except Exception as e:
+      logging.error(f"Error resetting data: {e}")
+      self.notifier.show_error(f"Failed to reset data: {e}")
+
   def _show_help(self, icon: Optional[Any], item: Optional[Any]) -> None:
     """Show help information.
 
@@ -399,3 +567,68 @@ class TrayApp:
       self.icon.tooltip = f"Next Action Predictor\n{message}"
 
     logging.info(f"Status: {message}")
+
+  def set_last_suggested_process(self, process_name: str) -> None:
+    """Store the last suggested process for Tab key switching.
+    
+    Args:
+      process_name: Name of the suggested process
+    """
+    self.last_suggested_process = process_name
+    logging.info(f"Last suggested process set to: {process_name}")
+    
+    # Start Tab listener if not already running
+    if not self.tab_listener_running:
+      self._start_tab_listener()
+
+  def _start_tab_listener(self) -> None:
+    """Start the Tab key listener thread."""
+    if self.tab_listener_running:
+      return
+      
+    self.tab_listener_running = True
+    self.tab_listener_thread = threading.Thread(target=self._tab_listener_loop, daemon=True)
+    self.tab_listener_thread.start()
+    logging.info("Tab key listener started")
+
+  def _stop_tab_listener(self) -> None:
+    """Stop the Tab key listener thread."""
+    self.tab_listener_running = False
+    if self.tab_listener_thread:
+      self.tab_listener_thread.join(timeout=1.0)
+    logging.info("Tab key listener stopped")
+
+  def _tab_listener_loop(self) -> None:
+    """Main loop for Tab key listener."""
+    try:
+      import keyboard
+      
+      while self.tab_listener_running:
+        # Check for Tab key press
+        if keyboard.is_pressed('tab'):
+          if self.last_suggested_process:
+            logging.info(f"Tab key pressed, switching to {self.last_suggested_process}")
+            success = focus_process_by_name(self.last_suggested_process)
+            if success:
+              logging.info(f"Successfully switched to {self.last_suggested_process}")
+              # Clear the suggestion after successful switch
+              self.last_suggested_process = None
+            else:
+              logging.warning(f"Failed to switch to {self.last_suggested_process}")
+          else:
+            logging.debug("Tab key pressed but no suggested process available")
+          
+          # Wait a bit to prevent multiple detections
+          time.sleep(0.5)
+        
+        time.sleep(0.1)  # Check every 100ms
+        
+    except ImportError:
+      logging.warning("keyboard module not available, Tab key functionality disabled")
+    except Exception as e:
+      logging.error(f"Error in Tab listener loop: {e}")
+
+  def cleanup(self) -> None:
+    """Clean up resources."""
+    self._stop_tab_listener()
+    logging.info("Tray app cleanup completed")

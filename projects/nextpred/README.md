@@ -13,11 +13,13 @@ A cross-platform OS-level action pattern learning and suggestion system that lea
 
 ## How It Works
 
-1. **Process Monitoring**: Continuously monitors app launches in the background
-2. **Pattern Detection**: Identifies repeated sequences (e.g., Chrome → Notion → VS Code)
-3. **Confidence Scoring**: Calculates confidence based on pattern frequency
-4. **Smart Suggestions**: Shows notifications when a pattern is likely to continue
-5. **User Feedback**: Learns from user interactions to improve suggestions
+1. **Window Monitoring**: Continuously monitors all visible windows and mouse position
+2. **Focus Tracking**: Tracks which window has focus and mouse cursor position
+3. **Pattern Detection**: Identifies repeated sequences based on window focus and mouse interactions
+4. **Context-Aware Learning**: Uses both current window and mouse position to predict next actions
+5. **Confidence Scoring**: Calculates confidence based on pattern frequency and context
+6. **Smart Suggestions**: Shows notifications when a pattern is likely to continue
+7. **User Feedback**: Learns from user interactions to improve suggestions
 
 ## Installation
 
@@ -25,6 +27,7 @@ A cross-platform OS-level action pattern learning and suggestion system that lea
 
 - Python 3.10 or higher
 - `uv` package manager (recommended)
+- **Administrator privileges** (required for Windows API access to monitor all windows)
 
 ### Quick Install with uv
 
@@ -36,7 +39,8 @@ cd next-action-predictor
 # Install dependencies with uv
 uv sync
 
-# Run the application
+# Run the application (requires administrator privileges)
+# On Windows: Right-click Command Prompt/PowerShell and "Run as administrator"
 uv run python src/main.py
 ```
 
@@ -54,7 +58,8 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 # Install dependencies
 pip install psutil plyer pystray Pillow
 
-# Run the application
+# Run the application (requires administrator privileges)
+# On Windows: Right-click Command Prompt/PowerShell and "Run as administrator"
 python src/main.py
 ```
 
@@ -63,12 +68,17 @@ python src/main.py
 ### Starting the Application
 
 ```bash
-# Using uv
+# Using uv (requires administrator privileges)
 uv run python src/main.py
 
-# Using pip (after activating venv)
+# Using pip (after activating venv, requires administrator privileges)
 python src/main.py
 ```
+
+**Important**: This application requires administrator privileges to:
+- Access Windows API for monitoring all visible windows
+- Track mouse position and window focus accurately
+- Provide comprehensive pattern learning
 
 The application will start in the background and add an icon to your system tray.
 
@@ -204,16 +214,20 @@ System shows notification: "Would you like to run VS Code?"
 
 - Application name (process name only)
 - Process ID
+- Window title (for context)
+- Mouse position (x, y coordinates)
+- Current focused window
 - Start timestamp
 - Session grouping information
 
 ### Data NOT Collected
 
-- Window titles or content
+- Window content or screenshots
 - File names or paths
 - User input or keystrokes
 - Network activity
 - Personal information
+- Click tracking (only position, not clicks)
 
 ## Troubleshooting
 
@@ -222,7 +236,18 @@ System shows notification: "Would you like to run VS Code?"
 **Application doesn't start**
 - Check Python version (requires 3.10+)
 - Ensure all dependencies are installed
+- **Run with administrator privileges** (required on Windows)
 - Check log files in `logs/app.log`
+
+**"Access denied" errors**
+- Ensure running with administrator privileges
+- On Windows: Right-click terminal and "Run as administrator"
+- Check if antivirus is blocking the application
+
+**Mouse position not tracking**
+- Verify administrator privileges
+- Check if security software is blocking API access
+- Restart application with elevated privileges
 
 **No notifications appearing**
 - Test notification system from tray menu
@@ -233,11 +258,14 @@ System shows notification: "Would you like to run VS Code?"
 - Check excluded processes list
 - Reduce polling frequency in settings
 - Monitor system resource usage
+- Ensure running with proper privileges (insufficient privileges can cause excessive polling)
 
 **Patterns not being learned**
 - Ensure minimum usage threshold is met
 - Check session timeout settings
 - Verify app monitoring is working
+- **Run with administrator privileges** to ensure all windows are detected
+- Check if mouse tracking is working (see logs)
 
 ### Log Files
 

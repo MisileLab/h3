@@ -43,10 +43,10 @@ class Config:
 
     if self.config_path.exists():
       self.config.read(self.config_path)
-      logging.info(f"Loaded configuration from {self.config_path}")
+      print(f"Loaded configuration from {self.config_path}")
     else:
       self._create_default_config()
-      logging.info(f"Created default configuration at {self.config_path}")
+      print(f"Created default configuration at {self.config_path}")
 
   def _create_default_config(self) -> None:
     """Create default configuration file."""
@@ -195,4 +195,4 @@ class Config:
     """Save current configuration to file."""
     with open(self.config_path, "w", encoding="utf-8") as f:
       self.config.write(f)
-    logging.info(f"Saved configuration to {self.config_path}")
+    print(f"Saved configuration to {self.config_path}")

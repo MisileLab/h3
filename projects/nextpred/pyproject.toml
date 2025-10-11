@@ -5,11 +5,14 @@ description = "Cross-platform OS-level action pattern learning and suggestion sy
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "dbus-python>=1.4.0",
+    "dbus-python>=1.4.0; sys_platform == 'linux'",
+    "keyboard>=0.13.5",
     "pillow>=11.3.0",
     "plyer>=2.1.0",
     "psutil>=7.1.0",
     "pystray>=0.19.5",
+    "pywin32>=311",
+    "setuptools>=80.9.0",
 ]
 
 [dependency-groups]

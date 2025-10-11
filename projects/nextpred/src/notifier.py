@@ -12,30 +12,36 @@ from database import DatabaseManager
 class Notifier:
   """Cross-platform notification manager."""
 
-  def __init__(self, db_manager: DatabaseManager, cooldown_hours: int = 1) -> None:
-    """Initialize notifier.
+  def __init__(self, db_manager: DatabaseManager, cooldown_hours: int = 1, tab_callback: Optional[callable] = None) -> None:
+      """Initialize notifier.
 
-    Args:
-      db_manager: Database manager instance
-      cooldown_hours: Cooldown period between notifications for same pattern
-    """
-    self.db: DatabaseManager = db_manager
-    self.cooldown_hours: int = cooldown_hours
-    self.last_notification_time: Dict[int, datetime] = {}
+      Args:
+        db_manager: Database manager instance
+        cooldown_hours: Cooldown period between notifications for same pattern
+        tab_callback: Callback function to call when showing suggestion (for Tab key functionality)
+      """
+      self.db: DatabaseManager = db_manager
+      self.cooldown_hours: int = cooldown_hours
+      self.last_notification_time: Dict[int, datetime] = {}
+      self.tab_callback: Optional[callable] = tab_callback
 
-    # Try to import plyer for cross-platform notifications
-    try:
-      from plyer import notification
+      # Try to import plyer for cross-platform notifications
+      try:
+        from plyer import notification
 
-      self.notification = notification
-      self.use_plyer: bool = False
-      logging.info("Forcing fallback notifications")
-    except ImportError:
-      self.notification = None
-      self.use_plyer: bool = False
-      logging.warning("plyer not available, using fallback notifications")
+        self.notification = notification
+        self.use_plyer: bool = True
+        logging.info("Using plyer for notifications")
 
-    logging.info(f"Notifier initialized with {cooldown_hours}h cooldown")
+        # Force notify-send on Linux per user request
+        if platform.system() == "Linux":
+          self.use_plyer = False
+          logging.info("Forcing notify-send on Linux")
+      except ImportError:
+        self.notification = None
+        self.use_plyer: bool = False
+        logging.warning("plyer not available, using fallback notifications")
+      logging.info(f"Notifier initialized with {cooldown_hours}h cooldown")
 
   def _is_recently_notified(self, pattern_id: int) -> bool:
     """Check if notification was recently shown for this pattern.
@@ -196,6 +202,13 @@ class Notifier:
       logging.info(
         f"Shown suggestion for {app_name} (pattern {pattern_id}, confidence: {confidence:.0f}%)"
       )
+
+      # Call Tab callback if available
+      if self.tab_callback:
+        try:
+          self.tab_callback(app_name)
+        except Exception as e:
+          logging.error(f"Error calling Tab callback: {e}")
 
       # Log the notification as a feedback event
       self.db.add_feedback(pattern_id, "shown")

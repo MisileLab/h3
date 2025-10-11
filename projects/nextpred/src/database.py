@@ -40,9 +40,32 @@ class DatabaseManager:
     logging.info(f"Database initialized at {self.db_path}")
 
   def _init_schema(self) -> None:
-    """Initialize database schema."""
+    """Initialize database schema with migration support."""
     cursor: sqlite3.Cursor = self.conn.cursor()
+    
+    # Get current database version
+    cursor.execute("CREATE TABLE IF NOT EXISTS schema_version (version INTEGER DEFAULT 1)")
+    cursor.execute("SELECT version FROM schema_version")
+    result = cursor.fetchone()
+    current_version = result['version'] if result else 1
+    
+    logging.info(f"Current database schema version: {current_version}")
+    
+    # Create initial tables if they don't exist
+    self._create_initial_tables(cursor)
+    
+    # Run migrations based on current version
+    if current_version < 2:
+      self._migrate_to_v2(cursor)
+    
+    # Update schema version
+    cursor.execute("UPDATE schema_version SET version = 2")
+    
+    self.conn.commit()
+    logging.info("Database schema initialized and migrated")
 
+  def _create_initial_tables(self, cursor: sqlite3.Cursor) -> None:
+    """Create initial database tables."""
     # Events table - app execution events
     cursor.execute("""
       CREATE TABLE IF NOT EXISTS events (
@@ -95,31 +118,88 @@ class DatabaseManager:
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_patterns_active ON patterns(is_active)")
     cursor.execute("CREATE INDEX IF NOT EXISTS idx_patterns_last_seen ON patterns(last_seen)")
 
-    self.conn.commit()
-    logging.info("Database schema initialized")
+  def _migrate_to_v2(self, cursor: sqlite3.Cursor) -> None:
+    """Migrate database schema to version 2."""
+    logging.info("Migrating database to version 2...")
+    
+    try:
+      # Check if new columns already exist
+      cursor.execute("PRAGMA table_info(events)")
+      columns = [column[1] for column in cursor.fetchall()]
+      
+      # Add new columns to events table if they don't exist
+      if 'duration_seconds' not in columns:
+        cursor.execute("ALTER TABLE events ADD COLUMN duration_seconds INTEGER DEFAULT 0")
+        logging.info("Added duration_seconds column to events table")
+      
+      if 'mouse_x' not in columns:
+        cursor.execute("ALTER TABLE events ADD COLUMN mouse_x INTEGER DEFAULT 0")
+        logging.info("Added mouse_x column to events table")
+      
+      if 'mouse_y' not in columns:
+        cursor.execute("ALTER TABLE events ADD COLUMN mouse_y INTEGER DEFAULT 0")
+        logging.info("Added mouse_y column to events table")
+      
+      if 'window_title' not in columns:
+        cursor.execute("ALTER TABLE events ADD COLUMN window_title TEXT DEFAULT ''")
+        logging.info("Added window_title column to events table")
+      
+      # Create new indexes for performance
+      cursor.execute("CREATE INDEX IF NOT EXISTS idx_events_app_name ON events(app_name)")
+      cursor.execute("CREATE INDEX IF NOT EXISTS idx_events_duration ON events(duration_seconds)")
+      
+      logging.info("Database migration to version 2 completed successfully")
+      
+    except Exception as e:
+      logging.error(f"Error during database migration: {e}")
+      raise
 
-  def log_event(self, app_name: str, process_id: int, session_id: str) -> int:
+  def log_event(self, app_name: str, process_id: int, session_id: str, 
+                 duration_seconds: int = 0, mouse_x: int = 0, mouse_y: int = 0, 
+                 window_title: str = '') -> int:
     """Log app execution event.
 
     Args:
       app_name: Name of the application
       process_id: Process ID
       session_id: Session identifier
+      duration_seconds: How long the app was focused
+      mouse_x: Mouse X position
+      mouse_y: Mouse Y position
+      window_title: Window title for context
 
     Returns:
       Event ID
     """
     cursor: sqlite3.Cursor = self.conn.cursor()
-    cursor.execute(
-      """
-      INSERT INTO events (app_name, process_id, session_id)
-      VALUES (?, ?, ?)
-      """,
-      (app_name, process_id, session_id),
-    )
+    
+    # Check database schema version and use appropriate query
+    cursor.execute("PRAGMA table_info(events)")
+    columns = [column[1] for column in cursor.fetchall()]
+    
+    if 'duration_seconds' in columns:
+      # New schema with all columns
+      cursor.execute(
+        """
+        INSERT INTO events (app_name, process_id, session_id, duration_seconds, 
+                            mouse_x, mouse_y, window_title)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        """,
+        (app_name, process_id, session_id, duration_seconds, mouse_x, mouse_y, window_title),
+      )
+    else:
+      # Old schema - use basic columns
+      cursor.execute(
+        """
+        INSERT INTO events (app_name, process_id, session_id)
+        VALUES (?, ?, ?)
+        """,
+        (app_name, process_id, session_id),
+      )
+    
     self.conn.commit()
     event_id: int = cursor.lastrowid or 0
-    logging.debug(f"Logged event: {app_name} (PID: {process_id}) in session {session_id}")
+    logging.debug(f"Logged event: {app_name} (PID: {process_id}, duration: {duration_seconds}s) in session {session_id}")
     return event_id
 
   def get_recent_sessions(self, days: int = 7) -> List[List[dict[str, Any]]]:
@@ -373,6 +453,32 @@ class DatabaseManager:
       "average_confidence": round(avg_confidence or 0.0, 1),
       "top_apps": top_apps,
     }
+
+  def reset_all_data(self) -> None:
+    """Clear all learned data from the database using SQL DELETE."""
+    cursor: sqlite3.Cursor = self.conn.cursor()
+    
+    try:
+      # Get stats before reset for logging
+      stats = self.get_pattern_stats()
+      logging.info(f"Resetting database with {stats['total_patterns']} patterns and {stats['total_events']} events")
+      
+      # Clear all tables
+      cursor.execute("DELETE FROM feedbacks")
+      cursor.execute("DELETE FROM patterns")
+      cursor.execute("DELETE FROM events")
+      cursor.execute("DELETE FROM settings")
+      
+      # Reset autoincrement counters
+      cursor.execute("DELETE FROM sqlite_sequence WHERE name IN ('feedbacks', 'patterns', 'events')")
+      
+      self.conn.commit()
+      logging.info("All data successfully reset from database")
+      
+    except Exception as e:
+      self.conn.rollback()
+      logging.error(f"Error resetting database: {e}")
+      raise
 
   def close(self) -> None:
     """Close database connection."""

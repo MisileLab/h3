@@ -132,7 +132,8 @@ def main() -> None:
 
     # Set up signal handlers for graceful shutdown
     signal.signal(signal.SIGINT, signal_handler)
-    signal.signal(signal.SIGTERM, signal_handler)
+    if sys.platform != "win32":
+      signal.signal(signal.SIGTERM, signal_handler)
 
     # Initialize core components
     db = DatabaseManager()
@@ -149,15 +150,19 @@ def main() -> None:
 
     engine = PatternEngine(db, min_occurrences=min_occurrences, min_confidence=min_confidence)
 
+    # Initialize tray application first (needed for callback)
+    temp_notifier = Notifier(db)  # Temporary notifier for tray app initialization
+    tray_app = TrayApp(config, monitor, engine, temp_notifier, db)
+
     cooldown_hours = config.get_int("Notification", "cooldown_hours", 1)
-    notifier = Notifier(db, cooldown_hours=cooldown_hours)
+    notifier = Notifier(db, cooldown_hours=cooldown_hours, tab_callback=tray_app.set_last_suggested_process)
+
+    # Update tray app with real notifier
+    tray_app.notifier = notifier
 
     # Test notification system
     if not notifier.is_notification_available():
       logger.warning("Notification system may not be available on this system")
-
-    # Initialize tray application
-    tray_app = TrayApp(monitor, engine, notifier, db)
 
     # Create stop event for background threads
     stop_event = threading.Event()
