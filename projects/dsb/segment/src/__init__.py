@@ -1,9 +1,9 @@
 """
-ELECTRA-based Prompt Jailbreak Guard Model
+Segment: ELECTRA-based Jailbreak Guard Model
 
-A lightweight safety classifier for detecting and preventing prompt injection
-and jailbreak attacks on Large Language Models.
+A lightweight guard model for real-time detection of LLM prompt jailbreak attacks.
 """
 
-__version__ = "0.1.0"
-__author__ = "Your Name"
+__version__ = "1.0.0"
+__author__ = "Segment Team"
+__email__ = "team@segment.ai"
