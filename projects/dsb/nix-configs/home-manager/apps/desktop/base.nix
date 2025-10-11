@@ -1,4 +1,4 @@
-{pkgs, stablep, ...}:
+{pkgs, ...}:
 {
   imports = [
     ./security.nix
@@ -15,7 +15,7 @@
       galaxy-buds-client firefoxpwa gparted
       gimp3 telegram-desktop xournalpp zotero headsetcontrol
       appflowy virt-manager prismlauncher
-    ] ++ (with stablep.kdePackages; [filelight okular merkuro]);
+    ] ++ (with kdePackages; [filelight okular merkuro]);
     pointerCursor = {
       name = "Adwaita";
       package = pkgs.adwaita-icon-theme;
