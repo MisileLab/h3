@@ -70,6 +70,42 @@ def download_jailbreak_dataset(save_path: str = "data/raw") -> DatasetDict:
         raise
 
 
+def download_jailbreak_reasoning_dataset(save_path: str = "data/raw") -> DatasetDict:
+    """
+    Download the jailbreak classification reasoning dataset
+    
+    Args:
+        save_path: Path to save the dataset
+        
+    Returns:
+        Downloaded dataset
+    """
+    logger.info("Downloading jailbreak classification reasoning dataset...")
+    
+    try:
+        # Load the reasoning dataset from Hugging Face
+        dataset = load_dataset("dvilasuero/jailbreak-classification-reasoning")
+        
+        # Create save directory
+        save_dir = Path(save_path)
+        save_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Save dataset to disk
+        dataset.save_to_disk(str(save_dir / "jailbreak_reasoning"))
+        
+        logger.info(f"Reasoning dataset downloaded and saved to: {save_dir / 'jailbreak_reasoning'}")
+        
+        # Print dataset info
+        for split_name, split_data in dataset.items():
+            logger.info(f"{split_name}: {len(split_data)} examples")
+            
+        return dataset
+        
+    except Exception as e:
+        logger.error(f"Failed to download jailbreak reasoning dataset: {e}")
+        raise
+
+
 def download_additional_datasets(save_path: str = "data/raw") -> Dict[str, Any]:
     """
     Download additional datasets for enhanced training
@@ -163,6 +199,7 @@ def download_additional_datasets(save_path: str = "data/raw") -> Dict[str, Any]:
 
 def create_combined_dataset(
     jailbreak_dataset: DatasetDict,
+    reasoning_dataset: DatasetDict,
     additional_datasets: Dict[str, Any],
     save_path: str = "data/processed"
 ) -> DatasetDict:
@@ -185,6 +222,22 @@ def create_combined_dataset(
     # Start with the main dataset
     combined_train = jailbreak_dataset['train']
     combined_test = jailbreak_dataset.get('test', None)
+    
+    # Add reasoning dataset
+    if reasoning_dataset and 'train' in reasoning_dataset:
+        reasoning_train = reasoning_dataset['train']
+        
+        # Convert reasoning dataset to match format
+        reasoning_prompts = reasoning_train['prompt']
+        reasoning_types = reasoning_train['type']
+        
+        reasoning_df = Dataset.from_dict({
+            'prompt': reasoning_prompts,
+            'type': reasoning_types
+        })
+        
+        combined_train = concatenate_datasets([combined_train, reasoning_df])
+        logger.info(f"Added {len(reasoning_df)} reasoning examples")
     
     # Add toxicity data (as safe examples)
     if 'toxicity' in additional_datasets:
@@ -228,9 +281,11 @@ def create_combined_dataset(
             'test': test_dataset
         })
     else:
+        # Use smaller validation set (5% of train data)
+        val_size = min(200, int(0.1 * len(combined_train)))
         combined_dataset = DatasetDict({
             'train': combined_train,
-            'validation': jailbreak_dataset.get('validation', combined_train.select(range(1000))),
+            'validation': combined_train.select(range(val_size)),
             'test': combined_test
         })
     
@@ -290,6 +345,9 @@ def main():
         # Download main dataset
         jailbreak_dataset = download_jailbreak_dataset(args.raw_path)
         
+        # Download reasoning dataset
+        reasoning_dataset = download_jailbreak_reasoning_dataset(args.raw_path)
+        
         # Download additional datasets
         additional_datasets = {}
         if not args.skip_additional:
@@ -297,7 +355,8 @@ def main():
         
         # Create combined dataset
         combined_dataset = create_combined_dataset(
-            jailbreak_dataset, 
+            jailbreak_dataset,
+            reasoning_dataset,
             additional_datasets, 
             args.processed_path
         )

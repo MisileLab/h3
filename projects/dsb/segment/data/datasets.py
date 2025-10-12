@@ -6,6 +6,7 @@ import os
 import logging
 from typing import Dict, Any, Tuple
 
+import numpy as np
 from datasets import load_from_disk, Dataset
 from transformers import PreTrainedTokenizer
 
@@ -84,3 +85,34 @@ class JailbreakDataset:
         logger.info(f"Evaluation dataset size: {len(eval_dataset)}")
 
         return train_dataset, eval_dataset
+
+    def get_dataset_statistics(self) -> Dict[str, Any]:
+        """
+        Get statistics about the dataset.
+        
+        Returns:
+            Dictionary containing dataset statistics.
+        """
+        if self.dataset is None:
+            raise ValueError("Dataset not loaded. Please check the dataset path.")
+        
+        stats = {}
+        
+        for split_name, split_data in self.dataset.items():
+            if 'type' in split_data.column_names:
+                labels = split_data['type']
+                unique_labels, counts = np.unique(labels, return_counts=True)
+                label_counts = dict(zip(unique_labels, counts))
+                
+                stats[split_name] = {
+                    'total_examples': len(split_data),
+                    'label_distribution': label_counts,
+                    'columns': split_data.column_names
+                }
+            else:
+                stats[split_name] = {
+                    'total_examples': len(split_data),
+                    'columns': split_data.column_names
+                }
+        
+        return stats
