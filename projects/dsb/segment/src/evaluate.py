@@ -151,10 +151,11 @@ def analyze_false_predictions(
     tokenizer,
     test_data: List[Dict[str, Any]], 
     threshold: float = 0.5,
-    max_examples: int = 10
+    max_examples: int = 10,
+    batch_size: int = 8
 ) -> Dict[str, List[Dict[str, Any]]]:
     """
-    Analyze false positive and false negative predictions
+    Analyze false positive and false negative predictions with memory-efficient batching
     
     Args:
         model: Trained model
@@ -162,6 +163,7 @@ def analyze_false_predictions(
         test_data: Test dataset
         threshold: Classification threshold
         max_examples: Maximum number of examples to analyze
+        batch_size: Batch size for prediction to avoid OOM
         
     Returns:
         Dictionary with false positive and false negative examples
@@ -169,10 +171,19 @@ def analyze_false_predictions(
     texts = [item['text'] for item in test_data]
     true_labels = [item['label'] for item in test_data]
     
-    # Get predictions
-    predictions = model.predict(texts, return_probabilities=True)
-    pred_labels = predictions['predictions']
-    pred_probs = predictions['unsafe_probabilities']
+    # Get predictions in batches to avoid OOM
+    pred_labels = []
+    pred_probs = []
+    
+    for i in range(0, len(texts), batch_size):
+        batch_texts = texts[i:i + batch_size]
+        predictions = model.predict(batch_texts, return_probabilities=True)
+        pred_labels.extend(predictions['predictions'])
+        pred_probs.extend(predictions['unsafe_probabilities'])
+        
+        # Clear GPU memory after each batch
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
     
     false_positives = []
     false_negatives = []
@@ -311,9 +322,19 @@ def evaluate_model(
     logger.info(f"Starting evaluation of model: {model_path}")
     logger.info(f"Results will be saved to: {output_dir}")
     
+    # Clear GPU cache before loading model
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+        torch.cuda.synchronize()
+    
     # Load model
     device = get_device(config)
     model = SegmentModel.load_model(model_path, device=device)
+    
+    # Set model to evaluation mode and disable gradients for memory efficiency
+    model.model.eval()
+    with torch.no_grad():
+        pass  # Context to ensure no gradients are computed
     
     # Prepare dataset based on flag
     if use_combined_datasets:
@@ -360,15 +381,38 @@ def evaluate_model(
     # Make predictions in batches to avoid OOM
     pred_labels = []
     pred_probs = []
+    
+    logger.info(f"Making predictions on {len(texts)} samples with batch size {batch_size}")
+    
     for i in range(0, len(texts), batch_size):
         batch_texts = texts[i:i + batch_size]
-        predictions = model.predict(batch_texts, return_probabilities=True)
-        pred_labels.extend(predictions['predictions'])
-        pred_probs.extend(predictions['unsafe_probabilities'])
+        
+        try:
+            predictions = model.predict(batch_texts, return_probabilities=True)
+            pred_labels.extend(predictions['predictions'])
+            pred_probs.extend(predictions['unsafe_probabilities'])
+        except torch.cuda.OutOfMemoryError as e:
+            logger.error(f"OOM error at batch {i//batch_size}, reducing batch size")
+            # Fallback: try smaller batch size
+            smaller_batch_size = max(1, batch_size // 2)
+            for j in range(0, len(batch_texts), smaller_batch_size):
+                small_batch_texts = batch_texts[j:j + smaller_batch_size]
+                small_predictions = model.predict(small_batch_texts, return_probabilities=True)
+                pred_labels.extend(small_predictions['predictions'])
+                pred_probs.extend(small_predictions['unsafe_probabilities'])
+                
+                # Clear GPU memory after each small batch
+                if torch.cuda.is_available():
+                    torch.cuda.empty_cache()
         
         # Clear GPU memory after each batch
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
+            torch.cuda.synchronize()
+        
+        # Log progress
+        if (i // batch_size + 1) % 10 == 0:
+            logger.info(f"Processed {min(i + batch_size, len(texts))}/{len(texts)} samples")
     
     # Calculate metrics
     accuracy = np.mean(np.array(pred_labels) == np.array(binary_labels))
@@ -427,7 +471,7 @@ def evaluate_model(
     # Analyze false predictions
     test_data_list = [{'text': text, 'label': label} for text, label in zip(texts, binary_labels)]
     false_predictions = analyze_false_predictions(
-        model, model.tokenizer, test_data_list, max_examples=20
+        model, model.tokenizer, test_data_list, max_examples=20, batch_size=batch_size
     )
     
     # Save false prediction analysis
@@ -454,12 +498,18 @@ def main():
     parser.add_argument("--model_path", type=str, required=True, help="Path to trained model")
     parser.add_argument("--config", type=str, required=True, help="Path to configuration file")
     parser.add_argument("--output_dir", type=str, help="Directory to save evaluation results")
-    parser.add_argument("--batch_size", type=int, default=16, help="Batch size for evaluation")
+    parser.add_argument("--batch_size", type=int, default=8, help="Batch size for evaluation (reduced for memory)")
     parser.add_argument("--debug", action="store_true", help="Enable debug logging")
     parser.add_argument("--use_combined_datasets", action="store_true", 
                        help="Use combined jailbreakv-28k (unsafe) + toxicity (safe) datasets")
     
     args = parser.parse_args()
+    
+    # Memory optimization suggestions
+    if torch.cuda.is_available():
+        logger.info("GPU detected. For better memory management, consider setting:")
+        logger.info("export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True")
+        logger.info(f"Current batch size: {args.batch_size} (reduce if OOM occurs)")
     
     # Set debug level if requested
     if args.debug:
@@ -475,6 +525,13 @@ def main():
         )
         logger.info("Evaluation completed successfully!")
         
+    except torch.cuda.OutOfMemoryError as e:
+        logger.error(f"GPU out of memory: {e}")
+        logger.error("Suggestions to fix:")
+        logger.error("1. Reduce batch size with --batch_size 4 or --batch_size 2")
+        logger.error("2. Set environment variable: export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True")
+        logger.error("3. Use CPU evaluation by setting CUDA_VISIBLE_DEVICES=''")
+        raise
     except Exception as e:
         logger.error(f"Evaluation failed: {e}")
         raise

@@ -155,7 +155,7 @@ class SegmentModel:
         return_probabilities: bool = True
     ) -> Dict[str, Any]:
         """
-        Make predictions on input texts
+        Make predictions on input texts with memory optimization
         
         Args:
             texts: List of input texts
@@ -176,10 +176,13 @@ class SegmentModel:
             return_tensors="pt"
         ).to(self.device)
         
-        # Get predictions
+        # Get predictions with memory optimization
         with torch.no_grad():
             outputs = self.model(**inputs)
             logits = outputs.logits
+            
+            # Clear intermediate tensors immediately
+            del outputs
             
         # Convert to probabilities
         probabilities = torch.softmax(logits, dim=-1)
@@ -188,6 +191,11 @@ class SegmentModel:
         # Move to CPU immediately to free GPU memory
         predictions_cpu = predictions.cpu().numpy()
         probabilities_cpu = probabilities.cpu().numpy()
+        
+        # Clear GPU tensors
+        del logits, probabilities, predictions
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
         
         results = {
             'predictions': predictions_cpu.tolist(),
