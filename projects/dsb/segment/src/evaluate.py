@@ -15,6 +15,7 @@ from typing import Dict, Any, List, Tuple, Optional
 import numpy as np
 import pandas as pd
 from datetime import datetime
+import requests
 
 # Add project root to path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -208,11 +209,77 @@ def analyze_false_predictions(
     }
 
 
+def load_toxicity_dataset() -> pd.DataFrame:
+    """
+    Load toxicity dataset from GitHub URL
+    
+    Returns:
+        DataFrame with toxicity data
+    """
+    url = "https://raw.githubusercontent.com/surge-ai/toxicity/refs/heads/main/toxicity_en.csv"
+    logger.info(f"Loading toxicity dataset from: {url}")
+    
+    try:
+        df = pd.read_csv(url)
+        logger.info(f"Loaded {len(df)} samples from toxicity dataset")
+        return df
+    except Exception as e:
+        logger.error(f"Failed to load toxicity dataset: {e}")
+        raise
+
+
+def prepare_combined_dataset(config_path: str) -> Tuple[List[str], List[int]]:
+    """
+    Prepare combined dataset with jailbreakv-28k (unsafe) and toxicity (safe) data
+    
+    Args:
+        config_path: Path to configuration file
+        
+    Returns:
+        Tuple of (texts, labels)
+    """
+    # Load configuration
+    with open(config_path, 'r') as f:
+        config = yaml.safe_load(f)
+    
+    # Load jailbreakv-28k dataset (unsafe)
+    dataset_manager = JailbreakDataset(config)
+    datasets = dataset_manager.dataset
+    
+    jailbreak_texts = []
+    jailbreak_labels = []
+    
+    # Process jailbreakv-28k data
+    if 'train' in datasets:
+        train_data = datasets['train']
+        jailbreak_texts = list(train_data['prompt'])
+        # Label all jailbreak data as unsafe (1)
+        jailbreak_labels = [1] * len(jailbreak_texts)
+        logger.info(f"Loaded {len(jailbreak_texts)} samples from jailbreakv-28k dataset (labeled as unsafe)")
+    
+    # Load toxicity dataset (safe)
+    toxicity_df = load_toxicity_dataset()
+    toxicity_texts = toxicity_df['text'].tolist()
+    # Label all toxicity data as safe (0) - as requested
+    toxicity_labels = [0] * len(toxicity_texts)
+    logger.info(f"Loaded {len(toxicity_texts)} samples from toxicity dataset (labeled as safe)")
+    
+    # Combine datasets
+    combined_texts = jailbreak_texts + toxicity_texts
+    combined_labels = jailbreak_labels + toxicity_labels
+    
+    logger.info(f"Combined dataset: {len(combined_texts)} total samples")
+    logger.info(f"Safe samples: {len(toxicity_texts)}, Unsafe samples: {len(jailbreak_texts)}")
+    
+    return combined_texts, combined_labels
+
+
 def evaluate_model(
     model_path: str, 
     config_path: str,
     output_dir: Optional[str] = None,
-    batch_size: int = 16
+    batch_size: int = 16,
+    use_combined_datasets: bool = False
 ) -> Dict[str, Any]:
     """
     Comprehensive model evaluation
@@ -248,42 +315,47 @@ def evaluate_model(
     device = get_device(config)
     model = SegmentModel.load_model(model_path, device=device)
     
-    # Prepare test dataset
-    dataset_manager = JailbreakDataset(config)
-    datasets = dataset_manager.dataset
-    
-    # Use test split if available, otherwise use validation split
-    if 'test' in datasets:
-        test_dataset = datasets['test']
-    elif 'validation' in datasets:
-        test_dataset = datasets['validation']
-        logger.warning("Test split not found, using validation split")
+    # Prepare dataset based on flag
+    if use_combined_datasets:
+        # Use combined jailbreakv-28k (unsafe) and toxicity (safe) datasets
+        texts, binary_labels = prepare_combined_dataset(config_path)
     else:
-        # Split train dataset
-        train_data = datasets['train']
-        train_size = int(0.8 * len(train_data))
-        test_dataset = train_data.select(range(train_size, len(train_data)))
-        logger.warning("No test/validation split found, using portion of train data")
-    
-    # Preprocess test data - memory efficient approach
-    label2id = {"benign": 0, "jailbreak": 1}
-    if 'type' in test_dataset.column_names:
-        test_dataset = test_dataset.map(lambda x: {"label": label2id.get(x["type"], -1)})
-    
-    # Get raw texts and labels BEFORE tokenization to avoid memory blowup
-    texts = list(test_dataset['prompt'])
-    if 'type' in test_dataset.column_names:
-        raw_labels = test_dataset['type']
-    else:
-        raw_labels = test_dataset['label']
-    
-    # Convert labels to binary
-    binary_labels = []
-    for label in raw_labels:
-        if isinstance(label, str):
-            binary_labels.append(1 if label.lower() in ['jailbreak', 'unsafe', 'malicious', 'harmful'] else 0)
+        # Use original dataset loading logic
+        dataset_manager = JailbreakDataset(config)
+        datasets = dataset_manager.dataset
+        
+        # Use test split if available, otherwise use validation split
+        if 'test' in datasets:
+            test_dataset = datasets['test']
+        elif 'validation' in datasets:
+            test_dataset = datasets['validation']
+            logger.warning("Test split not found, using validation split")
         else:
-            binary_labels.append(int(label))
+            # Split train dataset
+            train_data = datasets['train']
+            train_size = int(0.8 * len(train_data))
+            test_dataset = train_data.select(range(train_size, len(train_data)))
+            logger.warning("No test/validation split found, using portion of train data")
+        
+        # Preprocess test data - memory efficient approach
+        label2id = {"benign": 0, "jailbreak": 1}
+        if 'type' in test_dataset.column_names:
+            test_dataset = test_dataset.map(lambda x: {"label": label2id.get(x["type"], -1)})
+        
+        # Get raw texts and labels BEFORE tokenization to avoid memory blowup
+        texts = list(test_dataset['prompt'])
+        if 'type' in test_dataset.column_names:
+            raw_labels = test_dataset['type']
+        else:
+            raw_labels = test_dataset['label']
+        
+        # Convert labels to binary
+        binary_labels = []
+        for label in raw_labels:
+            if isinstance(label, str):
+                binary_labels.append(1 if label.lower() in ['jailbreak', 'unsafe', 'malicious', 'harmful'] else 0)
+            else:
+                binary_labels.append(int(label))
     
     # Make predictions in batches to avoid OOM
     pred_labels = []
@@ -384,6 +456,8 @@ def main():
     parser.add_argument("--output_dir", type=str, help="Directory to save evaluation results")
     parser.add_argument("--batch_size", type=int, default=16, help="Batch size for evaluation")
     parser.add_argument("--debug", action="store_true", help="Enable debug logging")
+    parser.add_argument("--use_combined_datasets", action="store_true", 
+                       help="Use combined jailbreakv-28k (unsafe) + toxicity (safe) datasets")
     
     args = parser.parse_args()
     
@@ -392,7 +466,13 @@ def main():
         logging.getLogger().setLevel(logging.DEBUG)
     
     try:
-        results = evaluate_model(args.model_path, args.config, args.output_dir, args.batch_size)
+        results = evaluate_model(
+            args.model_path, 
+            args.config, 
+            args.output_dir, 
+            args.batch_size,
+            args.use_combined_datasets
+        )
         logger.info("Evaluation completed successfully!")
         
     except Exception as e:
