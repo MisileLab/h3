@@ -37,6 +37,8 @@
         (final: prev: {
           # https://github.com/NixOS/nixpkgs/issues/451227
           pamixer = stablep.pamixer;
+          # https://github.com/NixOS/nixpkgs/issues/451228
+          opencode = stablep.opencode;
           ungoogled-chromium = stablep.ungoogled-chromium;
           dart = prev.dart.overrideAttrs (old: {
             installPhase = ''
