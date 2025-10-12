@@ -22,7 +22,7 @@ echo "Log: ${LOG_FILE}"
 echo "========================================"
 
 # Run training with LoRA
-python src/train.py \
+uv run python src/train.py \
     --config "${CONFIG_PATH}" \
     --lora \
     2>&1 | tee "${LOG_FILE}"

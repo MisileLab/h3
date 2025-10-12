@@ -211,7 +211,8 @@ def analyze_false_predictions(
 def evaluate_model(
     model_path: str, 
     config_path: str,
-    output_dir: Optional[str] = None
+    output_dir: Optional[str] = None,
+    batch_size: int = 16
 ) -> Dict[str, Any]:
     """
     Comprehensive model evaluation
@@ -249,7 +250,7 @@ def evaluate_model(
     
     # Prepare test dataset
     dataset_manager = JailbreakDataset(config)
-    datasets = dataset_manager.load_dataset()
+    datasets = dataset_manager.dataset
     
     # Use test split if available, otherwise use validation split
     if 'test' in datasets:
@@ -265,14 +266,18 @@ def evaluate_model(
         logger.warning("No test/validation split found, using portion of train data")
     
     # Preprocess test data
-    processed_test = dataset_manager.preprocess_dataset(
-        {'test': test_dataset}, 
-        model.tokenizer
-    )['test']
+    label2id = {"benign": 0, "jailbreak": 1}
+    if 'type' in test_dataset.column_names:
+        test_dataset = test_dataset.map(lambda x: {"label": label2id.get(x["type"], -1)})
+
+    processed_test = test_dataset.map(
+        lambda x: dataset_manager._preprocess_function(x, model.tokenizer),
+        batched=True,
+    )
     
     # Get texts and labels for analysis
-    texts = test_dataset[test_dataset.column_names[0]]  # Assuming first column is text
-    labels = test_dataset['type'] if 'type' in test_dataset.column_names else test_dataset['label']
+    texts = list(processed_test['prompt'])
+    labels = processed_test['type'] if 'type' in processed_test.column_names else processed_test['label']
     
     # Convert labels to binary
     binary_labels = []
@@ -282,10 +287,14 @@ def evaluate_model(
         else:
             binary_labels.append(int(label))
     
-    # Make predictions
-    predictions = model.predict(texts, return_probabilities=True)
-    pred_labels = predictions['predictions']
-    pred_probs = predictions['unsafe_probabilities']
+    # Make predictions in batches to avoid OOM
+    pred_labels = []
+    pred_probs = []
+    for i in range(0, len(texts), batch_size):
+        batch_texts = texts[i:i + batch_size]
+        predictions = model.predict(batch_texts, return_probabilities=True)
+        pred_labels.extend(predictions['predictions'])
+        pred_probs.extend(predictions['unsafe_probabilities'])
     
     # Calculate metrics
     accuracy = np.mean(np.array(pred_labels) == np.array(binary_labels))
@@ -371,6 +380,7 @@ def main():
     parser.add_argument("--model_path", type=str, required=True, help="Path to trained model")
     parser.add_argument("--config", type=str, required=True, help="Path to configuration file")
     parser.add_argument("--output_dir", type=str, help="Directory to save evaluation results")
+    parser.add_argument("--batch_size", type=int, default=16, help="Batch size for evaluation")
     parser.add_argument("--debug", action="store_true", help="Enable debug logging")
     
     args = parser.parse_args()
@@ -380,7 +390,7 @@ def main():
         logging.getLogger().setLevel(logging.DEBUG)
     
     try:
-        results = evaluate_model(args.model_path, args.config, args.output_dir)
+        results = evaluate_model(args.model_path, args.config, args.output_dir, args.batch_size)
         logger.info("Evaluation completed successfully!")
         
     except Exception as e:

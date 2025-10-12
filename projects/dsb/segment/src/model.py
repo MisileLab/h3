@@ -174,7 +174,7 @@ class SegmentModel:
             padding=True,
             max_length=max_length,
             return_tensors="pt"
-        )
+        ).to(self.device)
         
         # Get predictions
         with torch.no_grad():

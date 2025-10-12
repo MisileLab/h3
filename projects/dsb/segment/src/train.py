@@ -181,13 +181,25 @@ def train(config_path: str, use_lora: bool = False, resume_from_checkpoint: Opti
     
     # Setup training arguments
     training_config = config.get('training', {})
+    
+    # DEBUG: Check learning rate type
+    lr = training_config.get('learning_rate')
+    logger.info(f"[DEBUG] Learning rate from config: {lr} (type: {type(lr)})")
+    
+    # Ensure learning rate is a float
+    try:
+        learning_rate = float(lr)
+    except (ValueError, TypeError):
+        logger.error(f"Could not convert learning rate to float: {lr}")
+        raise
+        
     training_args = TrainingArguments(
         output_dir=training_config.get('output_dir', './models/checkpoints'),
         num_train_epochs=training_config.get('num_epochs', 100),
         per_device_train_batch_size=training_config.get('batch_size', 8),
         per_device_eval_batch_size=training_config.get('batch_size', 16),
         gradient_accumulation_steps=training_config.get('gradient_accumulation_steps', 4),
-        learning_rate=training_config.get('learning_rate', 2e-5),
+        learning_rate=learning_rate,  # Use validated learning rate
         weight_decay=training_config.get('weight_decay', 0.01),
         warmup_ratio=training_config.get('warmup_ratio', 0.05),
         max_grad_norm=training_config.get('max_grad_norm', 1.0),
@@ -201,7 +213,7 @@ def train(config_path: str, use_lora: bool = False, resume_from_checkpoint: Opti
         greater_is_better=training_config.get('greater_is_better', True),
         dataloader_num_workers=training_config.get('dataloader_num_workers', 4),
         remove_unused_columns=training_config.get('remove_unused_columns', False),
-        evaluation_strategy="steps",
+        eval_strategy="steps",
         save_strategy="steps",
         logging_dir=os.path.join(log_dir, 'tensorboard'),
         report_to=["tensorboard"],
