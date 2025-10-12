@@ -10,7 +10,8 @@ CONFIG_PATH="config/config.yaml"
 MODEL_PATH="models/checkpoints/final_model"
 OUTPUT_DIR=""
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
-BATCH_SIZE=8
+BATCH_SIZE=1
+CHUNK_SIZE=100
 
 # Parse command line arguments
 while [[ $# -gt 0 ]]; do
@@ -31,13 +32,18 @@ while [[ $# -gt 0 ]]; do
             BATCH_SIZE="$2"
             shift 2
             ;;
+        --chunk_size)
+            CHUNK_SIZE="$2"
+            shift 2
+            ;;
         --help)
             echo "Usage: $0 [OPTIONS]"
             echo "Options:"
             echo "  --model_path PATH    Path to trained model (default: models/checkpoints/final_model)"
             echo "  --config PATH        Path to configuration file (default: config/config.yaml)"
             echo "  --output_dir PATH    Output directory for evaluation results"
-            echo "  --batch_size INT     Batch size for evaluation (default: 8)"
+            echo "  --batch_size INT     Batch size for evaluation (default: 1)"
+            echo "  --chunk_size INT     Number of samples to process at once (default: 100)"
             echo "  --help               Show this help message"
             exit 0
             ;;
@@ -76,12 +82,13 @@ if [ ! -f "${CONFIG_PATH}" ]; then
     exit 1
 fi
 
-# Run evaluation
-python src/evaluate.py \
+# Run evaluation - use memory efficient version
+python src/evaluate_memory_efficient.py \
     --model_path "${MODEL_PATH}" \
     --config "${CONFIG_PATH}" \
     --output_dir "${OUTPUT_DIR}" \
-    --batch_size "${BATCH_SIZE}"
+    --batch_size "${BATCH_SIZE}" \
+    --chunk_size "${CHUNK_SIZE}"
 
 # Check if evaluation was successful
 if [ $? -eq 0 ]; then

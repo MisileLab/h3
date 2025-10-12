@@ -265,23 +265,21 @@ def evaluate_model(
         test_dataset = train_data.select(range(train_size, len(train_data)))
         logger.warning("No test/validation split found, using portion of train data")
     
-    # Preprocess test data
+    # Preprocess test data - memory efficient approach
     label2id = {"benign": 0, "jailbreak": 1}
     if 'type' in test_dataset.column_names:
         test_dataset = test_dataset.map(lambda x: {"label": label2id.get(x["type"], -1)})
-
-    processed_test = test_dataset.map(
-        lambda x: dataset_manager._preprocess_function(x, model.tokenizer),
-        batched=True,
-    )
     
-    # Get texts and labels for analysis
-    texts = list(processed_test['prompt'])
-    labels = processed_test['type'] if 'type' in processed_test.column_names else processed_test['label']
+    # Get raw texts and labels BEFORE tokenization to avoid memory blowup
+    texts = list(test_dataset['prompt'])
+    if 'type' in test_dataset.column_names:
+        raw_labels = test_dataset['type']
+    else:
+        raw_labels = test_dataset['label']
     
     # Convert labels to binary
     binary_labels = []
-    for label in labels:
+    for label in raw_labels:
         if isinstance(label, str):
             binary_labels.append(1 if label.lower() in ['jailbreak', 'unsafe', 'malicious', 'harmful'] else 0)
         else:
@@ -295,6 +293,10 @@ def evaluate_model(
         predictions = model.predict(batch_texts, return_probabilities=True)
         pred_labels.extend(predictions['predictions'])
         pred_probs.extend(predictions['unsafe_probabilities'])
+        
+        # Clear GPU memory after each batch
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
     
     # Calculate metrics
     accuracy = np.mean(np.array(pred_labels) == np.array(binary_labels))

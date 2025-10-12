@@ -185,14 +185,23 @@ class SegmentModel:
         probabilities = torch.softmax(logits, dim=-1)
         predictions = torch.argmax(probabilities, dim=-1)
         
+        # Move to CPU immediately to free GPU memory
+        predictions_cpu = predictions.cpu().numpy()
+        probabilities_cpu = probabilities.cpu().numpy()
+        
         results = {
-            'predictions': predictions.cpu().numpy().tolist(),
-            'labels': ['safe' if pred == 0 else 'unsafe' for pred in predictions.cpu().numpy()]
+            'predictions': predictions_cpu.tolist(),
+            'labels': ['safe' if pred == 0 else 'unsafe' for pred in predictions_cpu]
         }
         
         if return_probabilities:
-            results['probabilities'] = probabilities.cpu().numpy().tolist()
-            results['unsafe_probabilities'] = probabilities[:, 1].cpu().numpy().tolist()
+            results['probabilities'] = probabilities_cpu.tolist()
+            results['unsafe_probabilities'] = probabilities_cpu[:, 1].tolist()
+        
+        # Clean up GPU memory
+        del inputs, outputs, logits, probabilities, predictions
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
             
         return results
         

@@ -301,7 +301,6 @@ __pycache__/
 
 # Dataset files
 datasets/
-data/
 *.zip
 *.tar.gz
 *.tar.bz2
