@@ -483,9 +483,9 @@ def evaluate_model(
     logger.info("Evaluation completed!")
     logger.info(f"Accuracy: {accuracy:.4f}")
     logger.info(f"ROC AUC: {roc_auc:.4f}")
-    logger.info(f"Precision (Unsafe): {class_report['unsafe']['precision']:.4f}")
-    logger.info(f"Recall (Unsafe): {class_report['unsafe']['recall']:.4f}")
-    logger.info(f"F1-Score (Unsafe): {class_report['unsafe']['f1-score']:.4f}")
+    logger.info(f"Precision (Unsafe): {class_report['Unsafe']['precision']:.4f}")
+    logger.info(f"Recall (Unsafe): {class_report['Unsafe']['recall']:.4f}")
+    logger.info(f"F1-Score (Unsafe): {class_report['Unsafe']['f1-score']:.4f}")
     logger.info(f"False Positives: {false_predictions['false_positives'].__len__()}")
     logger.info(f"False Negatives: {false_predictions['false_negatives'].__len__()}")
     
