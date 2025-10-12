@@ -37,6 +37,7 @@
         (final: prev: {
           # https://github.com/NixOS/nixpkgs/issues/451227
           pamixer = stablep.pamixer;
+          ungoogled-chromium = stablep.ungoogled-chromium;
           dart = prev.dart.overrideAttrs (old: {
             installPhase = ''
               runHook preInstall
