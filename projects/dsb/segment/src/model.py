@@ -207,7 +207,7 @@ class SegmentModel:
             results['unsafe_probabilities'] = probabilities_cpu[:, 1].tolist()
         
         # Clean up GPU memory
-        del inputs, outputs, logits, probabilities, predictions
+        del inputs
         if torch.cuda.is_available():
             torch.cuda.empty_cache()
             
