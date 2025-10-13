@@ -142,36 +142,69 @@ def download_wildjailbreak_dataset(save_path: str = "data/raw"):
         
         # Process to unified format based on actual WildJailbreak structure
         processed_data = []
-        for _, row in combined_df.iterrows():
-            # Extract prompt text based on WildJailbreak structure
-            # Use adversarial prompt if available, otherwise use vanilla prompt
-            prompt_text = row.get('adversarial', '') if pd.notna(row.get('adversarial', '')) and str(row.get('adversarial', '')).strip() else row.get('vanilla', '')
+        empty_prompts = 0
+        total_rows = len(combined_df)
+        
+        for idx, row in combined_df.iterrows():
+            # Get the original data_type for processing
+            original_data_type = row.get('data_type', '')
+            data_type_str = str(original_data_type).lower()
             
-            # Determine label type based on data_type column
-            data_type = row.get('data_type', '')
+            # Determine which prompt to use based on data_type
+            if 'adversarial' in data_type_str:
+                # Use adversarial prompt for adversarial data types
+                prompt_text = row.get('adversarial', '')
+            elif 'vanilla' in data_type_str:
+                # Use vanilla prompt for vanilla data types
+                prompt_text = row.get('vanilla', '')
+            else:
+                # Fallback: try adversarial first, then vanilla
+                prompt_text = row.get('adversarial', '') or row.get('vanilla', '')
+            
+            # Ensure prompt_text is a string and handle missing values
+            if pd.isna(prompt_text) or not isinstance(prompt_text, str):
+                prompt_text = ''
+            else:
+                prompt_text = prompt_text.strip()
             
             # Map WildJailbreak data types to our binary classification
-            if pd.isna(data_type):
+            if pd.isna(original_data_type) or original_data_type == '':
                 unified_type = 'benign'  # Default for missing labels
-            elif str(data_type).lower() in ['adversarial_harmful', 'vanilla_harmful']:
+            elif data_type_str in ['adversarial_harmful', 'vanilla_harmful']:
                 unified_type = 'jailbreak'
-            elif str(data_type).lower() in ['adversarial_benign', 'vanilla_benign']:
+            elif data_type_str in ['adversarial_benign', 'vanilla_benign']:
                 unified_type = 'benign'
             else:
                 unified_type = 'benign'
-                logger.warning(f"Unknown data_type '{data_type}', defaulting to 'benign'")
+                logger.warning(f"Unknown data_type '{original_data_type}', defaulting to 'benign'")
             
             # Only include examples with non-empty prompts
-            if prompt_text and str(prompt_text).strip():
-                processed_data.append({
+            if prompt_text:
+                # Handle completion field
+                completion = row.get('completion', '')
+                if pd.isna(completion):
+                    completion = ''
+                
+                processed_item = {
                     'prompt': str(prompt_text),
                     'type': unified_type,
-                    'data_type': str(data_type) if pd.notna(data_type) else '',
-                    'tactics': row.get('tactics', []) if pd.notna(row.get('tactics', [])) else [],
-                    'completion': str(row.get('completion', '')) if pd.notna(row.get('completion', '')) else ''
-                })
+                    'data_type': str(original_data_type) if pd.notna(original_data_type) else '',
+                    'completion': str(completion)
+                }
+                processed_data.append(processed_item)
+            else:
+                empty_prompts += 1
+                
+
         
         logger.info(f"Processed {len(processed_data)} valid examples from WildJailbreak")
+        logger.info(f"Empty prompts: {empty_prompts} out of {total_rows} rows")
+        
+        logger.info(f"Processed {len(processed_data)} valid examples from WildJailbreak")
+        
+        # Check if we have any valid data
+        if len(processed_data) == 0:
+            raise ValueError("No valid examples found in WildJailbreak dataset. All prompts were empty or invalid.")
         
         # Create Dataset from processed data
         combined_dataset = Dataset.from_list(processed_data)
@@ -207,16 +240,22 @@ def download_wildjailbreak_dataset(save_path: str = "data/raw"):
             # Count labels
             if 'type' in split_data.column_names:
                 labels = split_data['type']
-                unique_labels, counts = np.unique(labels, return_counts=True)
-                label_counts = dict(zip(unique_labels, counts))
-                logger.info(f"  Label distribution: {label_counts}")
+                if len(labels) > 0:
+                    unique_labels, counts = np.unique(labels, return_counts=True)
+                    label_counts = dict(zip(unique_labels, counts))
+                    logger.info(f"  Label distribution: {label_counts}")
+                else:
+                    logger.warning(f"  No labels found in {split_name} split")
             
             # Count data types if available
             if 'data_type' in split_data.column_names:
                 data_types = split_data['data_type']
-                unique_types, type_counts = np.unique(data_types, return_counts=True)
-                type_counts = dict(zip(unique_types, type_counts))
-                logger.info(f"  Data type distribution: {type_counts}")
+                if len(data_types) > 0:
+                    unique_types, type_counts = np.unique(data_types, return_counts=True)
+                    type_counts = dict(zip(unique_types, type_counts))
+                    logger.info(f"  Data type distribution: {type_counts}")
+                else:
+                    logger.warning(f"  No data types found in {split_name} split")
         
         return wildjailbreak_dataset
         
@@ -429,9 +468,12 @@ def create_combined_dataset_with_wildjailbreak(
         # Count labels
         if 'type' in split_data.column_names:
             labels = split_data['type']
-            unique_labels, counts = np.unique(labels, return_counts=True)
-            label_counts = dict(zip(unique_labels, counts))
-            logger.info(f"  Label distribution: {label_counts}")
+            if len(labels) > 0:
+                unique_labels, counts = np.unique(labels, return_counts=True)
+                label_counts = dict(zip(unique_labels, counts))
+                logger.info(f"  Label distribution: {label_counts}")
+            else:
+                logger.warning(f"  No labels found in {split_name} split")
     
     return combined_dataset
 
