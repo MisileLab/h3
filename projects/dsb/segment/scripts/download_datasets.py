@@ -153,9 +153,9 @@ def download_wildjailbreak_dataset(save_path: str = "data/raw"):
             # Map to our binary classification
             if pd.isna(label_type):
                 unified_type = 'benign'  # Default for missing labels
-            elif str(label_type).lower() in ['harmful', 'jailbreak', 'adversarial_harmful', 'vanilla_harmful']:
+            elif str(label_type).lower() in ['harmful', 'jailbreak', 'adversarial_harmful', 'vanilla_harmful', '1', '1.0']:
                 unified_type = 'jailbreak'
-            elif str(label_type).lower() in ['benign', 'safe', 'adversarial_benign', 'vanilla_benign']:
+            elif str(label_type).lower() in ['benign', 'safe', 'adversarial_benign', 'vanilla_benign', '0', '0.0']:
                 unified_type = 'benign'
             else:
                 unified_type = 'benign'
