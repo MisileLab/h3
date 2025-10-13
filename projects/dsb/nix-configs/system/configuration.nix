@@ -92,8 +92,7 @@
       };
     };
     spiceUSBRedirection.enable = true;
-    # https://github.com/NixOS/nixpkgs/issues/449343
-    # virtualbox.host.enable = true;
+    virtualbox.host.enable = true;
   };
 
   nixpkgs.config.allowUnfree = true;

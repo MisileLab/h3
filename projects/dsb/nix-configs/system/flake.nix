@@ -22,7 +22,6 @@
         # {_module.args = {stablep = import stablep { system = "x86_64-linux"; };};}
         # ({ stablep, ... }: {
         #   nixpkgs.overlays = [(final: prev: {
-        #     # https://github.com/NixOS/nixpkgs/issues/449343
         #     virtualbox = stablep.virtualbox;
         #   })];
         # })
