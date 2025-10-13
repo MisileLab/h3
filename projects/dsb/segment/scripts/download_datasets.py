@@ -133,8 +133,9 @@ def download_wildjailbreak_dataset(save_path: str = "data/raw"):
         eval_data = load_dataset("allenai/wildjailbreak", "eval", delimiter="\t", keep_default_na=False)
         
         # Convert to pandas for easier processing
-        train_df = train_data.to_pandas()
-        eval_df = eval_data.to_pandas()
+        # DatasetDict doesn't have to_pandas(), need to access the train split first
+        train_df = train_data['train'].to_pandas()
+        eval_df = eval_data['train'].to_pandas()
         
         # Combine both datasets
         combined_df = pd.concat([train_df, eval_df], ignore_index=True)
