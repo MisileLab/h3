@@ -7,7 +7,7 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # stablep.url = "github:nixos/nixpkgs/nixos-unstable";
+    stablep.url = "github:nixos/nixpkgs/nixos-unstable";
     # lanzaboote = {
     #   url = "github:nix-community/lanzaboote/v0.4.1";
     #   inputs.nixpkgs.follows = "nixpkgs";
@@ -20,11 +20,12 @@
       modules = [
         ./configuration.nix
         # {_module.args = {stablep = import stablep { system = "x86_64-linux"; };};}
-        # ({ stablep, ... }: {
-        #   nixpkgs.overlays = [(final: prev: {
-        #     virtualbox = stablep.virtualbox;
-        #   })];
-        # })
+        ({ stablep, ... }: {
+          nixpkgs.overlays = [(final: prev: {
+            webkitgtk_4_1 = stablep.webkitgtk_4_1;
+            webkitgtk_6_0 = stablep.webkitgtk_6_0;
+          })];
+        })
         # lanzaboote.nixosModules.lanzaboote
         sops-nix.nixosModules.sops
         ({ pkgs, lib, ... }: {
