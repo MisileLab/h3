@@ -299,20 +299,6 @@ The evaluation includes detailed error analysis:
 - **False Negatives**: Unsafe prompts missed
 - **Edge Cases**: Boundary examples
 
-## 🚀 Performance
-
-### Benchmarks
-
-| Metric | LoRA Model | Full Model |
-|--------|------------|------------|
-| Accuracy | 0.89 | 0.91 |
-| Precision | 0.87 | 0.88 |
-| Recall | 0.92 | 0.95 |
-| F1-Score | 0.89 | 0.91 |
-| ROC-AUC | 0.94 | 0.96 |
-| Inference Time | 15ms | 18ms |
-| Model Size | 340MB | 1.3GB |
-
 ### Hardware Requirements
 
 #### Training
@@ -408,10 +394,6 @@ pytest tests/
 - LoRA and full fine-tuning support
 - Comprehensive evaluation suite
 - Production-ready inference API
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
