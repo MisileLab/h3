@@ -14,7 +14,7 @@
     # };
   };
 
-  outputs = { self, nixpkgs, sops-nix, /*stablep, *//*lanzaboote*/... }@_: {
+  outputs = { self, nixpkgs, sops-nix, stablep, /*lanzaboote*/... }@_: {
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
