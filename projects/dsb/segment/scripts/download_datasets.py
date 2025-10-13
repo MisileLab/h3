@@ -125,7 +125,7 @@ def download_wildjailbreak_dataset(save_path: str = "data/raw"):
         save_dir = Path(save_path)
         save_dir.mkdir(parents=True, exist_ok=True)
         
-        # Load the WildJailbreak training and evaluation sets using the user's code
+        # Load the WildJailbreak training and evaluation sets
         logger.info("Loading WildJailbreak training set...")
         train_data = load_dataset("allenai/wildjailbreak", "train", delimiter="\t", keep_default_na=False)
         
@@ -133,7 +133,6 @@ def download_wildjailbreak_dataset(save_path: str = "data/raw"):
         eval_data = load_dataset("allenai/wildjailbreak", "eval", delimiter="\t", keep_default_na=False)
         
         # Convert to pandas for easier processing
-        # DatasetDict doesn't have to_pandas(), need to access the train split first
         train_df = train_data['train'].to_pandas()
         eval_df = eval_data['train'].to_pandas()
         
@@ -141,30 +140,38 @@ def download_wildjailbreak_dataset(save_path: str = "data/raw"):
         combined_df = pd.concat([train_df, eval_df], ignore_index=True)
         logger.info(f"Combined dataset has {len(combined_df)} examples")
         
-        # Process to unified format
+        # Process to unified format based on actual WildJailbreak structure
         processed_data = []
         for _, row in combined_df.iterrows():
-            # Extract prompt text - try different column names
-            prompt_text = row.get('prompt', row.get('text', ''))
+            # Extract prompt text based on WildJailbreak structure
+            # Use adversarial prompt if available, otherwise use vanilla prompt
+            prompt_text = row.get('adversarial', '') if pd.notna(row.get('adversarial', '')) and str(row.get('adversarial', '')).strip() else row.get('vanilla', '')
             
-            # Determine label type
-            label_type = row.get('type', row.get('label', ''))
+            # Determine label type based on data_type column
+            data_type = row.get('data_type', '')
             
-            # Map to our binary classification
-            if pd.isna(label_type):
+            # Map WildJailbreak data types to our binary classification
+            if pd.isna(data_type):
                 unified_type = 'benign'  # Default for missing labels
-            elif str(label_type).lower() in ['harmful', 'jailbreak', 'adversarial_harmful', 'vanilla_harmful', '1', '1.0']:
+            elif str(data_type).lower() in ['adversarial_harmful', 'vanilla_harmful']:
                 unified_type = 'jailbreak'
-            elif str(label_type).lower() in ['benign', 'safe', 'adversarial_benign', 'vanilla_benign', '0', '0.0']:
+            elif str(data_type).lower() in ['adversarial_benign', 'vanilla_benign']:
                 unified_type = 'benign'
             else:
                 unified_type = 'benign'
-                logger.warning(f"Unknown label type '{label_type}', defaulting to 'benign'")
+                logger.warning(f"Unknown data_type '{data_type}', defaulting to 'benign'")
             
-            processed_data.append({
-                'prompt': str(prompt_text),
-                'type': unified_type
-            })
+            # Only include examples with non-empty prompts
+            if prompt_text and str(prompt_text).strip():
+                processed_data.append({
+                    'prompt': str(prompt_text),
+                    'type': unified_type,
+                    'data_type': str(data_type) if pd.notna(data_type) else '',
+                    'tactics': row.get('tactics', []) if pd.notna(row.get('tactics', [])) else [],
+                    'completion': str(row.get('completion', '')) if pd.notna(row.get('completion', '')) else ''
+                })
+        
+        logger.info(f"Processed {len(processed_data)} valid examples from WildJailbreak")
         
         # Create Dataset from processed data
         combined_dataset = Dataset.from_list(processed_data)
@@ -203,6 +210,13 @@ def download_wildjailbreak_dataset(save_path: str = "data/raw"):
                 unique_labels, counts = np.unique(labels, return_counts=True)
                 label_counts = dict(zip(unique_labels, counts))
                 logger.info(f"  Label distribution: {label_counts}")
+            
+            # Count data types if available
+            if 'data_type' in split_data.column_names:
+                data_types = split_data['data_type']
+                unique_types, type_counts = np.unique(data_types, return_counts=True)
+                type_counts = dict(zip(unique_types, type_counts))
+                logger.info(f"  Data type distribution: {type_counts}")
         
         return wildjailbreak_dataset
         
@@ -300,118 +314,6 @@ def download_additional_datasets(save_path: str = "data/raw") -> Dict[str, Any]:
         logger.warning(f"Could not create synthetic safe prompts: {e}")
     
     return additional_datasets
-
-
-def create_combined_dataset_with_wildjailbreak(
-    jailbreak_dataset: DatasetDict,
-    reasoning_dataset: DatasetDict,
-    wildjailbreak_dataset: DatasetDict,
-    additional_datasets: Dict[str, Any],
-    save_path: str = "data/processed"
-) -> DatasetDict:
-    """
-    Create a combined dataset from all sources
-    
-    Args:
-        jailbreak_dataset: Main jailbreak dataset
-        additional_datasets: Additional datasets
-        save_path: Path to save the combined dataset
-        
-    Returns:
-        Combined dataset
-    """
-    logger.info("Creating combined dataset...")
-    
-    save_dir = Path(save_path)
-    save_dir.mkdir(parents=True, exist_ok=True)
-    
-    # Start with the main dataset
-    combined_train = jailbreak_dataset['train']
-    combined_test = jailbreak_dataset.get('test', None)
-    
-    # Add reasoning dataset
-    if reasoning_dataset and 'train' in reasoning_dataset:
-        reasoning_train = reasoning_dataset['train']
-        
-        # Convert reasoning dataset to match format
-        reasoning_prompts = reasoning_train['prompt']
-        reasoning_types = reasoning_train['type']
-        
-        reasoning_df = Dataset.from_dict({
-            'prompt': reasoning_prompts,
-            'type': reasoning_types
-        })
-        
-        combined_train = concatenate_datasets([combined_train, reasoning_df])
-        logger.info(f"Added {len(reasoning_df)} reasoning examples")
-    
-    # Add toxicity data (as safe examples)
-    if 'toxicity' in additional_datasets:
-        toxicity_data = additional_datasets['toxicity']
-        
-        # Convert to jailbreak format
-        toxicity_prompts = toxicity_data['comment_text']
-        toxicity_labels = ['benign'] * len(toxicity_prompts)
-        
-        toxicity_df = Dataset.from_dict({
-            'prompt': toxicity_prompts,
-            'type': toxicity_labels
-        })
-        
-        combined_train = concatenate_datasets([combined_train, toxicity_df])
-        logger.info(f"Added {len(toxicity_df)} toxicity examples")
-    
-    # Add synthetic safe prompts
-    if 'synthetic_safe' in additional_datasets:
-        synthetic_data = additional_datasets['synthetic_safe']
-        combined_train = concatenate_datasets([combined_train, synthetic_data])
-        logger.info(f"Added {len(synthetic_data)} synthetic safe examples")
-    
-    # Shuffle the combined dataset
-    combined_train = combined_train.shuffle(seed=42)
-    
-    # Create train/val/test split if no test set exists
-    if combined_test is None:
-        # 80% train, 10% val, 10% test
-        total_size = len(combined_train)
-        train_size = int(0.8 * total_size)
-        val_size = int(0.1 * total_size)
-        
-        train_dataset = combined_train.select(range(train_size))
-        val_dataset = combined_train.select(range(train_size, train_size + val_size))
-        test_dataset = combined_train.select(range(train_size + val_size, total_size))
-        
-        combined_dataset = DatasetDict({
-            'train': train_dataset,
-            'validation': val_dataset,
-            'test': test_dataset
-        })
-    else:
-        # Use smaller validation set (5% of train data)
-        val_size = min(200, int(0.1 * len(combined_train)))
-        combined_dataset = DatasetDict({
-            'train': combined_train,
-            'validation': combined_train.select(range(val_size)),
-            'test': combined_test
-        })
-    
-    # Save combined dataset
-    combined_dataset.save_to_disk(str(save_dir / "combined_dataset"))
-    
-    logger.info(f"Combined dataset saved to: {save_dir / 'combined_dataset'}")
-    
-    # Print final statistics
-    for split_name, split_data in combined_dataset.items():
-        logger.info(f"{split_name}: {len(split_data)} examples")
-        
-        # Count labels
-        if 'type' in split_data.column_names:
-            labels = split_data['type']
-            unique_labels, counts = np.unique(labels, return_counts=True)
-            label_counts = dict(zip(unique_labels, counts))
-            logger.info(f"  Label distribution: {label_counts}")
-    
-    return combined_dataset
 
 
 def create_combined_dataset_with_wildjailbreak(
