@@ -37,6 +37,9 @@
         (final: prev: {
           telegram-desktop = stablep.telegram-desktop;
           ungoogled-chromium = stablep.ungoogled-chromium;
+          vala-language-server = stablep.vala-language-server;
+          webkitgtk_6_0 = stablep.webkitgtk_6_0;
+          webkitgtk_4_1 = stablep.webkitgtk_4_1;
           dart = prev.dart.overrideAttrs (old: {
             installPhase = ''
               runHook preInstall
