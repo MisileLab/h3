@@ -91,10 +91,14 @@ class CustomEarlyStoppingCallback(EarlyStoppingCallback):
         Check for early stopping condition
         """
         metric_to_check = args.metric_for_best_model
+        # Try both with and without 'eval_' prefix
         current_metric = logs.get(metric_to_check) if logs else None
+        if current_metric is None:
+            current_metric = logs.get(f"eval_{metric_to_check}") if logs else None
         
         if current_metric is None:
-            logger.warning(f"Metric {metric_to_check} not found in evaluation logs")
+            logger.warning(f"Metric {metric_to_check} (or eval_{metric_to_check}) not found in evaluation logs")
+            logger.info(f"Available metrics: {list(logs.keys()) if logs else 'None'}")
             return
             
         # Check if we should save the model
