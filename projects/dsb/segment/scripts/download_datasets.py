@@ -19,6 +19,8 @@ sys.path.append(str(project_root))
 
 try:
     from datasets import load_dataset, DatasetDict, Dataset, concatenate_datasets
+    from datasets.arrow_dataset import Dataset as ArrowDataset
+    from datasets.dataset_dict import DatasetDict as ArrowDatasetDict
     import pandas as pd
     import numpy as np
 except ImportError as e:
@@ -103,6 +105,108 @@ def download_jailbreak_reasoning_dataset(save_path: str = "data/raw") -> Dataset
         
     except Exception as e:
         logger.error(f"Failed to download jailbreak reasoning dataset: {e}")
+        raise
+
+
+def download_wildjailbreak_dataset(save_path: str = "data/raw"):
+    """
+    Download the WildJailbreak dataset and combine train/eval splits
+    
+    Args:
+        save_path: Path to save the dataset
+        
+    Returns:
+        Downloaded and processed dataset with train/validation/test splits
+    """
+    logger.info("Downloading WildJailbreak dataset...")
+    
+    try:
+        # Create save directory
+        save_dir = Path(save_path)
+        save_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Load the WildJailbreak training and evaluation sets using the user's code
+        logger.info("Loading WildJailbreak training set...")
+        train_data = load_dataset("allenai/wildjailbreak", "train", delimiter="\t", keep_default_na=False)
+        
+        logger.info("Loading WildJailbreak evaluation set...")
+        eval_data = load_dataset("allenai/wildjailbreak", "eval", delimiter="\t", keep_default_na=False)
+        
+        # Convert to pandas for easier processing
+        train_df = train_data.to_pandas()
+        eval_df = eval_data.to_pandas()
+        
+        # Combine both datasets
+        combined_df = pd.concat([train_df, eval_df], ignore_index=True)
+        logger.info(f"Combined dataset has {len(combined_df)} examples")
+        
+        # Process to unified format
+        processed_data = []
+        for _, row in combined_df.iterrows():
+            # Extract prompt text - try different column names
+            prompt_text = row.get('prompt', row.get('text', ''))
+            
+            # Determine label type
+            label_type = row.get('type', row.get('label', ''))
+            
+            # Map to our binary classification
+            if pd.isna(label_type):
+                unified_type = 'benign'  # Default for missing labels
+            elif str(label_type).lower() in ['harmful', 'jailbreak', 'adversarial_harmful', 'vanilla_harmful']:
+                unified_type = 'jailbreak'
+            elif str(label_type).lower() in ['benign', 'safe', 'adversarial_benign', 'vanilla_benign']:
+                unified_type = 'benign'
+            else:
+                unified_type = 'benign'
+                logger.warning(f"Unknown label type '{label_type}', defaulting to 'benign'")
+            
+            processed_data.append({
+                'prompt': str(prompt_text),
+                'type': unified_type
+            })
+        
+        # Create Dataset from processed data
+        combined_dataset = Dataset.from_list(processed_data)
+        
+        # Shuffle the combined dataset
+        combined_dataset = combined_dataset.shuffle(seed=42)
+        
+        # Create train/validation/test splits (80/10/10)
+        total_size = len(combined_dataset)
+        train_size = int(0.8 * total_size)
+        val_size = int(0.1 * total_size)
+        
+        train_split = combined_dataset.select(range(train_size))
+        val_split = combined_dataset.select(range(train_size, train_size + val_size))
+        test_split = combined_dataset.select(range(train_size + val_size, total_size))
+        
+        # Create DatasetDict
+        wildjailbreak_dataset = DatasetDict({
+            'train': train_split,
+            'validation': val_split,
+            'test': test_split
+        })
+        
+        # Save to disk
+        wildjailbreak_dataset.save_to_disk(str(save_dir / "wildjailbreak"))
+        
+        logger.info(f"WildJailbreak dataset downloaded and saved to: {save_dir / 'wildjailbreak'}")
+        
+        # Print dataset info and label distribution
+        for split_name, split_data in wildjailbreak_dataset.items():
+            logger.info(f"{split_name}: {len(split_data)} examples")
+            
+            # Count labels
+            if 'type' in split_data.column_names:
+                labels = split_data['type']
+                unique_labels, counts = np.unique(labels, return_counts=True)
+                label_counts = dict(zip(unique_labels, counts))
+                logger.info(f"  Label distribution: {label_counts}")
+        
+        return wildjailbreak_dataset
+        
+    except Exception as e:
+        logger.error(f"Failed to download WildJailbreak dataset: {e}")
         raise
 
 
@@ -197,9 +301,10 @@ def download_additional_datasets(save_path: str = "data/raw") -> Dict[str, Any]:
     return additional_datasets
 
 
-def create_combined_dataset(
+def create_combined_dataset_with_wildjailbreak(
     jailbreak_dataset: DatasetDict,
     reasoning_dataset: DatasetDict,
+    wildjailbreak_dataset: DatasetDict,
     additional_datasets: Dict[str, Any],
     save_path: str = "data/processed"
 ) -> DatasetDict:
@@ -308,6 +413,126 @@ def create_combined_dataset(
     return combined_dataset
 
 
+def create_combined_dataset_with_wildjailbreak(
+    jailbreak_dataset: DatasetDict,
+    reasoning_dataset: DatasetDict,
+    wildjailbreak_dataset: DatasetDict,
+    additional_datasets: Dict[str, Any],
+    save_path: str = "data/processed"
+) -> DatasetDict:
+    """
+    Create a combined dataset from all sources including WildJailbreak
+    
+    Args:
+        jailbreak_dataset: Main jailbreak dataset
+        reasoning_dataset: Reasoning dataset
+        wildjailbreak_dataset: WildJailbreak dataset
+        additional_datasets: Additional datasets
+        save_path: Path to save the combined dataset
+        
+    Returns:
+        Combined dataset
+    """
+    logger.info("Creating combined dataset with WildJailbreak...")
+    
+    save_dir = Path(save_path)
+    save_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Start with the main dataset
+    combined_train = jailbreak_dataset['train']
+    combined_test = jailbreak_dataset.get('test', None)
+    
+    # Add reasoning dataset
+    if reasoning_dataset and 'train' in reasoning_dataset:
+        reasoning_train = reasoning_dataset['train']
+        
+        # Convert reasoning dataset to match format
+        reasoning_prompts = reasoning_train['prompt']
+        reasoning_types = reasoning_train['type']
+        
+        reasoning_df = Dataset.from_dict({
+            'prompt': reasoning_prompts,
+            'type': reasoning_types
+        })
+        
+        combined_train = concatenate_datasets([combined_train, reasoning_df])
+        logger.info(f"Added {len(reasoning_df)} reasoning examples")
+    
+    # Add WildJailbreak dataset
+    if wildjailbreak_dataset and 'train' in wildjailbreak_dataset:
+        wildjailbreak_train = wildjailbreak_dataset['train']
+        combined_train = concatenate_datasets([combined_train, wildjailbreak_train])
+        logger.info(f"Added {len(wildjailbreak_train)} WildJailbreak examples")
+    
+    # Add toxicity data (as safe examples)
+    if 'toxicity' in additional_datasets:
+        toxicity_data = additional_datasets['toxicity']
+        
+        # Convert to jailbreak format
+        toxicity_prompts = toxicity_data['comment_text']
+        toxicity_labels = ['benign'] * len(toxicity_prompts)
+        
+        toxicity_df = Dataset.from_dict({
+            'prompt': toxicity_prompts,
+            'type': toxicity_labels
+        })
+        
+        combined_train = concatenate_datasets([combined_train, toxicity_df])
+        logger.info(f"Added {len(toxicity_df)} toxicity examples")
+    
+    # Add synthetic safe prompts
+    if 'synthetic_safe' in additional_datasets:
+        synthetic_data = additional_datasets['synthetic_safe']
+        combined_train = concatenate_datasets([combined_train, synthetic_data])
+        logger.info(f"Added {len(synthetic_data)} synthetic safe examples")
+    
+    # Shuffle the combined dataset
+    combined_train = combined_train.shuffle(seed=42)
+    
+    # Create train/val/test split if no test set exists
+    if combined_test is None:
+        # 80% train, 10% val, 10% test
+        total_size = len(combined_train)
+        train_size = int(0.8 * total_size)
+        val_size = int(0.1 * total_size)
+        
+        train_dataset = combined_train.select(range(train_size))
+        val_dataset = combined_train.select(range(train_size, train_size + val_size))
+        test_dataset = combined_train.select(range(train_size + val_size, total_size))
+        
+        combined_dataset = DatasetDict({
+            'train': train_dataset,
+            'validation': val_dataset,
+            'test': test_dataset
+        })
+    else:
+        # Use smaller validation set (5% of train data)
+        val_size = min(200, int(0.1 * len(combined_train)))
+        combined_dataset = DatasetDict({
+            'train': combined_train,
+            'validation': combined_train.select(range(val_size)),
+            'test': combined_test
+        })
+    
+    # Save combined dataset
+    combined_dataset.save_to_disk(str(save_dir / "combined_dataset"))
+    
+    logger.info(f"Combined dataset saved to: {save_dir / 'combined_dataset'}")
+    
+    # Print final statistics
+    for split_name, split_data in combined_dataset.items():
+        logger.info(f"{split_name}: {len(split_data)} examples")
+        
+        # Count labels
+        if 'type' in split_data.column_names:
+            labels = split_data['type']
+            unique_labels, counts = np.unique(labels, return_counts=True)
+            label_counts = dict(zip(unique_labels, counts))
+            logger.info(f"  Label distribution: {label_counts}")
+    
+    return combined_dataset
+
+
 def main():
     """Main function"""
     parser = argparse.ArgumentParser(description="Download datasets for jailbreak detection")
@@ -329,6 +554,11 @@ def main():
         help="Skip downloading additional datasets"
     )
     parser.add_argument(
+        "--wildjailbreak_only", 
+        action="store_true",
+        help="Only download WildJailbreak dataset"
+    )
+    parser.add_argument(
         "--verbose", 
         action="store_true",
         help="Enable verbose logging"
@@ -342,28 +572,44 @@ def main():
     logger.info("Starting dataset download process...")
     
     try:
-        # Download main dataset
-        jailbreak_dataset = download_jailbreak_dataset(args.raw_path)
-        
-        # Download reasoning dataset
-        reasoning_dataset = download_jailbreak_reasoning_dataset(args.raw_path)
-        
-        # Download additional datasets
-        additional_datasets = {}
-        if not args.skip_additional:
-            additional_datasets = download_additional_datasets(args.raw_path)
-        
-        # Create combined dataset
-        combined_dataset = create_combined_dataset(
-            jailbreak_dataset,
-            reasoning_dataset,
-            additional_datasets, 
-            args.processed_path
-        )
-        
-        logger.info("Dataset download process completed successfully!")
-        logger.info(f"Raw datasets saved to: {args.raw_path}")
-        logger.info(f"Processed dataset saved to: {args.processed_path}")
+        if args.wildjailbreak_only:
+            # Only download WildJailbreak dataset
+            logger.info("Downloading only WildJailbreak dataset...")
+            wildjailbreak_dataset = download_wildjailbreak_dataset(args.raw_path)
+            
+            # Save as the combined dataset directly
+            wildjailbreak_dataset.save_to_disk(str(Path(args.processed_path) / "combined_dataset"))
+            
+            logger.info("WildJailbreak dataset download completed successfully!")
+            logger.info(f"Dataset saved to: {args.processed_path}")
+        else:
+            # Download main dataset
+            jailbreak_dataset = download_jailbreak_dataset(args.raw_path)
+            
+            # Download reasoning dataset
+            reasoning_dataset = download_jailbreak_reasoning_dataset(args.raw_path)
+            
+            # Download WildJailbreak dataset
+            logger.info("Downloading WildJailbreak dataset...")
+            wildjailbreak_dataset = download_wildjailbreak_dataset(args.raw_path)
+            
+            # Download additional datasets
+            additional_datasets = {}
+            if not args.skip_additional:
+                additional_datasets = download_additional_datasets(args.raw_path)
+            
+            # Create combined dataset with all datasets including WildJailbreak
+            combined_dataset = create_combined_dataset_with_wildjailbreak(
+                jailbreak_dataset,
+                reasoning_dataset,
+                wildjailbreak_dataset,
+                additional_datasets, 
+                args.processed_path
+            )
+            
+            logger.info("Dataset download process completed successfully!")
+            logger.info(f"Raw datasets saved to: {args.raw_path}")
+            logger.info(f"Processed dataset saved to: {args.processed_path}")
         
     except Exception as e:
         logger.error(f"Dataset download failed: {e}")
