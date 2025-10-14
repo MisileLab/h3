@@ -15,7 +15,7 @@ dependencies = [
   "pdf2image==1.17.0",
   "pillow==11.3.0",
   "pypdf==6.1.1",
-  "pydantic==2.12.1",
+  "pydantic==2.12.2",
   "rich==14.2.0",
   "surya-ocr==0.17.0",
   "tabula-py[jpype]==2.10.0",
