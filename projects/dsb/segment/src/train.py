@@ -67,13 +67,18 @@ def compute_metrics(eval_pred: EvalPrediction) -> Dict[str, float]:
     except:
         roc_auc = 0.0
     
-    return {
+    metrics = {
         'accuracy': accuracy,
         'precision': precision,
         'recall': recall,
         'f1': f1,
         'roc_auc': roc_auc
     }
+    
+    # Debug logging
+    logger.debug(f"[DEBUG] Computed metrics: {metrics}")
+    
+    return metrics
 
 
 class CustomEarlyStoppingCallback(EarlyStoppingCallback):
@@ -90,15 +95,39 @@ class CustomEarlyStoppingCallback(EarlyStoppingCallback):
         """
         Check for early stopping condition
         """
+        # Debug logging
+        logger.debug(f"[DEBUG] Early stopping callback - logs: {logs}")
+        logger.debug(f"[DEBUG] State log history: {state.log_history[-5:] if state.log_history else 'None'}")
+        
         metric_to_check = args.metric_for_best_model
-        # Try both with and without 'eval_' prefix
-        current_metric = logs.get(metric_to_check) if logs else None
-        if current_metric is None:
-            current_metric = logs.get(f"eval_{metric_to_check}") if logs else None
+        current_metric = None
+        
+        # Try to get metric from logs first
+        if logs:
+            current_metric = logs.get(metric_to_check)
+            if current_metric is None:
+                current_metric = logs.get(f"eval_{metric_to_check}")
+            if current_metric is None and metric_to_check == "loss":
+                current_metric = logs.get("eval_loss")
+        
+        # If not found in logs, try to get from the most recent evaluation in state.log_history
+        if current_metric is None and state.log_history:
+            # Get the most recent evaluation log
+            for log in reversed(state.log_history):
+                if any(key in log for key in [metric_to_check, f"eval_{metric_to_check}", "eval_loss"]):
+                    current_metric = log.get(metric_to_check) or log.get(f"eval_{metric_to_check}") or log.get("eval_loss")
+                    logger.debug(f"[DEBUG] Found metric in log_history: {current_metric}")
+                    break
         
         if current_metric is None:
-            logger.warning(f"Metric {metric_to_check} (or eval_{metric_to_check}) not found in evaluation logs")
-            logger.info(f"Available metrics: {list(logs.keys()) if logs else 'None'}")
+            logger.warning(f"Metric {metric_to_check} not found in evaluation logs")
+            if logs:
+                logger.info(f"Available in logs: {list(logs.keys())}")
+            elif state.log_history:
+                last_log = state.log_history[-1]
+                logger.info(f"Available in last log_history: {list(last_log.keys())}")
+            else:
+                logger.info("No logs available")
             return
             
         # Check if we should save the model
@@ -213,7 +242,7 @@ def train(config_path: str, use_lora: bool = False, resume_from_checkpoint: Opti
         eval_steps=training_config.get('eval_steps', 500),
         save_total_limit=training_config.get('save_total_limit', 3),
         load_best_model_at_end=training_config.get('load_best_model_at_end', True),
-        metric_for_best_model=training_config.get('metric_for_best_model', 'f1'),
+        metric_for_best_model=training_config.get('metric_for_best_model', 'accuracy'),
         greater_is_better=training_config.get('greater_is_better', True),
         dataloader_num_workers=training_config.get('dataloader_num_workers', 4),
         remove_unused_columns=training_config.get('remove_unused_columns', False),
@@ -222,6 +251,9 @@ def train(config_path: str, use_lora: bool = False, resume_from_checkpoint: Opti
         logging_dir=os.path.join(log_dir, 'tensorboard'),
         report_to=["tensorboard"],
         seed=config.get('data', {}).get('seed', 42),
+        # Ensure evaluation metrics are logged
+        evaluation_strategy="steps",
+        logging_strategy="steps",
     )
     
     # Setup callbacks
@@ -241,6 +273,8 @@ def train(config_path: str, use_lora: bool = False, resume_from_checkpoint: Opti
         eval_dataset=eval_dataset,
         compute_metrics=compute_metrics,
         callbacks=callbacks,
+        # Ensure callbacks receive evaluation logs
+        preprocess_logits_for_metrics=None,
     )
     
     # Resume from checkpoint if specified
