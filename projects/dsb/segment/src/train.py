@@ -251,8 +251,6 @@ def train(config_path: str, use_lora: bool = False, resume_from_checkpoint: Opti
         logging_dir=os.path.join(log_dir, 'tensorboard'),
         report_to=["tensorboard"],
         seed=config.get('data', {}).get('seed', 42),
-        # Ensure evaluation metrics are logged
-        evaluation_strategy="steps",
         logging_strategy="steps",
     )
     
