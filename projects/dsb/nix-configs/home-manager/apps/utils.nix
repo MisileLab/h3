@@ -1,12 +1,12 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
     # file
-    axel wget file wgetpaste convmv termscp ouch rhash duperemove
+    axel wget file wgetpaste convmv ouch duperemove
     fd cloc
 
     # some fancy cli tools
     fastfetch onefetch delta genact glow navi nix-output-monitor
-    nix-forecast repgrep
+    repgrep
 
     # process utils
     killall screen

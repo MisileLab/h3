@@ -8,9 +8,9 @@
       neovim wakatime
 
       # Development
-      gel d2 pre-commit just mongosh tabnine
-      snyk radicle-node infisical poop binsider
-      typst act gh opencode godot process-compose
+      gel d2 pre-commit just tabnine
+      snyk radicle-node infisical poop
+      gh opencode process-compose
       netlify-cli cursor-cli tree-sitter amp-cli
 
       # Language tools

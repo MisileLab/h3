@@ -18,10 +18,7 @@
       daemon.enable = true;
       updater.enable = true;
     };
-    tor = {
-      enable = true;
-      client.enable = true;
-    };
+    tor.client.enable = true;
   };
 
   networking = {

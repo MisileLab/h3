@@ -23,7 +23,8 @@ in
         sbctl bluez cryptsetup smartmontools borgbackup rclone pulsemixer
         portablemc miniserve openssl transmission_4 attic-client
         yt-dlp magic-wormhole ansifilter b3sum git-crypt inxi age sops
-        distrobox vulnix zap zoom-us
+        distrobox nnn cht-sh httpie curlie silver-searcher
+        mcfly choose sd duf
         (writeScript "manual" ''
           ${pkgs.glow}/bin/glow -p ~/.config/home-manager/manual.md
         '')
@@ -115,9 +116,6 @@ if $env.TERM == "linux" {
 }
         '';
       };
-    };
-    programs = {
-      fabric-ai.enable = true;
     };
     services = {
       pueue.enable = true;
