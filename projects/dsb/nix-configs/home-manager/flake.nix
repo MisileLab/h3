@@ -36,7 +36,9 @@
       overlays = [
         (final: prev: {
           zig = stablep.zig;
+          zls = stablep.zls;
           telegram-desktop = stablep.telegram-desktop;
+          noto-fonts-color-emoji = stablep.noto-fonts-color-emoji;
           dart = prev.dart.overrideAttrs (old: {
             installPhase = ''
               runHook preInstall
