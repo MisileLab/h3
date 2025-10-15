@@ -24,7 +24,7 @@ in
         portablemc miniserve openssl transmission_4 attic-client
         yt-dlp magic-wormhole ansifilter b3sum git-crypt inxi age sops
         distrobox nnn cht-sh httpie curlie silver-searcher
-        mcfly choose sd duf
+        mcfly choose sd duf jrnl
         (writeScript "manual" ''
           ${pkgs.glow}/bin/glow -p ~/.config/home-manager/manual.md
         '')
@@ -50,18 +50,6 @@ in
       };
     };
     programs = {
-      jrnl = {
-        enable = true;
-        config = {
-          journals = {
-            default = {
-              file = "/home/misile/journals.txt";
-              editor = "nvim";
-              encrypted = false;
-            };
-          };
-        };
-      };
       nix-search-tv = {
         enable = true;
         enableTelevisionIntegration = true;
