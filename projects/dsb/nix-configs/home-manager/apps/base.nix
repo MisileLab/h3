@@ -50,7 +50,18 @@ in
       };
     };
     programs = {
-      jrnl.enable = true;
+      jrnl = {
+        enable = true;
+        config = {
+          journals = {
+            default = {
+              file = "/home/misile/journals.txt";
+              editor = "nvim";
+              encrypted = false;
+            };
+          };
+        };
+      };
       nix-search-tv = {
         enable = true;
         enableTelevisionIntegration = true;
