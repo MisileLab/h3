@@ -35,6 +35,7 @@
       system = "x86_64-linux"; # replace with your system
       overlays = [
         (final: prev: {
+          ngtcp2 = stablep.ngtcp2;
           noto-fonts-color-emoji = stablep.noto-fonts-color-emoji;
           dart = prev.dart.overrideAttrs (old: {
             installPhase = ''
