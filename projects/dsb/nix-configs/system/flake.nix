@@ -23,6 +23,8 @@
         ({ stablep, ... }: {
           nixpkgs.overlays = [(final: prev: {
             mesa = stablep.mesa;
+            ffmpeg = stablep.ffmpeg;
+            ffmpeg-headless = stablep.ffmpeg-headless;
           })];
         })
         # lanzaboote.nixosModules.lanzaboote
