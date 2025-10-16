@@ -25,6 +25,7 @@
             mesa = stablep.mesa;
             ffmpeg = stablep.ffmpeg;
             ffmpeg-headless = stablep.ffmpeg-headless;
+            pipewire = stablep.pipewire;
           })];
         })
         # lanzaboote.nixosModules.lanzaboote
