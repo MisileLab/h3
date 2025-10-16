@@ -35,6 +35,7 @@
       system = "x86_64-linux"; # replace with your system
       overlays = [
         (final: prev: {
+          appimage-run = stablep.appimage-run;
           simplex-chat-desktop = stablep.simplex-chat-desktop;
           noto-fonts-color-emoji = stablep.noto-fonts-color-emoji;
           dart = prev.dart.overrideAttrs (old: {
