@@ -14,6 +14,7 @@ let
     (cwl "figma" "${figma-linux}/bin/figma-linux")
     (cwl "discord" "${vesktop}/bin/vesktop")
     (cwl "vscode" "${vscodium}/bin/codium")
+    (cwl "cursor-ide" "${code-cursor}/bin/cursor")
     # (cwl "unityhub" "${unityhub}/bin/unityhub")
   ];
   chromiums = with pkgs; [
