@@ -17,9 +17,9 @@ import Base from "../components/base.astro"
 
       function displayProject(project: string) {
         const p = projects[project];
-        queryId("description").innerText = p.description;
-        queryId("stacks").innerText = p.stacks.join(", ");
-        (queryId("clicktogo") as HTMLAnchorElement).innerText = "View Source";
+        queryId("description").innerText = `description: ${p.description}`;
+        queryId("stacks").innerText = `stacks: ${p.stacks.join(", ")}`;
+        (queryId("clicktogo") as HTMLAnchorElement).innerText = "click to go to source";
         (queryId("clicktogo") as HTMLAnchorElement).href = p.url;
       }
 
@@ -100,62 +100,12 @@ import Base from "../components/base.astro"
       displayProject(keys[0])
     </script>
   </Fragment>
-  <!-- Navigation Header -->
-  <header class="border-b border-gray-800">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between items-center h-16">
-        <div class="flex items-center space-x-8">
-          <a href="/" class="text-xl font-bold text-white">Misile</a>
-          <nav class="hidden md:flex space-x-6">
-            <a href="/projects" class="text-white">Projects</a>
-            <a href="/en/blog" class="text-gray-300 hover:text-white transition-colors">Blog</a>
-            <a href="/contact" class="text-gray-300 hover:text-white transition-colors">Contact</a>
-          </nav>
-        </div>
-        <div class="flex items-center space-x-4">
-          <a href="https://mail.misile.xyz" class="text-gray-300 hover:text-white transition-colors">Subscribe</a>
-          <div class="flex items-center space-x-2 text-gray-400 cursor-pointer" id="crypto">
-            <span>Donate</span>
-            <span class="bg-gray-900 text-gray-300 px-2 py-1 rounded text-sm">XMR</span>
-          </div>
-        </div>
-      </div>
+  <div class="w-full h-full flex flex-row">
+    <div class="w-full h-screen justify-center items-center flex flex-col text-indigo-200 text-xl lg:text-2xl md:text-4xl gap-y-2" id="mobile-div">
+      <select id="select" class="bg-gray-950 text-indigo-100"></select>
+      <p id="description" />
+      <p id="stacks" />
+      <a id="clicktogo" class="text-indigo-500" />
     </div>
-  </header>
-
-  <!-- Main Content -->
-  <main class="min-h-screen px-4 py-12">
-    <div class="max-w-6xl mx-auto">
-      <h1 class="text-4xl md:text-5xl font-bold text-white text-center mb-12">Projects</h1>
-      
-      <div class="flex flex-col items-center justify-center gap-8">
-        <div class="w-full max-w-2xl">
-          <select id="select" class="w-full bg-gray-900 text-gray-300 border border-gray-700 rounded-lg px-4 py-3 text-lg focus:outline-none focus:border-gray-600"></select>
-        </div>
-        
-        <div class="w-full max-w-2xl bg-gray-900 border border-gray-800 rounded-lg p-8">
-          <div class="space-y-4">
-            <div>
-              <h3 class="text-lg font-semibold text-gray-400 mb-2">Description</h3>
-              <p id="description" class="text-white text-lg"></p>
-            </div>
-            <div>
-              <h3 class="text-lg font-semibold text-gray-400 mb-2">Tech Stack</h3>
-              <p id="stacks" class="text-white text-lg"></p>
-            </div>
-            <div>
-              <a id="clicktogo" class="inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors" target="_blank">
-                <span>View Source</span>
-                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                </svg>
-              </a>
-            </div>
-          </div>
-        </div>
-        
-        <div id="mobile-div" class="text-gray-400 text-sm"></div>
-      </div>
-    </div>
-  </main>
+  </div>
 </Base>
