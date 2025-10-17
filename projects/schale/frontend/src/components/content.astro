@@ -17,53 +17,89 @@ if (import.meta.env.PROD && date === 0) {throw Error("It is just draft.")}
   <Fragment slot="head">
     <title>{title}</title>
   </Fragment>
-  <div class="mx-2 md:mx-[20%] my-4">
-    <div class="flex flex-col border-b-2 border-solid border-indigo-600 text-indigo-200">
-      <h1 class="text-4xl md:text-5xl text-indigo-100">{title}</h1>
-      <p class="text-gray text-3xl md:text-4xl">{description}</p>
-      <p class="text-gray text-2xl md:text-3xl">{dayjs.unix(date).toString().replace('GMT', 'UTC')}</p>
-      {isnews && <p class="text-gray text-xl md:text-2xl">Summarized with gpt4o-mini</p>}
+  <!-- Navigation Header -->
+  <header class="border-b border-gray-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center space-x-8">
+          <a href="/" class="text-xl font-bold text-white">Misile</a>
+          <nav class="hidden md:flex space-x-6">
+            <a href="/projects" class="text-gray-300 hover:text-white transition-colors">Projects</a>
+            <a href="/en/blog" class="text-white">Blog</a>
+            <a href="/contact" class="text-gray-300 hover:text-white transition-colors">Contact</a>
+          </nav>
+        </div>
+        <div class="flex items-center space-x-4">
+          <a href="https://mail.misile.xyz" class="text-gray-300 hover:text-white transition-colors">Subscribe</a>
+          <div class="flex items-center space-x-2 text-gray-400 cursor-pointer" id="crypto">
+            <span>Donate</span>
+            <span class="bg-gray-900 text-gray-300 px-2 py-1 rounded text-sm">XMR</span>
+          </div>
+        </div>
+      </div>
     </div>
-    <slot />
-  </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="min-h-screen px-4 py-12">
+    <div class="max-w-4xl mx-auto">
+      <article class="bg-gray-900 border border-gray-800 rounded-lg p-8">
+        <div class="border-b border-gray-800 pb-6 mb-8">
+          <h1 class="text-3xl md:text-4xl font-bold text-white mb-4">{title}</h1>
+          <p class="text-xl text-gray-400 mb-2">{description}</p>
+          <p class="text-lg text-gray-500">{dayjs.unix(date).toString().replace('GMT', 'UTC')}</p>
+          {isnews && <p class="text-sm text-gray-500 mt-2">Summarized with gpt4o-mini</p>}
+        </div>
+        <div class="prose prose-invert max-w-none">
+          <slot />
+        </div>
+      </article>
+    </div>
+  </main>
   <style is:global>
     @reference "tailwindcss/theme";
 
-    h1 {
-      margin-top: 1rem;
+    .prose h1 {
+      @apply text-2xl md:text-3xl font-bold text-white mb-4 mt-8;
     }
-    h1, h1 > strong > *, h1 > span {
-      @apply text-3xl md:text-4xl;
+    .prose h2 {
+      @apply text-xl md:text-2xl font-bold text-white mb-3 mt-6;
     }
-    h2, h2 > strong > *, h2 > span {
-      @apply text-2xl md:text-3xl;
+    .prose h3 {
+      @apply text-lg md:text-xl font-bold text-white mb-2 mt-4;
     }
-    h3 {
-      @apply text-xl md:text-2xl;
+    .prose p {
+      @apply text-gray-300 mb-4 leading-relaxed;
     }
-    * {
-      @apply md:text-xl;
+    .prose a {
+      @apply text-blue-400 hover:text-blue-300 transition-colors;
     }
-    a {
-      @apply text-indigo-400;
+    .prose ul {
+      @apply list-disc pl-6 mb-4 text-gray-300;
     }
-    ul {
-      @apply list-disc pl-6 md:pl-0;
+    .prose ol {
+      @apply list-decimal pl-6 mb-4 text-gray-300;
     }
-    ol {
-      @apply list-decimal pl-6 md:pl-0;
+    .prose li {
+      @apply mb-2;
     }
-    li > ul {
-      @apply pl-4;
+    .prose li > ul {
+      @apply pl-4 mt-2;
     }
-    li > ol {
-      @apply pl-4;
+    .prose li > ol {
+      @apply pl-4 mt-2;
     }
-    blockquote {
-      @apply border-l-4 pl-2 border-solid border-gray-400;
+    .prose blockquote {
+      @apply border-l-4 border-gray-600 pl-4 my-4 text-gray-400 italic;
     }
-    code {
-      @apply bg-indigo-400 text-white;
+    .prose code {
+      @apply bg-gray-800 text-gray-200 px-2 py-1 rounded text-sm;
+    }
+    .prose strong {
+      @apply text-white font-semibold;
+    }
+    .prose em {
+      @apply text-gray-300 italic;
     }
   </style>
 </Base>
