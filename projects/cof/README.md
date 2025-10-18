@@ -8,7 +8,7 @@
 - **블록 레벨 실시간 중복 제거**: 4KB 단위 블록으로 효율적인 스토리지
 - **커밋 기반 자동 압축**: 오래된 데이터의 점진적 압축
 - **바이너리 최적화**: 대용량 바이너리 파일의 효율적 처리
-- **고성능**: Zig 언어로 구현된 네이티브 성능
+- **고성능**: Python으로 구현된 크로스 플랫폼 성능
 
 ## 기술 사양
 
@@ -23,12 +23,13 @@ Storage Layers:
 ```
 
 ### 핵심 기술 스택
-- **언어**: Zig (외부 라이브러리 최대 활용)
+- **언어**: Python 3.11+ (외부 라이브러리 최대 활용)
 - **해시 알고리즘**: BLAKE3 (32바이트 출력)
 - **블록 크기**: 4KB (4096 바이트)
 - **압축**: zstd (레벨 3, 19)
 - **설정 파일**: TOML
-- **동시성**: File locking
+- **동시성**: threading, file locking
+- **패키지 관리**: uv
 
 ### Repository 구조
 ```
@@ -81,37 +82,46 @@ cof pull <remote>       # 변경사항 다운로드
 ## 데이터 구조
 
 ### 블록 저장
-```zig
-const Block = struct {
-    hash: [32]u8,           // BLAKE3 해시
-    data: []u8,             // 실제 데이터 (최대 4KB)
-    tier: StorageTier,      // HOT, WARM, COLD
-    created_commit: u64,    // 생성된 커밋 번호
-    ref_count: u32,         // 참조 카운트
-};
+```python
+from dataclasses import dataclass
+from enum import Enum
+from typing import Optional
+
+class StorageTier(Enum):
+    HOT = "hot"
+    WARM = "warm"
+    COLD = "cold"
+
+@dataclass
+class Block:
+    hash: bytes              # BLAKE3 해시 (32바이트)
+    data: bytes              # 실제 데이터 (최대 4KB)
+    tier: StorageTier        # HOT, WARM, COLD
+    created_commit: int      # 생성된 커밋 번호
+    ref_count: int           # 참조 카운트
 ```
 
 ### 커밋 메타데이터
-```zig
-const Commit = struct {
-    id: [32]u8,             // 커밋 해시
-    parent: ?[32]u8,        // 부모 커밋 (옵션)
-    tree_root: [32]u8,      // 루트 트리 객체
-    timestamp: u64,         // Unix 타임스탬프
-    author: []const u8,     // 작성자 정보
-    message: []const u8,    // 커밋 메시지
-    sequence: u64,          // 순차 번호 (aging용)
-};
+```python
+@dataclass
+class Commit:
+    id: bytes               # 커밋 해시 (32바이트)
+    parent: Optional[bytes] # 부모 커밋 (옵션)
+    tree_root: bytes        # 루트 트리 객체 (32바이트)
+    timestamp: int          # Unix 타임스탬프
+    author: str             # 작성자 정보
+    message: str            # 커밋 메시지
+    sequence: int           # 순차 번호 (aging용)
 ```
 
 ### 트리/블롭 객체
-```zig
-const TreeEntry = struct {
-    name: []const u8,       // 파일/디렉토리 이름
-    mode: u32,             // 권한
-    hash: [32]u8,          // 블롭/서브트리 해시
-    size: u64,             // 원본 파일 크기
-};
+```python
+@dataclass
+class TreeEntry:
+    name: str               # 파일/디렉토리 이름
+    mode: int               # 권한
+    hash: bytes             # 블롭/서브트리 해시 (32바이트)
+    size: int               # 원본 파일 크기
 ```
 
 ## 설정 파일 (config.toml)
@@ -154,40 +164,41 @@ unreachable_days = 30    # 미참조 블록 보관 기간
 
 ### Phase 1: 핵심 엔진 (4-6주)
 1. **블록 스토리지 시스템** (1-2주)
-   - BLAKE3 해싱
+   - BLAKE3 해싱 (blake3 라이브러리)
    - 4KB 블록 분할
    - 중복 제거 로직
 
 2. **압축 시스템** (1주)
-   - zstd 통합
+   - zstd 통합 (zstandard 라이브러리)
    - Tier 간 마이그레이션
 
 3. **객체 모델** (1-2주)
    - 커밋, 트리, 블롭 구현
-   - 메타데이터 관리
+   - 메타데이터 관리 (dataclasses 활용)
 
 4. **CLI 인터페이스** (1주)
-   - 기본 명령어 구현
-   - 설정 파일 처리
+   - 기본 명령어 구현 (click 또는 argparse)
+   - 설정 파일 처리 (toml 라이브러리)
 
 ### Phase 2: 네트워크 기능 (3-4주)
-1. **UDP 프로토콜** (2주)
-2. **동기화 로직** (1-2주)
+1. **UDP 프로토콜** (2주) - asyncio 활용
+2. **동기화 로직** (1-2주) - aiofiles 활용
 
 ## 라이센스 및 배포
 
 - **라이센스**: AGPL v3
-- **개발 환경**: Linux 우선
-- **빌드 시스템**: Zig 네이티브
-- **의존성**: 외부 라이브러리 적극 활용
+- **개발 환경**: Python 3.11+ (크로스 플랫폼)
+- **패키지 관리**: uv (빠른 의존성 관리)
+- **빌드 시스템**: Python 네이티브 + pyproject.toml
+- **의존성**: 외부 라이브러리 적극 활용 (blake3, zstandard, click, toml 등)
 
 ## 향후 확장 계획
 
-1. **Windows/macOS 지원**
-2. **Git 마이그레이션 도구**
-3. **IDE 플러그인**
-4. **웹 인터페이스**
-5. **분산 백업 시스템**
+1. **크로스 플랫폼 지원** (Windows/macOS/Linux)
+2. **Git 마이그레이션 도구** (Python 기반)
+3. **IDE 플러그인** (VS Code, PyCharm)
+4. **웹 인터페이스** (FastAPI + React)
+5. **분산 백업 시스템** (asyncio 기반)
 
 ---
 
