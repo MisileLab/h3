@@ -9,7 +9,7 @@ dependencies = [
   "langchain==1.0.0",
   "langchain-openai==0.3.35",
   "numpy==2.3.4",
-  "openai==2.4.0",
+  "openai==2.5.0",
   "opencv-python-headless==4.12.0.88",
   "polars==1.34.0",
   "pdf2image==1.17.0",
