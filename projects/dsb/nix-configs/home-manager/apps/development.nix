@@ -54,6 +54,7 @@
     };
   };
   programs = {
+    delta.enable = true;
     java = {
       enable = true;
       package = pkgs.temurin-bin-21;
@@ -78,7 +79,6 @@
         safe.directory = "*";
         init.defaultBranch = "main";
         core.editor = "nvim";
-        delta.enable = true;
         push.autoSetupRemote = true;
         commit.template = "/home/misile/non-nixos-things/template";
       };
