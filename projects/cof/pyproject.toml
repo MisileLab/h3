@@ -14,5 +14,8 @@ dependencies = [
     "cryptography",
 ]
 
+[tool.uv]
+package = true
+
 [project.scripts]
 cof = "cof.main:cli"
