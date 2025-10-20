@@ -43,6 +43,5 @@
         default_shell = "nu";
       };
     };
-    git.delta.enable = true;
   };
 }

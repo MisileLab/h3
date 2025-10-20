@@ -54,7 +54,10 @@
     };
   };
   programs = {
-    delta.enable = true;
+    delta = {
+      enable = true;
+      enableGitIntegration = true;
+    };
     java = {
       enable = true;
       package = pkgs.temurin-bin-21;
@@ -68,9 +71,11 @@
       enable = true;
       lfs.enable = true;
       signing = {key = "138AC61AE9D8D2D55EAE4995CD896843C0CB9E63";signByDefault=true;};
-      userName = "misilelab";
-      userEmail = "misileminecord@gmail.com";
-      extraConfig = {
+      settings = {
+        user = {
+          name = "misilelab";
+          email = "misileminecord@gmail.com";
+        };
         tag = {
           gpgSign = true;
           forceSignAnnotated = true;
