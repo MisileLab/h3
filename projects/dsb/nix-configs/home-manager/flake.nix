@@ -9,6 +9,10 @@
     };
     # stable.url = "github:nixos/nixpkgs/nixos-unstable";
     # nur.url = "github:nix-community/NUR";
+    nix-ai-tools = {
+      url = "github:numtide/nix-ai-tools";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     catppuccin = {
       url = "github:catppuccin/nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -30,11 +34,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs = { nixpkgs, /*stable, */home-manager, catppuccin, zig, nix-index-database, sops-nix, niri, ... }:
+  outputs = { nixpkgs, /*stable, */home-manager, catppuccin, zig, nix-index-database, sops-nix, niri, nix-ai-tools, ... }:
     let
       system = "x86_64-linux"; # replace with your system
       overlays = [
         (final: prev: {
+          opencode = nix-ai-toolspkgs.opencode;
           dart = prev.dart.overrideAttrs (old: {
             installPhase = ''
               runHook preInstall
@@ -50,12 +55,11 @@
           });
         })
       ];
-      pkgs = import nixpkgs {
-        inherit system overlays;
-      };
+      pkgs = nixpkgs.packages."${system}";
+      nix-ai-toolspkgs = nix-ai-tools.packages."${system}";
       zigpkgs = zig.packages."${system}";
       c = import ./config.nix;
-      # stablep = import stable {inherit system;config = {allowUnfree = true;};};
+      # stablep = stable.packages."${system}";
     in {
       nixpkgs.overlays = overlays;
       homeConfigurations."misile" = home-manager.lib.homeManagerConfiguration {
