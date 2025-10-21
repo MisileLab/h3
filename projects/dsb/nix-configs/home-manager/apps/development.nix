@@ -50,7 +50,7 @@
         url="https://github.com/catppuccin/process-compose";
         rev="b0c48aa07244a8ed6a7d339a9b9265a3b561464d";
       }}/themes/catppuccin-mocha.yaml";
-      "/home/misile/non-nixos-things/template".text = with config.programs.git; "\nSigned-off-by: ${userName} <${userEmail}>";
+      "/home/misile/non-nixos-things/template".text = with config.programs.git.settings.user; "\nSigned-off-by: ${name} <${email}>";
     };
   };
   programs = {
