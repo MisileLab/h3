@@ -58,9 +58,7 @@
       pkgs = import nixpkgs {
         inherit system overlays;
       };
-      nix-ai-toolspkgs = import nix-ai-tools {
-        inherit pkgs system;
-      };
+      nix-ai-toolspkgs = nix-ai-tools.packages;
       zigpkgs = zig.packages."${system}";
       c = import ./config.nix;
       # stablep = import stable {inherit system;config = {allowUnfree = true;};};
