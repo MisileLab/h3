@@ -40,6 +40,7 @@
       overlays = [
         (final: prev: {
           fcitx5-qt6 = stablep.fictx5-qt6;
+          fcitx5 = stablep.fcitx5;
           opencode = nix-ai-toolspkgs.opencode;
           dart = prev.dart.overrideAttrs (old: {
             installPhase = ''
