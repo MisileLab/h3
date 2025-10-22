@@ -39,6 +39,7 @@
       system = "x86_64-linux"; # replace with your system
       overlays = [
         (final: prev: {
+          libsForQt5.fcitx5-with-addons = stablep.libsForQt5.fcitx5-with-addons;
           opencode = nix-ai-toolspkgs.opencode;
           dart = prev.dart.overrideAttrs (old: {
             installPhase = ''
