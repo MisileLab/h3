@@ -55,11 +55,15 @@
           });
         })
       ];
-      pkgs = nixpkgs.packages."${system}";
-      nix-ai-toolspkgs = nix-ai-tools.packages."${system}";
+      pkgs = import nixpkgs {
+        inherit system overlays;
+      };
+      nix-ai-toolspkgs = import nix-ai-tools {
+        inherit pkgs system;
+      };
       zigpkgs = zig.packages."${system}";
       c = import ./config.nix;
-      # stablep = stable.packages."${system}";
+      # stablep = import stable {inherit system;config = {allowUnfree = true;};};
     in {
       nixpkgs.overlays = overlays;
       homeConfigurations."misile" = home-manager.lib.homeManagerConfiguration {
