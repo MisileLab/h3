@@ -5,7 +5,7 @@ python-multipart==0.0.20
 
 # Database
 asyncpg==0.29.0
-sqlalchemy[asyncio]==2.0.23
+sqlalchemy[asyncio]==2.0.44
 alembic==1.12.1
 psycopg2-binary==2.9.11
 
