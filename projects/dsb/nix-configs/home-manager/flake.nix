@@ -39,9 +39,6 @@
       system = "x86_64-linux"; # replace with your system
       overlays = [
         (final: prev: {
-          fcitx5-qt6 = stablep.fictx5-qt6;
-          fcitx5-qt5 = stablep.fictx5-qt5;
-          fcitx5 = stablep.fcitx5;
           opencode = nix-ai-toolspkgs.opencode;
           dart = prev.dart.overrideAttrs (old: {
             installPhase = ''
@@ -79,7 +76,7 @@
         extraSpecialArgs = {
           inherit c;
           inherit zigpkgs;
-          # inherit stablep;
+          inherit stablep;
         };
       };
     };
