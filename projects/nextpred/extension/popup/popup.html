@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Next Action Predictor</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <header class="popup-header">
+      <h2>Next Action Predictions</h2>
+      <div class="model-status" id="modelStatus">
+        <span class="status-indicator"></span>
+        <span class="status-text">Loading...</span>
+      </div>
+    </header>
+
+    <main class="popup-main">
+      <div class="predictions-container" id="predictionsContainer">
+        <!-- Predictions will be inserted here -->
+      </div>
+
+      <div class="no-predictions" id="noPredictions" style="display: none;">
+        <p>No predictions available</p>
+        <small>Continue browsing to improve predictions</small>
+      </div>
+
+      <div class="loading" id="loading" style="display: none;">
+        <div class="spinner"></div>
+        <p>Analyzing your browsing patterns...</p>
+      </div>
+    </main>
+
+    <footer class="popup-footer">
+      <div class="keyboard-hint">
+        Press <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> or <kbd>↑</kbd> <kbd>↓</kbd> <kbd>Enter</kbd>
+      </div>
+      <div class="actions">
+        <button id="feedbackBtn" class="btn-secondary">Feedback</button>
+        <button id="settingsBtn" class="btn-secondary">Settings</button>
+      </div>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
