@@ -16,7 +16,7 @@ sentence-transformers==2.2.2
 # Machine Learning
 torch==2.8.0
 torchvision==0.16.1
-transformers==4.36.0
+transformers==4.53.0
 sentencepiece==0.1.99
 onnx==1.17.0
 onnxruntime==1.16.3
