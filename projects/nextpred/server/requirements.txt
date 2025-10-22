@@ -33,7 +33,7 @@ prometheus-client==0.23.1
 # Utilities
 python-dotenv==1.0.0
 pydantic==2.12.3
-pydantic-settings==2.1.0
+pydantic-settings==2.11.0
 httpx==0.28.1
 aiofiles==23.2.1
 redis==5.0.1
