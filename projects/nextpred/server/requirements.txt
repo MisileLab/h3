@@ -10,7 +10,7 @@ alembic==1.17.0
 psycopg2-binary==2.9.11
 
 # Vector database
-qdrant-client==1.9.0
+qdrant-client==1.15.1
 sentence-transformers==2.2.2
 
 # Machine Learning
