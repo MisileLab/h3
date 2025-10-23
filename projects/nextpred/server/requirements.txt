@@ -14,7 +14,7 @@ qdrant-client==1.15.1
 sentence-transformers==2.7.0
 
 # Machine Learning
-torch==2.8.0
+torch==2.9.0
 torchvision==0.16.1
 transformers==4.53.0
 sentencepiece==0.2.1
