@@ -49,7 +49,7 @@ orjson==3.11.3
 lz4==4.4.4
 
 # Development
-pytest==7.4.4
+pytest==8.4.2
 pytest-asyncio==0.26.0
 pytest-cov==4.1.0
 black==23.11.0
