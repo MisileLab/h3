@@ -17,7 +17,7 @@ sentence-transformers==2.7.0
 torch==2.8.0
 torchvision==0.16.1
 transformers==4.53.0
-sentencepiece==0.1.99
+sentencepiece==0.2.1
 onnx==1.19.1
 onnxruntime==1.23.2
 safetensors==0.6.2
