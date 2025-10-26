@@ -117,7 +117,6 @@ EOF
     adb.enable = true;
     steam.enable = true;
   };
-  services.udev.packages = [ pkgs.android-udev-rules ];
 
   system.stateVersion = "24.11";
 }
