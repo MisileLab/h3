@@ -11,7 +11,7 @@ psycopg2-binary==2.9.11
 
 # Vector database
 qdrant-client==1.15.1
-sentence-transformers==2.7.0
+sentence-transformers==5.1.2
 
 # Machine Learning
 torch==2.9.0
