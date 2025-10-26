@@ -31,7 +31,7 @@ scikit-learn==1.7.2
 prometheus-client==0.23.1
 
 # Utilities
-python-dotenv==1.1.1
+python-dotenv==1.2.0
 pydantic==2.12.3
 pydantic-settings==2.11.0
 httpx==0.28.1
