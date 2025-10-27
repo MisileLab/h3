@@ -11,7 +11,7 @@
       gel d2 pre-commit just tabnine
       snyk radicle-node infisical poop
       gh opencode process-compose code-cursor
-      netlify-cli cursor-cli tree-sitter amp-cli
+      netlify-cli cursor-cli tree-sitter claude-code
 
       # Language tools
       pnpm yarn-berry

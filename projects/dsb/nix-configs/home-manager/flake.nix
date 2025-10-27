@@ -40,6 +40,7 @@
       overlays = [
         (final: prev: {
           libreoffice = stablep.libreoffice;
+          claude-code = stablep.claude-code;
           opencode = nix-ai-toolspkgs.opencode;
           dart = prev.dart.overrideAttrs (old: {
             installPhase = ''
