@@ -38,7 +38,7 @@ httpx==0.28.1
 aiofiles==25.1.0
 redis==7.0.0
 structlog==25.4.0
-rich==13.9.4
+rich==14.2.0
 click==8.3.0
 python-dateutil==2.9.0.post0
 joblib==1.5.2
