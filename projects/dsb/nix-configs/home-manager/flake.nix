@@ -39,6 +39,9 @@
       system = "x86_64-linux"; # replace with your system
       overlays = [
         (final: prev: {
+          telegram-desktop = stablep.telegram-desktop;
+          webkitgtk_4_1 = stablep.webkitgtk_4_1;
+          webkitgtk_6_0 = stablep.webkitgtk_6_0;
           firefox = stablep.firefox;
           firefox-unwrapped = stablep.firefox-unwrapped;
           claude-code = nix-ai-toolspkgs.claude-code;
