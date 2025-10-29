@@ -5,7 +5,7 @@
       LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib";
     };
     packages = with pkgs; [
-      neovim wakatime
+      neovim wakatime-cli
 
       # Development
       gel d2 pre-commit just tabnine
