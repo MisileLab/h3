@@ -7,26 +7,26 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    stablep.url = "github:nixos/nixpkgs/nixos-unstable";
+    # stablep.url = "github:nixos/nixpkgs/nixos-unstable";
     # lanzaboote = {
     #   url = "github:nix-community/lanzaboote/v0.4.1";
     #   inputs.nixpkgs.follows = "nixpkgs";
     # };
   };
 
-  outputs = { self, nixpkgs, sops-nix, stablep, /*lanzaboote*/... }@_: {
+  outputs = { self, nixpkgs, sops-nix, /*stablep, *//*lanzaboote*/... }@_: {
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
         ./configuration.nix
-        {_module.args = {stablep = import stablep { system = "x86_64-linux"; };};}
-        ({ stablep, ... }: {
-          nixpkgs.overlays = [(final: prev: {
-            steam = stablep.steam;
-            webkitgtk_6_0 = stablep.webkitgtk_6_0;
-            webkitgtk_4_1 = stablep.webkitgtk_4_1;
-          })];
-        })
+        # {_module.args = {stablep = import stablep { system = "x86_64-linux"; };};}
+        # ({ stablep, ... }: {
+        #   nixpkgs.overlays = [(final: prev: {
+        #     steam = stablep.steam;
+        #     webkitgtk_6_0 = stablep.webkitgtk_6_0;
+        #     webkitgtk_4_1 = stablep.webkitgtk_4_1;
+        #   })];
+        # })
         # lanzaboote.nixosModules.lanzaboote
         sops-nix.nixosModules.sops
         ({ pkgs, lib, ... }: {
