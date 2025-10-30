@@ -39,6 +39,8 @@
       system = "x86_64-linux"; # replace with your system
       overlays = [
         (final: prev: {
+          electron = stablep.electron;
+          electron-unwrapped = stablep.electron-unwrapped;
           ungoogled-chromium = stablep.ungoogled-chromium;
           claude-code = nix-ai-toolspkgs.claude-code;
           opencode = nix-ai-toolspkgs.opencode;
