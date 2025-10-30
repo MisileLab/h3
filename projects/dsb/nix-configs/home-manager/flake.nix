@@ -41,6 +41,8 @@
         (final: prev: {
           electron-unwrapped = stablep.electron-unwrapped;
           electron = stablep.electron;
+          ungoogled-chromium-unwrapped = stablep.ungoogled-chromium-unwrapped;
+          ungoogled-chromium = stablep.ungoogled-chromium;
           claude-code = nix-ai-toolspkgs.claude-code;
           opencode = nix-ai-toolspkgs.opencode;
           dart = prev.dart.overrideAttrs (old: {
