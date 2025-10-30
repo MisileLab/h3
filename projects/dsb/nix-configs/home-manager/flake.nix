@@ -39,6 +39,7 @@
       system = "x86_64-linux"; # replace with your system
       overlays = [
         (final: prev: {
+          yt-dlp = stablep.yt-dlp;
           electron = stablep.electron;
           electron-unwrapped = stablep.electron-unwrapped;
           ungoogled-chromium = stablep.ungoogled-chromium;
