@@ -46,7 +46,7 @@ python-magic==0.4.27
 pyyaml==6.0.3
 toml==0.10.2
 orjson==3.11.4
-lz4==4.4.4
+lz4==4.4.5
 
 # Development
 pytest==8.4.2
