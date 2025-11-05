@@ -40,6 +40,7 @@
       overlays = [
         (final: prev: {
           libreoffice = stablep.libreoffice;
+          ungoogled-chromium = stablep.ungoogled-chromium;
           codex = nix-ai-toolspkgs.codex;
           claude-code = nix-ai-toolspkgs.claude-code;
           opencode = nix-ai-toolspkgs.opencode;
@@ -61,7 +62,7 @@
       pkgs = import nixpkgs {
         inherit system overlays;
       };
-      nix-ai-toolspkgs = nix-ai-tools.packages.${pkgs.system};
+      nix-ai-toolspkgs = nix-ai-tools.packages.${pkgs.stdenv.hostPlatform.system};
       zigpkgs = zig.packages."${system}";
       c = import ./config.nix;
       stablep = import stable {inherit system;config = {allowUnfree = true;};};
