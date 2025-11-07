@@ -39,7 +39,7 @@
       system = "x86_64-linux"; # replace with your system
       overlays = [
         (final: prev: {
-          libreoffice = stablep.libreoffice;
+          ungoogled-chromium = stablep.ungoogled-chromium;
           codex = nix-ai-toolspkgs.codex;
           claude-code = nix-ai-toolspkgs.claude-code;
           opencode = nix-ai-toolspkgs.opencode;
