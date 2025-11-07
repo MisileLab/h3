@@ -24,6 +24,9 @@
       devShells = forEachSupportedSystem ({ pkgs }: {
         default = pkgs.mkShell {
           LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib";
+          packages = [
+            pkgs.python313
+          ];
         };
       });
     };
