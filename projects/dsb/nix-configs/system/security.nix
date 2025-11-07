@@ -4,6 +4,7 @@
     ./applications/yubikey.nix
   ];
 
+  programs._1password-gui.enable = true;
   programs.wireshark = {
     enable = true;
     package = pkgs.wireshark;
@@ -13,7 +14,7 @@
   users.groups.wireshark.members = [ "misile" ];
 
   services = {
-    # fprintd.enable = true;
+    fprintd.enable = true;
     clamav = {
       daemon.enable = true;
       updater.enable = true;
