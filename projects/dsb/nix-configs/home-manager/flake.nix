@@ -39,6 +39,9 @@
       system = "x86_64-linux"; # replace with your system
       overlays = [
         (final: prev: {
+          firefox = stablep.firefox;
+          firefox-unwrapped = stablep.firefox-unwrapped;
+          firefoxpwa = stablep.firefoxpwa;
           noto-fonts-color-emoji = stablep.noto-fonts-color-emoji;
           codex = nix-ai-toolspkgs.codex;
           claude-code = nix-ai-toolspkgs.claude-code;
