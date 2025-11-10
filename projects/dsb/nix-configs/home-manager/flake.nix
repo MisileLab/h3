@@ -45,7 +45,8 @@
           noto-fonts-color-emoji = stablep.noto-fonts-color-emoji;
           codex = nix-ai-toolspkgs.codex;
           claude-code = nix-ai-toolspkgs.claude-code;
-          opencode = nix-ai-toolspkgs.opencode;
+          # https://github.com/NixOS/nixpkgs/pull/460138
+          # opencode = nix-ai-toolspkgs.opencode;
           dart = prev.dart.overrideAttrs (old: {
             installPhase = ''
               runHook preInstall
