@@ -40,6 +40,7 @@
       overlays = [
         (final: prev: {
           electron-unwrapped = stablep.electron-unwrapped;
+          electron = stablep.electron;
           codex = nix-ai-toolspkgs.codex;
           claude-code = nix-ai-toolspkgs.claude-code;
           # https://github.com/NixOS/nixpkgs/pull/460138
