@@ -30,7 +30,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-  "pytest==9.0.0",
+  "pytest==9.0.1",
   "black==25.11.0",
 ]
 
