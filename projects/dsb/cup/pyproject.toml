@@ -3,7 +3,7 @@ name = "cup"
 version = "0.1.0"
 description = "PDF Processing Tools - Extract and convert PDF content to various formats"
 readme = "README.md"
-requires-python = "==3.14.0"
+requires-python = ">=3.13,<3.14"
 dependencies = [
   "click==8.3.0",
   "langchain==1.0.5",
@@ -35,5 +35,5 @@ dev = [
 ]
 
 [tool.uv]
-override-dependencies = ["numpy==2.3.2", "pillow==11.3.0"]
+override-dependencies = ["numpy==2.3.2", "pillow==11.3.0", "opencv-python-headless==4.12.0.88"]
 package = true
