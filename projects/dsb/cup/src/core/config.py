@@ -12,7 +12,7 @@ class Config:
   """Configuration class for PDF processing tools."""
   
   # Default settings
-  DEFAULT_MODEL: str = "gpt-4o-mini"
+  DEFAULT_MODEL: str = "gpt-5-mini"
   DEFAULT_TEMPERATURE: float = 0.1
   DEFAULT_BATCH_SIZE: int = 32
   DEFAULT_OUTPUT_FORMAT: str = "csv"

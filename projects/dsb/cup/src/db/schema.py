@@ -89,6 +89,20 @@ class DatabaseSchema:
   );
   """
 
+  CREATE_RESTAURANTS_TABLE = """
+  CREATE TABLE IF NOT EXISTS restaurants (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    address TEXT,
+    coordinate_x REAL,
+    coordinate_y REAL,
+    source_pdf TEXT,
+    source_url TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(name, source_pdf, address)
+  );
+  """
+
   CREATE_SCRAPING_QUEUE_TABLE = """
   CREATE TABLE IF NOT EXISTS scraping_queue (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -124,6 +138,7 @@ class DatabaseSchema:
     "CREATE INDEX IF NOT EXISTS idx_table_rows_place_name ON table_rows(place_name);",
     "CREATE INDEX IF NOT EXISTS idx_scraping_queue_status ON scraping_queue(status);",
     "CREATE INDEX IF NOT EXISTS idx_processing_logs_document_id ON processing_logs(document_id);",
+    "CREATE INDEX IF NOT EXISTS idx_restaurants_name ON restaurants(name);",
   ]
 
 
@@ -149,6 +164,7 @@ def init_database(db_path: str | Path) -> None:
     cursor.execute(DatabaseSchema.CREATE_TABLE_ROWS_TABLE)
     cursor.execute(DatabaseSchema.CREATE_SCRAPING_QUEUE_TABLE)
     cursor.execute(DatabaseSchema.CREATE_PROCESSING_LOGS_TABLE)
+    cursor.execute(DatabaseSchema.CREATE_RESTAURANTS_TABLE)
 
     # Create indexes
     for index_sql in DatabaseSchema.CREATE_INDEXES:

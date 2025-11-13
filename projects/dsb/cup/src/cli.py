@@ -3,6 +3,7 @@ Command-line interface for PDF processing tools.
 """
 
 from typing import Optional
+import json
 import os
 from datetime import datetime
 from pathlib import Path
@@ -15,6 +16,8 @@ from .core.exceptions import PDFProcessingError
 from .processors import LLMProcessor
 from .scrapers import DongjakScraper
 from .db import init_database, PDFRepository
+from .services.restaurant_locator import RestaurantLocator
+import polars as pl
 
 app = typer.Typer(help="PDF Processing Tools")
 console = Console()
@@ -92,7 +95,7 @@ def convert(
     output_path = f"{pdf_name}_output.csv"
   
   processor = PDFProcessor(use_ocr=True, ref_wtm_x=ref_wtm_x, ref_wtm_y=ref_wtm_y)
-  processor.ai_processor = LLMProcessor(resolved_api_key, model=model)
+  processor.ai_processor = LLMProcessor(resolved_api_key, model=model, names_only=True)
   
   # Process with AI
   processor.process_with_ai(pdf_path, output_path)
@@ -130,7 +133,7 @@ def extract_llm(
       output_path = f"{pdf_name}_llm.csv"
 
     processor = PDFProcessor(use_ocr=use_ocr, ref_wtm_x=ref_wtm_x, ref_wtm_y=ref_wtm_y)
-    processor.ai_processor = LLMProcessor(resolved_api_key, model=model)
+    processor.ai_processor = LLMProcessor(resolved_api_key, model=model, names_only=True)
 
     # Extract data
     text_pages = processor.extractor.extract_text(pdf_path)
@@ -290,6 +293,82 @@ def info():
     "• When you need AI-powered error correction",
     title="Tool Information"
   ))
+
+
+def _extract_names_from_csv(csv_path: str) -> list[str]:
+  keywords = ["가맹", "상호", "매장", "장소", "store", "shop", "place", "restaurant", "음식"]
+  try:
+    df = pl.read_csv(csv_path)
+  except Exception as e:
+    raise typer.BadParameter(f"Failed to read CSV '{csv_path}': {e}") from e
+
+  candidate_cols = [col for col in df.columns if any(keyword in col.lower() for keyword in keywords)]
+  if not candidate_cols:
+    candidate_cols = [col for col, dtype in zip(df.columns, df.dtypes) if dtype == pl.Utf8]
+
+  names: list[str] = []
+  seen: set[str] = set()
+  for col in candidate_cols:
+    for value in df[col].drop_nulls().to_list():
+      cleaned = _normalize_candidate_name(str(value))
+      if cleaned and cleaned not in seen:
+        seen.add(cleaned)
+        names.append(cleaned)
+  return names
+
+
+def _normalize_candidate_name(value: str) -> str | None:
+  stripped = value.strip().strip('|').strip()
+  if not stripped:
+    return None
+  if len(stripped) > 40:
+    return None
+  # require Hangul character to avoid headers/amounts
+  if not any('가' <= ch <= '힣' for ch in stripped):
+    return None
+  return stripped
+
+
+@app.command()
+def enrich_csv(
+  csv_path: str = typer.Argument(..., help="Path to noisy CSV containing restaurant names"),
+  db_path: str = typer.Option("./data.db", "--db-path", help="SQLite database path"),
+  source_url: Optional[str] = typer.Option(None, "--source-url", help="Original bulletin URL"),
+  ref_wtm_x: Optional[float] = typer.Option(None, "--ref-x", help="Reference X coordinate"),
+  ref_wtm_y: Optional[float] = typer.Option(None, "--ref-y", help="Reference Y coordinate"),
+  output_json: Optional[str] = typer.Option(None, "--output-json", help="Optional JSON output path"),
+):
+  """Extract restaurant names from a noisy CSV, enrich via Kakao, and store them."""
+  init_database(db_path)
+  repository = PDFRepository(db_path)
+
+  if not os.path.exists(csv_path):
+    raise typer.BadParameter(f"CSV file not found: {csv_path}")
+
+  names = _extract_names_from_csv(csv_path)
+  if not names:
+    console.print("⚠️ Could not find any candidate restaurant names in CSV.", style="yellow")
+    raise typer.Exit(1)
+
+  console.print(f"🔍 Found {len(names)} candidate names. Looking up via Kakao...", style="blue")
+
+  locator = RestaurantLocator(
+    api_key=os.getenv("KAKAO_API_KEY"),
+    openai_api_key=os.getenv("OPENAI_API_KEY"),
+    ref_wtm_x=ref_wtm_x,
+    ref_wtm_y=ref_wtm_y,
+  )
+  records = locator.lookup(names, source_pdf=csv_path, source_url=source_url)
+  saved = repository.save_restaurants(records)
+  console.print(f"📥 Stored {saved} restaurant records in {db_path}", style="green")
+
+  if output_json:
+    payload = [record.model_dump() for record in records]
+    with open(output_json, "w", encoding="utf-8") as f:
+      json.dump(payload, f, ensure_ascii=False, indent=2)
+    console.print(f"📝 Structured output saved to {output_json}", style="green")
+
+  console.print("✅ CSV enrichment complete.", style="green")
 
 
 if __name__ == "__main__":

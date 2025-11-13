@@ -4,7 +4,9 @@ from __future__ import annotations
 
 from typing import Any, final, override, cast
 
-import httpx
+import csv
+from io import StringIO
+
 import polars as pl
 
 from rich.console import Console
@@ -12,6 +14,7 @@ from rich.console import Console
 from .base import BaseProcessor
 from ..core.types import ProcessingResult, CSVRow
 from ..core.config import Config
+from ..utils.openai_client import call_openai
 
 
 console = Console()
@@ -25,10 +28,12 @@ class LLMProcessor(BaseProcessor):
     self,
     api_key: str,
     model: str | None = None,
+    names_only: bool = False,
   ) -> None:
     super().__init__()
     self.api_key: str = api_key
     self.model: str = model or Config.DEFAULT_MODEL
+    self.names_only: bool = names_only
 
   @override
   def validate_config(self) -> bool:
@@ -40,30 +45,7 @@ class LLMProcessor(BaseProcessor):
   def process(self, result: ProcessingResult) -> str:
     console.print(f"🤖 Post-processing with OpenAI ({self.model})...", style="yellow")
 
-    system_prompt = (
-      "You are an expert at fixing extraction errors and structuring data for CSV output.\n"
-      "Your task is to:\n"
-      "1. Fix any errors in the extracted text\n"
-      "2. Identify and structure tabular data if present\n"
-      "3. Return a clean, structured CSV format\n\n"
-      "Guidelines:\n"
-      "- Fix common OCR or extraction errors (0/O, 1/l, 5/S, etc.)\n"
-      "- Preserve the original meaning and context\n"
-      "- Structure data in a logical CSV format\n"
-      "- Use appropriate headers\n"
-      "- Handle missing or corrupted data gracefully\n\n"
-      "IMPORTANT: Return ONLY the raw CSV data without any markdown formatting, code blocks, or explanations."
-    )
-
-    text_content = self._prepare_text_content(result)
-    table_content = self._prepare_table_content(result)
-
-    user_prompt = (
-      "Please process this extracted data and return clean CSV:\n\n"
-      f"TEXT CONTENT:\n{text_content}\n\n"
-      f"TABLE CONTENT:\n{table_content}\n\n"
-      "CRITICAL: Return ONLY the raw CSV data. Do not include any markdown formatting, code blocks, or explanations."
-    )
+    system_prompt, user_prompt = self._build_prompts(result)
 
     try:
       csv_content = self._invoke_openai(system_prompt, user_prompt)
@@ -75,37 +57,27 @@ class LLMProcessor(BaseProcessor):
         csv_content = csv_content[3:]
       if csv_content.endswith("```"):
         csv_content = csv_content[:-3]
+      csv_content = csv_content.strip()
+
+      if self.names_only:
+        csv_content = self._enforce_names_only_csv(csv_content)
+
       return csv_content.strip()
-    except httpx.HTTPError as e:
-      console.print(f"❌ HTTP error during LLM post-processing: {e}", style="red")
-      return self._fallback_csv_conversion(result)
     except (ValueError, RuntimeError) as e:
       console.print(f"❌ Error during LLM post-processing: {e}", style="red")
       return self._fallback_csv_conversion(result)
 
   def _invoke_openai(self, system_prompt: str, user_prompt: str) -> str:
-    url = "https://api.openai.com/v1/chat/completions"
-    headers = {
-      "Authorization": f"Bearer {self.api_key}",
-      "Content-Type": "application/json",
-    }
-    payload: dict[str, Any] = {
-      "model": self.model,
-      "messages": [
-        {"role": "system", "content": system_prompt},
-        {"role": "user", "content": user_prompt},
-      ],
-      "temperature": Config.DEFAULT_TEMPERATURE,
-    }
-    with httpx.Client(timeout=60) as client:
-      resp = client.post(url, headers=headers, json=payload)
-      resp.raise_for_status()
-      data = cast(dict[str, Any], resp.json())
-      try:
-        content = cast(str, data["choices"][0]["message"]["content"])
-        return content
-      except (KeyError, IndexError, TypeError) as e:
-        raise RuntimeError(f"Unexpected OpenAI response schema: {e}")
+    messages = [
+      {"role": "system", "content": system_prompt},
+      {"role": "user", "content": user_prompt},
+    ]
+    return call_openai(
+      model=self.model,
+      api_key=self.api_key,
+      messages=messages,
+      response_format=None,
+    )
 
   def _prepare_text_content(self, result: ProcessingResult) -> str:
     content: list[str] = []
@@ -131,6 +103,96 @@ class LLMProcessor(BaseProcessor):
       content.append("")
     return "\n".join(content)
 
+  def _build_prompts(self, result: ProcessingResult) -> tuple[str, str]:
+    text_content = self._prepare_text_content(result)
+    table_content = self._prepare_table_content(result)
+
+    if self.names_only:
+      system_prompt = (
+        "You extract only restaurant or merchant names from Korean expense documents.\n"
+        "Return a CSV with a single header 'restaurant_name'.\n"
+        "Each row must contain exactly one unique, cleaned name (no amounts, dates, or extra columns)."
+      )
+      user_prompt = (
+        "From the following OCR/text extraction, list unique restaurant or store names only.\n"
+        "Normalize whitespace, remove surrounding quotes, and deduplicate.\n\n"
+        f"TEXT CONTENT:\n{text_content}\n\nTABLE CONTENT:\n{table_content}\n\n"
+        "Remember: output raw CSV with header 'restaurant_name' and no markdown."
+      )
+      return system_prompt, user_prompt
+
+    system_prompt = (
+      "You are an expert at fixing extraction errors and structuring data for CSV output.\n"
+      "Your task is to:\n"
+      "1. Fix any errors in the extracted text\n"
+      "2. Identify and structure tabular data if present\n"
+      "3. Return a clean, structured CSV format\n\n"
+      "Guidelines:\n"
+      "- Fix common OCR or extraction errors (0/O, 1/l, 5/S, etc.)\n"
+      "- Preserve the original meaning and context\n"
+      "- Structure data in a logical CSV format\n"
+      "- Use appropriate headers\n"
+      "- Handle missing or corrupted data gracefully\n\n"
+      "IMPORTANT: Return ONLY the raw CSV data without any markdown formatting, code blocks, or explanations."
+    )
+
+    user_prompt = (
+      "Please process this extracted data and return clean CSV:\n\n"
+      f"TEXT CONTENT:\n{text_content}\n\n"
+      f"TABLE CONTENT:\n{table_content}\n\n"
+      "CRITICAL: Return ONLY the raw CSV data. Do not include any markdown formatting, code blocks, or explanations."
+    )
+
+    return system_prompt, user_prompt
+
+  def _enforce_names_only_csv(self, csv_text: str) -> str:
+    """Force CSV to contain a single 'restaurant_name' column."""
+    cleaned = csv_text.strip()
+    if not cleaned:
+      return "restaurant_name\n"
+
+    # Remove stray markdown fences if any remain
+    cleaned = cleaned.replace("`", "")
+
+    reader = csv.reader(StringIO(cleaned))
+    rows = [row for row in reader if any(cell.strip() for cell in row)]
+    if not rows:
+      return "restaurant_name\n"
+
+    keywords = ["restaurant", "store", "가맹점", "상호", "매장", "place"]
+    header_row = rows[0]
+    has_header = any(
+      any(keyword in cell.strip().lower() for keyword in keywords)
+      for cell in header_row
+    )
+
+    data_rows = rows[1:] if has_header else rows
+    target_idx = 0
+    if has_header:
+      for idx, cell in enumerate(header_row):
+        col_lower = cell.strip().lower()
+        if any(keyword in col_lower for keyword in keywords):
+          target_idx = idx
+          break
+
+    names: list[str] = []
+    for row in data_rows:
+      if not row:
+        continue
+      if target_idx >= len(row):
+        continue
+      name = row[target_idx].strip().strip('"')
+      if name and name not in names:
+        names.append(name)
+
+    output = StringIO()
+    writer = csv.writer(output)
+    writer.writerow(["restaurant_name"])
+    for name in names:
+      writer.writerow([name])
+
+    return output.getvalue()
+
   def _fallback_csv_conversion(self, result: ProcessingResult) -> str:
     console.print("⚠️  Using fallback CSV conversion", style="yellow")
     csv_rows: list[CSVRow] = []
@@ -150,5 +212,3 @@ class LLMProcessor(BaseProcessor):
     rows_data = [row.model_dump() for row in csv_rows]
     df = pl.DataFrame(rows_data)
     return df.write_csv()
-
-

@@ -8,7 +8,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional, final
 
-from ..core.types import ProcessingResult, PageData, TableData, TextLine
+from ..core.types import ProcessingResult, PageData, TableData, TextLine, RestaurantRecord
 
 
 @final
@@ -320,5 +320,41 @@ class PDFRepository:
         (document_id, log_level, message),
       )
       conn.commit()
+    finally:
+      conn.close()
+
+  def save_restaurants(self, entries: list[RestaurantRecord]) -> int:
+    """Save restaurant records derived from LLM output."""
+    if not entries:
+      return 0
+
+    conn = self._get_connection()
+    cursor = conn.cursor()
+    inserted = 0
+
+    try:
+      for entry in entries:
+        cursor.execute(
+          """
+          INSERT INTO restaurants (name, address, coordinate_x, coordinate_y, source_pdf, source_url)
+          VALUES (?, ?, ?, ?, ?, ?)
+          ON CONFLICT(name, source_pdf, address) DO UPDATE SET
+            coordinate_x = excluded.coordinate_x,
+            coordinate_y = excluded.coordinate_y,
+            source_url = COALESCE(excluded.source_url, source_url)
+          """,
+          (
+            entry.name,
+            entry.address,
+            entry.x,
+            entry.y,
+            entry.source_pdf,
+            entry.source_url,
+          ),
+        )
+        inserted += 1
+
+      conn.commit()
+      return inserted
     finally:
       conn.close()

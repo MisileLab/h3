@@ -1,12 +1,12 @@
-"""
-CSV output formatter.
-"""
+"""CSV output formatter."""
 
-import os
-import polars as pl
 import asyncio
+import os
+import re
 from pathlib import Path
-from typing import override, final, Any
+from typing import Any, final, override
+
+import polars as pl
 
 from rich.console import Console
 
@@ -20,12 +20,35 @@ console = Console()
 # Mapping dictionary for place names that need translation or alternative spellings
 place_name_mapping = {
   # English to Korean
-  "wagamama": "와가마마"
+  "wagamama": "와가마마",
 }
+
+HEADER_KEYWORDS = [
+  "사용대상",
+  "사용일자",
+  "사용시간",
+  "사용금액",
+  "사용목적",
+  "사용방법",
+  "집행대상",
+  "부서명",
+  "연번",
+  "(명)",
+  "장소",
+]
 
 @final
 class CSVFormatter(BaseOutputFormatter):
   """Format processing results as CSV."""
+
+  def __init__(
+    self,
+    ref_wtm_x: float | None = None,
+    ref_wtm_y: float | None = None,
+    enable_address_lookup: bool = False,
+  ) -> None:
+    super().__init__(ref_wtm_x=ref_wtm_x, ref_wtm_y=ref_wtm_y)
+    self.enable_address_lookup = enable_address_lookup
   
   async def _add_address_info_from_tables(self, result: ProcessingResult) -> dict[str, tuple[str, float, float]]:
     """
@@ -159,37 +182,32 @@ class CSVFormatter(BaseOutputFormatter):
             break
         
         # If no place found in the tables, use the text content as search query
-        if not place_found and row.text and len(row.text.strip()) > 0:
-          original_text = row.text.strip()
-          
-          # Try to find place names in the text that match our mapping
-          search_query = original_text
-          for place_name, mapped_name in place_name_mapping.items():
-            if place_name in original_text:
-              # Replace the place name in the search query
-              search_query = original_text.replace(place_name, mapped_name)
-              console.print(f"🔄 Found '{place_name}' in text, using '{mapped_name}' for search", style="blue")
-              break
-              
+        if not place_found:
+          should_search, normalized_text = self._should_search_text(row.text)
+          if not should_search:
+            continue
+
           try:
-            # Search for places using the text content
-            console.print(f"🔍 Searching using text: '{search_query}'", style="blue")
+            console.print(f"🔍 Searching using text: '{normalized_text}'", style="blue")
             search_result = await search_places(
-              api_key, 
-              search_query, 
+              api_key,
+              normalized_text,
               nearest_only=True,
               ref_wtm_x=self.ref_wtm_x,
-              ref_wtm_y=self.ref_wtm_y
+              ref_wtm_y=self.ref_wtm_y,
             )
-            
-            # If we found a place, add its information to the row
+
             if search_result.documents:
               place = search_result.documents[0]
               row.nearest_address = place.address_name
               row.x = place.x
               row.y = place.y
+              console.print(f"✅ Found address using fallback text '{normalized_text}'", style="green")
           except Exception as e:
-            console.print(f"⚠️ Error getting address info for text: {search_query[:30]}... - {str(e)}", style="yellow")
+            console.print(
+              f"⚠️ Error getting address info for text: {normalized_text[:30]}... - {str(e)}",
+              style="yellow",
+            )
     except Exception as e:
       console.print(f"⚠️ Error adding address information: {str(e)}", style="yellow")
     
@@ -214,11 +232,14 @@ class CSVFormatter(BaseOutputFormatter):
         )
         csv_rows.append(csv_row)
     
-    # Add address information if possible
-    try:
-      csv_rows = asyncio.run(self._add_address_info(csv_rows, result))
-    except Exception as e:
-      console.print(f"⚠️ Could not add address information: {str(e)}", style="yellow")
+    # Add address information if enabled
+    if self.enable_address_lookup:
+      try:
+        csv_rows = asyncio.run(self._add_address_info(csv_rows, result))
+      except Exception as e:
+        console.print(f"⚠️ Could not add address information: {str(e)}", style="yellow")
+    else:
+      console.print("ℹ️ Address enrichment disabled (runs after LLM).", style="blue")
     
     # Check if any address information was found
     address_count = sum(1 for row in csv_rows if row.nearest_address is not None)
@@ -292,6 +313,38 @@ class CSVFormatter(BaseOutputFormatter):
     
     return updated_rows
 
+  def _should_search_text(self, text: str) -> tuple[bool, str]:
+    if not text:
+      return False, ""
+
+    normalized = text.strip().strip("|").strip()
+    normalized = re.sub(r"\s+", " ", normalized)
+    if not normalized:
+      return False, ""
+
+    if len(normalized) < 2 or len(normalized) > 40:
+      return False, ""
+
+    if any(keyword in normalized for keyword in HEADER_KEYWORDS):
+      return False, ""
+
+    # Skip pure numbers / timestamps
+    if re.fullmatch(r"[0-9,.:\-() ]+", normalized):
+      return False, ""
+
+    # Skip strings that are mostly digits/symbols
+    digits = sum(ch.isdigit() for ch in normalized)
+    if digits and digits >= len(normalized) / 2:
+      return False, ""
+
+    # Require Hangul characters for better precision
+    if not re.search(r"[가-힣]", normalized):
+      return False, ""
+
+    # Apply mapping if present
+    mapped = place_name_mapping.get(normalized, normalized)
+    return True, mapped
+
   async def _add_address_info_to_table_rows(self, table_rows: list[dict[str, Any]], place_column: str | None = None) -> list[dict[str, Any]]:
     """
     Add address and coordinate information to table rows.
@@ -303,6 +356,9 @@ class CSVFormatter(BaseOutputFormatter):
     Returns:
         Updated table rows with address information
     """
+    if not self.enable_address_lookup:
+      return table_rows
+
     api_key = os.getenv("KAKAO_API_KEY")
     if not api_key:
       console.print("⚠️ KAKAO_API_KEY not found in environment. Address information will not be added to tables.", style="yellow")

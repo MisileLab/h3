@@ -156,15 +156,22 @@ class DongjakScraper(BaseScraper):
 
     soup = BeautifulSoup(response.text, "html.parser")
 
-    # Find attachment section
-    attachments = soup.select("a[href*='.pdf']") or soup.select("a.attach")
+    # Find attachment section - newer site version exposes downloads through
+    # `fileDown.do` links that do not carry a .pdf suffix.
+    attachments = soup.select(
+      "a[href*='.pdf'], a.attach, a.btn-download, a[href*='fileDown']"
+    )
 
     for attach in attachments:
       href = attach.get("href", "")
-      if not href or not href.lower().endswith(".pdf"):
-        # Check if it's a download link
-        if "download" not in href.lower() and ".pdf" not in href.lower():
-          continue
+      if not href:
+        continue
+
+      href_lower = href.lower()
+      is_pdf = href_lower.endswith(".pdf")
+      is_download = "download" in href_lower or "filedown" in href_lower
+      if not (is_pdf or is_download):
+        continue
 
       # Make absolute URL
       if not href.startswith("http"):

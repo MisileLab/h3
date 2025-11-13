@@ -69,6 +69,18 @@ class CSVRow(BaseModel):
   y: float | None = Field(None, description="Y coordinate (latitude)")
 
 
+class RestaurantRecord(BaseModel):
+  """Represents a restaurant/place entry derived from LLM output."""
+  model_config = ConfigDict(validate_assignment=True)
+
+  name: str = Field(..., description="Restaurant or store name")
+  address: str | None = Field(None, description="Resolved address from Kakao API")
+  x: float | None = Field(None, description="Longitude")
+  y: float | None = Field(None, description="Latitude")
+  source_pdf: str = Field(..., description="Source PDF path")
+  source_url: str | None = Field(None, description="Original bulletin URL if known")
+
+
 class OutputConfig(TypedDict, total=False):
   """Configuration for output formatting."""
   format: str  # 'csv', 'txt', 'json', 'all'

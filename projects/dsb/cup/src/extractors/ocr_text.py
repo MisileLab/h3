@@ -33,7 +33,7 @@ class OCRTextExtractor(BaseExtractor):
     self.foundation_predictor: FoundationPredictor = FoundationPredictor()
     self.recognition_predictor: RecognitionPredictor = RecognitionPredictor(self.foundation_predictor)
     self.detection_predictor: DetectionPredictor = DetectionPredictor()
-    self.layout_predictor: LayoutPredictor = LayoutPredictor()
+    self.layout_predictor: LayoutPredictor = LayoutPredictor(self.foundation_predictor)
     self.table_rec_predictor: TableRecPredictor = TableRecPredictor()
     
     console.print("✅ Surya OCR models initialized", style="green")

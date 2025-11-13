@@ -1,7 +1,7 @@
-"""
-Main application class for PDF processing.
-"""
+"""Main application class for PDF processing."""
 
+import csv
+from io import StringIO
 import os
 import time
 from datetime import datetime
@@ -13,11 +13,12 @@ from rich.panel import Panel
 
 from .core.config import Config
 from .core.exceptions import PDFProcessingError, ConfigurationError
-from .core.types import ProcessingResult
+from .core.types import ProcessingResult, RestaurantRecord
 from .extractors import DirectTextExtractor, OCRTextExtractor
 from .output import CSVFormatter, TextFormatter, JSONFormatter
 from .processors import LLMProcessor
 from .db import init_database, PDFRepository
+from .services.restaurant_locator import RestaurantLocator
 
 console = Console()
 
@@ -60,14 +61,18 @@ class PDFProcessor:
       self.extractor: DirectTextExtractor | OCRTextExtractor = DirectTextExtractor()
     
     # Initialize output formatters with reference coordinates
-    self.csv_formatter: CSVFormatter = CSVFormatter(ref_wtm_x=ref_wtm_x, ref_wtm_y=ref_wtm_y)
+    self.csv_formatter: CSVFormatter = CSVFormatter(
+      ref_wtm_x=ref_wtm_x,
+      ref_wtm_y=ref_wtm_y,
+      enable_address_lookup=False,
+    )
     self.text_formatter: TextFormatter = TextFormatter(ref_wtm_x=ref_wtm_x, ref_wtm_y=ref_wtm_y)
     self.json_formatter: JSONFormatter = JSONFormatter(ref_wtm_x=ref_wtm_x, ref_wtm_y=ref_wtm_y)
     
     # Initialize AI processor if API key is provided
     self.ai_processor: Optional[LLMProcessor] = None
     if self.openai_api_key and Config.validate_openai_key(self.openai_api_key):
-      self.ai_processor = LLMProcessor(self.openai_api_key)
+      self.ai_processor = LLMProcessor(self.openai_api_key, names_only=True)
 
     # Initialize database if needed
     self.repository: Optional[PDFRepository] = None
@@ -115,6 +120,11 @@ class PDFProcessor:
       # Save in requested format(s)
       output_format = output_config.get("format", "csv")
       self._save_outputs(result, output_dir, output_format)
+
+      # Run LLM post-processing automatically when OCR is used
+      llm_output_path = output_config.get("llm_output_path")
+      source_url = output_config.get("source_url")
+      self._maybe_run_llm_post_processing(result, output_dir, llm_output_path, source_url)
 
       # Store in database if enabled
       if self.store_in_db and self.repository:
@@ -224,6 +234,106 @@ class PDFProcessor:
     console.print(f"  • Tables detected: {result.total_tables}")
     console.print(f"  • Output directory: {output_dir}")
     console.print(f"  • Extraction method: {result.extraction_method}")
+
+  def _maybe_run_llm_post_processing(
+    self,
+    result: ProcessingResult,
+    output_dir: str,
+    custom_output_path: str | None = None,
+    source_url: str | None = None,
+  ) -> None:
+    """Invoke LLM post-processing when OCR is enabled."""
+    if not self.use_ocr:
+      return
+
+    if not self.ai_processor:
+      console.print(
+        "⚠️  OPENAI_API_KEY not set or invalid. Skipping LLM post-processing despite OCR mode.",
+        style="yellow",
+      )
+      return
+
+    llm_output_path = custom_output_path or self._default_llm_output_path(result.pdf_path, output_dir)
+
+    try:
+      csv_content = self.ai_processor.process(result)
+      with open(llm_output_path, "w", encoding="utf-8") as f:
+        f.write(csv_content)
+      console.print(f"🤖 LLM-processed CSV saved to: {llm_output_path}", style="green")
+
+      restaurant_names = self._extract_restaurant_names_from_csv(csv_content)
+      if restaurant_names:
+        self._search_and_store_restaurants(restaurant_names, result.pdf_path, source_url)
+      else:
+        console.print("⚠️  No restaurant names detected in LLM output.", style="yellow")
+    except (OSError, IOError, ValueError) as e:
+      console.print(f"⚠️  Failed to save LLM-processed output: {e}", style="yellow")
+    except PDFProcessingError as e:  # pragma: no cover - defensive
+      console.print(f"⚠️  LLM post-processing error: {e}", style="yellow")
+
+  def _default_llm_output_path(self, pdf_path: str, output_dir: str) -> str:
+    pdf_name = Path(pdf_path).stem
+    return str(Path(output_dir) / f"{pdf_name}_llm.csv")
+
+  def _extract_restaurant_names_from_csv(self, csv_content: str) -> list[str]:
+    csv_content = csv_content.strip()
+    if not csv_content:
+      return []
+
+    reader = csv.reader(StringIO(csv_content))
+    rows = [row for row in reader if any(cell.strip() for cell in row)]
+    if not rows:
+      return []
+
+    keywords = ["restaurant", "store", "가맹점", "상호", "매장", "place"]
+    header_row = rows[0]
+    has_header = any(
+      any(keyword in cell.strip().lower() for keyword in keywords)
+      for cell in header_row
+    )
+
+    data_rows = rows[1:] if has_header else rows
+    target_idx = 0
+    if has_header:
+      for idx, cell in enumerate(header_row):
+        col_lower = cell.strip().lower()
+        if any(keyword in col_lower for keyword in keywords):
+          target_idx = idx
+          break
+
+    names: list[str] = []
+    for row in data_rows:
+      if target_idx >= len(row):
+        continue
+      name = row[target_idx].strip().strip('"')
+      if name and name not in names:
+        names.append(name)
+
+    return names
+
+  def _search_and_store_restaurants(
+    self,
+    names: list[str],
+    pdf_path: str,
+    source_url: str | None,
+  ) -> None:
+    if not names:
+      return
+
+    if not self.repository:
+      console.print("⚠️  Repository not configured; skipping restaurant storage.", style="yellow")
+      return
+
+    locator = RestaurantLocator(
+      api_key=os.getenv("KAKAO_API_KEY"),
+      openai_api_key=self.openai_api_key or os.getenv("OPENAI_API_KEY"),
+      ref_wtm_x=self.ref_wtm_x,
+      ref_wtm_y=self.ref_wtm_y,
+    )
+    records = locator.lookup(names, source_pdf=pdf_path, source_url=source_url)
+
+    saved = self.repository.save_restaurants(records)
+    console.print(f"📥 Saved {saved} restaurant records to database", style="green")
   
   def process_with_ai(self, pdf_path: str, output_path: str) -> None:
     """Process PDF with AI post-processing."""
