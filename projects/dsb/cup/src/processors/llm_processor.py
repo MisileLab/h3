@@ -1,4 +1,4 @@
-"""LLM post-processing using OpenRouter (OpenAI-compatible HTTP API)."""
+"""LLM post-processing using OpenAI API."""
 
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ console = Console()
 
 @final
 class LLMProcessor(BaseProcessor):
-  """Post-process extraction results using OpenRouter."""
+  """Post-process extraction results using OpenAI API."""
 
   def __init__(
     self,
@@ -28,17 +28,17 @@ class LLMProcessor(BaseProcessor):
   ) -> None:
     super().__init__()
     self.api_key: str = api_key
-    self.model: str = model or Config.DEFAULT_OPENROUTER_MODEL
+    self.model: str = model or Config.DEFAULT_MODEL
 
   @override
   def validate_config(self) -> bool:
     if not self.api_key:
       return False
-    return Config.validate_openrouter_key(self.api_key)
+    return Config.validate_openai_key(self.api_key)
 
   @override
   def process(self, result: ProcessingResult) -> str:
-    console.print(f"🤖 Post-processing with OpenRouter ({self.model})...", style="yellow")
+    console.print(f"🤖 Post-processing with OpenAI ({self.model})...", style="yellow")
 
     system_prompt = (
       "You are an expert at fixing extraction errors and structuring data for CSV output.\n"
@@ -66,7 +66,7 @@ class LLMProcessor(BaseProcessor):
     )
 
     try:
-      csv_content = self._invoke_openrouter(system_prompt, user_prompt)
+      csv_content = self._invoke_openai(system_prompt, user_prompt)
 
       csv_content = csv_content.strip()
       if csv_content.startswith("```csv"):
@@ -83,14 +83,11 @@ class LLMProcessor(BaseProcessor):
       console.print(f"❌ Error during LLM post-processing: {e}", style="red")
       return self._fallback_csv_conversion(result)
 
-  def _invoke_openrouter(self, system_prompt: str, user_prompt: str) -> str:
-    url = "https://openrouter.ai/api/v1/chat/completions"
+  def _invoke_openai(self, system_prompt: str, user_prompt: str) -> str:
+    url = "https://api.openai.com/v1/chat/completions"
     headers = {
       "Authorization": f"Bearer {self.api_key}",
       "Content-Type": "application/json",
-      # Optional but recommended by OpenRouter
-      "HTTP-Referer": "https://github.com/",  # Replace with your app/site
-      "X-Title": "cup-pdf-tools",
     }
     payload: dict[str, Any] = {
       "model": self.model,
@@ -108,7 +105,7 @@ class LLMProcessor(BaseProcessor):
         content = cast(str, data["choices"][0]["message"]["content"])
         return content
       except (KeyError, IndexError, TypeError) as e:
-        raise RuntimeError(f"Unexpected OpenRouter response schema: {e}")
+        raise RuntimeError(f"Unexpected OpenAI response schema: {e}")
 
   def _prepare_text_content(self, result: ProcessingResult) -> str:
     content: list[str] = []

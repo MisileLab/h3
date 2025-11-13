@@ -4,6 +4,7 @@ Main application class for PDF processing.
 
 import os
 import time
+from datetime import datetime
 from pathlib import Path
 from typing import Optional, final
 
@@ -16,6 +17,7 @@ from .core.types import ProcessingResult
 from .extractors import DirectTextExtractor, OCRTextExtractor
 from .output import CSVFormatter, TextFormatter, JSONFormatter
 from .processors import LLMProcessor
+from .db import init_database, PDFRepository
 
 console = Console()
 
@@ -25,25 +27,31 @@ class PDFProcessor:
   """Main PDF processing application."""
   
   def __init__(
-    self, 
-    use_ocr: bool = False, 
+    self,
+    use_ocr: bool = False,
     openai_api_key: Optional[str] = None,
     ref_wtm_x: Optional[float] = None,
-    ref_wtm_y: Optional[float] = None
+    ref_wtm_y: Optional[float] = None,
+    db_path: Optional[str] = None,
+    store_in_db: bool = False
   ) -> None:
     """
     Initialize the PDF processor.
-    
+
     Args:
         use_ocr: Whether to use OCR for text extraction
         openai_api_key: OpenAI API key for AI post-processing
         ref_wtm_x: Reference X coordinate in WTM format for address lookup
         ref_wtm_y: Reference Y coordinate in WTM format for address lookup
+        db_path: Path to SQLite database file
+        store_in_db: Whether to store results in database
     """
     self.use_ocr: bool = use_ocr
     self.openai_api_key: Optional[str] = openai_api_key or Config.get_openai_api_key()
     self.ref_wtm_x: Optional[float] = ref_wtm_x
     self.ref_wtm_y: Optional[float] = ref_wtm_y
+    self.db_path: Optional[str] = db_path
+    self.store_in_db: bool = store_in_db
     
     # Initialize extractor
     if use_ocr:
@@ -58,10 +66,14 @@ class PDFProcessor:
     
     # Initialize AI processor if API key is provided
     self.ai_processor: Optional[LLMProcessor] = None
-    # Use OpenRouter if configured
-    openrouter_key = os.getenv("OPENROUTER_API_KEY")
-    if openrouter_key and Config.validate_openrouter_key(openrouter_key):
-      self.ai_processor = LLMProcessor(openrouter_key)
+    if self.openai_api_key and Config.validate_openai_key(self.openai_api_key):
+      self.ai_processor = LLMProcessor(self.openai_api_key)
+
+    # Initialize database if needed
+    self.repository: Optional[PDFRepository] = None
+    if self.store_in_db and self.db_path:
+      init_database(self.db_path)
+      self.repository = PDFRepository(self.db_path)
   
   def process_pdf(self, pdf_path: str, output_config: dict) -> None:
     """Process a PDF file with the given configuration."""
@@ -103,7 +115,19 @@ class PDFProcessor:
       # Save in requested format(s)
       output_format = output_config.get("format", "csv")
       self._save_outputs(result, output_dir, output_format)
-      
+
+      # Store in database if enabled
+      if self.store_in_db and self.repository:
+        try:
+          source_url = output_config.get("source_url")
+          download_date = output_config.get("download_date")
+          document_id = self.repository.save_processing_result(
+            result, source_url=source_url, download_date=download_date
+          )
+          console.print(f"✅ Results stored in database (document ID: {document_id})", style="green")
+        except (RuntimeError, ValueError) as e:
+          console.print(f"⚠️ Failed to store results in database: {e}", style="yellow")
+
       # Show summary
       self._show_summary(result, output_dir)
       
@@ -204,7 +228,7 @@ class PDFProcessor:
   def process_with_ai(self, pdf_path: str, output_path: str) -> None:
     """Process PDF with AI post-processing."""
     if not self.ai_processor:
-      raise ConfigurationError("OpenRouter API key not configured")
+      raise ConfigurationError("OpenAI API key not configured")
     
     # Extract data
     text_pages = self.extractor.extract_text(pdf_path)
