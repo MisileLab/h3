@@ -188,7 +188,7 @@ requires-dist = [
     { name = "black", marker = "extra == 'dev'", specifier = "==25.11.0" },
     { name = "click", specifier = "==8.3.0" },
     { name = "httpx", specifier = ">=0.28.1" },
-    { name = "langchain", specifier = "==1.0.5" },
+    { name = "langchain", specifier = "==1.0.6" },
     { name = "langchain-openai", specifier = "==1.0.2" },
     { name = "lxml", specifier = ">=6.0.0" },
     { name = "numpy", specifier = "==2.3.4" },
@@ -439,16 +439,16 @@ wheels = [
 
 [[package]]
 name = "langchain"
-version = "1.0.5"
+version = "1.0.6"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "langchain-core" },
     { name = "langgraph" },
     { name = "pydantic" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/0c/5d/c98f2ffaefc73845a1f6bc66a8c2a643e36ce8ec09cff1307216c115d22c/langchain-1.0.5.tar.gz", hash = "sha256:7e0635b36a7f7a649be21fcce4c82b7428bcf72a5d14aacdf9f2636c4775f159", size = 461860, upload-time = "2025-11-07T23:04:59.414Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/4b/75/75884a15995f04f98aa252f3c100bb38027315d9a79c52903eb95aaf6580/langchain-1.0.6.tar.gz", hash = "sha256:b5cb8cf89fa52bc99f0dace824cd116fea41fa13ecb9a515422f44e49ea442e9", size = 461733, upload-time = "2025-11-14T18:57:09.565Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e1/4f/2603973fb3b74c717335703851a45914bc9794fbfaeb4ff74f7f08ecf5e8/langchain-1.0.5-py3-none-any.whl", hash = "sha256:d59ce7303f1d9e4bca41855b20a1842f4470a22d09a64fb93fb0ff30a2d36d4b", size = 93779, upload-time = "2025-11-07T23:04:57.83Z" },
+    { url = "https://files.pythonhosted.org/packages/ed/47/a215efe244cd1c63e4e98d560f12244cc71169c42194eec93ed9e47fda89/langchain-1.0.6-py3-none-any.whl", hash = "sha256:66cc1dc5239a5b53d377c0d7abd18c5a39e5f032f3d84e0cc07ae19a83f8aa2b", size = 93530, upload-time = "2025-11-14T18:57:07.892Z" },
 ]
 
 [[package]]
