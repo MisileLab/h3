@@ -5,7 +5,7 @@ description = "PDF Processing Tools - Extract and convert PDF content to various
 readme = "README.md"
 requires-python = ">=3.13,<3.14"
 dependencies = [
-  "click==8.3.0",
+  "click==8.3.1",
   "langchain==1.0.7",
   "langchain-openai==1.0.3",
   "numpy==2.3.4",
