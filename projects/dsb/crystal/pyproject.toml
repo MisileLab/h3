@@ -3,7 +3,7 @@ name = "crystal"
 version = "0.1.0"
 description = "LLM that do things"
 readme = "README.md"
-requires-python = ">=3.13.4,<3.14"
+requires-python = ">=3.14,<3.15"
 dependencies = [
   "gradio==5.49.1",
   "inquirer==3.4.1",
