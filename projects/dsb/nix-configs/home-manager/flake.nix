@@ -55,12 +55,6 @@
               runHook postInstall
             '';
           });
-          ddcutil = prev.ddcutil.overrideAttrs (old: {
-            src = prev.fetchurl {
-              url = "https://www.ddcutil.com/tarballs/ddcutil-${old.version}.tar.gz";
-              hash = "sha256-e24U+z1VHctBJbbw++R6FvpMo/egi0GWO+mOUOwjQiM=";
-            };
-          });
         })
       ];
       pkgs = import nixpkgs {
