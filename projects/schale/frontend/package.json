@@ -18,7 +18,7 @@
     "astro": "5.15.9",
     "dayjs": "1.11.19",
     "mobile-device-detect": "0.4.3",
-    "nanostores": "1.0.1",
+    "nanostores": "1.1.0",
     "tailwindcss": "4.1.17",
     "typescript": "5.9.3"
   }
