@@ -174,7 +174,7 @@ services:
 
   # Grafana
   grafana:
-    image: grafana/grafana:12.2.2
+    image: grafana/grafana:12.3.0
     container_name: nextpred-grafana
     restart: unless-stopped
     environment:
