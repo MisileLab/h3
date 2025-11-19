@@ -20,7 +20,7 @@ transformers==4.57.1
 sentencepiece==0.2.1
 onnx==1.19.1
 onnxruntime==1.23.2
-safetensors==0.6.2
+safetensors==0.7.0
 
 # Data processing
 numpy==2.3.5
