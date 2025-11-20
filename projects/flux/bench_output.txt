@@ -1,0 +1,91 @@
+warning: unused variable: `src`
+   --> src/typecheck.rs:412:36
+    |
+412 |             Expr::ParMapInplace(_, src, dst, span) => {
+    |                                    ^^^ help: if this is intentional, prefix it with an underscore: `_src`
+    |
+    = note: `#[warn(unused_variables)]` on by default
+
+warning: unused variable: `dst`
+   --> src/typecheck.rs:412:41
+    |
+412 |             Expr::ParMapInplace(_, src, dst, span) => {
+    |                                         ^^^ help: if this is intentional, prefix it with an underscore: `_dst`
+
+warning: unused variable: `span`
+   --> src/typecheck.rs:422:31
+    |
+422 |             Expr::Async(expr, span) => {
+    |                               ^^^^ help: if this is intentional, prefix it with an underscore: `_span`
+
+warning: unused variable: `span`
+   --> src/typecheck.rs:441:31
+    |
+441 |             Expr::Spawn(expr, span) => {
+    |                               ^^^^ help: if this is intentional, prefix it with an underscore: `_span`
+
+warning: unused variable: `actor`
+   --> src/typecheck.rs:451:24
+    |
+451 |             Expr::Send(actor, msg, span) => {
+    |                        ^^^^^ help: if this is intentional, prefix it with an underscore: `_actor`
+
+warning: unused variable: `msg`
+   --> src/typecheck.rs:451:31
+    |
+451 |             Expr::Send(actor, msg, span) => {
+    |                               ^^^ help: if this is intentional, prefix it with an underscore: `_msg`
+
+warning: unused variable: `span`
+   --> src/typecheck.rs:451:36
+    |
+451 |             Expr::Send(actor, msg, span) => {
+    |                                    ^^^^ help: if this is intentional, prefix it with an underscore: `_span`
+
+warning: `flux_lang` (lib) generated 7 warnings
+   Compiling flux_lang v0.1.0 (/home/misile/repos/h3/projects/flux)
+warning: unused import: `super::*`
+  --> benches/rust_impls.rs:39:9
+   |
+39 |     use super::*;
+   |         ^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` on by default
+
+warning: `flux_lang` (bench "compiler_bench") generated 1 warning (run `cargo fix --bench "compiler_bench"` to apply 1 suggestion)
+    Finished `bench` profile [optimized] target(s) in 2.05s
+     Running benches/compiler_bench.rs (target/release/deps/compiler_bench-ada550da5b46300f)
+Gnuplot not found, using plotters backend
+Benchmarking compilation_phases/lexer
+Benchmarking compilation_phases/lexer: Warming up for 3.0000 s
+Benchmarking compilation_phases/lexer: Collecting 100 samples in estimated 5.0022 s (4.9M iterations)
+Benchmarking compilation_phases/lexer: Analyzing
+compilation_phases/lexer
+                        time:   [1.1376 µs 1.1814 µs 1.2173 µs]
+Benchmarking compilation_phases/parser
+Benchmarking compilation_phases/parser: Warming up for 3.0000 s
+Benchmarking compilation_phases/parser: Collecting 100 samples in estimated 5.0066 s (3.4M iterations)
+Benchmarking compilation_phases/parser: Analyzing
+compilation_phases/parser
+                        time:   [1.4107 µs 1.4499 µs 1.4999 µs]
+Benchmarking compilation_phases/typecheck
+Benchmarking compilation_phases/typecheck: Warming up for 3.0000 s
+Benchmarking compilation_phases/typecheck: Collecting 100 samples in estimated 5.0031 s (3.3M iterations)
+Benchmarking compilation_phases/typecheck: Analyzing
+compilation_phases/typecheck
+                        time:   [1.9051 µs 1.9881 µs 2.0631 µs]
+Benchmarking compilation_phases/full_compile
+Benchmarking compilation_phases/full_compile: Warming up for 3.0000 s
+Benchmarking compilation_phases/full_compile: Collecting 100 samples in estimated 5.0007 s (3.3M iterations)
+Benchmarking compilation_phases/full_compile: Analyzing
+compilation_phases/full_compile
+                        time:   [1.7147 µs 1.7983 µs 1.8944 µs]
+
+Benchmarking fibonacci/flux_fib_20
+Benchmarking fibonacci/flux_fib_20: Warming up for 3.0000 s
+
+thread 'main' panicked at benches/compiler_bench.rs:57:43:
+called `Result::unwrap()` on an `Err` value: Expected Else, found Newline
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+error: bench failed, to rerun pass `--bench compiler_bench`
