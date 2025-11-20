@@ -41,7 +41,8 @@
         (final: prev: {
           codex = nix-ai-toolspkgs.codex;
           claude-code = nix-ai-toolspkgs.claude-code;
-          opencode = nix-ai-toolspkgs.opencode;
+          # something is not stable
+          # opencode = nix-ai-toolspkgs.opencode;
           dart = prev.dart.overrideAttrs (old: {
             installPhase = ''
               runHook preInstall
