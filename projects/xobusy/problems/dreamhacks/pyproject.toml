@@ -3,14 +3,14 @@ name = "problems"
 version = "0.1.0"
 description = "sub monorepo for problems"
 readme = "README.md"
-requires-python = ">=3.13.4"
+requires-python = ">=3.14.0"
 dependencies = [
   "beautifulsoup4==4.14.2",
   "flask==3.1.2",
   "httpx==0.28.1",
   "lxml==6.0.2",
   "numpy==2.3.5",
-  "pwntools==4.15.0",
+  # "pwntools==4.15.0",
   "requests==2.32.5",
   "tqdm==4.67.1",
 ]
