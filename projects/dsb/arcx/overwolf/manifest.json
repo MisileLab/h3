@@ -1,0 +1,79 @@
+{
+  "manifest_version": 1,
+  "type": "WebApp",
+  "meta": {
+    "name": "ArcX EV Overlay",
+    "version": "0.1.0",
+    "minimum-overwolf-version": "0.195.0",
+    "author": "ArcX Team",
+    "icon": "icon.png",
+    "icon_gray": "icon_gray.png",
+    "description": "Expected Value overlay for extraction shooters"
+  },
+  "permissions": [
+    "GameInfo",
+    "GameControl"
+  ],
+  "data": {
+    "start_window": "background",
+    "windows": {
+      "background": {
+        "file": "src/background.html",
+        "is_background_page": true,
+        "desktop_only": false,
+        "transparent": true,
+        "resizable": false,
+        "show_in_taskbar": false,
+        "size": {
+          "width": 1,
+          "height": 1
+        }
+      },
+      "overlay": {
+        "file": "src/index.html",
+        "transparent": true,
+        "override_on_update": true,
+        "resizable": false,
+        "show_in_taskbar": false,
+        "size": {
+          "width": 400,
+          "height": 250
+        },
+        "start_position": {
+          "top": 20,
+          "right": 20
+        },
+        "in_game_only": true,
+        "focus_game_takeover": "ReleaseOnHidden",
+        "focus_game_takeover_release_hotkey": "showhide"
+      },
+      "settings": {
+        "file": "src/settings.html",
+        "transparent": false,
+        "resizable": true,
+        "show_in_taskbar": true,
+        "size": {
+          "width": 600,
+          "height": 400
+        },
+        "desktop_only": true
+      }
+    },
+    "game_events": [],
+    "game_targeting": {
+      "type": "dedicated",
+      "game_ids": [
+        21864
+      ]
+    },
+    "launch_events": [
+      {
+        "event": "GameLaunch",
+        "event_data": {
+          "game_ids": [21864]
+        },
+        "start_minimized": false
+      }
+    ]
+  }
+}

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArcX EV Overlay</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 15px;
+            backdrop-filter: blur(5px);
+        }
+
+        .container {
+            width: 100%;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #00ff88;
+        }
+
+        .status {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .status.connected {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+        }
+
+        .status.disconnected {
+            background: rgba(255, 0, 0, 0.2);
+            color: #ff4444;
+        }
+
+        .ev-display {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 15px;
+        }
+
+        .ev-item {
+            text-align: center;
+        }
+
+        .ev-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 5px;
+        }
+
+        .ev-value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .delta {
+            margin-top: 5px;
+            font-size: 16px;
+        }
+
+        .delta.green {
+            color: #00ff88;
+        }
+
+        .delta.yellow {
+            color: #ffaa00;
+        }
+
+        .delta.red {
+            color: #ff4444;
+        }
+
+        .recommendation {
+            text-align: center;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .recommendation.green {
+            background: rgba(0, 255, 136, 0.2);
+            border: 2px solid #00ff88;
+            color: #00ff88;
+        }
+
+        .recommendation.yellow {
+            background: rgba(255, 170, 0, 0.2);
+            border: 2px solid #ffaa00;
+            color: #ffaa00;
+        }
+
+        .recommendation.red {
+            background: rgba(255, 68, 68, 0.2);
+            border: 2px solid #ff4444;
+            color: #ff4444;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-start {
+            background: #00ff88;
+            color: black;
+        }
+
+        .btn-end {
+            background: #ff4444;
+            color: white;
+        }
+
+        .btn-good {
+            background: #00ff88;
+            color: black;
+        }
+
+        .btn-bad {
+            background: #ff4444;
+            color: white;
+        }
+
+        .risk-control {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+        }
+
+        .risk-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 8px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #00ff88;
+            cursor: pointer;
+        }
+
+        .risk-values {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.4);
+            margin-top: 4px;
+        }
+
+        .info {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.4);
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        #feedback-message {
+            display: none;
+            text-align: center;
+            color: #00ff88;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="title">ArcX</div>
+            <div class="status" id="status">연결 중...</div>
+        </div>
+
+        <div class="ev-display">
+            <div class="ev-item">
+                <div class="ev-label">파밍 계속</div>
+                <div class="ev-value" id="ev-stay">-</div>
+            </div>
+            <div class="ev-item">
+                <div class="ev-label">지금 추출</div>
+                <div class="ev-value" id="ev-extract">-</div>
+            </div>
+        </div>
+
+        <div class="delta" id="delta-ev">-</div>
+
+        <div class="recommendation" id="recommendation">
+            대기 중...
+        </div>
+
+        <div class="controls">
+            <button class="btn-start" id="start-run">시작</button>
+            <button class="btn-end" id="end-run">종료</button>
+        </div>
+
+        <div class="controls">
+            <button class="btn-good" id="feedback-good">👍 좋음</button>
+            <button class="btn-bad" id="feedback-bad">👎 별로</button>
+        </div>
+
+        <div class="risk-control">
+            <div class="risk-label">리스크 성향</div>
+            <input type="range" id="risk-slider" min="0" max="2" value="1" step="1">
+            <div class="risk-values">
+                <span>안전</span>
+                <span>보통</span>
+                <span>공격적</span>
+            </div>
+        </div>
+
+        <div class="info">
+            Run ID: <span id="run-id">-</span>
+        </div>
+
+        <div id="feedback-message"></div>
+    </div>
+
+    <script src="overlay.js"></script>
+</body>
+</html>

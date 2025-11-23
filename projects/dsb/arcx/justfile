@@ -1,0 +1,435 @@
+# ArcX Justfile
+# Modern command runner for project tasks
+# Install: https://github.com/casey/just
+
+# Default recipe (shown with `just --list`)
+default:
+    @just --list
+
+# Use a repo-local uv cache to avoid permission issues
+#set export UV_CACHE_DIR := ".uv_cache"
+
+# ==============================================================================
+# Installation
+# ==============================================================================
+
+# Install backend dependencies (overlay is native)
+install: install-backend
+    @echo "✓ Backend dependencies installed"
+
+# Install backend Python dependencies
+install-backend:
+    @echo "Installing backend dependencies with uv..."
+    cd backend && uv pip install -e .
+    @echo "✓ Backend installed"
+
+# Install backend with development tools
+install-dev:
+    @echo "Installing backend with dev dependencies..."
+    cd backend && uv pip install -e ".[dev]"
+    @echo "✓ Backend (dev) installed"
+
+# Sync backend with uv.lock (fastest)
+sync-backend:
+    @echo "Syncing backend with uv..."
+    cd backend && uv sync
+    @echo "✓ Backend synced"
+
+# Update backend dependencies
+update: update-backend
+    @echo "✓ Backend dependencies updated"
+
+# Update backend dependencies
+update-backend:
+    @echo "Updating backend dependencies..."
+    cd backend && uv lock --upgrade && uv sync
+    @echo "✓ Backend dependencies updated"
+
+# Install PyTorch with ROCm support (AMD GPU - gfx110X for RX 7000 series)
+install-rocm:
+    @echo "Installing PyTorch with ROCm support (gfx110X - RX 7000 series)..."
+    @echo "Installing ROCm libraries..."
+    cd backend && uv pip install --index-url https://rocm.nightlies.amd.com/v2/gfx110X-all/ "rocm[libraries,devel]"
+    @echo "Installing PyTorch with ROCm..."
+    cd backend && uv pip install --index-url https://rocm.nightlies.amd.com/v2/gfx110X-all/ --pre torch torchaudio torchvision
+    @echo "✓ ROCm PyTorch installed for gfx110X"
+
+# Install PyTorch with ROCm for gfx1100/gfx1101/gfx1102 (RX 7900/7800/7700/7600)
+install-rocm-gfx110x:
+    @echo "Installing PyTorch with ROCm support (gfx110X)..."
+    cd backend && uv pip install --index-url https://rocm.nightlies.amd.com/v2/gfx110X-all/ "rocm[libraries,devel]"
+    cd backend && uv pip install --index-url https://rocm.nightlies.amd.com/v2/gfx110X-all/ --pre torch torchaudio torchvision
+    @echo "✓ ROCm PyTorch installed for gfx110X"
+
+# Install PyTorch with ROCm for gfx1150/gfx1151 (Future AMD GPUs)
+install-rocm-gfx115x:
+    @echo "Installing PyTorch with ROCm support (gfx115X)..."
+    cd backend && uv pip install --index-url https://rocm.nightlies.amd.com/v2/gfx1151/ "rocm[libraries,devel]"
+    cd backend && uv pip install --index-url https://rocm.nightlies.amd.com/v2/gfx1151/ --pre torch torchaudio torchvision
+    @echo "✓ ROCm PyTorch installed for gfx115X"
+
+# Install PyTorch with ROCm 5.7 (Linux/Older AMD GPUs)
+install-rocm-legacy:
+    @echo "Installing PyTorch with ROCm 5.7 (Linux)..."
+    cd backend && uv pip install torch torchvision --index-url https://download.pytorch.org/whl/rocm5.7
+    @echo "✓ ROCm PyTorch installed (legacy)"
+
+# Install torch-directml (AMD/Intel GPU)
+install-directml:
+    @echo "Installing torch-directml..."
+    cd backend && uv pip install torch-directml
+    @echo "✓ DirectML installed"
+
+# ==============================================================================
+# Running
+# ==============================================================================
+
+# Start the backend API server
+serve:
+    @echo "Starting ArcX API server..."
+    cd backend && uv run python serve.py
+
+# Start server in development mode with auto-reload
+serve-dev:
+    @echo "Starting ArcX API server (dev mode)..."
+    cd backend && uv run uvicorn arcx.api.server:app --reload --host 127.0.0.1 --port 8765
+
+# Train the model
+train epochs="50" batch_size="32" lr="1e-4":
+    @echo "Training model (epochs={{epochs}}, batch={{batch_size}}, lr={{lr}})..."
+    cd backend && python train.py --epochs {{epochs}} --batch-size {{batch_size}} --lr {{lr}}
+
+# Train with custom data directory
+train-custom data_dir epochs="50":
+    @echo "Training with custom data dir: {{data_dir}}"
+    cd backend && python train.py --data-dir {{data_dir}} --epochs {{epochs}}
+
+# Resume training from checkpoint
+train-resume checkpoint:
+    @echo "Resuming training from: {{checkpoint}}"
+    cd backend && python train.py --resume {{checkpoint}}
+
+# Run the native overlay (frameless always-on-top window)
+overlay:
+    @echo "Starting native overlay..."
+    cd backend && uv run python -m arcx.overlay.native_overlay
+
+# ==============================================================================
+# Legacy Overwolf (optional)
+# ==============================================================================
+
+# Update Overwolf dependencies
+update-overwolf:
+    @echo "Updating Overwolf dependencies..."
+    cd overwolf && pnpm update -L
+    @echo "✓ Overwolf dependencies updated"
+
+# Install Overwolf app dependencies
+install-overwolf:
+    @echo "Installing Overwolf dependencies with pnpm..."
+    cd overwolf && pnpm install
+    @echo "✓ Overwolf dependencies installed"
+
+# Build Overwolf app
+build-overwolf:
+    @echo "Building Overwolf app..."
+    cd overwolf && pnpm run build
+    @echo "✓ Overwolf app built"
+
+# Build Overwolf app in watch mode (development)
+watch-overwolf:
+    @echo "Building Overwolf app (watch mode)..."
+    cd overwolf && pnpm run watch
+
+# ==============================================================================
+# Testing
+# ==============================================================================
+
+# Run all tests
+test:
+    @echo "Running all tests..."
+    cd backend && pytest tests/ -v
+
+# Run tests with coverage
+test-cov:
+    @echo "Running tests with coverage..."
+    cd backend && pytest tests/ --cov=arcx --cov-report=html --cov-report=term
+
+# Test ML models
+test-model:
+    @echo "Testing ML models..."
+    cd backend && pytest tests/test_model.py -v
+
+# Test individual model components
+test-encoder:
+    @echo "Testing Frame Encoder..."
+    cd backend && python -c "from arcx.ml.encoder import test_encoder; test_encoder()"
+
+test-qnet:
+    @echo "Testing Temporal Q-Net..."
+    cd backend && python -c "from arcx.ml.qnet import test_qnet; test_qnet()"
+
+test-evmodel:
+    @echo "Testing EVModel..."
+    cd backend && python -c "from arcx.ml.model import test_evmodel; test_evmodel()"
+
+# Test data pipeline
+test-data:
+    @echo "Testing data pipeline..."
+    cd backend && python -c "from arcx.data.logger import test_logger; test_logger()"
+    cd backend && python -c "from arcx.data.dataset import test_dataset; test_dataset()"
+
+# Test capture system
+test-capture:
+    @echo "Testing capture system..."
+    cd backend && python -c "from arcx.capture.capture import test_capture; test_capture()"
+    cd backend && python -c "from arcx.capture.ringbuffer import test_ring_buffer; test_ring_buffer()"
+
+# Test inference engine
+test-inference:
+    @echo "Testing inference engine..."
+    cd backend && python -c "from arcx.ml.inference import test_inference_engine; test_inference_engine()"
+
+# Test trainer
+test-trainer:
+    @echo "Testing trainer..."
+    cd backend && python -c "from arcx.training.trainer import test_trainer; test_trainer()"
+
+# ==============================================================================
+# Development Tools
+# ==============================================================================
+
+# Format code with black
+format:
+    @echo "Formatting code with black..."
+    cd backend && black arcx/ tests/
+    @echo "✓ Code formatted"
+
+# Lint code with ruff
+lint:
+    @echo "Linting code with ruff..."
+    cd backend && ruff check arcx/ tests/
+    @echo "✓ Code linted"
+
+# Type check with mypy
+typecheck:
+    @echo "Type checking with mypy..."
+    cd backend && mypy arcx/
+    @echo "✓ Type check complete"
+
+# Run all code quality checks
+check: lint typecheck
+    @echo "✓ All checks passed"
+
+# ==============================================================================
+# Data Management
+# ==============================================================================
+
+# Show data statistics
+data-stats:
+    @echo "Data statistics:"
+    @find data -name "*.parquet" -exec ls -lh {} \; | awk '{sum+=$5; print} END {print "Total size:", sum}'
+    @echo ""
+    @echo "Parquet files:"
+    @ls -1 data/*.parquet 2>/dev/null | wc -l || echo "0"
+
+# Clean training data
+clean-data:
+    @echo "Cleaning training data..."
+    rm -rf data/*.parquet
+    @echo "✓ Data cleaned"
+
+# Clean model checkpoints
+clean-models:
+    @echo "Cleaning model checkpoints..."
+    rm -rf models/*.safetensors models/checkpoints/
+    @echo "✓ Models cleaned"
+
+# Clean all generated files
+clean: clean-data
+    @echo "Cleaning all generated files..."
+    rm -rf backend/__pycache__ backend/arcx/__pycache__
+    rm -rf backend/.pytest_cache backend/.coverage backend/htmlcov
+    rm -rf backend/.venv
+    rm -rf overwolf/dist overwolf/node_modules
+    find backend -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+    find backend -type f -name "*.pyc" -delete 2>/dev/null || true
+    @echo "✓ Cleaned"
+
+# ==============================================================================
+# System Status
+# ==============================================================================
+
+# Check system status
+status:
+    @echo "=== ArcX System Status ==="
+    @echo ""
+    @echo "Backend:"
+    @cd backend && python -c "from arcx.device import device_manager; print(f'  Device: {device_manager.device} ({device_manager.backend.value})')" || echo "  Not installed"
+    @echo ""
+    @echo "Models:"
+    @ls -lh models/*.safetensors 2>/dev/null | awk '{print "  " $$9 ": " $$5}' || echo "  No trained models"
+    @echo ""
+    @echo "Data:"
+    @find data -name "*.parquet" 2>/dev/null | wc -l | awk '{print "  Parquet files: " $$1}' || echo "  0"
+
+# Check device backend
+check-device:
+    @echo "Checking device backend..."
+    cd backend && python -c "from arcx.device import device_manager; print(device_manager); stats = device_manager.get_memory_stats(); print('Memory:', stats if stats else 'N/A')"
+
+# Check API server health
+check-api:
+    @echo "Checking API server..."
+    @curl -s http://127.0.0.1:8765/ | python -m json.tool || echo "Server not running"
+
+# Get API status
+api-status:
+    @echo "Getting API status..."
+    @curl -s http://127.0.0.1:8765/status | python -m json.tool || echo "Server not running"
+
+# ==============================================================================
+# Benchmarking
+# ==============================================================================
+
+# Benchmark model inference
+benchmark-inference:
+    @echo "Benchmarking inference..."
+    cd backend && python -c "import torch; import time; from arcx.ml.model import EVModel; from arcx.device import device_manager; print('Loading model...'); model = EVModel(encoder_pretrained=False).to(device_manager.device); model.eval(); frames = torch.randn(1, 32, 3, 225, 400).to(device_manager.device); print('Warming up...'); [model.forward_frames(frames) for _ in range(10)]; print('Benchmarking...'); torch.cuda.synchronize() if torch.cuda.is_available() else None; start = time.time(); [model.forward_frames(frames) for _ in range(100)]; torch.cuda.synchronize() if torch.cuda.is_available() else None; elapsed = time.time() - start; print(f'Average inference time: {elapsed*10:.2f}ms')"
+
+# Benchmark encoder only
+benchmark-encoder:
+    @echo "Benchmarking encoder..."
+    cd backend && python -c "import torch; import time; from arcx.ml.encoder import FrameEncoder; from arcx.device import device_manager; encoder = FrameEncoder(pretrained=False).to(device_manager.device); encoder.eval(); frames = torch.randn(32, 3, 225, 400).to(device_manager.device); [encoder(frames) for _ in range(10)]; torch.cuda.synchronize() if torch.cuda.is_available() else None; start = time.time(); [encoder(frames) for _ in range(100)]; torch.cuda.synchronize() if torch.cuda.is_available() else None; elapsed = time.time() - start; print(f'Average encoder time: {elapsed*10:.2f}ms')"
+
+# ==============================================================================
+# Utilities
+# ==============================================================================
+
+# Show logs (if logging to file)
+logs:
+    @tail -f backend/server.log 2>/dev/null || echo "No log file found. Logs are output to console."
+
+# Create dummy data for testing
+create-dummy-data runs="5" decisions="20":
+    @echo "Creating dummy data ({{runs}} runs, {{decisions}} decisions each)..."
+    cd backend && python -c "import torch; from pathlib import Path; from arcx.data.logger import DataLogger; logger = DataLogger(); exec('''for run_idx in range({{runs}}):\n    logger.start_run(f\"dummy_run_{run_idx}\", \"test_map\")\n    for dec_idx in range({{decisions}}):\n        z_seq = torch.randn(32, 512)\n        logger.log_decision(dec_idx, dec_idx * 10.0, \"stay\" if dec_idx < {{decisions}}-1 else \"extract\", z_seq)\n    logger.end_run(1000.0 + run_idx * 500, 200.0, True)'''); print('✓ Dummy data created')"
+
+# Count lines of code
+count-loc:
+    @echo "=== Lines of Code ==="
+    @echo "Python:"
+    @find backend/arcx -name "*.py" | xargs wc -l | tail -1
+    @echo "TypeScript:"
+    @find overwolf/src -name "*.ts" | xargs wc -l | tail -1
+    @echo "Total:"
+    @find backend/arcx overwolf/src -name "*.py" -o -name "*.ts" | xargs wc -l | tail -1
+
+# Show project tree
+tree:
+    @echo "=== Project Structure ==="
+    @find . -type f \( -name "*.py" -o -name "*.ts" -o -name "*.json" -o -name "*.toml" -o -name "*.md" \) \
+        ! -path "*/node_modules/*" \
+        ! -path "*/__pycache__/*" \
+        ! -path "*/dist/*" \
+        ! -path "*/.pytest_cache/*" \
+        | sort
+
+# Open documentation
+docs:
+    @echo "Opening documentation..."
+    @sensible-browser README.md 2>/dev/null || xdg-open README.md 2>/dev/null || open README.md 2>/dev/null || cat README.md
+
+# ==============================================================================
+# Quick Start
+# ==============================================================================
+
+# Quick start: install everything and check status
+quick-start: install status
+    @echo ""
+    @echo "✓ Quick start complete!"
+    @echo ""
+    @echo "Next steps:"
+    @echo "  1. Start server: just serve"
+    @echo "  2. Launch overlay: just overlay"
+    @echo "  3. Start game and test overlay"
+
+# Update everything and rebuild
+upgrade: update
+    @echo "✓ Everything updated"
+
+# Development setup
+dev-setup: install-dev
+    @echo "✓ Development environment ready"
+    @echo ""
+    @echo "Run in separate terminals:"
+    @echo "  Terminal 1: just serve-dev"
+    @echo "  Terminal 2: just overlay"
+
+# ==============================================================================
+# Release
+# ==============================================================================
+
+# Prepare release build
+release: clean install test
+    @echo "✓ Release build complete"
+    @echo ""
+    @echo "Files ready:"
+    @echo "  Backend: backend/arcx/"
+
+# ==============================================================================
+# Help
+# ==============================================================================
+
+# Show detailed help
+help:
+    @echo "ArcX Command Runner (Just)"
+    @echo ""
+    @echo "Installation:"
+    @echo "  just install              - Install all dependencies"
+    @echo "  just install-backend      - Install backend only"
+    @echo "  just sync-backend         - Sync with uv.lock (fastest)"
+    @echo ""
+    @echo "AMD GPU (ROCm):"
+    @echo "  just install-rocm         - ROCm for gfx110X (RX 7000 series)"
+    @echo "  just install-rocm-gfx110x - ROCm for RX 7900/7800/7700/7600"
+    @echo "  just install-rocm-gfx115x - ROCm for future AMD GPUs"
+    @echo "  just install-rocm-legacy  - ROCm 5.7 (Linux/older GPUs)"
+    @echo "  just install-directml     - DirectML (fallback)"
+    @echo ""
+    @echo "Updates:"
+    @echo "  just update            - Update all dependencies"
+    @echo "  just update-backend    - Update backend only"
+    @echo ""
+    @echo "Running:"
+    @echo "  just serve            - Start API server"
+    @echo "  just overlay          - Launch native overlay"
+    @echo "  just train            - Train model (default: 50 epochs)"
+    @echo "  just train 100 64     - Train with custom epochs/batch"
+    @echo ""
+    @echo "Testing:"
+    @echo "  just test             - Run all tests"
+    @echo "  just test-model       - Test ML models"
+    @echo "  just test-data        - Test data pipeline"
+    @echo ""
+    @echo "Development:"
+    @echo "  just format           - Format code"
+    @echo "  just lint             - Lint code"
+    @echo "  just check            - Run all checks"
+    @echo "  just dev-setup        - Setup dev environment"
+    @echo ""
+    @echo "Status:"
+    @echo "  just status           - System status"
+    @echo "  just check-device     - Check GPU backend"
+    @echo "  just api-status       - API health check"
+    @echo ""
+    @echo "Utilities:"
+    @echo "  just clean            - Clean all generated files"
+    @echo "  just clean-data       - Clean training data"
+    @echo "  just benchmark-inference - Benchmark model"
+    @echo "  just create-dummy-data   - Create test data"
+    @echo ""
+    @echo "Quick Start:"
+    @echo "  just quick-start      - Install & setup everything"
+    @echo ""
+    @echo "For full list: just --list"

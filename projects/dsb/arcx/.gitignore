@@ -1,0 +1,81 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# uv
+backend/uv.lock
+#.uv_cache/
+.python-version
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# ML Models
+models/*.safetensors
+models/*.pt
+models/*.pth
+!models/.gitkeep
+
+# Data
+data/*.parquet
+data/*.csv
+data/*.db
+!data/.gitkeep
+
+# Logs
+*.log
+logs/
+
+# Checkpoints
+checkpoints/
+*.ckpt
+
+# Overwolf
+overwolf/node_modules/
+overwolf/dist/
+overwolf/package-lock.json
+overwolf/pnpm-lock.yaml
+
+# Compiled TypeScript
+overwolf/src/*.js
+overwolf/src/*.js.map
+
+# Test coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+Thumbs.db
