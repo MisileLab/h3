@@ -340,7 +340,7 @@ wheels = [
 
 [[package]]
 name = "minio"
-version = "7.2.18"
+version = "7.2.19"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "argon2-cffi" },
@@ -349,9 +349,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "urllib3" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/71/99/1ad8733fa3f2fa82726e470f8c321e17f9321083b234ab45ad6b59d80d9f/minio-7.2.18.tar.gz", hash = "sha256:173402a5716099159c5659f9de75be204ebe248557b9f1cc9cf45aa70e9d3024", size = 135544, upload-time = "2025-09-29T17:00:28.238Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a2/6c/dc6f0697357a0f71f2773af8e69d658c673e68954e0d0d53242918404fc3/minio-7.2.19.tar.gz", hash = "sha256:756f97fb3d19d198facd1b6ff44006a58934a5b09d512e343227cdaf92f3da13", size = 149526, upload-time = "2025-11-24T08:50:48.42Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/7d/ae/f32695da4f93de50dd7075100dab8cf689a9d96270f58ce6f940fd044a3e/minio-7.2.18-py3-none-any.whl", hash = "sha256:f23a6edbff8d0bc4b5c1a61b2628a01c5a3342aefc613ff9c276012e6321108f", size = 93120, upload-time = "2025-09-29T17:00:26.86Z" },
+    { url = "https://files.pythonhosted.org/packages/b2/e6/7921c4daf50eefe1a0ef6d5c06ce9c66ec48bf1baec5b1a257c06285a856/minio-7.2.19-py3-none-any.whl", hash = "sha256:53093c99c8716fdd089aec2e29bff28fe20f962334a096b72c6e6201e32628e0", size = 103517, upload-time = "2025-11-24T08:50:46.649Z" },
 ]
 
 [[package]]
@@ -587,7 +587,7 @@ requires-dist = [
     { name = "fake-useragent", specifier = "==2.2.0" },
     { name = "httpx", specifier = "==0.28.1" },
     { name = "inquirer", specifier = "==3.4.1" },
-    { name = "minio", specifier = "==7.2.18" },
+    { name = "minio", specifier = "==7.2.19" },
     { name = "pygithub", specifier = "==2.8.1" },
     { name = "tomli", specifier = "==2.3.0" },
     { name = "tqdm", specifier = "==4.67.1" },
