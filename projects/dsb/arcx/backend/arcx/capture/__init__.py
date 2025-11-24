@@ -2,6 +2,7 @@
 
 from .capture import ScreenCapture, FallbackCapture, create_capture
 from .ringbuffer import RingBuffer, FrameRingBuffer, LatentRingBuffer, CombinedRingBuffer
+from .extraction_detector import ExtractionDetector
 
 __all__ = [
     "ScreenCapture",
@@ -11,4 +12,5 @@ __all__ = [
     "FrameRingBuffer",
     "LatentRingBuffer",
     "CombinedRingBuffer",
+    "ExtractionDetector",
 ]

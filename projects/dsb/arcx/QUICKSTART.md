@@ -8,7 +8,6 @@ Get up and running with ArcX in 5 minutes.
 - Python 3.10 or later
 - **uv** (Python package manager) - [Install guide](https://docs.astral.sh/uv/)
 - NVIDIA/AMD GPU (optional, will fallback to CPU)
-- (Optional, legacy only) Node.js + pnpm + Overwolf for the old Overwolf app
 
 ### Install uv
 

@@ -24,6 +24,8 @@ dependencies = [
     "pillow>=10.0.0",
     "httpx>=0.25.0",
     "packaging>=25.0",
+    "ultralytics>=8.3.0",
+    "opencv-python>=4.8.0",
 ]
 
 [project.optional-dependencies]
@@ -116,5 +118,7 @@ module = [
     "dxcam.*",
     "polars.*",
     "safetensors.*",
+    "ultralytics.*",
+    "cv2.*",
 ]
 ignore_missing_imports = true

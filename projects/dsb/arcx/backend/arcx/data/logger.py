@@ -10,6 +10,7 @@ from typing import List, Optional, Dict, Any
 from dataclasses import dataclass, field
 import json
 
+import numpy as np
 import polars as pl
 import torch
 
@@ -48,6 +49,12 @@ class RunData:
     final_loot_value: Optional[float] = None
     total_time_sec: Optional[float] = None
     success: Optional[bool] = None
+
+    # YOLO valuation results (optional)
+    num_items_detected: Optional[int] = None
+    avg_detection_confidence: Optional[float] = None
+    value_breakdown: Optional[Dict[str, float]] = None  # item_type -> value
+    rarity_counts: Optional[Dict[str, int]] = None  # rarity -> count
 
 
 class DataLogger:
@@ -137,26 +144,66 @@ class DataLogger:
 
     def end_run(
         self,
-        final_loot_value: float,
-        total_time_sec: float,
-        success: bool,
+        final_loot_value: Optional[float] = None,
+        total_time_sec: Optional[float] = None,
+        success: Optional[bool] = None,
+        screenshot: Optional[np.ndarray] = None,
+        valuator=None,
     ):
         """
         End current run with final results.
 
         Args:
-            final_loot_value: Total loot value
+            final_loot_value: Total loot value (optional if screenshot provided)
             total_time_sec: Total run duration
             success: Whether extraction succeeded
+            screenshot: Extraction screenshot for YOLO valuation (optional)
+            valuator: ItemValuator instance for auto-valuation (optional)
         """
         if self.current_run is None:
             logger.warning("end_run called without active run")
             return
 
-        # Populate final values
-        self.current_run.final_loot_value = final_loot_value
-        self.current_run.total_time_sec = total_time_sec
-        self.current_run.success = success
+        # Auto-valuate from screenshot if provided
+        if screenshot is not None and valuator is not None:
+            try:
+                from arcx.valuation import ItemValuator
+
+                logger.info("Auto-valuating loot from screenshot...")
+                result = valuator.valuate_screenshot(screenshot)
+
+                # Use YOLO-calculated value
+                self.current_run.final_loot_value = result.total_value
+                self.current_run.num_items_detected = result.num_items
+                self.current_run.avg_detection_confidence = result.avg_confidence
+                self.current_run.value_breakdown = result.value_breakdown
+                self.current_run.rarity_counts = result.rarity_counts
+
+                logger.info(
+                    f"YOLO valuation: {result.total_value:.2f} "
+                    f"({result.num_items} items, "
+                    f"avg conf: {result.avg_confidence:.2f})"
+                )
+
+            except Exception as e:
+                logger.error(f"YOLO valuation failed: {e}", exc_info=True)
+                # Fall back to manual value if provided
+                if final_loot_value is not None:
+                    self.current_run.final_loot_value = final_loot_value
+                else:
+                    logger.error("No loot value available!")
+                    self.current_run.final_loot_value = 0.0
+
+        elif final_loot_value is not None:
+            # Use manually provided value
+            self.current_run.final_loot_value = final_loot_value
+        else:
+            logger.error("No loot value or screenshot provided!")
+            self.current_run.final_loot_value = 0.0
+
+        # Populate other final values
+        self.current_run.total_time_sec = total_time_sec or 0.0
+        self.current_run.success = success if success is not None else False
 
         # Move to completed
         self.completed_runs.append(self.current_run)
@@ -165,7 +212,9 @@ class DataLogger:
         logger.info(
             f"Ended run: {self.current_run.run_id}, "
             f"decisions={len(self.current_run.decisions)}, "
-            f"loot={final_loot_value}, time={total_time_sec}s, success={success}"
+            f"loot={self.current_run.final_loot_value:.2f}, "
+            f"time={self.current_run.total_time_sec}s, "
+            f"success={self.current_run.success}"
         )
 
         self.current_run = None
@@ -212,6 +261,18 @@ class DataLogger:
                 z_seq_np = decision.z_seq.numpy()  # [L, D]
                 z_flat = flatten_latent_sequence(z_seq_np.tolist())
 
+                # Convert valuation dicts to JSON
+                value_breakdown_json = (
+                    json.dumps(run.value_breakdown)
+                    if run.value_breakdown is not None
+                    else None
+                )
+                rarity_counts_json = (
+                    json.dumps(run.rarity_counts)
+                    if run.rarity_counts is not None
+                    else None
+                )
+
                 row = {
                     "run_id": run.run_id,
                     "decision_idx": decision.decision_idx,
@@ -222,6 +283,10 @@ class DataLogger:
                     "total_time_sec": run.total_time_sec,
                     "success": run.success,
                     "z_seq": z_flat,
+                    "num_items_detected": run.num_items_detected,
+                    "avg_detection_confidence": run.avg_detection_confidence,
+                    "value_breakdown_json": value_breakdown_json,
+                    "rarity_counts_json": rarity_counts_json,
                 }
                 rows.append(row)
 

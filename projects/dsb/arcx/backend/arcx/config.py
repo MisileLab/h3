@@ -69,7 +69,7 @@ class APIConfig(BaseModel):
 
     host: str = Field(default="127.0.0.1")
     port: int = Field(default=8765)
-    cors_origins: list[str] = Field(default=["http://localhost:*", "overwolf-extension://*"])
+    cors_origins: list[str] = Field(default=["http://localhost:*"])
 
 
 class DataConfig(BaseModel):

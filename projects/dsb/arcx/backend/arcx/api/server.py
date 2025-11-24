@@ -1,9 +1,12 @@
 """FastAPI server for overlay communication"""
 
+import base64
 import logging
 import time
 from contextlib import asynccontextmanager
 
+import cv2
+import numpy as np
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -15,8 +18,12 @@ from arcx.api.schemas import (
     StartRunRequest,
     EndRunRequest,
     SystemStatus,
+    ValuateScreenshotRequest,
+    AutoValuationResult,
+    DetectedItemSchema,
 )
 from arcx.config import config
+from arcx.valuation import ItemValuator
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +36,7 @@ class AppState:
         self.model = None  # EVModel instance
         self.inference_engine = None  # InferenceEngine instance
         self.data_logger = None  # DataLogger instance
+        self.valuator = None  # ItemValuator instance
         self.current_run_id = None
         self.is_capturing = False
 
@@ -93,6 +101,19 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         logger.error(f"Failed to create inference engine: {e}", exc_info=True)
         raise
+
+    logger.info("Creating ItemValuator...")
+    try:
+        app_state.valuator = ItemValuator(
+            model_path=None,  # Will use default path or placeholder
+            confidence=0.5,
+            device=str(device_manager.device),
+            game_phase="mid_wipe",
+        )
+        logger.info("ItemValuator created successfully")
+    except Exception as e:
+        logger.warning(f"Failed to create valuator: {e}", exc_info=True)
+        logger.warning("Item valuation will be unavailable")
 
     logger.info("API server ready")
     yield
@@ -243,21 +264,86 @@ async def start_run(request: StartRunRequest):
     return {"status": "ok", "run_id": run_id}
 
 
+@app.post("/valuate", response_model=AutoValuationResult)
+async def valuate_screenshot(request: ValuateScreenshotRequest):
+    """Valuate items from extraction screenshot using YOLO"""
+    if not app_state.valuator:
+        raise HTTPException(
+            status_code=503,
+            detail="Item valuator not initialized"
+        )
+
+    try:
+        # Decode base64 screenshot
+        img_data = base64.b64decode(request.screenshot_base64)
+        nparr = np.frombuffer(img_data, np.uint8)
+        screenshot = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+        if screenshot is None:
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid image data"
+            )
+
+        # Update game phase if provided
+        if request.game_phase:
+            app_state.valuator.set_game_phase(request.game_phase)
+
+        # Perform valuation
+        result = app_state.valuator.valuate_screenshot(screenshot)
+
+        # Convert to API schema
+        items = [
+            DetectedItemSchema(
+                item_type=item.item_type,
+                rarity=item.rarity,
+                confidence=item.confidence,
+                estimated_value=item.estimated_value,
+                bbox=item.bbox,
+            )
+            for item in result.items
+        ]
+
+        return AutoValuationResult(
+            total_value=result.total_value,
+            items=items,
+            num_items=result.num_items,
+            avg_confidence=result.avg_confidence,
+            value_breakdown=result.value_breakdown,
+            rarity_counts=result.rarity_counts,
+            phase_multiplier=result.phase_multiplier,
+        )
+
+    except Exception as e:
+        logger.error(f"Valuation failed: {e}", exc_info=True)
+        raise HTTPException(
+            status_code=500,
+            detail=f"Valuation failed: {str(e)}"
+        )
+
+
 @app.post("/run/end")
 async def end_run(request: EndRunRequest):
     """End current run with results"""
     if app_state.current_run_id != request.run_id:
         raise HTTPException(status_code=400, detail="Run ID mismatch")
 
+    total_value = request.auto_valuation.total_value
+    num_items = request.auto_valuation.num_items
+
     logger.info(
         f"Ended run: {request.run_id}, "
-        f"loot: {request.final_loot_value}, "
+        f"loot: {total_value:.2f} ({num_items} items detected), "
         f"time: {request.total_time_sec}s, "
         f"success: {request.success}"
     )
 
     # TODO: Finalize and save run data in Phase 4
-    # app_state.data_logger.end_run(request)
+    # app_state.data_logger.end_run(
+    #     final_loot_value=total_value,
+    #     total_time_sec=request.total_time_sec,
+    #     success=request.success
+    # )
 
     app_state.current_run_id = None
 

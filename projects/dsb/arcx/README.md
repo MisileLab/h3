@@ -14,10 +14,17 @@ Game Screen → dxcam Capture → Ring Buffer → Frame Encoder → Latent Seque
                                            FastAPI ←→ JSON ←→ Native Overlay
                                              ↓
                                      Parquet Logging (Training Data)
+
+Extraction Screen → YOLO11 Item Detection → Value Calculation → Auto Loot Value
+                         ↓                          ↓
+                   Item Classification      Set Bonuses Applied
+                   (Type + Rarity)                  ↓
+                                              Data Logger Integration
 ```
 
 ## Features
 
+### Core EV System
 - **Real-time EV Calculation**: ML model computes expected values for "stay" vs "extract" actions
 - **Multi-GPU Support**: Auto-detects CUDA, ROCm, DirectML, or falls back to CPU
 - **Distributional Q-Learning**: Handles uncertainty via quantile regression
@@ -25,6 +32,15 @@ Game Screen → dxcam Capture → Ring Buffer → Frame Encoder → Latent Seque
 - **Efficient Logging**: Stores features (not raw video) in Parquet format
 - **Safe Checkpoints**: Uses `safetensors` for model weights (fast, pickle-free)
 - **Native Overlay**: Frameless always-on-top window (no Overwolf dependency)
+
+### YOLO11 Item Valuation (NEW)
+- **Automatic Item Detection**: YOLO11-based extraction screen analysis
+- **Rarity Classification**: Automatic detection of item rarity (Epic, Rare, etc.)
+- **Smart Valuation**: Context-aware value calculation with set bonuses
+- **Game Phase Adjustment**: Dynamic value multipliers based on season phase
+- **RL Integration**: Seamless integration with training pipeline
+- **Safetensors Support**: Fast and secure model loading
+- **Screenshot Capture**: Automatic extraction screen detection
 
 ## Project Structure
 
@@ -34,34 +50,33 @@ arcx/
 │   ├── arcx/
 │   │   ├── api/         # FastAPI server
 │   │   ├── ml/          # ML models (encoder, Q-net)
-│   │   ├── capture/     # Screen capture & ring buffer
+│   │   ├── valuation/   # YOLO11 item valuation (NEW)
+│   │   ├── capture/     # Screen capture & extraction detection
 │   │   ├── data/        # Data logging/loading (Polars)
 │   │   ├── device/      # Device backend detection
 │   │   ├── overlay/     # Native overlay (Tk-based client)
-│   │   ├── training/    # Training pipeline
+│   │   ├── training/    # Training & evaluation pipeline
 │   │   └── config.py    # Configuration
+│   ├── scripts/
+│   │   └── yolo/        # YOLO training & annotation tools
+│   ├── examples/        # Usage examples
 │   ├── pyproject.toml
 │   ├── serve.py         # Run API server
 │   └── train.py         # Train models
-├── overwolf/            # Legacy Overwolf app (optional)
-│   ├── src/
-│   ├── manifest.json
-│   └── package.json
-├── models/              # Trained model checkpoints
-└── data/                # Parquet logs
+├── models/                 # Trained model checkpoints (.safetensors)
+├── data/                   # Parquet logs & training data
+├── YOLO_INTEGRATION.md     # YOLO integration guide
+└── VIDEO_WORKFLOW_GUIDE.md # Video-based training workflow
 ```
 
 ## Installation
 
 ### Prerequisites
 
-Install modern package managers (10-100x faster!):
+Install modern package manager (10-100x faster!):
 ```bash
 # Install uv (Python - 10-100x faster than pip)
 curl -LsSf https://astral.sh/uv/install.sh | sh
-
-# (Optional, legacy Overwolf app) Install pnpm
-# curl -fsSL https://get.pnpm.io/install.sh | sh -
 ```
 
 Or use `just` commands:
@@ -71,7 +86,7 @@ just update               # Update all dependencies
 just upgrade              # Update + rebuild everything
 ```
 
-See [UV_PNPM_GUIDE.md](UV_PNPM_GUIDE.md) for detailed installation and usage.
+See [UV_GUIDE.md](UV_GUIDE.md) for detailed installation and usage.
 
 ### Backend (Python)
 
@@ -93,7 +108,7 @@ just install-directml
 
 ### Native Overlay (Python)
 
-Run the frameless overlay directly from Python (no Overwolf required):
+Run the frameless overlay directly from Python:
 
 ```bash
 cd backend
@@ -101,14 +116,6 @@ python -m arcx.overlay.native_overlay
 ```
 
 > Requires the API server to be running (see Usage below).
-
-### Legacy Overwolf App (optional)
-
-```bash
-cd overwolf
-pnpm install
-pnpm run build
-```
 
 ## Usage
 
@@ -203,26 +210,75 @@ Start a new run.
 
 ### `POST /run/end`
 
-End current run.
+End current run with YOLO auto-valuation.
 
 **Request:**
 ```json
 {
   "run_id": "uuid-here",
-  "final_loot_value": 2500.0,
+  "auto_valuation": {
+    "total_value": 4500.0,
+    "num_items": 5,
+    "avg_confidence": 0.87,
+    "items": [...],
+    "value_breakdown": {...},
+    "rarity_counts": {...},
+    "phase_multiplier": 1.0
+  },
   "total_time_sec": 1800.0,
   "success": true,
   "action_taken": "extract"
 }
 ```
 
+### `POST /valuate` (NEW)
+
+Valuate extraction screenshot using YOLO11.
+
+**Request:**
+```json
+{
+  "screenshot_base64": "<base64_encoded_image>",
+  "game_phase": "mid_wipe"
+}
+```
+
+**Response:**
+```json
+{
+  "total_value": 4500.0,
+  "num_items": 5,
+  "avg_confidence": 0.87,
+  "items": [
+    {
+      "item_type": "weapon",
+      "rarity": "epic",
+      "confidence": 0.92,
+      "estimated_value": 2500.0,
+      "bbox": [100, 200, 300, 400]
+    }
+  ],
+  "value_breakdown": {
+    "weapon": 2500.0,
+    "armor": 1500.0
+  },
+  "rarity_counts": {
+    "epic": 2,
+    "rare": 3
+  },
+  "phase_multiplier": 1.0
+}
+```
+
 ## Training
 
-### 1. Collect Data
+### EV Model Training
+
+#### 1. Collect Data
 
 Play games with the system running. Data is automatically logged to `data/*.parquet`.
 
-### 2. Train Model
+#### 2. Train Model
 
 ```bash
 cd backend
@@ -230,6 +286,58 @@ python train.py --epochs 50 --batch-size 32
 ```
 
 Models are saved as `.safetensors` files in `models/` directory.
+
+### YOLO Item Detector Training (NEW)
+
+#### Option 1: From Video (Recommended)
+
+```bash
+# Full automated workflow
+just yolo-video-workflow gameplay.mp4
+
+# Or step by step:
+# 1. Extract frames (1 FPS)
+just yolo-extract-video gameplay.mp4 frames fps=1
+
+# 2. Filter extraction screens (interactive)
+just yolo-filter-frames frames/ filtered/
+
+# 3. Annotate
+just yolo-annotate filtered/
+
+# 4. Prepare & train
+just yolo-prepare annotations.json filtered/
+just yolo-train
+```
+
+#### Option 2: From Screenshots
+
+```bash
+# Full workflow
+just yolo-workflow screenshots/
+
+# Or step by step:
+# 1. Annotate
+just yolo-annotate screenshots/
+
+# 2. Prepare dataset
+just yolo-prepare annotations.json screenshots/
+
+# 3. Train
+just yolo-train
+
+# Custom settings
+just yolo-train data_dir=data/yolo_items model=yolo11s.pt epochs=150 batch=32
+```
+
+#### 5. Deploy Model
+
+```bash
+cp runs/yolo_train/item_detector/weights/best.safetensors \
+   models/item_detector_yolo11.safetensors
+```
+
+See `YOLO_INTEGRATION.md` for detailed guide.
 
 ## Device Backend Detection
 

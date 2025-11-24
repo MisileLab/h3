@@ -18,6 +18,11 @@ DECISION_LOG_SCHEMA = {
     "total_time_sec": pl.Float32,  # Total raid duration
     "success": pl.Boolean,  # Whether extraction was successful
     "z_seq": pl.List(pl.Float32),  # Flattened latent sequence (L*D)
+    # YOLO valuation metadata (optional, may be null)
+    "num_items_detected": pl.Int32,  # Number of items detected by YOLO
+    "avg_detection_confidence": pl.Float32,  # Average YOLO confidence
+    "value_breakdown_json": pl.Utf8,  # JSON string of value breakdown
+    "rarity_counts_json": pl.Utf8,  # JSON string of rarity counts
 }
 
 
