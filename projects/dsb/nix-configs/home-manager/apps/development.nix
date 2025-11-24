@@ -29,7 +29,8 @@
       python314 uv mypy pixi
       nasm
       deno bun
-      hvm bend
+      # build failed: maybe we should report to nixpkgs
+      # hvm bend
       clang-tools lldb pkg-config
       niv nixpkgs-fmt nix-tree hub fh nixfmt-rfc-style nurl
       packwiz ccemux
