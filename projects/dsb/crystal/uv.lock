@@ -404,7 +404,7 @@ dependencies = [
 requires-dist = [
     { name = "gradio", specifier = "==6.0.0" },
     { name = "inquirer", specifier = "==3.4.1" },
-    { name = "langchain-memgraph", specifier = "==0.1.10" },
+    { name = "langchain-memgraph", specifier = "==0.1.11" },
     { name = "mem0ai", extras = ["graph"], git = "https://github.com/misilelab/mem0" },
     { name = "puremagic", specifier = "==1.30" },
     { name = "pydantic-ai-slim", extras = ["duckduckgo", "logfire", "openai", "mcp"], specifier = "==1.22.0" },
@@ -1176,7 +1176,7 @@ wheels = [
 
 [[package]]
 name = "langchain-memgraph"
-version = "0.1.10"
+version = "0.1.11"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "langchain" },
@@ -1185,9 +1185,9 @@ dependencies = [
     { name = "memgraph-toolbox" },
     { name = "neo4j" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/ca/b6/ddcc8373331def1b52af2ce1545cce1e69c1ebd05a940aba8f84ba64e42c/langchain_memgraph-0.1.10.tar.gz", hash = "sha256:666f07b5b1427308e59a1be7b42850961024376c782436e29bf906e6d511c697", size = 262573, upload-time = "2025-11-24T14:29:21.157Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/11/8f/671ef489d621cb0ba212d4e3df80db6a4101fe1fd4a3a8e000d06f11bae2/langchain_memgraph-0.1.11.tar.gz", hash = "sha256:a98b207332c7864b06d554aa85de0e850535303d3a7384b52ab85a4834ee14ba", size = 262575, upload-time = "2025-11-24T16:24:14.52Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/82/5e/c25b49f0d9dd2739547275f5c39369cf5e0a58694b902650bd6902eefa10/langchain_memgraph-0.1.10-py3-none-any.whl", hash = "sha256:8af453a96fd101cfb8188bf1983870fcdd04995ad312d7776a8c424909dc2fe8", size = 20466, upload-time = "2025-11-24T14:29:19.404Z" },
+    { url = "https://files.pythonhosted.org/packages/9d/01/0d2abd57423adc81984f647cd2e5bb8d4f9c5a11aa95f3e794d78d2dcf1c/langchain_memgraph-0.1.11-py3-none-any.whl", hash = "sha256:4681c5e47ab8d79e7821f428678e992628190123b1a67aad812d7732d734dc5c", size = 20466, upload-time = "2025-11-24T16:24:13.124Z" },
 ]
 
 [[package]]
