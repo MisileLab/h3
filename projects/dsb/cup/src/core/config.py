@@ -6,6 +6,13 @@ import os
 from pathlib import Path
 from typing import final
 
+# Load .env file if it exists (fallback for local development when not using Infisical)
+try:
+  from dotenv import load_dotenv
+  load_dotenv()
+except ImportError:
+  pass  # dotenv not installed, skip
+
 
 @final
 class Config:

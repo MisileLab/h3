@@ -168,8 +168,11 @@ def scrape(
     help="URL of the bulletin board to scrape"
   ),
   limit: int = typer.Option(0, "--limit", "-l", help="Limit number of PDFs to download (0 = no limit)"),
-  use_ocr: bool = typer.Option(False, "--ocr", help="Use OCR for extraction"),
-  skip_existing: bool = typer.Option(True, "--skip-existing", help="Skip already downloaded files"),
+  max_pages: Optional[int] = typer.Option(None, "--max-pages", help="Maximum number of pages to scrape (None = unlimited)"),
+  use_ocr: bool = typer.Option(True, "--ocr/--no-ocr", help="Use OCR for extraction (default: enabled)"),
+  use_llm: bool = typer.Option(True, "--use-llm/--no-llm", help="Use LLM for post-processing (default: enabled)"),
+  llm_model: Optional[str] = typer.Option(None, "--llm-model", help="LLM model to use (default: gpt-5-mini)"),
+  skip_existing: bool = typer.Option(True, "--skip-existing/--no-skip-existing", help="Skip already downloaded files (default: enabled)"),
   db_path: str = typer.Option("./data.db", "--db-path", help="SQLite database path"),
   output_dir: str = typer.Option("./downloads/dongjak", "--output-dir", "-o", help="Download directory"),
   ref_wtm_x: Optional[float] = typer.Option(None, "--ref-x", help="Reference X coordinate in WTM format"),
@@ -183,7 +186,7 @@ def scrape(
     repository = PDFRepository(db_path)
 
     # Initialize scraper
-    scraper = DongjakScraper()
+    scraper = DongjakScraper(max_pages=max_pages)
     console.print(f"[blue]Scraping PDFs from: {url}[/blue]")
 
     # Scrape PDF links
@@ -225,6 +228,15 @@ def scrape(
           db_path=db_path,
           store_in_db=True
         )
+
+        # Add LLM processing if requested
+        if use_llm:
+          openai_key = os.getenv("OPENAI_API_KEY")
+          if not openai_key:
+            console.print("[yellow]⚠️ OPENAI_API_KEY not set, skipping LLM processing[/yellow]")
+          else:
+            processor.ai_processor = LLMProcessor(openai_key, model=llm_model, names_only=True)
+            console.print(f"[blue]🤖 LLM processing enabled with model: {processor.ai_processor.model}[/blue]")
 
         output_config = {
           "format": "csv",

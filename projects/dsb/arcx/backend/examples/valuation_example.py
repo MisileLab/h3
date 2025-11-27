@@ -1,6 +1,6 @@
-"""Example: Using YOLO evaluation pipeline during gameplay.
+"""Example: Using vision model-based item valuation.
 
-This example demonstrates how to integrate YOLO-based item valuation
+This example demonstrates how to integrate vision model-based item valuation
 into the training/evaluation workflow.
 """
 
@@ -82,8 +82,12 @@ def example_2_manual_valuation():
     """Example 2: Manual screenshot valuation"""
     logger.info("\n=== Example 2: Manual Valuation ===")
 
-    # Create pipeline
-    pipeline = EvaluationPipeline(auto_valuate=True)
+    # Create valuator with vision model
+    valuator = ItemValuator(
+        api_key=None,  # Uses OPENAI_API_KEY from environment
+        confidence=0.5,
+        game_phase="mid_wipe",
+    )
 
     # Load a screenshot
     screenshot_path = Path("data/extraction_screenshots/example.png")
@@ -91,15 +95,15 @@ def example_2_manual_valuation():
     if screenshot_path.exists():
         screenshot = cv2.imread(str(screenshot_path))
 
-        # Manually valuate screenshot
-        result = pipeline.valuate_screenshot(screenshot)
+        # Valuate screenshot
+        result = valuator.valuate_screenshot(screenshot)
 
         logger.info(f"Valuation result:")
-        logger.info(f"  Total value: {result['total_value']:.2f}")
-        logger.info(f"  Items detected: {result['num_items']}")
-        logger.info(f"  Avg confidence: {result['avg_confidence']:.2f}")
-        logger.info(f"  Value breakdown: {result['value_breakdown']}")
-        logger.info(f"  Rarity counts: {result['rarity_counts']}")
+        logger.info(f"  Total value: {result.total_value:.2f}")
+        logger.info(f"  Items detected: {result.num_items}")
+        logger.info(f"  Avg confidence: {result.avg_confidence:.2f}")
+        logger.info(f"  Value breakdown: {result.value_breakdown}")
+        logger.info(f"  Rarity counts: {result.rarity_counts}")
     else:
         logger.warning(f"Screenshot not found: {screenshot_path}")
         logger.info("Create example screenshot first:")
@@ -119,9 +123,8 @@ def example_3_training_integration():
 
     # Create valuator with specific settings
     valuator = ItemValuator(
-        model_path=None,  # Use default
+        api_key=None,
         confidence=0.6,  # Higher confidence threshold
-        device="cuda",
         game_phase="early_wipe",  # Adjust for game phase
     )
 
@@ -177,13 +180,13 @@ def example_3_training_integration():
     logger.info(f"\nFinal stats: {stats}")
 
 
-def example_4_no_yolo():
-    """Example 4: Using pipeline without YOLO (legacy mode)"""
-    logger.info("\n=== Example 4: Legacy Mode (No YOLO) ===")
+def example_4_no_vision_model():
+    """Example 4: Using pipeline without vision model (legacy mode)"""
+    logger.info("\n=== Example 4: Legacy Mode (No Vision Model) ===")
 
     # Create pipeline with auto-valuation disabled
     pipeline = EvaluationPipeline(
-        auto_valuate=False,  # Disable YOLO
+        auto_valuate=False,  # Disable vision model
     )
 
     # Use as before with manual values
@@ -206,12 +209,12 @@ def example_4_no_yolo():
 
 
 if __name__ == "__main__":
-    logger.info("YOLO Evaluation Pipeline Examples\n")
+    logger.info("Vision Model Valuation Pipeline Examples\n")
 
     # Run examples
     example_1_basic_usage()
     example_2_manual_valuation()
     example_3_training_integration()
-    example_4_no_yolo()
+    example_4_no_vision_model()
 
     logger.info("\n✓ All examples completed")

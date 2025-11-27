@@ -21,7 +21,6 @@ class DetectedItem:
     rarity: str
     confidence: float
     estimated_value: float
-    bbox: List[float]
 
 
 @dataclass
@@ -39,10 +38,10 @@ class ValuationResult:
 
 class ItemValuator:
     """
-    Item valuator that combines YOLO detection with value calculation.
+    Item valuator that combines vision model detection with value calculation.
 
     This class:
-    1. Detects items using YOLO11
+    1. Detects items using GPT-5-nano vision model
     2. Calculates individual item values
     3. Applies bonuses and multipliers
     4. Returns total loot value
@@ -50,24 +49,21 @@ class ItemValuator:
 
     def __init__(
         self,
-        model_path: Optional[str] = None,
+        api_key: Optional[str] = None,
         confidence: float = 0.5,
-        device: str = "cuda",
         game_phase: str = "mid_wipe",
     ):
         """
         Initialize item valuator.
 
         Args:
-            model_path: Path to YOLO11 model
+            api_key: OpenAI API key (optional, reads from env if not provided)
             confidence: Detection confidence threshold
-            device: Device for inference
             game_phase: Current game phase for value multipliers
         """
         self.detector = ItemDetector(
-            model_path=model_path,
+            api_key=api_key,
             confidence=confidence,
-            device=device,
         )
         self.game_phase = game_phase
         logger.info(f"ItemValuator initialized with game phase: {game_phase}")
@@ -100,7 +96,7 @@ class ItemValuator:
 
         # Convert detections to DetectedItem objects
         items = []
-        for item_type, rarity, conf, bbox in detections:
+        for item_type, rarity, conf in detections:
             base_value = get_item_value(item_type, rarity)
             adjusted_value = apply_phase_multiplier(base_value, self.game_phase)
 
@@ -110,7 +106,6 @@ class ItemValuator:
                     rarity=rarity,
                     confidence=conf,
                     estimated_value=adjusted_value,
-                    bbox=bbox,
                 )
             )
 

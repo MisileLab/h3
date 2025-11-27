@@ -116,15 +116,16 @@ class PDFProcessor:
       # Show preview if requested
       if output_config.get("show_preview", False):
         self._show_preview(result)
-      
+
+      # Run LLM post-processing BEFORE saving outputs
+      llm_csv_content = None
+      source_url = output_config.get("source_url")
+      if self.ai_processor:
+        llm_csv_content = self._run_llm_post_processing(result, source_url)
+
       # Save in requested format(s)
       output_format = output_config.get("format", "csv")
-      self._save_outputs(result, output_dir, output_format)
-
-      # Run LLM post-processing automatically when OCR is used
-      llm_output_path = output_config.get("llm_output_path")
-      source_url = output_config.get("source_url")
-      self._maybe_run_llm_post_processing(result, output_dir, llm_output_path, source_url)
+      self._save_outputs(result, output_dir, output_format, llm_csv_content=llm_csv_content)
 
       # Store in database if enabled
       if self.store_in_db and self.repository:
@@ -210,18 +211,25 @@ class PDFProcessor:
             console.print(f"  Row {row_idx}: {row_text}")
         console.print("")
   
-  def _save_outputs(self, result, output_dir: str, output_format: str) -> None:
+  def _save_outputs(self, result, output_dir: str, output_format: str, llm_csv_content: str | None = None) -> None:
     """Save outputs in the requested format(s)."""
     pdf_name = Path(result.pdf_path).stem
-    
+
     if output_format.lower() in ["csv", "all"]:
       csv_path = Config.get_output_path(result.pdf_path, output_dir, "csv")
-      self.csv_formatter.save(result, csv_path)
-    
+
+      # Use LLM-processed CSV if available, otherwise use standard extraction
+      if llm_csv_content:
+        with open(csv_path, "w", encoding="utf-8") as f:
+          f.write(llm_csv_content)
+        console.print(f"✅ LLM-processed CSV saved to: {csv_path}", style="green")
+      else:
+        self.csv_formatter.save(result, csv_path)
+
     if output_format.lower() in ["txt", "all"]:
       txt_path = Config.get_output_path(result.pdf_path, output_dir, "txt")
       self.text_formatter.save(result, txt_path)
-    
+
     if output_format.lower() in ["json", "all"]:
       json_path = Config.get_output_path(result.pdf_path, output_dir, "json")
       self.json_formatter.save(result, json_path)
@@ -234,6 +242,44 @@ class PDFProcessor:
     console.print(f"  • Tables detected: {result.total_tables}")
     console.print(f"  • Output directory: {output_dir}")
     console.print(f"  • Extraction method: {result.extraction_method}")
+
+  def _run_llm_post_processing(
+    self,
+    result: ProcessingResult,
+    source_url: str | None = None,
+  ) -> str | None:
+    """
+    Run LLM post-processing and return CSV content.
+
+    Args:
+        result: The processing result to process with LLM
+        source_url: Optional source URL for the PDF
+
+    Returns:
+        CSV content as string, or None if processing fails or is not available
+    """
+    if not self.ai_processor:
+      console.print(
+        "⚠️  OPENAI_API_KEY not set or invalid. Skipping LLM post-processing.",
+        style="yellow",
+      )
+      return None
+
+    try:
+      console.print("🤖 Running LLM post-processing...", style="blue")
+      csv_content = self.ai_processor.process(result)
+
+      # Extract restaurant names and store them if we have a repository
+      restaurant_names = self._extract_restaurant_names_from_csv(csv_content)
+      if restaurant_names and self.repository:
+        self._search_and_store_restaurants(restaurant_names, result.pdf_path, source_url)
+      elif restaurant_names and not self.repository:
+        console.print(f"📝 Found {len(restaurant_names)} restaurant names (database storage not enabled)", style="blue")
+
+      return csv_content
+    except (PDFProcessingError, ValueError) as e:
+      console.print(f"⚠️  LLM post-processing error: {e}", style="yellow")
+      return None
 
   def _maybe_run_llm_post_processing(
     self,

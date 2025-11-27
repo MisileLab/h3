@@ -73,6 +73,11 @@ DEFAULT_ITEM_VALUE = 50.0
 # Confidence threshold for detection
 MIN_DETECTION_CONFIDENCE = 0.5
 
+# Vision Model Configuration
+VISION_MODEL_NAME = "gpt-5-nano"
+VISION_API_TIMEOUT = 30.0  # seconds
+VISION_API_MAX_RETRIES = 3
+
 # Value multipliers based on game phase (can be adjusted dynamically)
 PHASE_MULTIPLIERS = {
     "early_wipe": 1.5,  # Season start

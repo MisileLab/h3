@@ -154,6 +154,7 @@ dependencies = [
     { name = "surya-ocr" },
     { name = "tabula-py", extra = ["jpype"] },
     { name = "tabulate" },
+    { name = "tenacity" },
     { name = "typer" },
 ]
 
@@ -187,6 +188,7 @@ requires-dist = [
     { name = "surya-ocr", specifier = "==0.17.0" },
     { name = "tabula-py", extras = ["jpype"], specifier = "==2.10.0" },
     { name = "tabulate", specifier = "==0.9.0" },
+    { name = "tenacity", specifier = ">=9.0.0" },
     { name = "typer", specifier = "==0.20.0" },
 ]
 provides-extras = ["dev"]

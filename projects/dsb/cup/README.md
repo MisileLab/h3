@@ -13,6 +13,9 @@ A comprehensive collection of tools for extracting and converting PDF content to
 - **Database Storage**: Store all extraction results in SQLite database
 - **Web Scraping**: Automatically scrape and process PDFs from government websites
 - **Smart Caching**: Skip already processed files to avoid duplicates
+- **Secrets Management**: Integrated with Infisical for secure API key management
+- **Automated Workflows**: Just command runner for simplified operations
+- **Retry Logic**: Automatic retry for failed network requests with exponential backoff
 - **Fast Processing**: Optimized for speed and accuracy
 - **Rich CLI Interface**: Beautiful command-line interface with progress bars
 
@@ -22,6 +25,8 @@ A comprehensive collection of tools for extracting and converting PDF content to
 
 - Python 3.13.5+
 - [uv](https://docs.astral.sh/uv/getting-started/installation/) package manager
+- [just](https://github.com/casey/just) command runner (optional, for automation)
+- [Infisical CLI](https://infisical.com/docs/cli/overview) (optional, for secrets management)
 
 ### Installation
 
@@ -36,9 +41,38 @@ A comprehensive collection of tools for extracting and converting PDF content to
    python install.py
    # Or manually
    uv sync --extra dev
+   # Or with just
+   just install
    ```
 
 3. **Set up environment variables**:
+
+   **Option A: Using Infisical (Recommended for production)**
+   ```bash
+   # Install Infisical CLI
+   # See: https://infisical.com/docs/cli/overview
+
+   # Login to Infisical
+   infisical login
+
+   # Set secrets in Infisical dashboard or CLI
+   infisical secrets set OPENAI_API_KEY=sk-your-api-key-here
+   infisical secrets set KAKAO_API_KEY=your-kakao-api-key
+
+   # Verify secrets
+   just check-env
+   ```
+
+   **Option B: Using .env file (For local development)**
+   ```bash
+   # Create .env file from template
+   cat > .env << 'EOF'
+   OPENAI_API_KEY=sk-your-api-key-here
+   KAKAO_API_KEY=your-kakao-api-key
+   EOF
+   ```
+
+   **Option C: Export environment variables**
    ```bash
    # Required for AI post-processing
    export OPENAI_API_KEY='sk-your-api-key-here'
@@ -102,8 +136,14 @@ Automatically scrape PDFs from government websites and process them:
 # Scrape all PDFs from Dongjak government portal (default URL)
 uv run python pdf_extract.py scrape
 
-# Scrape with limit
+# Scrape with PDF limit
 uv run python pdf_extract.py scrape --limit 10
+
+# Scrape only one page (first page of bulletin board)
+uv run python pdf_extract.py scrape --max-pages 1
+
+# Scrape first 3 pages with max 50 PDFs
+uv run python pdf_extract.py scrape --max-pages 3 --limit 50
 
 # Scrape with OCR
 uv run python pdf_extract.py scrape --ocr
@@ -129,7 +169,56 @@ uv run python pdf_extract.py scrape https://example.com/board
 5. 💾 Stores everything in SQLite database
 6. 🚫 Skips already processed files (smart caching)
 
-### 5. AI-powered Conversion
+### 5. Using Just Commands (Automated Workflows)
+
+The `justfile` provides convenient commands for common workflows:
+
+```bash
+# Show all available commands
+just
+
+# Flexible scraping with page and PDF limits
+just scrape "URL"              # Scrape all pages, all PDFs
+just scrape "URL" 1            # Scrape first page only, all PDFs
+just scrape "URL" 1 50         # Scrape first page, max 50 PDFs
+just scrape "URL" 5 100        # Scrape first 5 pages, max 100 PDFs
+
+# Convenience aliases
+just scrape-all "URL"          # Scrape all pages, all PDFs
+just scrape-test "URL"         # Scrape all pages, first 10 PDFs
+just scrape-test "URL" 20      # Scrape all pages, first 20 PDFs
+
+# Extract from single PDF
+just extract document.pdf
+just extract-ocr scanned.pdf
+
+# Extract with LLM post-processing
+just extract-llm document.pdf
+just extract-llm-ocr scanned.pdf
+
+# Database operations
+just db-info      # Show database statistics
+just db-queue     # Show pending scraping queue items
+
+# Development commands
+just test         # Run tests
+just test-cov     # Run tests with coverage
+just format       # Format code with black
+just lint         # Lint with flake8
+just quality      # Run all quality checks
+
+# Full workflow: scrape all from Dongjak portal
+just workflow-dongjak "https://www.dongjak.go.kr/portal/bbs/B0000591/list.do?menuNo=200209"
+```
+
+**Benefits of using `just`:**
+- ✅ Automatically uses Infisical for secrets management
+- ✅ Shorter, more memorable commands
+- ✅ Flexible page and PDF limits with simple syntax
+- ✅ Consistent command interface
+- ✅ Built-in documentation (`just --list`)
+
+### 6. AI-powered Conversion
 
 Convert PDFs to CSV using OCR and AI post-processing:
 
@@ -181,6 +270,7 @@ uv run python pdf_extract.py scrape [OPTIONS] [URL]
 
 **Options:**
 - `--limit, -l INTEGER`: Limit number of PDFs [default: 0 = no limit]
+- `--max-pages INTEGER`: Maximum number of pages to scrape [default: None = unlimited]
 - `--ocr`: Use OCR for extraction
 - `--skip-existing`: Skip already downloaded files [default: true]
 - `--db-path TEXT`: SQLite database path [default: ./data.db]
@@ -541,6 +631,9 @@ uv run python pdf_extract.py scrape \
   --ocr \
   --db-path government.db \
   --output-dir ./pdfs/government
+
+# Or using just: scrape first 3 pages with max 50 PDFs
+just scrape "https://example.com/board" 3 50
 ```
 
 ### Example 3: Batch processing with AI post-processing
@@ -580,7 +673,22 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 🚀 What's New
 
-### Version 2.0 (Latest)
+### Version 2.1 (Latest)
+
+**New Features:**
+- 🔐 **Infisical Integration**: Secure secrets management with Infisical CLI
+- ⚡ **Just Commands**: Automated workflows with `justfile` for simplified operations
+- 🔄 **Retry Logic**: Automatic retry with exponential backoff for network requests
+- 🎯 **Enhanced Scraper**: Configurable pagination limits and request delays
+- 📝 **Dotenv Support**: Local development fallback with `.env` files
+
+**Improvements:**
+- Better error handling with detailed error messages
+- Improved scraping reliability with 3-attempt retry
+- More flexible configuration options
+- Enhanced documentation with justfile examples
+
+### Version 2.0
 
 **Major Features:**
 - ✨ **Database Storage**: Store all extraction results in SQLite

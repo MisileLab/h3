@@ -239,160 +239,13 @@ clean: clean-data
     @echo "✓ Cleaned"
 
 # ==============================================================================
-# YOLO Item Detection
+# Item Detection (Vision Model)
 # ==============================================================================
 
-# Extract frames from video
-yolo-extract-video video output="frames" fps="" start="0" end="":
-    @echo "Extracting frames from {{video}}..."
-    cd backend && uv run python scripts/yolo/extract_video_frames.py \
-        --video {{video}} \
-        --output {{output}} \
-        {{if fps != "" { "--fps " + fps } else { "" }}} \
-        {{if start != "0" { "--start " + start } else { "" }}} \
-        {{if end != "" { "--end " + end } else { "" }}}
-
-# Extract frames from all videos in directory
-yolo-extract-videos video_dir output="frames" fps="1":
-    @echo "Extracting frames from videos in {{video_dir}}..."
-    cd backend && uv run python scripts/yolo/extract_video_frames.py \
-        --video-dir {{video_dir}} \
-        --output {{output}} \
-        --fps {{fps}}
-
-# Filter frames interactively to find extraction screens
-yolo-filter-frames input output:
-    @echo "Filtering frames from {{input}}..."
-    cd backend && uv run python scripts/yolo/filter_extraction_frames.py \
-        --input {{input}} \
-        --output {{output}} \
-        --mode interactive
-
-# Automatically filter frames using template
-yolo-filter-auto input output template:
-    @echo "Auto-filtering frames with template..."
-    cd backend && uv run python scripts/yolo/filter_extraction_frames.py \
-        --input {{input}} \
-        --output {{output}} \
-        --mode auto \
-        --template {{template}}
-
-# Annotate extraction screenshots for YOLO training
-yolo-annotate images_dir output="annotations.json":
-    @echo "Annotating screenshots in {{images_dir}}..."
-    cd backend && uv run python scripts/yolo/annotate_items.py --images {{images_dir}} --output {{output}}
-
-# Prepare YOLO dataset from annotations
-yolo-prepare annotations images_dir output="data/yolo_items":
-    @echo "Preparing YOLO dataset..."
-    cd backend && uv run python scripts/yolo/prepare_dataset.py \
-        --annotations {{annotations}} \
-        --images {{images_dir}} \
-        --output {{output}}
-
-# Train YOLO11 item detector
-yolo-train data_dir="data/yolo_items" model="yolo11n.pt" epochs="100" batch="16":
-    @echo "Training YOLO11 item detector..."
-    cd backend && uv run python scripts/yolo/train_item_detector.py \
-        --data-dir {{data_dir}} \
-        --model {{model}} \
-        --epochs {{epochs}} \
-        --batch {{batch}}
-
-# Train YOLO11 with custom device
-yolo-train-device data_dir device model="yolo11n.pt" epochs="100":
-    @echo "Training YOLO11 on device {{device}}..."
-    cd backend && uv run python scripts/yolo/train_item_detector.py \
-        --data-dir {{data_dir}} \
-        --model {{model}} \
-        --epochs {{epochs}} \
-        --device {{device}}
-
-# Resume YOLO training
-yolo-train-resume data_dir="data/yolo_items" name="item_detector":
-    @echo "Resuming YOLO training..."
-    cd backend && uv run python scripts/yolo/train_item_detector.py \
-        --data-dir {{data_dir}} \
-        --name {{name}} \
-        --resume
-
-# Validate YOLO model
-yolo-validate model data_dir="data/yolo_items":
-    @echo "Validating YOLO model..."
-    cd backend && uv run python -c "from ultralytics import YOLO; model = YOLO('{{model}}'); model.val(data='{{data_dir}}/dataset.yaml')"
-
-# Test YOLO model on image
-yolo-test-image model image:
-    @echo "Testing YOLO on {{image}}..."
-    cd backend && uv run python -c "from ultralytics import YOLO; import cv2; model = YOLO('{{model}}'); results = model('{{image}}'); results[0].show()"
-
-# Convert YOLO .pt model to safetensors
-yolo-convert-safetensors input output="":
-    @echo "Converting {{input}} to safetensors..."
-    cd backend && uv run python scripts/yolo/convert_to_safetensors.py --input {{input}} {{if output != "" { "--output " + output } else { "" }}}
-
-# Convert best trained model to safetensors
-yolo-convert-best name="item_detector":
-    @echo "Converting best model to safetensors..."
-    @just yolo-convert-safetensors "runs/yolo_train/{{name}}/weights/best.pt" "models/item_detector_yolo11.safetensors"
-    @echo "✓ Model ready at: models/item_detector_yolo11.safetensors"
-
-# Clean YOLO training runs
-clean-yolo:
-    @echo "Cleaning YOLO training runs..."
-    rm -rf runs/yolo_train
-    @echo "✓ YOLO runs cleaned"
-
-# Complete YOLO workflow: annotate -> prepare -> train
-yolo-workflow images_dir output_annotations="annotations.json":
-    @echo "=== YOLO Complete Workflow ==="
-    @echo "Step 1: Annotating..."
-    @just yolo-annotate {{images_dir}} {{output_annotations}}
-    @echo ""
-    @echo "Step 2: Preparing dataset..."
-    @just yolo-prepare {{output_annotations}} {{images_dir}}
-    @echo ""
-    @echo "Step 3: Training..."
-    @just yolo-train
-    @echo ""
-    @echo "✓ Complete workflow finished!"
-    @echo "Trained model automatically converted to:"
-    @echo "  runs/yolo_train/item_detector/weights/best.safetensors"
-    @echo ""
-    @echo "Copy to production:"
-    @echo "  cp runs/yolo_train/item_detector/weights/best.safetensors models/item_detector_yolo11.safetensors"
-
-# Complete video workflow: extract -> filter -> annotate -> train
-yolo-video-workflow video output_frames="frames" filtered="filtered_frames":
-    @echo "=== YOLO Video Workflow ==="
-    @echo "Step 1: Extracting frames from video..."
-    @just yolo-extract-video {{video}} {{output_frames}} fps=1
-    @echo ""
-    @echo "Step 2: Filtering extraction screens (interactive)..."
-    @just yolo-filter-frames {{output_frames}} {{filtered}}
-    @echo ""
-    @echo "Step 3: Annotating filtered frames..."
-    @just yolo-annotate {{filtered}}
-    @echo ""
-    @echo "Step 4: Preparing dataset..."
-    @just yolo-prepare annotations.json {{filtered}}
-    @echo ""
-    @echo "Step 5: Training..."
-    @just yolo-train
-    @echo ""
-    @echo "✓ Video workflow complete!"
-
-# Video workflow for multiple videos
-yolo-videos-workflow video_dir output_base="extracted" fps="1":
-    @echo "=== YOLO Multi-Video Workflow ==="
-    @echo "Step 1: Extracting frames from all videos..."
-    @just yolo-extract-videos {{video_dir}} {{output_base}} {{fps}}
-    @echo ""
-    @echo "Next steps:"
-    @echo "  1. just yolo-filter-frames {{output_base}} filtered_frames"
-    @echo "  2. just yolo-annotate filtered_frames"
-    @echo "  3. just yolo-prepare annotations.json filtered_frames"
-    @echo "  4. just yolo-train"
+# Valuate a single screenshot using vision model
+eval-screenshot screenshot:
+    @echo "Valuating screenshot: {{screenshot}}..."
+    cd backend && uv run python -c "import cv2; from arcx.valuation import ItemValuator; v = ItemValuator(); img = cv2.imread('{{screenshot}}'); r = v.valuate_screenshot(img); print(f'Value: {r.total_value:.2f}, Items: {r.num_items}, Conf: {r.avg_confidence:.2f}')"
 
 # ==============================================================================
 # System Status
@@ -453,15 +306,10 @@ create-dummy-data runs="5" decisions="20":
     @echo "Creating dummy data ({{runs}} runs, {{decisions}} decisions each)..."
     cd backend && python -c "import torch; from pathlib import Path; from arcx.data.logger import DataLogger; logger = DataLogger(); exec('''for run_idx in range({{runs}}):\n    logger.start_run(f\"dummy_run_{run_idx}\", \"test_map\")\n    for dec_idx in range({{decisions}}):\n        z_seq = torch.randn(32, 512)\n        logger.log_decision(dec_idx, dec_idx * 10.0, \"stay\" if dec_idx < {{decisions}}-1 else \"extract\", z_seq)\n    logger.end_run(1000.0 + run_idx * 500, 200.0, True)'''); print('✓ Dummy data created')"
 
-# Run YOLO evaluation examples
+# Run valuation examples
 eval-examples:
-    @echo "Running YOLO evaluation examples..."
-    cd backend && uv run python examples/yolo_evaluation_example.py
-
-# Valuate a single screenshot
-eval-screenshot screenshot:
-    @echo "Valuating screenshot: {{screenshot}}..."
-    cd backend && uv run python -c "import cv2; from arcx.valuation import ItemValuator; v = ItemValuator(); img = cv2.imread('{{screenshot}}'); r = v.valuate_screenshot(img); print(f'Value: {r.total_value:.2f}, Items: {r.num_items}, Conf: {r.avg_confidence:.2f}')"
+    @echo "Running valuation examples..."
+    cd backend && uv run python examples/valuation_example.py
 
 # Count lines of code
 count-loc:
@@ -557,23 +405,9 @@ help:
     @echo "  just test-data        - Test data pipeline"
     @echo "  just test-evaluation  - Test evaluation pipeline"
     @echo ""
-    @echo "YOLO Item Detection:"
-    @echo "  Video Processing:"
-    @echo "    just yolo-extract-video <video> <out>     - Extract frames from video"
-    @echo "    just yolo-extract-videos <dir> <out>      - Extract from all videos"
-    @echo "    just yolo-filter-frames <in> <out>        - Filter frames (interactive)"
-    @echo "    just yolo-video-workflow <video>          - Full video workflow"
-    @echo ""
-    @echo "  Training:"
-    @echo "    just yolo-annotate <dir>                  - Annotate screenshots"
-    @echo "    just yolo-prepare <ann> <img>             - Prepare dataset"
-    @echo "    just yolo-train                           - Train YOLO11 model"
-    @echo "    just yolo-workflow <dir>                  - Full workflow (images)"
-    @echo ""
-    @echo "  Evaluation:"
-    @echo "    just yolo-validate <model> <data>         - Validate model"
-    @echo "    just eval-screenshot <path>               - Valuate screenshot"
-    @echo "    just eval-examples                        - Run examples"
+    @echo "Item Detection (Vision Model):"
+    @echo "  just eval-screenshot <path>   - Valuate screenshot with vision model"
+    @echo "  just eval-examples            - Run valuation examples"
     @echo ""
     @echo "Development:"
     @echo "  just format           - Format code"
@@ -589,7 +423,6 @@ help:
     @echo "Utilities:"
     @echo "  just clean            - Clean all generated files"
     @echo "  just clean-data       - Clean training data"
-    @echo "  just clean-yolo       - Clean YOLO training runs"
     @echo "  just benchmark-inference - Benchmark model"
     @echo "  just create-dummy-data   - Create test data"
     @echo ""
@@ -597,6 +430,7 @@ help:
     @echo "  just quick-start      - Install & setup everything"
     @echo ""
     @echo "Documentation:"
-    @echo "  See YOLO_INTEGRATION.md for YOLO guide"
+    @echo "  See README.md for usage guide"
     @echo ""
     @echo "For full list: just --list"
+

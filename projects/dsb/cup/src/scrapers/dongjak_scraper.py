@@ -14,6 +14,7 @@ import requests
 from bs4 import BeautifulSoup
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn
+from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
 from .base import BaseScraper, PDFLink
 
@@ -25,14 +26,23 @@ console = Console()
 class DongjakScraper(BaseScraper):
   """Scraper for Dongjak government portal."""
 
-  def __init__(self, use_selenium: bool = False) -> None:
+  def __init__(
+    self,
+    use_selenium: bool = False,
+    max_pages: Optional[int] = None,
+    request_delay: float = 0.5,
+  ) -> None:
     """
     Initialize scraper.
 
     Args:
         use_selenium: Whether to use Selenium (fallback if requests fails)
+        max_pages: Maximum number of pages to scrape (None for unlimited)
+        request_delay: Delay between requests in seconds
     """
     self.use_selenium = use_selenium
+    self.max_pages = max_pages
+    self.request_delay = request_delay
     self.session = requests.Session()
     self.session.headers.update({
       "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
@@ -68,10 +78,9 @@ class DongjakScraper(BaseScraper):
         page_url = f"{url}&pageIndex={page}" if "?" in url else f"{url}?pageIndex={page}"
 
         try:
-          response = self.session.get(page_url, timeout=10)
-          response.raise_for_status()
+          response = self._fetch_page(page_url)
         except requests.RequestException as e:
-          console.print(f"[red]Failed to fetch page {page}: {e}[/red]")
+          console.print(f"[red]Failed to fetch page {page} after retries: {e}[/red]")
           if self.use_selenium:
             console.print("[yellow]Falling back to Selenium...[/yellow]")
             # TODO: Implement Selenium fallback if needed
@@ -120,20 +129,43 @@ class DongjakScraper(BaseScraper):
 
         console.print(f"[blue]Page {page}: Found {page_pdf_count} PDFs[/blue]")
 
-        if page_pdf_count == 0:
-          # No PDFs on this page, try next
-          page += 1
-          if page > 10:  # Safety limit
-            console.print("[yellow]Reached page limit (10), stopping.[/yellow]")
-            break
-        else:
-          page += 1
+        # Move to next page
+        page += 1
+
+        # Check page limit
+        if self.max_pages is not None and page > self.max_pages:
+          console.print(f"[yellow]Reached page limit ({self.max_pages}), stopping.[/yellow]")
+          break
 
         # Small delay to be polite
-        time.sleep(0.5)
+        time.sleep(self.request_delay)
 
     console.print(f"[green]Total PDFs found: {len(pdf_links)}[/green]")
     return pdf_links
+
+  @retry(
+    stop=stop_after_attempt(3),
+    wait=wait_exponential(multiplier=1, min=2, max=10),
+    retry=retry_if_exception_type(requests.RequestException),
+    reraise=True,
+  )
+  def _fetch_page(self, url: str, timeout: int = 10) -> requests.Response:
+    """
+    Fetch a page with retry logic.
+
+    Args:
+        url: URL to fetch
+        timeout: Request timeout in seconds
+
+    Returns:
+        Response object
+
+    Raises:
+        requests.RequestException: If all retry attempts fail
+    """
+    response = self.session.get(url, timeout=timeout)
+    response.raise_for_status()
+    return response
 
   def _extract_post_id(self, post_url: str) -> Optional[str]:
     """Extract post ID from URL."""
@@ -148,10 +180,9 @@ class DongjakScraper(BaseScraper):
     pdf_links: list[PDFLink] = []
 
     try:
-      response = self.session.get(post_url, timeout=10)
-      response.raise_for_status()
+      response = self._fetch_page(post_url)
     except requests.RequestException as e:
-      console.print(f"[red]Failed to fetch post {post_url}: {e}[/red]")
+      console.print(f"[red]Failed to fetch post {post_url} after retries: {e}[/red]")
       return pdf_links
 
     soup = BeautifulSoup(response.text, "html.parser")
@@ -206,10 +237,9 @@ class DongjakScraper(BaseScraper):
       console.print(f"[yellow]Skipping existing file: {filename}[/yellow]")
       return str(file_path)
 
-    # Download
+    # Download with retry logic
     try:
-      response = self.session.get(pdf_link.url, timeout=30, stream=True)
-      response.raise_for_status()
+      response = self._fetch_page(pdf_link.url, timeout=30)
 
       with open(file_path, "wb") as f:
         for chunk in response.iter_content(chunk_size=8192):
@@ -219,7 +249,7 @@ class DongjakScraper(BaseScraper):
       return str(file_path)
 
     except requests.RequestException as e:
-      console.print(f"[red]Failed to download {pdf_link.url}: {e}[/red]")
+      console.print(f"[red]Failed to download {pdf_link.url} after retries: {e}[/red]")
       raise RuntimeError(f"Failed to download PDF: {e}") from e
 
   def _generate_filename(self, pdf_link: PDFLink) -> str:
