@@ -7,7 +7,7 @@
       url = "github:mitchellh/zig-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    stable.url = "github:nixos/nixpkgs/nixos-unstable";
+    # stable.url = "github:nixos/nixpkgs/nixos-unstable";
     # nur.url = "github:nix-community/NUR";
     nix-ai-tools = {
       url = "github:numtide/nix-ai-tools";
@@ -34,12 +34,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs = { nixpkgs, stable, home-manager, catppuccin, zig, nix-index-database, sops-nix, niri, nix-ai-tools, ... }:
+  outputs = { nixpkgs, /*stable, */home-manager, catppuccin, zig, nix-index-database, sops-nix, niri, nix-ai-tools, ... }:
     let
       system = "x86_64-linux"; # replace with your system
       overlays = [
         (final: prev: {
-          uv = stablep.uv;
           codex = nix-ai-toolspkgs.codex;
           claude-code = nix-ai-toolspkgs.claude-code;
           opencode = nix-ai-toolspkgs.opencode;
@@ -64,7 +63,7 @@
       nix-ai-toolspkgs = nix-ai-tools.packages.${pkgs.stdenv.hostPlatform.system};
       zigpkgs = zig.packages."${system}";
       c = import ./config.nix;
-      stablep = import stable {inherit system;config = {allowUnfree = true;};};
+      # stablep = import stable {inherit system;config = {allowUnfree = true;};};
     in {
       nixpkgs.overlays = overlays;
       homeConfigurations."misile" = home-manager.lib.homeManagerConfiguration {
