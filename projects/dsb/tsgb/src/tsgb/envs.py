@@ -13,12 +13,27 @@ from dataclasses import dataclass, field
 from typing import Literal
 
 import torch
-from transformers import AutoModelForSequenceClassification, AutoTokenizer
+from transformers import AutoModelForSequenceClassification, AutoTokenizer, PreTrainedTokenizerBase
 
 from tsgb.logging import get_logger
 from tsgb.models import GenerationOutput, HuggingFaceLM
 
 logger = get_logger(__name__)
+
+
+def _resolve_max_length(tokenizer: PreTrainedTokenizerBase, fallback: int = 4096) -> int:
+    """Clamp tokenizer max_length to avoid overflow sentinels."""
+    max_length = tokenizer.model_max_length
+    if max_length is None:
+        return fallback
+    if max_length > 1_000_000:
+        logger.warning(
+            "tokenizer_max_length_clamped",
+            original=max_length,
+            used=fallback,
+        )
+        return fallback
+    return int(max_length)
 
 
 # Type aliases
@@ -102,6 +117,7 @@ class SafetyJudge:
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
         if self.tokenizer.pad_token is None:
             self.tokenizer.pad_token = self.tokenizer.eos_token
+        self.max_length = _resolve_max_length(self.tokenizer)
 
         device_map: str | None
         if device == "auto":
@@ -152,7 +168,7 @@ class SafetyJudge:
             return_tensors="pt",
             padding=True,
             truncation=True,
-            max_length=self.tokenizer.model_max_length,
+            max_length=self.max_length,
         ).to(self._device)
 
         with torch.no_grad():

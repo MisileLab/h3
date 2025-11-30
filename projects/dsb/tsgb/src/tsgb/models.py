@@ -22,6 +22,22 @@ from tsgb.logging import get_logger
 
 logger = get_logger(__name__)
 
+
+def _resolve_max_length(tokenizer: PreTrainedTokenizer, fallback: int = 4096) -> int:
+    """Clamp tokenizer max_length when models expose sentinel values."""
+    max_length = tokenizer.model_max_length
+    if max_length is None:
+        return fallback
+    if max_length > 1_000_000:
+        logger.warning(
+            "tokenizer_max_length_clamped",
+            original=max_length,
+            used=fallback,
+        )
+        return fallback
+    return int(max_length)
+
+
 # Global accelerator instance for multi-GPU support
 _accelerator: Accelerator | None = None
 
@@ -105,6 +121,8 @@ class HuggingFaceLM:
         # Ensure tokenizer has pad token
         if self.tokenizer.pad_token is None:
             self.tokenizer.pad_token = self.tokenizer.eos_token
+
+        self.max_length = _resolve_max_length(self.tokenizer)
 
     @classmethod
     def from_pretrained(
@@ -213,13 +231,20 @@ class HuggingFaceLM:
         Returns:
             GenerationOutput with generated text and optional tensors.
         """
+        requested_max_length = kwargs.get("max_length")
+        max_length = (
+            min(int(requested_max_length), self.max_length)
+            if requested_max_length is not None
+            else self.max_length
+        )
+
         # Tokenize input
         inputs = self.tokenizer(
             prompt,
             return_tensors="pt",
             padding=True,
             truncation=True,
-            max_length=kwargs.get("max_length", self.tokenizer.model_max_length),
+            max_length=max_length,
         ).to(self._device)
 
         input_ids = inputs["input_ids"]
