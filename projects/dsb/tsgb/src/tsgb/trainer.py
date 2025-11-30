@@ -789,9 +789,18 @@ class SelfPlayTrainer:
                 optimizer.step()
         elif use_manual_scaler and scaler is not None:
             # Manual mixed precision: use GradScaler
+            # Check if model has FP16 parameters - GradScaler.unscale_() doesn't support FP16 grads
+            has_fp16_params = any(
+                p.dtype == torch.float16 for p in model.model.parameters() if p.requires_grad
+            )
             scaler.scale(loss).backward()
-            scaler.unscale_(optimizer)
-            torch.nn.utils.clip_grad_norm_(model.model.parameters(), self.config.max_grad_norm)
+            if has_fp16_params:
+                # For FP16 models, skip unscale and use inf/nan checking manually
+                # scaler.step() will skip optimizer.step() if gradients contain inf/nan
+                torch.nn.utils.clip_grad_norm_(model.model.parameters(), self.config.max_grad_norm)
+            else:
+                scaler.unscale_(optimizer)
+                torch.nn.utils.clip_grad_norm_(model.model.parameters(), self.config.max_grad_norm)
             scaler.step(optimizer)
             scaler.update()
         else:
