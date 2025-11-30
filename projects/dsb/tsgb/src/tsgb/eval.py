@@ -396,7 +396,7 @@ class ViolationDetector:
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
         self.model = AutoModelForSequenceClassification.from_pretrained(
             self.model_name,
-            torch_dtype=torch.float16 if torch.cuda.is_available() else torch.float32,
+            dtype=torch.float16 if torch.cuda.is_available() else torch.float32,
             device_map=device
             if device != "auto"
             else ("auto" if torch.cuda.is_available() else "cpu"),

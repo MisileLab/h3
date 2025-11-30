@@ -85,6 +85,20 @@ class Settings(BaseSettings):
         description="Logging mode: 'dev' for colorized console, 'json' for structured JSON",
     )
 
+    # Trackio logging
+    trackio_enabled: bool = Field(
+        default=True,
+        description="Enable Trackio logging for training runs",
+    )
+    trackio_project: str = Field(
+        default="tsgb-worker",
+        description="Trackio project/run name",
+    )
+    trackio_space_id: str | None = Field(
+        default=None,
+        description="Optional Trackio space ID for the project",
+    )
+
 
 @lru_cache
 def get_settings() -> Settings:

@@ -13,7 +13,7 @@ from dataclasses import dataclass, field
 from typing import Literal
 
 import torch
-from transformers import AutoModelForSequenceClassification, AutoTokenizer, pipeline
+from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 from tsgb.logging import get_logger
 from tsgb.models import GenerationOutput, HuggingFaceLM
@@ -95,22 +95,29 @@ class SafetyJudge:
         else:
             self._device = torch.device(device)
 
+        dtype = torch.float16 if torch.cuda.is_available() else torch.float32
+        multi_gpu_available = torch.cuda.is_available() and torch.cuda.device_count() > 1
+
         # Load tokenizer and model using PIGuard approach
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
+        if self.tokenizer.pad_token is None:
+            self.tokenizer.pad_token = self.tokenizer.eos_token
+
+        device_map: str | None
+        if device == "auto":
+            device_map = "auto" if multi_gpu_available else None
+        else:
+            device_map = None
+
         self.model = AutoModelForSequenceClassification.from_pretrained(
             self.model_name,
             trust_remote_code=True,
+            dtype=dtype,
+            device_map=device_map,
         )
 
-        # Create classifier pipeline
-        device_int = 0 if self._device.type == "cuda" else -1
-        self.classifier = pipeline(
-            "text-classification",
-            model=self.model,
-            tokenizer=self.tokenizer,
-            truncation=True,
-            device=device_int,
-        )
+        if device_map is None:
+            self.model.to(self._device)
 
         logger.info("safety_judge_loaded", model_name=self.model_name, device=str(self._device))
 
@@ -140,15 +147,26 @@ class SafetyJudge:
         # Use the prompt if provided, otherwise analyze response
         text_to_analyze = prompt if prompt else response
 
-        # Get classification using PIGuard pipeline
-        result = self.classifier(text_to_analyze)
+        inputs = self.tokenizer(
+            text_to_analyze,
+            return_tensors="pt",
+            padding=True,
+            truncation=True,
+            max_length=self.tokenizer.model_max_length,
+        ).to(self._device)
 
-        # PIGuard labels: benign or injection
-        label = result[0]["label"]
-        score = result[0]["score"]
+        with torch.no_grad():
+            outputs = self.model(**inputs)
+            logits = outputs.logits
+            probs = torch.softmax(logits, dim=-1)
 
-        # "injection" label indicates prompt injection
-        is_violation = label == "injection" and score > self.violation_threshold
+        if probs.shape[-1] >= 2:
+            injection_score = probs[0, 1].item()
+        else:
+            injection_score = torch.sigmoid(logits[0, 0]).item()
+
+        label = "injection" if injection_score >= 0.5 else "benign"
+        is_violation = injection_score > self.violation_threshold
 
         logger.debug(
             "judge_decision",
@@ -156,7 +174,7 @@ class SafetyJudge:
             is_benign=is_benign,
             is_violation=is_violation,
             label=label,
-            score=score,
+            score=injection_score,
             threshold=self.violation_threshold,
         )
 

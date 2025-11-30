@@ -103,6 +103,12 @@ def generate_env_content(settings: Settings) -> str:
     # Logging
     lines.append(f"LOG_MODE={settings.log_mode}")
 
+    # Trackio
+    lines.append(f"TRACKIO_ENABLED={settings.trackio_enabled}")
+    lines.append(f"TRACKIO_PROJECT={settings.trackio_project}")
+    if settings.trackio_space_id:
+        lines.append(f"TRACKIO_SPACE_ID={settings.trackio_space_id}")
+
     return "\n".join(lines) + "\n"
 
 

@@ -30,32 +30,34 @@ logger = get_logger(__name__)
 
 
 def get_available_vram_gb() -> float:
-    """Get total available VRAM across all GPUs in GB.
+    """Get currently free VRAM across all GPUs in GB.
 
     Returns:
-        Total VRAM in GB, or 0 if no GPU available.
+        Total free VRAM in GB, or 0 if no GPU available.
     """
     if not torch.cuda.is_available():
         return 0.0
 
-    total_vram = 0.0
+    total_free_vram = 0.0
     for i in range(torch.cuda.device_count()):
-        props = torch.cuda.get_device_properties(i)
-        total_vram += props.total_memory / (1024**3)  # Convert bytes to GB
+        try:
+            free_mem, _ = torch.cuda.mem_get_info(i)
+            total_free_vram += free_mem / (1024**3)
+        except Exception:
+            props = torch.cuda.get_device_properties(i)
+            total_free_vram += props.total_memory / (1024**3)
 
-    return total_vram
+    return total_free_vram
 
 
 def compute_batch_size(vram_gb: float, model_size_b: float = 3.0) -> int:
     """Compute optimal batch size based on available VRAM.
 
-    Uses a simple heuristic:
-    - ~3B model needs ~12GB per sample with gradients
-    - Scale batch size based on available VRAM
-    - Minimum batch size of 1, maximum of 32
+    Uses a GPU-aware heuristic that scales with the number of devices and
+    available free memory to better saturate multi-GPU boxes.
 
     Args:
-        vram_gb: Available VRAM in GB.
+        vram_gb: Currently free VRAM in GB across all GPUs.
         model_size_b: Model size in billions of parameters.
 
     Returns:
@@ -64,35 +66,24 @@ def compute_batch_size(vram_gb: float, model_size_b: float = 3.0) -> int:
     if vram_gb <= 0:
         return 1
 
-    # Rough estimate: model needs ~4 bytes per param for weights
-    # Plus ~8 bytes per param for optimizer states (AdamW)
-    # Plus ~4 bytes per param for gradients
-    # Total: ~16 bytes per param, plus activations
+    gpu_count = max(1, torch.cuda.device_count()) if torch.cuda.is_available() else 1
 
-    # Base memory for 3B model: ~48GB for weights+optimizer+gradients
-    # Each sample in batch needs additional activation memory
+    # Reserve ~50% of available VRAM for model states; leave the rest for activations.
+    available_for_batch = vram_gb * 0.5
 
-    # Heuristic:
-    # - 24GB VRAM -> batch 1-2
-    # - 48GB VRAM -> batch 2-4
-    # - 80GB VRAM -> batch 4-8
-    # - 160GB (2x80GB) -> batch 8-16
-
-    # Reserve ~60% of VRAM for model, use rest for batch
-    available_for_batch = vram_gb * 0.4
-
-    # Assume each batch sample needs ~6GB for 3B model activations
-    memory_per_sample = 6.0 * (model_size_b / 3.0)
+    # Activation memory per sample scales down when sharded across GPUs.
+    memory_per_sample = (6.0 * (model_size_b / 3.0)) / gpu_count
 
     batch_size = int(available_for_batch / memory_per_sample)
 
     # Clamp to reasonable range
-    batch_size = max(1, min(batch_size, 32))
+    batch_size = max(1, min(batch_size, 64))
 
     logger.info(
         "computed_batch_size",
-        vram_gb=vram_gb,
+        vram_gb=round(vram_gb, 2),
         model_size_b=model_size_b,
+        gpu_count=gpu_count,
         batch_size=batch_size,
     )
 
@@ -264,6 +255,7 @@ class SelfPlayTrainer:
         settings: Settings | None = None,
         config: TrainConfig | None = None,
         judge: SafetyJudge | None = None,
+        trackio_run: Any | None = None,
         use_accelerate: bool = True,
     ) -> None:
         """Initialize the trainer.
@@ -275,6 +267,7 @@ class SelfPlayTrainer:
             settings: Application settings.
             config: Training configuration.
             judge: Safety judge for evaluating responses.
+            trackio_run: Optional Trackio run for logging metrics.
             use_accelerate: Whether to use accelerate for multi-GPU training.
         """
         self.attacker_model = attacker_model
@@ -292,6 +285,9 @@ class SelfPlayTrainer:
                 device=str(self.accelerator.device),
                 num_processes=self.accelerator.num_processes,
             )
+
+        self.is_main_process = self.accelerator.is_main_process if self.accelerator else True
+        self.trackio_run = trackio_run if self.is_main_process else None
 
         # Initialize environment with safety judge
         self.judge = judge or SafetyJudge()
@@ -617,6 +613,19 @@ class SelfPlayTrainer:
             global_step=self.global_step,
             **summary,
         )
+
+        if self.trackio_run is not None:
+            try:
+                self.trackio_run.log(
+                    {
+                        "training/episode": self.episode_index,
+                        "training/global_step": self.global_step,
+                        **summary,
+                    },
+                    step=self.global_step,
+                )
+            except Exception as e:  # pragma: no cover - best effort logging
+                logger.debug("trackio_log_failed", error=str(e))
 
     def _save_checkpoint(self) -> None:
         """Save training checkpoint."""

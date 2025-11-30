@@ -520,6 +520,17 @@ def worker_run(
     model_name: str | None = typer.Option(
         None, "--model", "-m", help="Model name (default: from settings)"
     ),
+    trackio: bool | None = typer.Option(
+        None,
+        "--trackio/--no-trackio",
+        help="Enable Trackio logging (defaults to settings)",
+    ),
+    trackio_project: str | None = typer.Option(
+        None, "--trackio-project", help="Trackio project/run name"
+    ),
+    trackio_space_id: str | None = typer.Option(
+        None, "--trackio-space-id", help="Trackio space ID"
+    ),
 ) -> None:
     """Run training worker (typically on Vast.ai instance)."""
     setup_logging()
@@ -534,6 +545,9 @@ def worker_run(
         model_name=model_name,
         total_episodes=episodes,
         checkpoint_interval=checkpoint_interval,
+        enable_trackio=trackio,
+        trackio_project=trackio_project,
+        trackio_space_id=trackio_space_id,
     )
 
 

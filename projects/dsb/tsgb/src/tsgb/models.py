@@ -148,22 +148,35 @@ class HuggingFaceLM:
         # Load tokenizer
         tokenizer = AutoTokenizer.from_pretrained(model_name)
 
+        multi_gpu_available = torch.cuda.is_available() and torch.cuda.device_count() > 1
+        max_memory = None
+
         # Load model with device_map for multi-GPU
         if use_accelerate and accelerator is not None:
             # Use accelerate's device for single GPU, or device_map for multi-GPU
-            if accelerator.num_processes > 1:
+            if accelerator.num_processes > 1 or multi_gpu_available:
                 device_map = "auto"
             else:
                 device_map = accelerator.device
         else:
-            device_map = (
-                device if device != "auto" else ("auto" if torch.cuda.is_available() else "cpu")
-            )
+            if device != "auto":
+                device_map = device
+            elif multi_gpu_available:
+                device_map = "auto"
+            else:
+                device_map = "cuda" if torch.cuda.is_available() else "cpu"
+
+        if device_map == "auto" and multi_gpu_available:
+            max_memory = {
+                i: int(torch.cuda.get_device_properties(i).total_memory * 0.9)
+                for i in range(torch.cuda.device_count())
+            }
 
         model = AutoModelForCausalLM.from_pretrained(
             model_name,
-            torch_dtype=dtype,
+            dtype=dtype,
             device_map=device_map,
+            max_memory=max_memory,
             trust_remote_code=kwargs.get("trust_remote_code", False),
         )
 
@@ -206,6 +219,7 @@ class HuggingFaceLM:
             return_tensors="pt",
             padding=True,
             truncation=True,
+            max_length=kwargs.get("max_length", self.tokenizer.model_max_length),
         ).to(self._device)
 
         input_ids = inputs["input_ids"]
@@ -219,6 +233,7 @@ class HuggingFaceLM:
             "pad_token_id": self.tokenizer.pad_token_id,
             "output_scores": return_logits,
             "return_dict_in_generate": True,
+            "attention_mask": inputs.get("attention_mask"),
         }
 
         # Generate

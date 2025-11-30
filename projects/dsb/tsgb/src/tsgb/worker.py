@@ -80,6 +80,41 @@ def find_checkpoint_path(
     return None
 
 
+def init_trackio_run(
+    enabled: bool,
+    project: str,
+    space_id: str | None,
+    initial_config: dict[str, Any],
+) -> Any | None:
+    """Initialize Trackio run if enabled and available."""
+    if not enabled:
+        return None
+
+    try:
+        import trackio  # type: ignore
+    except ImportError:
+        logger.warning("trackio_not_installed")
+        return None
+
+    try:
+        kwargs: dict[str, Any] = {}
+        if space_id:
+            kwargs["trackio_space_id"] = space_id
+
+        run = trackio.init(project=project, **kwargs)
+        if hasattr(trackio, "config"):
+            try:
+                trackio.config.update(initial_config, allow_val_change=True)
+            except Exception as config_error:  # pragma: no cover - best effort
+                logger.debug("trackio_config_update_failed", error=str(config_error))
+
+        logger.info("trackio_initialized", project=project, space_id=space_id)
+        return run
+    except Exception as e:  # pragma: no cover - runtime safeguard
+        logger.error("trackio_init_failed", error=str(e))
+        return None
+
+
 def run_worker(
     resume_path: str | Path | None = None,
     local_fallback: str | Path | None = None,
@@ -87,6 +122,9 @@ def run_worker(
     total_episodes: int = 1000,
     checkpoint_interval: int = 100,
     log_interval: int = 10,
+    enable_trackio: bool | None = None,
+    trackio_project: str | None = None,
+    trackio_space_id: str | None = None,
     settings: Settings | None = None,
 ) -> None:
     """Run the training worker.
@@ -102,6 +140,10 @@ def run_worker(
     """
     settings = settings or get_settings()
 
+    trackio_enabled = settings.trackio_enabled if enable_trackio is None else enable_trackio
+    trackio_project_name = trackio_project or settings.trackio_project
+    trackio_space = trackio_space_id or settings.trackio_space_id
+
     # Configure logging
     configure_logging(mode=settings.log_mode)  # type: ignore
 
@@ -112,7 +154,11 @@ def run_worker(
         resume_path=str(resume_path) if resume_path else None,
         local_fallback=str(local_fallback) if local_fallback else None,
         model_name=model,
+        trackio_enabled=trackio_enabled,
+        trackio_project=trackio_project_name,
     )
+
+    trackio_run: Any | None = None
 
     # Determine checkpoint directory
     if resume_path:
@@ -136,6 +182,20 @@ def run_worker(
         seed=42,
     )
 
+    trackio_run = init_trackio_run(
+        enabled=trackio_enabled,
+        project=trackio_project_name,
+        space_id=trackio_space,
+        initial_config={
+            "model/name": model,
+            "training/total_episodes": config.total_episodes,
+            "training/checkpoint_interval": config.checkpoint_interval,
+            "training/log_interval": config.log_interval,
+            "checkpoint_dir": str(checkpoint_dir),
+            "resume_from": str(resume_from) if resume_from else "scratch",
+        },
+    )
+
     # Load models
     logger.info("loading_models", model_name=model)
     attacker = HuggingFaceLM.from_pretrained(
@@ -157,6 +217,7 @@ def run_worker(
         target_model=target,
         settings=settings,
         config=config,
+        trackio_run=trackio_run,
     )
 
     # Set up graceful shutdown
@@ -171,11 +232,33 @@ def run_worker(
 
             trainer.train(resume_from=resume_from)
 
+            if trackio_run is not None:
+                try:
+                    trackio_run.log(
+                        {
+                            "training/status": "completed",
+                            "training/episode": trainer.episode_index,
+                        },
+                        step=trainer.global_step,
+                    )
+                except Exception as e:  # pragma: no cover - best effort logging
+                    logger.debug("trackio_completion_log_failed", error=str(e))
+
         except KeyboardInterrupt:
             logger.info("training_interrupted_by_user")
+            if trackio_run is not None:
+                try:
+                    trackio_run.log({"training/status": "interrupted"}, step=trainer.global_step)
+                except Exception as e:  # pragma: no cover - best effort logging
+                    logger.debug("trackio_interrupt_log_failed", error=str(e))
 
         except Exception as e:
             logger.error("training_error", error=str(e), exc_info=True)
+            if trackio_run is not None:
+                try:
+                    trackio_run.log({"training/status": "errored", "error": str(e)})
+                except Exception as log_error:  # pragma: no cover - best effort logging
+                    logger.debug("trackio_error_log_failed", error=str(log_error))
             raise
 
         finally:
@@ -185,6 +268,13 @@ def run_worker(
                 trainer._save_checkpoint()
             except Exception as e:
                 logger.error("final_checkpoint_failed", error=str(e))
+
+            if trackio_run is not None:
+                try:
+                    trackio_run.finish()
+                    logger.info("trackio_run_finished")
+                except Exception as e:
+                    logger.warning("trackio_finish_failed", error=str(e))
 
     logger.info("worker_finished")
 

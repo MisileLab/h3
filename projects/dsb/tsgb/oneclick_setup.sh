@@ -54,9 +54,11 @@ if [ -f "$SOURCE_ENV" ]; then
   log "Copied .env from script directory into repo"
 elif [ ! -f .env ] && [ -f .env.example ]; then
   cp .env.example .env
-  log "Created .env from .env.example (please edit secrets, e.g., VAST_API_KEY)"i
+  log "Created .env from .env.example (please edit secrets, e.g., VAST_API_KEY)"
+fi
 
 if [ "$RUN_TRAIN" != "0" ]; then
+
   log "Starting local training (this may take a while)..."
   uv run tsgb worker run $TRAIN_ARGS
   log "Training run finished. Check logs and checkpoints for results."
