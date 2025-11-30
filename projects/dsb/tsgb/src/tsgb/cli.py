@@ -77,14 +77,15 @@ def train_local(
     from tsgb.trainer import TrainConfig, SelfPlayTrainer
     from tsgb.models import HuggingFaceLM, LLMRole
 
+    settings = get_settings()
+
     config = TrainConfig(
         total_episodes=episodes,
         checkpoint_interval=checkpoint_interval,
         log_interval=log_interval,
         checkpoint_dir=checkpoint_dir,
+        batch_size=settings.batch_size,
     )
-
-    settings = get_settings()
     model = model_name or settings.default_model_name
 
     console.print(f"[yellow]Loading model: {model}[/yellow]")

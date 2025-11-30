@@ -180,6 +180,7 @@ def run_worker(
         log_interval=log_interval,
         checkpoint_dir=str(checkpoint_dir),
         seed=42,
+        batch_size=settings.batch_size,
     )
 
     trackio_run = init_trackio_run(
