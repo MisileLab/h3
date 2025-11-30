@@ -406,8 +406,8 @@ packages:
   '@standard-schema/spec@1.0.0':
     resolution: {integrity: sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA==}
 
-  '@sveltejs/acorn-typescript@1.0.7':
-    resolution: {integrity: sha512-znp1A/Y1Jj4l/Zy7PX5DZKBE0ZNY+5QBngiE21NJkfSTyzzC5iKNWOtwFXKtIrn7MXEFBck4jD95iBNkGjK92Q==}
+  '@sveltejs/acorn-typescript@1.0.8':
+    resolution: {integrity: sha512-esgN+54+q0NjB0Y/4BomT9samII7jGwNy/2a3wNZbT2A2RpmXsXwUt24LvLhx6jUq2gVk4cWEvcRO6MFQbOfNA==}
     peerDependencies:
       acorn: ^8.9.0
 
@@ -900,8 +900,8 @@ packages:
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
 
-  mdast-util-to-hast@13.2.0:
-    resolution: {integrity: sha512-QGYKEuUsYT9ykKBCMOEDLsU5JRObWQusAolFMeko/tYPufNkRffBAQjIE+99jbA87xv6FgmjLtwjh9wBWajwAA==}
+  mdast-util-to-hast@13.2.1:
+    resolution: {integrity: sha512-cctsq2wp5vTsLIcaymblUriiTcZd0CwWtCbLvrOzYCDZoWyMNV8sZ7krj09FSnsiJi3WVsHLM4k6Dq/yaPyCXA==}
 
   micromark-util-character@2.1.1:
     resolution: {integrity: sha512-wv8tdUTJ3thSFFFJKtpYKOYiGP2+v96Hvk4Tu8KpCAsTMs6yi+nVmGh1syvSCsaxz45J6Jbw+9DD6g97+NV67Q==}
@@ -1437,7 +1437,7 @@ snapshots:
 
   '@standard-schema/spec@1.0.0': {}
 
-  '@sveltejs/acorn-typescript@1.0.7(acorn@8.15.0)':
+  '@sveltejs/acorn-typescript@1.0.8(acorn@8.15.0)':
     dependencies:
       acorn: 8.15.0
 
@@ -1448,7 +1448,7 @@ snapshots:
   '@sveltejs/kit@2.49.0(@sveltejs/vite-plugin-svelte@6.2.1(svelte@5.45.2)(vite@7.2.4(jiti@2.6.1)(lightningcss@1.30.2)))(svelte@5.45.2)(vite@7.2.4(jiti@2.6.1)(lightningcss@1.30.2))':
     dependencies:
       '@standard-schema/spec': 1.0.0
-      '@sveltejs/acorn-typescript': 1.0.7(acorn@8.15.0)
+      '@sveltejs/acorn-typescript': 1.0.8(acorn@8.15.0)
       '@sveltejs/vite-plugin-svelte': 6.2.1(svelte@5.45.2)(vite@7.2.4(jiti@2.6.1)(lightningcss@1.30.2))
       '@types/cookie': 0.6.0
       acorn: 8.15.0
@@ -1735,7 +1735,7 @@ snapshots:
       comma-separated-tokens: 2.0.3
       hast-util-whitespace: 3.0.0
       html-void-elements: 3.0.0
-      mdast-util-to-hast: 13.2.0
+      mdast-util-to-hast: 13.2.1
       property-information: 7.1.0
       space-separated-tokens: 2.0.2
       stringify-entities: 4.0.4
@@ -1855,7 +1855,7 @@ snapshots:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
 
-  mdast-util-to-hast@13.2.0:
+  mdast-util-to-hast@13.2.1:
     dependencies:
       '@types/hast': 3.0.4
       '@types/mdast': 4.0.4
@@ -2025,7 +2025,7 @@ snapshots:
     dependencies:
       '@jridgewell/remapping': 2.3.5
       '@jridgewell/sourcemap-codec': 1.5.5
-      '@sveltejs/acorn-typescript': 1.0.7(acorn@8.15.0)
+      '@sveltejs/acorn-typescript': 1.0.8(acorn@8.15.0)
       '@types/estree': 1.0.8
       acorn: 8.15.0
       aria-query: 5.3.2
