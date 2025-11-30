@@ -14,7 +14,7 @@ from typing import Any
 
 from tsgb.checkpoint import find_latest_checkpoint
 from tsgb.logging import configure_logging, get_logger
-from tsgb.models import HuggingFaceLM, LLMRole
+from tsgb.models import HuggingFaceLM, LLMRole, get_accelerator
 from tsgb.settings import Settings, get_settings
 from tsgb.trainer import SelfPlayTrainer, TrainConfig
 
@@ -196,19 +196,37 @@ def run_worker(
         },
     )
 
+    # Initialize accelerator before loading models so all models share the same config
+    accelerator = get_accelerator(
+        mixed_precision="fp16" if config.use_mixed_precision else None,
+        gradient_accumulation_steps=config.gradient_accumulation_steps,
+    )
+
     # Load models
     logger.info("loading_models", model_name=model)
     attacker = HuggingFaceLM.from_pretrained(
         model,
         role=LLMRole.ATTACKER,
+        accelerator=accelerator,
+        use_mixed_precision=config.use_mixed_precision,
+        gradient_checkpointing=config.enable_gradient_checkpointing,
+        attn_implementation="flash_attention_2" if config.enable_flash_attention else None,
     )
     guard = HuggingFaceLM.from_pretrained(
         model,
         role=LLMRole.GUARD,
+        accelerator=accelerator,
+        use_mixed_precision=config.use_mixed_precision,
+        gradient_checkpointing=config.enable_gradient_checkpointing,
+        attn_implementation="flash_attention_2" if config.enable_flash_attention else None,
     )
     target = HuggingFaceLM.from_pretrained(
         model,
         role=LLMRole.TARGET,
+        accelerator=accelerator,
+        use_mixed_precision=config.use_mixed_precision,
+        gradient_checkpointing=config.enable_gradient_checkpointing,
+        attn_implementation="flash_attention_2" if config.enable_flash_attention else None,
     )
 
     trainer = SelfPlayTrainer(

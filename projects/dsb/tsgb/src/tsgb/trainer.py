@@ -6,6 +6,7 @@ Supports multi-GPU training via accelerate.
 """
 
 import random
+from contextlib import nullcontext
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -13,6 +14,7 @@ from typing import Any
 
 import torch
 from accelerate import Accelerator
+from torch.nn.utils.rnn import pad_sequence
 from torch.optim import AdamW
 
 from tsgb.checkpoint import (
@@ -23,7 +25,7 @@ from tsgb.checkpoint import (
 )
 from tsgb.envs import SafetyJudge, SelfPlayEnv
 from tsgb.logging import get_logger
-from tsgb.models import HuggingFaceLM, LLMRole, get_accelerator
+from tsgb.models import GenerationOutput, HuggingFaceLM, LLMRole, get_accelerator
 from tsgb.settings import Settings
 
 logger = get_logger(__name__)
@@ -68,16 +70,19 @@ def compute_batch_size(vram_gb: float, model_size_b: float = 3.0) -> int:
 
     gpu_count = max(1, torch.cuda.device_count()) if torch.cuda.is_available() else 1
 
-    # Reserve ~50% of available VRAM for model states; leave the rest for activations.
-    available_for_batch = vram_gb * 0.5
+    # Use 75% of available VRAM for better GPU utilization (increased from 50%)
+    available_for_batch = vram_gb * 0.75
 
     # Activation memory per sample scales down when sharded across GPUs.
-    memory_per_sample = (6.0 * (model_size_b / 3.0)) / gpu_count
+    # Reduced memory estimate with gradient checkpointing and mixed precision
+    memory_per_sample = (4.0 * (model_size_b / 3.0)) / gpu_count
 
     batch_size = int(available_for_batch / memory_per_sample)
 
-    # Clamp to reasonable range
-    batch_size = max(1, min(batch_size, 64))
+    # Allow larger batch sizes for high-VRAM setups (e.g., dual RTX 8000 = 96GB)
+    # Max batch size scales with total VRAM: 256 for 48GB+, 512 for 80GB+
+    max_batch = 128 if vram_gb < 48 else (256 if vram_gb < 80 else 512)
+    batch_size = max(1, min(batch_size, max_batch))
 
     logger.info(
         "computed_batch_size",
@@ -102,7 +107,11 @@ class TrainConfig:
     # Training settings
     learning_rate: float = 1e-5
     batch_size: int | None = None  # Auto-computed based on VRAM if None
+    episode_batch_size: int | None = None  # How many episodes to run concurrently
     gradient_accumulation_steps: int = 4
+    use_mixed_precision: bool = True
+    enable_flash_attention: bool = True
+    enable_gradient_checkpointing: bool = True
 
     def __post_init__(self) -> None:
         """Auto-compute batch size based on available VRAM if not specified."""
@@ -114,6 +123,8 @@ class TrainConfig:
                 vram_gb=round(vram_gb, 1),
                 batch_size=self.batch_size,
             )
+        if self.episode_batch_size is None:
+            self.episode_batch_size = self.batch_size
 
     # Checkpointing
     checkpoint_interval: int = 100  # Save every N episodes
@@ -279,7 +290,10 @@ class SelfPlayTrainer:
         # Initialize accelerator for multi-GPU support
         self.accelerator: Accelerator | None = None
         if use_accelerate:
-            self.accelerator = get_accelerator()
+            self.accelerator = get_accelerator(
+                mixed_precision="fp16" if self.config.use_mixed_precision else None,
+                gradient_accumulation_steps=self.config.gradient_accumulation_steps,
+            )
             logger.info(
                 "trainer_using_accelerate",
                 device=str(self.accelerator.device),
@@ -288,6 +302,7 @@ class SelfPlayTrainer:
 
         self.is_main_process = self.accelerator.is_main_process if self.accelerator else True
         self.trackio_run = trackio_run if self.is_main_process else None
+        self.episode_batch_size = max(1, self.config.episode_batch_size or 1)
 
         # Initialize environment with safety judge
         self.judge = judge or SafetyJudge()
@@ -332,6 +347,14 @@ class SelfPlayTrainer:
         # Set seed
         self._set_seed(self.config.seed)
 
+    def _device_for_training(self) -> torch.device:
+        """Resolve the device for training computations."""
+        if self.accelerator is not None:
+            return self.accelerator.device
+        if torch.cuda.is_available():
+            return torch.device("cuda")
+        return torch.device("cpu")
+
     def _set_seed(self, seed: int) -> None:
         """Set random seeds for reproducibility."""
         random.seed(seed)
@@ -358,30 +381,37 @@ class SelfPlayTrainer:
 
         try:
             while self.episode_index < self.config.total_episodes:
-                # Run one episode
-                episode_result = self._run_episode()
+                prev_episode_index = self.episode_index
+                remaining = self.config.total_episodes - self.episode_index
+                batch_size = min(self.episode_batch_size, remaining)
 
-                # Update metrics
-                self.metrics.update(
-                    is_benign=episode_result["is_benign"],
-                    guard_blocked=episode_result["guard_blocked"],
-                    violation=episode_result["violation"],
-                    attacker_reward=episode_result["attacker_reward"],
-                    guard_reward=episode_result["guard_reward"],
-                )
+                batch_results = self._run_episode_batch(batch_size)
 
-                self.episode_index += 1
+                for episode_result in batch_results:
+                    self.metrics.update(
+                        is_benign=episode_result["is_benign"],
+                        guard_blocked=episode_result["guard_blocked"],
+                        violation=episode_result["violation"],
+                        attacker_reward=episode_result["attacker_reward"],
+                        guard_reward=episode_result["guard_reward"],
+                    )
 
-                # Periodic PPO update
-                if self.episode_index % self.config.batch_size == 0:
+                self.episode_index += len(batch_results)
+
+                # Periodic PPO update when buffer is large enough
+                if len(self.buffer) >= (self.config.batch_size or batch_size):
                     self._ppo_update()
 
-                # Logging
-                if self.episode_index % self.config.log_interval == 0:
+                # Logging when crossing interval boundaries
+                if (prev_episode_index // self.config.log_interval) != (
+                    self.episode_index // self.config.log_interval
+                ):
                     self._log_metrics()
 
-                # Checkpointing
-                if self.episode_index % self.config.checkpoint_interval == 0:
+                # Checkpointing when crossing interval boundaries
+                if (prev_episode_index // self.config.checkpoint_interval) != (
+                    self.episode_index // self.config.checkpoint_interval
+                ):
                     self._save_checkpoint()
 
         except KeyboardInterrupt:
@@ -389,56 +419,170 @@ class SelfPlayTrainer:
             self._save_checkpoint()
             raise
 
+        if len(self.buffer) > 0:
+            self._ppo_update()
+
         logger.info("training_completed", total_episodes=self.episode_index)
         self._save_checkpoint()
 
     def _run_episode(self) -> dict[str, Any]:
-        """Run a single self-play episode.
+        """Run a single self-play episode (wrapper for batch executor)."""
+        return self._run_episode_batch(1)[0]
 
-        Returns:
-            Dictionary with episode results.
-        """
-        # Decide if this is benign or adversarial
-        is_benign = random.random() < self.config.benign_ratio
+    def _run_episode_batch(self, batch_size: int) -> list[dict[str, Any]]:
+        """Run multiple episodes concurrently with batched generation."""
+        envs = [
+            SelfPlayEnv(
+                attacker=self.attacker_model,
+                guard=self.guard_model,
+                target=self.target_model,
+                judge=self.judge,
+                max_turns=self.config.max_steps_per_episode,
+            )
+            for _ in range(batch_size)
+        ]
 
-        # Reset environment
-        state = self.env.reset(is_benign=is_benign)
+        states = [env.reset(is_benign=random.random() < self.config.benign_ratio) for env in envs]
+        done = [False] * batch_size
 
-        total_attacker_reward = 0.0
-        total_guard_reward = 0.0
-        guard_blocked = False
-        violation = False
+        total_attacker_rewards = [0.0] * batch_size
+        total_guard_rewards = [0.0] * batch_size
+        guard_blocked_flags = [False] * batch_size
+        violation_flags = [False] * batch_size
 
-        # Run episode turns
-        while not state.done:
-            result = self.env.step()
-            state = result.state
+        episode_results: list[dict[str, Any]] = [
+            {
+                "is_benign": state.is_benign,
+                "guard_blocked": False,
+                "violation": False,
+                "attacker_reward": 0.0,
+                "guard_reward": 0.0,
+                "num_turns": 0,
+            }
+            for state in states
+        ]
 
-            total_attacker_reward += result.rewards["attacker"]
-            total_guard_reward += result.rewards["guard"]
+        while not all(done):
+            active_indices = [i for i, flag in enumerate(done) if not flag]
 
-            # Track if guard ever blocked
-            if result.info.get("guard_action") == "block":
-                guard_blocked = True
+            # 1) Attacker generates messages (batched)
+            attacker_prompts = [env._build_attacker_prompt(states[i]) for i in active_indices]
+            attacker_outputs = self.attacker_model.generate_batch(
+                attacker_prompts,
+                return_logits=False,
+            )
 
-            # Track violation
-            if result.info.get("violation"):
-                violation = True
+            # Apply attacker outputs to state
+            for idx, output in zip(active_indices, attacker_outputs):
+                states[idx].add_turn("attacker", output.text, scenario_id=states[idx].scenario_id)
 
-            # Store for PPO (simplified - would need log probs in real implementation)
-            self.buffer.attacker_rewards.append(result.rewards["attacker"])
-            self.buffer.guard_rewards.append(result.rewards["guard"])
+            # 2) Guard decides actions (batched)
+            guard_prompts = [env._build_guard_prompt(states[i]) for i in active_indices]
+            guard_outputs = self.guard_model.generate_batch(
+                guard_prompts,
+                return_logits=False,
+            )
+            guard_actions = [
+                envs[idx]._parse_guard_action(output.text)
+                for idx, output in zip(active_indices, guard_outputs)
+            ]
 
-            self.global_step += 1
+            for idx, action in zip(active_indices, guard_actions):
+                states[idx].add_turn("guard", f"ACTION: {action}")
+                guard_blocked_flags[idx] = guard_blocked_flags[idx] or action == "block"
 
-        return {
-            "is_benign": is_benign,
-            "guard_blocked": guard_blocked,
-            "violation": violation,
-            "attacker_reward": total_attacker_reward,
-            "guard_reward": total_guard_reward,
-            "num_turns": state.current_step,
-        }
+            # 3) Target responses for allowed actions (batched only on allowed)
+            allow_indices = [
+                idx for idx, action in zip(active_indices, guard_actions) if action == "allow"
+            ]
+            target_outputs_map: dict[int, GenerationOutput] = {}
+            if allow_indices:
+                target_prompts = [
+                    envs[idx]._build_target_prompt(states[idx]) for idx in allow_indices
+                ]
+                target_outputs = self.target_model.generate_batch(
+                    target_prompts, return_logits=False
+                )
+                for idx, output in zip(allow_indices, target_outputs):
+                    target_outputs_map[idx] = output
+                    states[idx].add_turn("target", output.text)
+
+            # 4) Judge and rewards
+            for idx, action in zip(active_indices, guard_actions):
+                if action == "allow":
+                    target_response = target_outputs_map[idx].text
+                    is_violation = self.judge.judge(
+                        target_response,
+                        states[idx].is_benign,
+                        states[idx].scenario_id,
+                    )
+                    states[idx].violation = is_violation
+                    violation_flags[idx] = violation_flags[idx] or is_violation
+                else:
+                    target_response = ""
+                    states[idx].violation = False
+
+                rewards = envs[idx]._compute_rewards(
+                    state=states[idx],
+                    guard_action=action,
+                    violation=states[idx].violation,
+                )
+
+                total_attacker_rewards[idx] += rewards["attacker"]
+                total_guard_rewards[idx] += rewards["guard"]
+
+                # Store PPO buffers with log probs
+                attacker_output = attacker_outputs[active_indices.index(idx)]
+                guard_output = guard_outputs[active_indices.index(idx)]
+
+                attacker_log_probs = (
+                    self.attacker_model.get_log_probs(
+                        attacker_output.input_ids.to(self._device_for_training()),
+                        attacker_output.output_ids.to(self._device_for_training()),
+                    )
+                    .detach()
+                    .cpu()
+                )
+                guard_log_probs = (
+                    self.guard_model.get_log_probs(
+                        guard_output.input_ids.to(self._device_for_training()),
+                        guard_output.output_ids.to(self._device_for_training()),
+                    )
+                    .detach()
+                    .cpu()
+                )
+
+                self.buffer.attacker_input_ids.append(attacker_output.input_ids.detach().cpu())
+                self.buffer.attacker_output_ids.append(attacker_output.output_ids.detach().cpu())
+                self.buffer.attacker_log_probs.append(attacker_log_probs)
+                self.buffer.attacker_rewards.append(rewards["attacker"])
+
+                self.buffer.guard_input_ids.append(guard_output.input_ids.detach().cpu())
+                self.buffer.guard_output_ids.append(guard_output.output_ids.detach().cpu())
+                self.buffer.guard_log_probs.append(guard_log_probs)
+                self.buffer.guard_rewards.append(rewards["guard"])
+
+                # Episode termination check
+                if (
+                    states[idx].current_step >= self.config.max_steps_per_episode
+                    or states[idx].violation
+                ):
+                    states[idx].done = True
+
+                done[idx] = states[idx].done
+                episode_results[idx] = {
+                    "is_benign": states[idx].is_benign,
+                    "guard_blocked": guard_blocked_flags[idx],
+                    "violation": violation_flags[idx],
+                    "attacker_reward": total_attacker_rewards[idx],
+                    "guard_reward": total_guard_rewards[idx],
+                    "num_turns": states[idx].current_step,
+                }
+
+            # Increase global step by number of active episodes progressed
+            self.global_step += len(active_indices)
+
+        return episode_results
 
     def _ppo_update(self) -> None:
         """Perform PPO update on accumulated episode data.
@@ -535,74 +679,97 @@ class SelfPlayTrainer:
         output_ids: list[torch.Tensor],
         advantages: torch.Tensor,
     ) -> float:
-        """Perform a single PPO optimization step.
+        """Perform a batched PPO optimization step."""
+        if not input_ids or not output_ids or not old_log_probs:
+            return 0.0
 
-        Args:
-            model: The model to update.
-            optimizer: The optimizer to use.
-            old_log_probs: Log probabilities from the old policy.
-            input_ids: Input token IDs.
-            output_ids: Output token IDs.
-            advantages: Computed advantages.
+        num_samples = min(len(old_log_probs), len(advantages), len(input_ids), len(output_ids))
+        device = self._device_for_training()
 
-        Returns:
-            The loss value.
-        """
-        total_loss = 0.0
-        num_samples = min(len(old_log_probs), len(advantages))
+        # Pad sequences to batch them
+        pad_token_id = model.tokenizer.pad_token_id or model.tokenizer.eos_token_id or 0
+        padded_input_ids = pad_sequence(
+            [ids.squeeze(0) for ids in input_ids[:num_samples]],
+            batch_first=True,
+            padding_value=pad_token_id,
+        ).to(device)
+        padded_output_ids = pad_sequence(
+            [ids.squeeze(0) for ids in output_ids[:num_samples]],
+            batch_first=True,
+            padding_value=pad_token_id,
+        ).to(device)
 
-        for i in range(num_samples):
-            if i >= len(input_ids) or i >= len(output_ids):
-                continue
+        output_lengths = torch.tensor(
+            [ids.shape[1] for ids in output_ids[:num_samples]], device=device, dtype=torch.long
+        )
+        output_mask = (
+            torch.arange(padded_output_ids.shape[1], device=device)[None, :]
+            < output_lengths[:, None]
+        )
 
-            # Get new log probs
-            new_log_probs = model.get_log_probs(input_ids[i], output_ids[i])
-            new_log_probs_sum = new_log_probs.sum()
+        padded_old_log_probs = pad_sequence(
+            [
+                probs.squeeze(0) if probs.dim() > 1 else probs
+                for probs in old_log_probs[:num_samples]
+            ],
+            batch_first=True,
+            padding_value=0.0,
+        ).to(device)
 
-            # Old log probs sum
-            old_log_probs_sum = old_log_probs[i].sum()
+        advantages_batch = advantages[:num_samples].to(device)
 
-            # Compute ratio
+        amp_context = (
+            (
+                self.accelerator.autocast()
+                if self.accelerator
+                else torch.autocast("cuda", dtype=torch.float16)
+            )
+            if (self.config.use_mixed_precision and torch.cuda.is_available())
+            else nullcontext()
+        )
+
+        optimizer.zero_grad()
+        with amp_context:
+            new_log_probs = model.get_log_probs(padded_input_ids, padded_output_ids)
+            masked_new_log_probs = new_log_probs * output_mask
+            masked_old_log_probs = padded_old_log_probs * output_mask
+
+            new_log_probs_sum = masked_new_log_probs.sum(dim=1)
+            old_log_probs_sum = masked_old_log_probs.sum(dim=1)
+
             ratio = torch.exp(new_log_probs_sum - old_log_probs_sum)
-
-            # Clipped surrogate objective
-            advantage = advantages[i].to(new_log_probs_sum.device)
-            surrogate1 = ratio * advantage
+            surrogate1 = ratio * advantages_batch
             surrogate2 = (
                 torch.clamp(
                     ratio,
                     1.0 - self.config.clip_epsilon,
                     1.0 + self.config.clip_epsilon,
                 )
-                * advantage
+                * advantages_batch
             )
-
-            # Policy loss (negative because we want to maximize)
             policy_loss = -torch.min(surrogate1, surrogate2)
 
-            # Entropy bonus (encourage exploration)
-            entropy = -(new_log_probs * torch.exp(new_log_probs)).sum()
+            entropy = -(masked_new_log_probs.exp() * masked_new_log_probs).sum(dim=1)
             entropy_loss = -self.config.entropy_coef * entropy
 
-            # Total loss for this sample
-            loss = policy_loss + entropy_loss
-            total_loss += loss.item()
+            losses = policy_loss + entropy_loss
+            loss = losses.mean()
 
-            # Backward pass with accelerate support
-            optimizer.zero_grad()
-            if self.accelerator is not None:
+        if self.accelerator is not None:
+            with self.accelerator.accumulate(model.model):
                 self.accelerator.backward(loss)
-            else:
-                loss.backward()
-
-            # Get the underlying model for gradient clipping
-            underlying_model = (
-                self.accelerator.unwrap_model(model.model) if self.accelerator else model.model
-            )
-            torch.nn.utils.clip_grad_norm_(underlying_model.parameters(), self.config.max_grad_norm)
+                underlying_model = self.accelerator.unwrap_model(model.model)
+                torch.nn.utils.clip_grad_norm_(
+                    underlying_model.parameters(),
+                    self.config.max_grad_norm,
+                )
+                optimizer.step()
+        else:
+            loss.backward()
+            torch.nn.utils.clip_grad_norm_(model.model.parameters(), self.config.max_grad_norm)
             optimizer.step()
 
-        return total_loss / max(num_samples, 1)
+        return float(loss.detach().cpu())
 
     def _log_metrics(self) -> None:
         """Log training metrics."""
