@@ -7,10 +7,6 @@ requires-python = ">=3.11,<3.13"
 license = { text = "MIT" }
 authors = [{ name = "TSGB Authors" }]
 keywords = ["llm", "jailbreak", "defense", "self-play", "rl", "vast.ai"]
-
-[project.urls]
-Repository = "https://gith.misile.xyz/h3.git:/projects/dsb/tsgb.git"
-
 dependencies = [
     "torch>=2.0.0",
     "transformers>=4.40.0",
@@ -33,6 +29,9 @@ dependencies = [
     "datasets>=2.19.0",
     "hf-xet>=1.2.0",
 ]
+
+[project.urls]
+Repository = "https://gith.misile.xyz/h3.git:/projects/dsb/tsgb.git"
 
 [project.optional-dependencies]
 dev = [

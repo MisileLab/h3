@@ -26,11 +26,12 @@ class Offer(BaseModel):
     id: int
     gpu_name: str
     num_gpus: int
-    gpu_ram: float  # GB
+    gpu_ram: float  # GB per GPU
     cpu_cores: int
     cpu_ram: float  # GB
     disk_space: float  # GB
     dph_total: float  # USD per hour
+    min_bid: float | None = None
     dlperf: float | None = None  # Deep learning performance score
     dlperf_per_dphtotal: float | None = None  # DLPerf per dollar (from API)
     reliability: float | None = None
@@ -56,6 +57,11 @@ class Offer(BaseModel):
         if self.dlperf is None or self.dph_total <= 0:
             return 0.0
         return self.dlperf / self.dph_total
+
+    @property
+    def total_vram_gb(self) -> float:
+        """Total GPU memory across all GPUs."""
+        return self.gpu_ram * self.num_gpus
 
 
 class Instance(BaseModel):
@@ -138,11 +144,10 @@ class VastAPIClient:
 
     def list_offers(
         self,
-        gpu_name: str | None = None,
         min_vram_gb: int | None = None,
         max_price: float | None = None,
-        num_gpus: int = 1,
         verified: bool | None = None,
+        instance_type: str = "bid",
         order_by: str = "dlperf_per_dphtotal",
         order_dir: str = "desc",
         limit: int = 20,
@@ -150,11 +155,10 @@ class VastAPIClient:
         """List available GPU offers.
 
         Args:
-            gpu_name: Filter by GPU name (e.g., "RTX_4090").
-            min_vram_gb: Minimum VRAM in GB.
+            min_vram_gb: Minimum total VRAM in GB.
             max_price: Maximum price per hour in USD.
-            num_gpus: Number of GPUs required.
             verified: Filter by verification status.
+            instance_type: Vast.ai instance type (on-demand, bid, reserved).
             order_by: Sort field (default: dlperf_per_dphtotal for best value).
             order_dir: Sort direction ("asc" or "desc", default: "desc" for best first).
             limit: Maximum number of offers to return.
@@ -164,27 +168,41 @@ class VastAPIClient:
         """
         logger.info(
             "listing_offers",
-            gpu_name=gpu_name,
             min_vram_gb=min_vram_gb,
             max_price=max_price,
-            num_gpus=num_gpus,
+            instance_type=instance_type,
             order_by=order_by,
+            order_dir=order_dir,
             limit=limit,
         )
 
         try:
-            # SDK search_offers with simple query, then filter in Python
-            # The SDK query parser has issues with complex queries
             order_str = f"{order_by}-" if order_dir == "desc" else order_by
 
-            # Fetch more than needed since we'll filter
+            # Build query using Vast.ai search syntax so filtering happens server-side
+            query_parts = ["rentable=true", "rented=false"]
+            # Bid/on-demand selection is handled by the SDK 'type' argument
+
+            if min_vram_gb:
+                query_parts.append(f"gpu_total_ram>={min_vram_gb}")
+            if max_price:
+                query_parts.append(f"dph_total<={max_price}")
+            if verified is True:
+                query_parts.append("verified=true")
+            elif verified is False:
+                query_parts.append("verified=false")
+
+            query = " ".join(query_parts)
+            logger.debug("vast_query", query=query)
+
+            # Fetch more than needed since we'll still validate client-side as a fallback
             fetch_limit = limit * 5 if limit < 100 else 500
 
             results = self._client.search_offers(
-                query="rentable = true",
+                query=query,
                 order=order_str,
                 limit=fetch_limit,
-                type="on-demand",
+                type=instance_type,
             )
 
             if not results:
@@ -194,20 +212,23 @@ class VastAPIClient:
             offers = []
             for offer_data in results:
                 try:
-                    gpu_ram_gb = offer_data.get("gpu_ram", 0) / 1024
+                    gpu_ram_gb = offer_data.get("gpu_ram", 0) / 1000
                     dph = offer_data.get("dph_total", 0)
                     offer_num_gpus = offer_data.get("num_gpus", 1)
+                    total_vram_gb = gpu_ram_gb * offer_num_gpus
                     offer_gpu_name = offer_data.get("gpu_name", "unknown")
-                    is_verified = offer_data.get("verified", False)
+                    verification = offer_data.get("verification")
+                    is_verified = bool(
+                        offer_data.get("verified", False)
+                        or verification == "verified"
+                        or offer_data.get("vericode")
+                    )
+                    min_bid = offer_data.get("min_bid") or offer_data.get("current_min_bid")
 
                     # Apply filters
-                    if min_vram_gb and gpu_ram_gb < min_vram_gb:
+                    if min_vram_gb and total_vram_gb < min_vram_gb:
                         continue
                     if max_price and dph > max_price:
-                        continue
-                    if num_gpus and offer_num_gpus < num_gpus:
-                        continue
-                    if gpu_name and offer_gpu_name != gpu_name:
                         continue
                     if verified is not None and is_verified != verified:
                         continue
@@ -221,6 +242,7 @@ class VastAPIClient:
                         cpu_ram=offer_data.get("cpu_ram", 0) / 1024,
                         disk_space=offer_data.get("disk_space", 0),
                         dph_total=dph,
+                        min_bid=min_bid,
                         dlperf=offer_data.get("dlperf"),
                         dlperf_per_dphtotal=offer_data.get("dlperf_per_dphtotal"),
                         reliability=offer_data.get("reliability"),
@@ -257,6 +279,7 @@ class VastAPIClient:
         onstart: str | None = None,
         label: str | None = None,
         env: dict[str, str] | None = None,
+        bid_price: float | None = None,
     ) -> Instance:
         """Create a new instance from an offer.
 
@@ -279,6 +302,7 @@ class VastAPIClient:
             offer_id=offer_id,
             image=image,
             disk_gb=disk_gb,
+            bid_price=bid_price,
         )
 
         try:
@@ -287,24 +311,40 @@ class VastAPIClient:
             if env:
                 env_str = " ".join(f"-e {k}={v}" for k, v in env.items())
 
-            # SDK create_instance
+            # SDK create_instance (use onstart_cmd for inline script content)
             result = self._client.create_instance(
-                ID=offer_id,
+                id=offer_id,
                 image=image,
                 disk=disk_gb,
-                onstart=onstart,
+                onstart_cmd=onstart,
                 label=label,
                 env=env_str,
+                bid_price=bid_price,
             )
 
-            # Result should contain the new instance info
-            if isinstance(result, dict):
+            response_data: dict[str, Any] | None = None
+            instance_id: int | None = None
+
+            if hasattr(result, "json"):
+                try:
+                    response_data = result.json()
+                except Exception:
+                    response_data = None
+
+            if response_data:
+                instance_id = (
+                    response_data.get("new_contract")
+                    or response_data.get("id")
+                    or response_data.get("instance")
+                )
+            elif isinstance(result, dict):
                 instance_id = result.get("new_contract") or result.get("id")
             else:
                 # Result might be the instance ID directly
                 instance_id = int(result) if result else None
 
             if not instance_id:
+                logger.error("create_instance_missing_id", response=response_data or result)
                 raise VastAPIError("No instance ID returned from create request")
 
             logger.info("instance_created", instance_id=instance_id)

@@ -55,9 +55,13 @@ class Settings(BaseSettings):
         default=None,
         description="GPU model name filter for Vast.ai offers (None = any GPU)",
     )
+    vast_instance_type: str = Field(
+        default="on-demand",
+        description="Vast.ai instance type: on-demand, bid, or reserved",
+    )
     vast_min_vram_gb: int = Field(
         default=80,
-        description="Minimum VRAM in GB (80GB for H100/A100)",
+        description="Minimum total VRAM in GB across all GPUs",
     )
     vast_max_price: float = Field(
         default=5.0,

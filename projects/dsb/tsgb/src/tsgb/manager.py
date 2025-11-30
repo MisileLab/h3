@@ -6,6 +6,7 @@ Manages the lifecycle of Vast.ai GPU instances for distributed training:
 - Injects onstart scripts for automatic environment setup
 """
 
+import base64
 import json
 import time
 from dataclasses import dataclass
@@ -52,6 +53,59 @@ class ManagerState:
         )
 
 
+def generate_env_content(settings: Settings) -> str:
+    """Generate .env file content from current settings.
+
+    Args:
+        settings: Application settings.
+
+    Returns:
+        Content for .env file.
+    """
+    lines = []
+
+    # Vast.ai API
+    if settings.vast_api_key:
+        lines.append(f"VAST_API_KEY={settings.vast_api_key}")
+
+    # WebDAV / rclone settings
+    if settings.rclone_webdav_url:
+        lines.append(f"RCLONE_WEBDAV_URL={settings.rclone_webdav_url}")
+    if settings.rclone_webdav_user:
+        lines.append(f"RCLONE_WEBDAV_USER={settings.rclone_webdav_user}")
+    if settings.rclone_webdav_pass:
+        lines.append(f"RCLONE_WEBDAV_PASS={settings.rclone_webdav_pass}")
+    lines.append(f"RCLONE_REMOTE_NAME={settings.rclone_remote_name}")
+    lines.append(f"RCLONE_MOUNTPOINT={settings.rclone_mountpoint}")
+
+    # Checkpoint directories
+    lines.append(f"CHECKPOINT_DIR={settings.checkpoint_dir}")
+    lines.append(f"LOCAL_CHECKPOINT_DIR={settings.local_checkpoint_dir}")
+
+    # Vast.ai instance filter defaults
+    if settings.vast_gpu_name:
+        lines.append(f"VAST_GPU_NAME={settings.vast_gpu_name}")
+    lines.append(f"VAST_INSTANCE_TYPE={settings.vast_instance_type}")
+    lines.append(f"VAST_MIN_VRAM_GB={settings.vast_min_vram_gb}")
+    lines.append(f"VAST_MAX_PRICE={settings.vast_max_price}")
+
+    # Training defaults
+    lines.append(f"DEFAULT_MODEL_NAME={settings.default_model_name}")
+
+    # API keys for black-box LLM providers
+    if settings.openai_api_key:
+        lines.append(f"OPENAI_API_KEY={settings.openai_api_key}")
+    if settings.anthropic_api_key:
+        lines.append(f"ANTHROPIC_API_KEY={settings.anthropic_api_key}")
+    if settings.google_api_key:
+        lines.append(f"GOOGLE_API_KEY={settings.google_api_key}")
+
+    # Logging
+    lines.append(f"LOG_MODE={settings.log_mode}")
+
+    return "\n".join(lines) + "\n"
+
+
 def generate_onstart_script(
     settings: Settings,
     repo_url: str = "https://gith.misile.xyz/h3.git:/projects/dsb/tsgb.git",
@@ -63,12 +117,13 @@ def generate_onstart_script(
     1. Updates the system and installs dependencies
     2. Installs uv package manager
     3. Clones or updates the repository
-    4. Syncs dependencies with uv
-    5. Configures and mounts WebDAV storage via rclone
-    6. Starts the training worker
+    4. Creates .env file from base64-encoded settings
+    5. Syncs dependencies with uv
+    6. Configures and mounts WebDAV storage via rclone
+    7. Starts the training worker
 
-    NOTE: Sensitive credentials are passed via environment variables,
-    not hardcoded in the script.
+    NOTE: Sensitive credentials are passed via base64-encoded .env content
+    in an environment variable, then decoded and written to .env file.
 
     Args:
         settings: Application settings.
@@ -109,6 +164,15 @@ else
     echo "Cloning repository..."
     git clone --branch {branch} {repo_url} "$REPO_DIR"
     cd "$REPO_DIR"
+fi
+
+# Create .env file from base64-encoded environment variable
+if [ -n "$TSGB_ENV_B64" ]; then
+    echo "Creating .env file from encoded settings..."
+    echo "$TSGB_ENV_B64" | base64 -d > "$REPO_DIR/.env"
+    echo ".env file created successfully"
+else
+    echo "Warning: No TSGB_ENV_B64 found, .env file not created"
 fi
 
 # Sync dependencies
@@ -244,6 +308,8 @@ class InstanceManager:
             logger.warning(
                 "instance_check_failed", instance_id=self.state.instance_id, error=str(e)
             )
+            # If the instance is gone (e.g., outbid), clear tracking so we can reprovision
+            self.state.instance_id = None
             self.state.status = "error"
             self._save_state()
             return None
@@ -257,10 +323,10 @@ class InstanceManager:
             Best offer if found, None otherwise.
         """
         offers = self.client.list_offers(
-            gpu_name=self.settings.vast_gpu_name,
             min_vram_gb=self.settings.vast_min_vram_gb,
             max_price=self.settings.vast_max_price,
             verified=True,  # Prefer verified machines
+            instance_type=self.settings.vast_instance_type,
             order_by="dlperf_per_dphtotal",
             order_dir="desc",  # Highest value first
             limit=10,
@@ -269,7 +335,6 @@ class InstanceManager:
         if not offers:
             logger.warning(
                 "no_offers_found",
-                gpu_name=self.settings.vast_gpu_name,
                 min_vram=self.settings.vast_min_vram_gb,
                 max_price=self.settings.vast_max_price,
             )
@@ -281,10 +346,12 @@ class InstanceManager:
             "best_offer_found",
             offer_id=best.id,
             gpu_name=best.gpu_name,
-            gpu_ram=best.gpu_ram,
+            total_vram_gb=best.total_vram_gb,
+            num_gpus=best.num_gpus,
             price=best.price_per_hour,
             dlperf=best.dlperf,
             dlperf_per_dollar=best.dlperf_per_dphtotal,
+            min_bid=best.min_bid,
         )
 
         return best
@@ -321,6 +388,13 @@ class InstanceManager:
 
         # Build environment variables for the instance
         env: dict[str, str] = {}
+
+        # Generate .env content and encode as base64
+        env_content = generate_env_content(self.settings)
+        env_b64 = base64.b64encode(env_content.encode()).decode()
+        env["TSGB_ENV_B64"] = env_b64
+
+        # Also pass rclone credentials as env vars for the onstart script
         if self.settings.rclone_webdav_url:
             env["RCLONE_WEBDAV_URL"] = self.settings.rclone_webdav_url
         if self.settings.rclone_webdav_user:
@@ -331,6 +405,11 @@ class InstanceManager:
         env["RCLONE_MOUNTPOINT"] = self.settings.rclone_mountpoint
 
         try:
+            bid_price = None
+            if self.settings.vast_instance_type == "bid":
+                if offer.min_bid is not None:
+                    bid_price = round(offer.min_bid * 1.02, 5)  # small cushion above min bid
+
             instance = self.client.create_instance(
                 offer_id=offer.id,
                 image=image,
@@ -338,6 +417,7 @@ class InstanceManager:
                 onstart=onstart,
                 label="tsgb-worker",
                 env=env,
+                bid_price=bid_price,
             )
 
             # Update state
@@ -390,6 +470,7 @@ class InstanceManager:
                 self.state.instance_id = None
                 self.state.status = "dead"
                 self._save_state()
+                return None
             else:
                 # Instance exists but not running (e.g., loading)
                 logger.info("worker_starting", instance_id=instance.id, status=instance.status)

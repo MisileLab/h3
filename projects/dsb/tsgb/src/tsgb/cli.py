@@ -423,9 +423,15 @@ def manager_logs(
 @manager_app.command("offers")
 def manager_offers(
     limit: int = typer.Option(10, "--limit", "-l", help="Number of offers to show"),
-    gpu_name: str | None = typer.Option(None, "--gpu", "-g", help="Filter by GPU name"),
     min_vram: int | None = typer.Option(None, "--min-vram", help="Minimum VRAM in GB"),
     max_price: float | None = typer.Option(None, "--max-price", help="Maximum $/hour"),
+    instance_type: str = typer.Option(
+        None,
+        "--type",
+        "-t",
+        help="Instance type (on-demand, bid, reserved)",
+    ),
+    show_min_bid: bool = typer.Option(False, "--show-min-bid", help="Show min bid price"),
 ) -> None:
     """List available GPU offers sorted by DLPerf/$."""
     setup_logging()
@@ -437,10 +443,10 @@ def manager_offers(
 
     try:
         offers = client.list_offers(
-            gpu_name=gpu_name or settings.vast_gpu_name,
             min_vram_gb=min_vram or settings.vast_min_vram_gb,
             max_price=max_price or settings.vast_max_price,
             verified=True,
+            instance_type=instance_type or settings.vast_instance_type,
             order_by="dlperf_per_dphtotal",
             order_dir="desc",
             limit=limit,
@@ -454,8 +460,10 @@ def manager_offers(
         table.add_column("ID", style="cyan")
         table.add_column("GPU", style="green")
         table.add_column("GPUs", justify="right")
-        table.add_column("VRAM", justify="right")
+        table.add_column("VRAM (total)", justify="right")
         table.add_column("$/hr", justify="right")
+        if show_min_bid:
+            table.add_column("Min Bid", justify="right")
         table.add_column("DLPerf", justify="right")
         table.add_column("DLPerf/$", justify="right", style="bold yellow")
         table.add_column("Reliability", justify="right")
@@ -465,17 +473,26 @@ def manager_offers(
             dlperf_per_dollar = offer.dlperf_per_dphtotal or offer.dlperf_per_dollar
             dlperf_dollar_str = f"{dlperf_per_dollar:.1f}" if dlperf_per_dollar else "N/A"
             reliability_str = f"{offer.reliability:.2%}" if offer.reliability else "N/A"
+            min_bid_str = f"${offer.min_bid:.3f}" if offer.min_bid is not None else "N/A"
 
-            table.add_row(
+            row = [
                 str(offer.id),
                 offer.gpu_name,
                 str(offer.num_gpus),
-                f"{offer.gpu_ram:.0f}GB",
+                f"{offer.total_vram_gb:.0f}GB",
                 f"${offer.dph_total:.3f}",
-                dlperf_str,
-                dlperf_dollar_str,
-                reliability_str,
+            ]
+            if show_min_bid:
+                row.append(min_bid_str)
+            row.extend(
+                [
+                    dlperf_str,
+                    dlperf_dollar_str,
+                    reliability_str,
+                ]
             )
+
+            table.add_row(*row)
 
         console.print(table)
 
@@ -545,6 +562,7 @@ def show_config() -> None:
     # Show non-sensitive settings
     table.add_row("Vast.ai API Key", "***" if settings.vast_api_key else "(not set)")
     table.add_row("GPU Name", settings.vast_gpu_name or "(any)")
+    table.add_row("Instance Type", settings.vast_instance_type)
     table.add_row("Min VRAM (GB)", str(settings.vast_min_vram_gb))
     table.add_row("Max Price ($/hr)", str(settings.vast_max_price))
     table.add_row("Checkpoint Dir", settings.checkpoint_dir)
