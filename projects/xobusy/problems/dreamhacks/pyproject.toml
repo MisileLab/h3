@@ -5,7 +5,7 @@ description = "sub monorepo for problems"
 readme = "README.md"
 requires-python = ">=3.14.0"
 dependencies = [
-  "beautifulsoup4==4.14.2",
+  "beautifulsoup4==4.14.3",
   "flask==3.1.2",
   "httpx==0.28.1",
   "lxml==6.0.2",
