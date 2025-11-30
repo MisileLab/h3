@@ -465,26 +465,28 @@ class SelfPlayTrainer:
             active_indices = [i for i, flag in enumerate(done) if not flag]
 
             # 1) Attacker generates messages (batched)
-            attacker_prompts = [env._build_attacker_prompt(states[i]) for i in active_indices]
+            attacker_prompts = [envs[i]._build_attacker_prompt(states[i]) for i in active_indices]
             attacker_outputs = self.attacker_model.generate_batch(
                 attacker_prompts,
                 return_logits=False,
             )
-
-            # Apply attacker outputs to state
+            attacker_outputs_map: dict[int, GenerationOutput] = {}
             for idx, output in zip(active_indices, attacker_outputs):
-                states[idx].add_turn("attacker", output.text, scenario_id=states[idx].scenario_id)
+                attacker_outputs_map[idx] = output
+                states[idx].add_turn("attacker", output.text)
 
             # 2) Guard decides actions (batched)
-            guard_prompts = [env._build_guard_prompt(states[i]) for i in active_indices]
+            guard_prompts = [envs[i]._build_guard_prompt(states[i]) for i in active_indices]
+
             guard_outputs = self.guard_model.generate_batch(
                 guard_prompts,
                 return_logits=False,
             )
-            guard_actions = [
-                envs[idx]._parse_guard_action(output.text)
-                for idx, output in zip(active_indices, guard_outputs)
-            ]
+            guard_outputs_map: dict[int, GenerationOutput] = {}
+            guard_actions = []
+            for idx, output in zip(active_indices, guard_outputs):
+                guard_outputs_map[idx] = output
+                guard_actions.append(envs[idx]._parse_guard_action(output.text))
 
             for idx, action in zip(active_indices, guard_actions):
                 states[idx].add_turn("guard", f"ACTION: {action}")
