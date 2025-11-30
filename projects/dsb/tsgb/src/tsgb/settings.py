@@ -73,6 +73,11 @@ class Settings(BaseSettings):
         default="HuggingFaceTB/SmolLM3-3B",
         description="Default model for training (SmolLM3-3B for efficient training)",
     )
+    batch_size: int | None = Field(
+        default=None,
+        ge=1,
+        description="Fixed training batch size (None to auto-compute from VRAM)",
+    )
 
     # API keys for black-box LLM providers (Stage 2 evaluation)
     openai_api_key: str = Field(default="", description="OpenAI API key")
