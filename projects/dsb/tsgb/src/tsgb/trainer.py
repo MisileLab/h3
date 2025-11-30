@@ -25,8 +25,20 @@ from tsgb.checkpoint import (
 )
 from tsgb.envs import SafetyJudge, SelfPlayEnv
 from tsgb.logging import get_logger
-from tsgb.models import GenerationOutput, HuggingFaceLM, LLMRole, get_accelerator
+from tsgb.models import GenerationOutput, HuggingFaceLM, get_accelerator
 from tsgb.settings import Settings
+
+# GradScaler for manual mixed precision (when not using accelerate)
+_grad_scaler: torch.amp.GradScaler | None = None
+
+
+def get_grad_scaler() -> torch.amp.GradScaler:
+    """Get or create a GradScaler for mixed precision training."""
+    global _grad_scaler
+    if _grad_scaler is None:
+        _grad_scaler = torch.amp.GradScaler("cuda")
+    return _grad_scaler
+
 
 logger = get_logger(__name__)
 
@@ -719,17 +731,26 @@ class SelfPlayTrainer:
 
         advantages_batch = advantages[:num_samples].to(device)
 
-        amp_context = (
-            (
-                self.accelerator.autocast()
-                if self.accelerator
-                else torch.autocast("cuda", dtype=torch.float16)
-            )
-            if (self.config.use_mixed_precision and torch.cuda.is_available())
-            else nullcontext()
-        )
+        # Determine if we should use mixed precision
+        use_amp = self.config.use_mixed_precision and torch.cuda.is_available()
+
+        # When using accelerate, it handles mixed precision automatically
+        # When not using accelerate, we need manual GradScaler
+        use_manual_scaler = use_amp and self.accelerator is None
+
+        if use_amp:
+            if self.accelerator is not None:
+                amp_context = self.accelerator.autocast()
+            else:
+                amp_context = torch.autocast("cuda", dtype=torch.float16)
+        else:
+            amp_context = nullcontext()
+
+        # Get or create scaler for manual mixed precision
+        scaler = get_grad_scaler() if use_manual_scaler else None
 
         optimizer.zero_grad()
+
         with amp_context:
             new_log_probs = model.get_log_probs(padded_input_ids, padded_output_ids)
             masked_new_log_probs = new_log_probs * output_mask
@@ -757,6 +778,7 @@ class SelfPlayTrainer:
             loss = losses.mean()
 
         if self.accelerator is not None:
+            # Accelerate handles gradient scaling internally
             with self.accelerator.accumulate(model.model):
                 self.accelerator.backward(loss)
                 underlying_model = self.accelerator.unwrap_model(model.model)
@@ -765,7 +787,15 @@ class SelfPlayTrainer:
                     self.config.max_grad_norm,
                 )
                 optimizer.step()
+        elif use_manual_scaler and scaler is not None:
+            # Manual mixed precision: use GradScaler
+            scaler.scale(loss).backward()
+            scaler.unscale_(optimizer)
+            torch.nn.utils.clip_grad_norm_(model.model.parameters(), self.config.max_grad_norm)
+            scaler.step(optimizer)
+            scaler.update()
         else:
+            # No mixed precision
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.model.parameters(), self.config.max_grad_norm)
             optimizer.step()

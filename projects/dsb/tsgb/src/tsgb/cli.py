@@ -157,12 +157,22 @@ def eval_local(
     # Load guard model
     if checkpoint_path:
         console.print(f"[yellow]Loading guard from checkpoint: {checkpoint_path}[/yellow]")
-        # Load from checkpoint - for now use default model as base
+        # Load from checkpoint - use default model as base architecture
         guard = HuggingFaceLM.from_pretrained(
             settings.default_model_name,
             role=LLMRole.GUARD,
         )
-        # TODO: Load weights from checkpoint
+        # Load trained weights from checkpoint
+        from tsgb.checkpoint import find_latest_checkpoint, load_guard_weights
+
+        ckpt_path = find_latest_checkpoint(checkpoint_path)
+        if ckpt_path:
+            load_guard_weights(ckpt_path, guard.model)
+            console.print(f"[green]Loaded guard weights from: {ckpt_path}[/green]")
+        else:
+            console.print(
+                f"[yellow]No checkpoint found at {checkpoint_path}, using fresh weights[/yellow]"
+            )
     else:
         console.print(f"[yellow]Loading fresh guard model: {settings.default_model_name}[/yellow]")
         guard = HuggingFaceLM.from_pretrained(

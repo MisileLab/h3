@@ -241,6 +241,50 @@ def find_latest_checkpoint(checkpoint_dir: str | Path) -> Path | None:
     return latest_path
 
 
+def load_guard_weights(
+    checkpoint_dir: str | Path,
+    guard_model: torch.nn.Module,
+    *,
+    device: str | torch.device | None = None,
+    strict: bool = True,
+) -> Path | None:
+    """Load guard model weights from the latest checkpoint.
+
+    Args:
+        checkpoint_dir: Directory containing checkpoints or a specific checkpoint path.
+        guard_model: Guard model instance to load weights into.
+        device: Optional device to load tensors to. Defaults to the model's device.
+        strict: Whether to enforce that checkpoint keys match the model.
+
+    Returns:
+        Path to the checkpoint directory if loaded, otherwise None.
+    """
+    checkpoint_path = find_latest_checkpoint(checkpoint_dir)
+
+    if checkpoint_path is None:
+        logger.warning("guard_checkpoint_not_found", path=str(checkpoint_dir))
+        return None
+
+    weights_path = checkpoint_path / "guard.safetensors"
+    if not weights_path.exists():
+        logger.warning("guard_weights_missing", path=str(weights_path))
+        return None
+
+    target_device = device or next(guard_model.parameters()).device
+    weights = load_file(weights_path, device=str(target_device))
+
+    guard_model.load_state_dict(weights, strict=strict)
+
+    logger.info(
+        "guard_weights_loaded",
+        path=str(weights_path),
+        device=str(target_device),
+        strict=strict,
+    )
+
+    return checkpoint_path
+
+
 def _split_optimizer_state(
     state_dict: dict[str, Any],
 ) -> tuple[dict[str, torch.Tensor], dict[str, Any]]:
