@@ -87,6 +87,8 @@ class LLMConfig:
     top_p: float = 0.9
     do_sample: bool = True
     device: str = "auto"
+    device_map: str | None = None
+    max_memory: dict[int, int] | None = None
     torch_dtype: str = "auto"
     trust_remote_code: bool = False
     use_accelerate: bool = True  # Enable multi-GPU by default
@@ -136,6 +138,9 @@ class HuggingFaceLM:
         # Ensure tokenizer has pad token
         if self.tokenizer.pad_token is None:
             self.tokenizer.pad_token = self.tokenizer.eos_token
+
+        # Use left padding for decoder-only causal models
+        self.tokenizer.padding_side = "left"
 
         self.max_length = _resolve_max_length(self.tokenizer)
 
@@ -360,77 +365,102 @@ class HuggingFaceLM:
         if not prompts:
             return []
 
-        requested_max_length = kwargs.get("max_length")
-        max_length = (
-            min(int(requested_max_length), self.max_length)
-            if requested_max_length is not None
-            else self.max_length
-        )
-
-        inputs = self.tokenizer(
-            prompts,
-            return_tensors="pt",
-            padding=True,
-            truncation=True,
-            max_length=max_length,
-        ).to(self._device)
-
-        attention_mask = inputs.get("attention_mask")
-        input_ids = inputs["input_ids"]
-
-        gen_kwargs = {
-            "max_new_tokens": kwargs.get("max_new_tokens", self.config.max_new_tokens),
-            "temperature": kwargs.get("temperature", self.config.temperature),
-            "top_p": kwargs.get("top_p", self.config.top_p),
-            "do_sample": kwargs.get("do_sample", self.config.do_sample),
-            "pad_token_id": self.tokenizer.pad_token_id,
-            "output_scores": return_logits,
-            "return_dict_in_generate": True,
-            "attention_mask": attention_mask,
-        }
-
-        use_amp = self.config.use_mixed_precision and torch.cuda.is_available()
-        autocast_context = (
-            (
-                self.accelerator.autocast()
-                if self.accelerator
-                else torch.autocast("cuda", dtype=torch.float16)
-            )
-            if use_amp
-            else nullcontext()
-        )
-
-        with torch.no_grad():
-            with autocast_context:
-                outputs = self.model.generate(input_ids=input_ids, **gen_kwargs)
-
-        sequences = outputs.sequences
-        if attention_mask is not None:
-            input_lengths = attention_mask.sum(dim=1)
-        else:
-            input_lengths = torch.full(
-                (sequences.size(0),), input_ids.shape[1], device=sequences.device
+        try:
+            requested_max_length = kwargs.get("max_length")
+            max_length = (
+                min(int(requested_max_length), self.max_length)
+                if requested_max_length is not None
+                else self.max_length
             )
 
-        logits_tensor = None
-        if return_logits and hasattr(outputs, "scores") and outputs.scores:
-            logits_tensor = torch.stack(outputs.scores, dim=1)
+            inputs = self.tokenizer(
+                prompts,
+                return_tensors="pt",
+                padding=True,
+                truncation=True,
+                max_length=max_length,
+            ).to(self._device)
 
-        results: list[GenerationOutput] = []
-        for idx, prompt in enumerate(prompts):
-            start = int(input_lengths[idx].item())
-            output_ids = sequences[idx, start:]
-            sample_logits = logits_tensor[idx] if logits_tensor is not None else None
-            results.append(
-                GenerationOutput(
-                    text=self.tokenizer.decode(output_ids, skip_special_tokens=True),
-                    input_ids=input_ids[idx : idx + 1].detach().cpu(),
-                    output_ids=output_ids.unsqueeze(0).detach().cpu(),
-                    logits=sample_logits.detach().cpu() if sample_logits is not None else None,
+            attention_mask = inputs.get("attention_mask")
+            input_ids = inputs["input_ids"]
+
+            gen_kwargs = {
+                "max_new_tokens": kwargs.get("max_new_tokens", self.config.max_new_tokens),
+                "temperature": kwargs.get("temperature", self.config.temperature),
+                "top_p": kwargs.get("top_p", self.config.top_p),
+                "do_sample": kwargs.get("do_sample", self.config.do_sample),
+                "pad_token_id": self.tokenizer.pad_token_id,
+                "output_scores": return_logits,
+                "return_dict_in_generate": True,
+                "attention_mask": attention_mask,
+            }
+
+            use_amp = self.config.use_mixed_precision and torch.cuda.is_available()
+            autocast_context = (
+                (
+                    self.accelerator.autocast()
+                    if self.accelerator
+                    else torch.autocast("cuda", dtype=torch.float16)
                 )
+                if use_amp
+                else nullcontext()
             )
 
-        return results
+            with torch.no_grad():
+                with autocast_context:
+                    outputs = self.model.generate(input_ids=input_ids, **gen_kwargs)
+
+            sequences = outputs.sequences
+            if attention_mask is not None:
+                input_lengths = attention_mask.sum(dim=1)
+            else:
+                input_lengths = torch.full(
+                    (sequences.size(0),), input_ids.shape[1], device=sequences.device
+                )
+
+            logits_tensor = None
+            if return_logits and hasattr(outputs, "scores") and outputs.scores:
+                logits_tensor = torch.stack(outputs.scores, dim=1)
+
+            results: list[GenerationOutput] = []
+            for idx, prompt in enumerate(prompts):
+                start = int(input_lengths[idx].item())
+                output_ids = sequences[idx, start:]
+                sample_logits = logits_tensor[idx] if logits_tensor is not None else None
+                results.append(
+                    GenerationOutput(
+                        text=self.tokenizer.decode(output_ids, skip_special_tokens=True),
+                        input_ids=input_ids[idx : idx + 1].detach().cpu(),
+                        output_ids=output_ids.unsqueeze(0).detach().cpu(),
+                        logits=sample_logits.detach().cpu() if sample_logits is not None else None,
+                    )
+                )
+
+            return results
+        except torch.cuda.OutOfMemoryError as oom:
+            torch.cuda.empty_cache()
+            if len(prompts) == 1:
+                logger.error(
+                    "generation_oom",
+                    batch_size=1,
+                    error=str(oom),
+                )
+                raise
+
+            retry_batch = max(1, len(prompts) // 2)
+            logger.warning(
+                "generation_oom_retry",
+                batch_size=len(prompts),
+                retry_batch_size=retry_batch,
+                error=str(oom),
+            )
+            first_half = self.generate_batch(
+                prompts[:retry_batch], return_logits=return_logits, **kwargs
+            )
+            second_half = self.generate_batch(
+                prompts[retry_batch:], return_logits=return_logits, **kwargs
+            )
+            return first_half + second_half
 
         # Tokenize input
         inputs = self.tokenizer(
