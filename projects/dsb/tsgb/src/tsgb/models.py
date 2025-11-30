@@ -90,7 +90,7 @@ class LLMConfig:
     torch_dtype: str = "auto"
     trust_remote_code: bool = False
     use_accelerate: bool = True  # Enable multi-GPU by default
-    attn_implementation: str | None = "flash_attention_2"
+    attn_implementation: str | None = None
     gradient_checkpointing: bool = True
     use_mixed_precision: bool = True
 
@@ -206,18 +206,23 @@ class HuggingFaceLM:
                 for i in range(torch.cuda.device_count())
             }
 
-        attn_impl = kwargs.pop("attn_implementation", "flash_attention_2")
+        attn_impl = kwargs.pop("attn_implementation", None)
         gradient_checkpointing = kwargs.pop("gradient_checkpointing", True)
         use_mixed_precision = kwargs.pop("use_mixed_precision", True)
+
+        model_kwargs = {
+            "dtype": dtype,
+            "device_map": device_map,
+            "max_memory": max_memory,
+            "trust_remote_code": kwargs.get("trust_remote_code", False),
+        }
+        if attn_impl is not None:
+            model_kwargs["attn_implementation"] = attn_impl
 
         try:
             model = AutoModelForCausalLM.from_pretrained(
                 model_name,
-                dtype=dtype,
-                device_map=device_map,
-                max_memory=max_memory,
-                trust_remote_code=kwargs.get("trust_remote_code", False),
-                attn_implementation=attn_impl,
+                **model_kwargs,
             )
         except TypeError:
             logger.warning(
@@ -225,17 +230,16 @@ class HuggingFaceLM:
                 model_name=model_name,
                 attn_implementation=attn_impl,
             )
+            model_kwargs.pop("attn_implementation", None)
             model = AutoModelForCausalLM.from_pretrained(
                 model_name,
-                dtype=dtype,
-                device_map=device_map,
-                max_memory=max_memory,
-                trust_remote_code=kwargs.get("trust_remote_code", False),
+                **model_kwargs,
             )
 
         if gradient_checkpointing and hasattr(model, "gradient_checkpointing_enable"):
             try:
                 model.gradient_checkpointing_enable()
+
                 if hasattr(model.config, "use_cache"):
                     model.config.use_cache = False
                 logger.info("gradient_checkpointing_enabled", model_name=model_name)

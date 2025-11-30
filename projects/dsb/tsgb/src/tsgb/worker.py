@@ -210,7 +210,6 @@ def run_worker(
         accelerator=accelerator,
         use_mixed_precision=config.use_mixed_precision,
         gradient_checkpointing=config.enable_gradient_checkpointing,
-        attn_implementation="flash_attention_2" if config.enable_flash_attention else None,
     )
     guard = HuggingFaceLM.from_pretrained(
         model,
@@ -218,7 +217,6 @@ def run_worker(
         accelerator=accelerator,
         use_mixed_precision=config.use_mixed_precision,
         gradient_checkpointing=config.enable_gradient_checkpointing,
-        attn_implementation="flash_attention_2" if config.enable_flash_attention else None,
     )
     target = HuggingFaceLM.from_pretrained(
         model,
@@ -226,7 +224,6 @@ def run_worker(
         accelerator=accelerator,
         use_mixed_precision=config.use_mixed_precision,
         gradient_checkpointing=config.enable_gradient_checkpointing,
-        attn_implementation="flash_attention_2" if config.enable_flash_attention else None,
     )
 
     trainer = SelfPlayTrainer(

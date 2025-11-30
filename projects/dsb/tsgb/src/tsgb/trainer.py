@@ -110,7 +110,6 @@ class TrainConfig:
     episode_batch_size: int | None = None  # How many episodes to run concurrently
     gradient_accumulation_steps: int = 4
     use_mixed_precision: bool = True
-    enable_flash_attention: bool = True
     enable_gradient_checkpointing: bool = True
 
     def __post_init__(self) -> None:
