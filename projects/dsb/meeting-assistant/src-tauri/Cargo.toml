@@ -1,0 +1,56 @@
+[package]
+name = "meeting-assistant"
+version = "0.1.0"
+description = "Real-time English Meeting Assistant - A desktop overlay app for non-native English speakers"
+authors = ["you"]
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+# The `_lib` suffix may seem redundant but it is necessary
+# to make the lib name unique and wouldn't conflict with the bin name.
+# This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
+name = "meeting_assistant_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-opener = "2"
+tauri-plugin-store = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+
+# HTTP client for OpenAI API
+reqwest = { version = "0.12", features = ["json", "multipart", "stream"] }
+
+# Async runtime
+tokio = { version = "1", features = ["full"] }
+
+# Audio capture
+cpal = "0.15"
+
+# Environment variables
+dotenvy = "0.15"
+
+# Base64 encoding for audio
+base64 = "0.22"
+
+# UUID for unique IDs
+uuid = { version = "1", features = ["v4"] }
+
+# Time handling
+chrono = { version = "0.4", features = ["serde"] }
+
+# Async channels
+async-channel = "2"
+
+# Byte utilities
+bytes = "1"
+
+# WAV file encoding
+hound = "3.5"
+
