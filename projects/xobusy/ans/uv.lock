@@ -14,7 +14,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "loguru", specifier = "==0.7.3" },
-    { name = "manim", specifier = "==0.19.0" },
+    { name = "manim", specifier = "==0.19.1" },
 ]
 
 [[package]]
@@ -197,7 +197,7 @@ wheels = [
 
 [[package]]
 name = "manim"
-version = "0.19.0"
+version = "0.19.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "audioop-lts" },
@@ -227,9 +227,9 @@ dependencies = [
     { name = "typing-extensions" },
     { name = "watchdog" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/52/79/29f287beebcf52464c2cfd88015720992515062dd373bd37c2ed34955cdd/manim-0.19.0.tar.gz", hash = "sha256:748115ffc1dea24940fd6d7a3edcae0ccedc3e1874ebc1f5d7e5c6d69a4f4505", size = 531082, upload-time = "2025-01-20T13:56:06.382Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/8c/5f/b69881c389032d7da2666bee0a022b6535eefc7cd634bc3e55c213d6cb8c/manim-0.19.1.tar.gz", hash = "sha256:6be7da7e973b212739d2fbfe6af4501068b8a63fdd9407660a609ae12e57b580", size = 543401, upload-time = "2025-12-01T07:21:29.704Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d9/30/2993e7468ff045e19a4fbfd5c540c921b6f884faebdecc9d97534882e48b/manim-0.19.0-py3-none-any.whl", hash = "sha256:aee98d359d85733ea91f459d0ad8168da03593ce2001355432b5e31ca8bcdcaf", size = 625936, upload-time = "2025-01-20T13:56:01.928Z" },
+    { url = "https://files.pythonhosted.org/packages/eb/e1/c02f07aa65b9c8c9f70c0ccd47c2191f27e3c7788653d365945c63fb9eb5/manim-0.19.1-py3-none-any.whl", hash = "sha256:f7201bbdc4b4f9c649cd3a13ecdf98345057dd2810227517738b523c07927228", size = 642273, upload-time = "2025-12-01T07:21:31.271Z" },
 ]
 
 [[package]]
