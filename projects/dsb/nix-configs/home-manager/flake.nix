@@ -41,6 +41,7 @@
         (final: prev: {
           uv = stablep.uv;
           monero-cli = stablep.monero-cli;
+          monero-gui = stablep.monero-gui;
           codex = nix-ai-toolspkgs.codex;
           claude-code = nix-ai-toolspkgs.claude-code;
           opencode = nix-ai-toolspkgs.opencode;
