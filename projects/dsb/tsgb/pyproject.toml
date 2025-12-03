@@ -3,7 +3,7 @@ name = "tsgb"
 version = "0.1.0"
 description = "Train Small, Guard Big - LLM jailbreak attack/defense self-play framework with Vast.ai orchestration"
 readme = "README.md"
-requires-python = ">=3.11,<3.13"
+requires-python = ">=3.14,<3.15"
 license = { text = "MIT" }
 authors = [{ name = "TSGB Authors" }]
 keywords = ["llm", "jailbreak", "defense", "self-play", "rl", "vast.ai"]
