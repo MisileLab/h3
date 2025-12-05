@@ -12,7 +12,7 @@
       snyk radicle-node infisical poop
       gh opencode process-compose code-cursor
       netlify-cli cursor-cli tree-sitter claude-code
-      codex
+      codex railway
 
       # Language tools
       pnpm yarn-berry
