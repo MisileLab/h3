@@ -26,10 +26,10 @@ importers:
         version: 5.9.3
       vite:
         specifier: ^7.1.4
-        version: 7.2.6
+        version: 7.2.7
       vite-plugin-solid:
         specifier: ^2.11.0
-        version: 2.11.10(solid-js@1.9.10)(vite@7.2.6)
+        version: 2.11.10(solid-js@1.9.10)(vite@7.2.7)
 
 packages:
 
@@ -671,8 +671,8 @@ packages:
       '@testing-library/jest-dom':
         optional: true
 
-  vite@7.2.6:
-    resolution: {integrity: sha512-tI2l/nFHC5rLh7+5+o7QjKjSR04ivXDF4jcgV0f/bTQ+OJiITy5S6gaynVsEM+7RqzufMnVbIon6Sr5x1SDYaQ==}
+  vite@7.2.7:
+    resolution: {integrity: sha512-ITcnkFeR3+fI8P1wMgItjGrR10170d8auB4EpMLPqmx6uxElH3a/hHGQabSHKdqd4FXWO1nFIp9rRn7JQ34ACQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
@@ -1258,7 +1258,7 @@ snapshots:
       escalade: 3.2.0
       picocolors: 1.1.1
 
-  vite-plugin-solid@2.11.10(solid-js@1.9.10)(vite@7.2.6):
+  vite-plugin-solid@2.11.10(solid-js@1.9.10)(vite@7.2.7):
     dependencies:
       '@babel/core': 7.28.5
       '@types/babel__core': 7.20.5
@@ -1266,12 +1266,12 @@ snapshots:
       merge-anything: 5.1.7
       solid-js: 1.9.10
       solid-refresh: 0.6.3(solid-js@1.9.10)
-      vite: 7.2.6
-      vitefu: 1.1.1(vite@7.2.6)
+      vite: 7.2.7
+      vitefu: 1.1.1(vite@7.2.7)
     transitivePeerDependencies:
       - supports-color
 
-  vite@7.2.6:
+  vite@7.2.7:
     dependencies:
       esbuild: 0.25.12
       fdir: 6.5.0(picomatch@4.0.3)
@@ -1282,8 +1282,8 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
-  vitefu@1.1.1(vite@7.2.6):
+  vitefu@1.1.1(vite@7.2.7):
     optionalDependencies:
-      vite: 7.2.6
+      vite: 7.2.7
 
   yallist@3.1.1: {}
