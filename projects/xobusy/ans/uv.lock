@@ -647,17 +647,17 @@ wheels = [
 
 [[package]]
 name = "skia-pathops"
-version = "0.9.0"
+version = "0.9.1"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/47/26/cf395d3050e0dd7209d54748380782a085f45e29d76b091ebbc046028db9/skia_pathops-0.9.0.tar.gz", hash = "sha256:6e520dcd82b260189c9577233fc26f7c48fa8bf436160731b12db4d34e741479", size = 65114923, upload-time = "2025-11-12T07:52:41.18Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/45/e5/2df8c918ffcb4ad847d2571f32a92447ffebe2e9c94d4ea05d9a86f20beb/skia_pathops-0.9.1.tar.gz", hash = "sha256:f1273ef4da23570f33e76e7753908484e5a4a2468f7b1089f9110ccee6293f99", size = 65116011, upload-time = "2025-12-08T11:44:49.152Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/02/f2/12ddf647fc1f9c1c1aa7af92c6779691062f07a072746992d4027bfaa471/skia_pathops-0.9.0-cp310-abi3-macosx_10_9_universal2.whl", hash = "sha256:8d49d5c64acc153c13fa75c0100871b1e2a163d129a4e58c55341ff2e85e37f3", size = 2897047, upload-time = "2025-11-12T07:52:21.697Z" },
-    { url = "https://files.pythonhosted.org/packages/25/5e/43580961f259191fa3c4b9989fab04ae4c3161224f50c144679db7522cd6/skia_pathops-0.9.0-cp310-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:6a844c95984b60bc4c24de5a4c6eac51a040403e2f0ca42330695f9b1352e6ed", size = 3300404, upload-time = "2025-11-12T07:52:23.548Z" },
-    { url = "https://files.pythonhosted.org/packages/ef/5d/a420c7a771c4d19b5b3702bd3daa804c2398d6b3f0105541ae704d85d3e4/skia_pathops-0.9.0-cp310-abi3-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:b0cf532a970e1401c67716bce978c6061601549e2e8e8a30751692a4f3df93a9", size = 2996881, upload-time = "2025-11-12T07:52:25.351Z" },
-    { url = "https://files.pythonhosted.org/packages/ca/82/ce3379f874e8e0cd19bb09834d9ca64403a58f0afd43a4a3d4a69748c2e6/skia_pathops-0.9.0-cp310-abi3-musllinux_1_2_aarch64.whl", hash = "sha256:60a70355e625598d81215d9027ff643e1c9671984a8cbae39615685d4d77e6fe", size = 3952744, upload-time = "2025-11-12T07:52:26.826Z" },
-    { url = "https://files.pythonhosted.org/packages/5b/3b/2c47bb54b2f46c228165ab5e53024660c245acdc017732df422110f628ed/skia_pathops-0.9.0-cp310-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:efffee78535f4beb2810d4b4a48e0f46c4bc9d4dea60abba3a9d3591c61893c3", size = 4314640, upload-time = "2025-11-12T07:52:28.64Z" },
-    { url = "https://files.pythonhosted.org/packages/1a/e9/8a9480fe871542f3590b4f6f212060faabb68e00142dab485e65096a1839/skia_pathops-0.9.0-cp310-abi3-win32.whl", hash = "sha256:118803a515c01cdcbe6da586e4ae32a037c4376fb1f046e12da700f6c49c3753", size = 1451015, upload-time = "2025-11-12T07:52:29.959Z" },
-    { url = "https://files.pythonhosted.org/packages/6d/8d/c8f09c400dfa200e2d56f90f70964a5077f8ef51715aa86541d433151658/skia_pathops-0.9.0-cp310-abi3-win_amd64.whl", hash = "sha256:d940fc1fd8405745615315ac9099bcd970b298f0063d72689ee060dc8bf601f2", size = 1782930, upload-time = "2025-11-12T07:52:31.656Z" },
+    { url = "https://files.pythonhosted.org/packages/f7/39/4edc7484e2dff1ac43ea62d1df8c8b00e9ed820ca4e5efcd8371e87f4fe7/skia_pathops-0.9.1-cp310-abi3-macosx_10_9_universal2.whl", hash = "sha256:54ac44ade7b37d3d67b04c3eea244b5f9b4e7555ccad4b6997a56602cb6f0f48", size = 2897494, upload-time = "2025-12-08T11:44:30.086Z" },
+    { url = "https://files.pythonhosted.org/packages/84/7c/0238144453b9b99369e04ecc6393e4236ea6eac2105145cb3dcd02d80645/skia_pathops-0.9.1-cp310-abi3-manylinux2014_x86_64.manylinux_2_17_x86_64.whl", hash = "sha256:3a5eee648d4acff631b8eaca13984a288886bbf754999b940da85ea3bcb4b9a9", size = 3300295, upload-time = "2025-12-08T11:44:31.844Z" },
+    { url = "https://files.pythonhosted.org/packages/87/7f/268de1790fdefb3700d75ec6bb7a73e4cd67af67ce1ab290db04bd06a98b/skia_pathops-0.9.1-cp310-abi3-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:dab0e9b16c98bf92be384fba2a0578a54a969fd386d995d739c8a541585dc34a", size = 2999241, upload-time = "2025-12-08T11:44:34.149Z" },
+    { url = "https://files.pythonhosted.org/packages/9d/53/22ae66ac02476174272539e724565088045462b3591d01d8da66ce009c38/skia_pathops-0.9.1-cp310-abi3-musllinux_1_2_aarch64.whl", hash = "sha256:b08bb15347dfdcc91bd62aa5d63c036cdefa2152761b5c0e8288db199b7c4f72", size = 3955299, upload-time = "2025-12-08T11:44:35.501Z" },
+    { url = "https://files.pythonhosted.org/packages/0b/b9/799308cb5f139d4150a200122cb44475f97e81b43a3281372d59216dd9bb/skia_pathops-0.9.1-cp310-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:19202fd9799d5d5428a7d6f3eae0366304cd2cf4e5680541fabb016c54b44109", size = 4316602, upload-time = "2025-12-08T11:44:37.275Z" },
+    { url = "https://files.pythonhosted.org/packages/85/3b/45ff339b49dd8eed91ade81842464c6ce955f84dd6805cbe1bafc2b1cd4b/skia_pathops-0.9.1-cp310-abi3-win32.whl", hash = "sha256:56c4b3bc9c281b12693f0f2771367c53a7a20104beac203fb5cb90cb2b9a4649", size = 1450920, upload-time = "2025-12-08T11:44:38.624Z" },
+    { url = "https://files.pythonhosted.org/packages/bf/d1/698e85d5f7e2ce3b731232dc9f26e2cecb8afc66194aa494dc78c04194cc/skia_pathops-0.9.1-cp310-abi3-win_amd64.whl", hash = "sha256:e718f2e1284f05ccccde111b1280a79e33093c4af30c118a0b2f5b0753f0727e", size = 1782888, upload-time = "2025-12-08T11:44:39.983Z" },
 ]
 
 [[package]]
