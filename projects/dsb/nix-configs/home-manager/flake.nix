@@ -39,6 +39,7 @@
       system = "x86_64-linux"; # replace with your system
       overlays = [
         (final: prev: {
+          libreoffice = stablep.libreoffice;
           uv = stablep.uv;
           firefox-unwrapped = stablep.firefox-unwrapped;
           firefox = stablep.firefox;
