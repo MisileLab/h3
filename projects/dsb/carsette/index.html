@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CASSETTE TACTICS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <!-- The Cockpit: Physical Plastic Case -->
+  <div id="game-container">
+    
+    <!-- Top Bar: Resource Display -->
+    <div id="top-bar">
+      <div class="resource-counter">
+        <span class="resource-label">PWR</span>
+        <span id="power-value" class="resource-value">100</span>
+      </div>
+      <div class="resource-counter">
+        <span class="resource-label">DATA</span>
+        <span id="data-value" class="resource-value">0</span>
+      </div>
+      <div class="system-status">
+        <span id="system-message">SYSTEM READY</span>
+      </div>
+    </div>
+
+    <!-- CRT Screen: Contains Phaser Canvas -->
+    <div id="game-screen">
+      <div id="phaser-container"></div>
+      
+      <!-- Scanline Overlay -->
+      <div class="scanlines"></div>
+      
+      <!-- Glitch Overlay -->
+      <div id="glitch-overlay"></div>
+    </div>
+
+    <!-- Bottom Control Tray: Plastic Panel with Buttons -->
+    <div id="control-tray">
+      <div class="control-buttons">
+        <button class="control-btn" id="btn-move">MOVE</button>
+        <button class="control-btn" id="btn-attack">ATTACK</button>
+        <button class="control-btn" id="btn-inventory">INVENTORY</button>
+        <button class="control-btn" id="btn-end-turn">END TURN</button>
+      </div>
+
+      <!-- Timer Display -->
+      <div id="timer-display">
+        <span class="timer-label">TIME</span>
+        <span id="timer-value" class="timer-value">30</span>
+      </div>
+
+      <!-- Sliding Data Tray (Inventory) -->
+      <div id="data-tray" class="tray-hidden">
+        <div class="tray-header">
+          <span class="tray-title">DATA INVENTORY</span>
+          <button class="tray-close" id="btn-close-tray">X</button>
+        </div>
+        <div class="tray-content">
+          <div id="inventory-grid">
+            <!-- Tetris-style inventory grid will be populated by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

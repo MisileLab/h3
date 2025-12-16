@@ -1,0 +1,385 @@
+/* CASSETTE TACTICS - Design Tokens */
+:root {
+  /* Colors */
+  --c-amber: #FFB000;       /* Main text / phosphor */
+  --c-amber-dim: #594100;   /* Dimmed elements / burn-in */
+  --c-bg: #120D08;          /* Deep black-brown CRT background */
+  --c-violet: #B026FF;      /* Magic / Glitch / Error / Enemy Danger */
+  --c-beige: #E3DAC9;       /* Plastic Case / Cockpit Frame */
+  --c-beige-shadow: #A8A395;/* Plastic Shadow / Depth */
+
+  /* Fonts */
+  --font-main: 'VT323', monospace;       /* Large Retro Text */
+  --font-code: 'Share Tech Mono', monospace; /* Small System Text */
+  
+  /* Effects */
+  --glow: 0 0 5px rgba(255, 176, 0, 0.6);
+  --crt-scanline: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+}
+
+/* Reset & Base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #000;
+  color: var(--c-amber);
+  font-family: var(--font-main);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* Main Container: The Physical Plastic Case */
+#game-container {
+  width: 90vw;
+  max-width: 1200px;
+  height: 90vh;
+  background: var(--c-beige);
+  border: 8px solid var(--c-beige-shadow);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.8),
+    inset 0 2px 4px rgba(255, 255, 255, 0.2);
+  position: relative;
+}
+
+/* Top Bar: Resources */
+#top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background: var(--c-beige-shadow);
+  border-radius: 6px;
+  margin-bottom: 15px;
+  font-family: var(--font-code);
+  font-size: 14px;
+  color: var(--c-bg);
+}
+
+.resource-counter {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.resource-label {
+  font-weight: bold;
+}
+
+.resource-value {
+  background: var(--c-bg);
+  color: var(--c-amber);
+  padding: 2px 8px;
+  border-radius: 3px;
+  min-width: 40px;
+  text-align: center;
+}
+
+.system-status {
+  flex: 1;
+  text-align: center;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/* CRT Screen */
+#game-screen {
+  flex: 1;
+  background: var(--c-bg);
+  border: 6px solid var(--c-beige-shadow);
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.9);
+}
+
+#phaser-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+#phaser-container canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Scanlines Effect */
+.scanlines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--crt-scanline);
+  background-size: 100% 4px;
+  pointer-events: none;
+  opacity: 0.3;
+  z-index: 100;
+}
+
+/* Glitch Overlay */
+#glitch-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  pointer-events: none;
+  z-index: 200;
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+/* Glitch Active State */
+.glitch-active #glitch-overlay {
+  opacity: 1;
+  animation: glitchPulse 0.3s infinite;
+}
+
+.glitch-active #game-screen {
+  animation: screenShake 0.1s infinite;
+}
+
+@keyframes glitchPulse {
+  0% { 
+    background: transparent; 
+    filter: hue-rotate(0deg);
+  }
+  25% { 
+    background: rgba(176, 38, 255, 0.1); 
+    filter: hue-rotate(90deg);
+  }
+  50% { 
+    background: rgba(255, 176, 0, 0.1); 
+    filter: hue-rotate(180deg);
+  }
+  75% { 
+    background: rgba(176, 38, 255, 0.1); 
+    filter: hue-rotate(270deg);
+  }
+  100% { 
+    background: transparent; 
+    filter: hue-rotate(360deg);
+  }
+}
+
+@keyframes screenShake {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-2px, 2px); }
+  50% { transform: translate(2px, -2px); }
+  75% { transform: translate(-2px, -2px); }
+  100% { transform: translate(2px, 2px); }
+}
+
+/* Bottom Control Tray */
+#control-tray {
+  margin-top: 15px;
+  background: var(--c-beige-shadow);
+  border-radius: 8px;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.control-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.control-btn {
+  background: var(--c-beige);
+  color: var(--c-bg);
+  font-family: var(--font-code);
+  font-size: 14px;
+  font-weight: bold;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 
+    0 4px 0 var(--c-beige-shadow),
+    0 6px 10px rgba(0, 0, 0, 0.3);
+  transition: all 0.1s;
+  text-transform: uppercase;
+}
+
+.control-btn:hover {
+  background: #f0e8db;
+  box-shadow: 
+    0 2px 0 var(--c-beige-shadow),
+    0 4px 8px rgba(0, 0, 0, 0.3);
+  transform: translateY(2px);
+}
+
+.control-btn:active {
+  box-shadow: 
+    0 0 0 var(--c-beige-shadow),
+    0 2px 4px rgba(0, 0, 0, 0.3);
+  transform: translateY(4px);
+}
+
+.control-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Timer Display */
+#timer-display {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-code);
+  color: var(--c-bg);
+}
+
+.timer-label {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.timer-value {
+  background: var(--c-bg);
+  color: var(--c-amber);
+  font-family: var(--font-main);
+  font-size: 28px;
+  padding: 5px 15px;
+  border-radius: 4px;
+  min-width: 60px;
+  text-align: center;
+  text-shadow: var(--glow);
+}
+
+.timer-value.timer-warning {
+  color: var(--c-violet);
+  animation: timerBlink 0.5s infinite;
+}
+
+@keyframes timerBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* Sliding Data Tray (Inventory) */
+#data-tray {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 400px;
+  background: var(--c-bg);
+  border-top: 4px solid var(--c-amber);
+  border-radius: 8px 8px 0 0;
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.8);
+  transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  z-index: 300;
+}
+
+#data-tray.tray-hidden {
+  transform: translateY(100%);
+}
+
+#data-tray.tray-visible {
+  transform: translateY(0);
+}
+
+.tray-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background: rgba(255, 176, 0, 0.1);
+  border-bottom: 2px solid var(--c-amber-dim);
+}
+
+.tray-title {
+  font-family: var(--font-main);
+  font-size: 24px;
+  color: var(--c-amber);
+  text-shadow: var(--glow);
+}
+
+.tray-close {
+  background: var(--c-amber);
+  color: var(--c-bg);
+  font-family: var(--font-code);
+  font-size: 18px;
+  font-weight: bold;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 2px 0 var(--c-amber-dim);
+  transition: all 0.1s;
+}
+
+.tray-close:hover {
+  background: #ffcc44;
+  transform: translateY(1px);
+}
+
+.tray-close:active {
+  box-shadow: none;
+  transform: translateY(2px);
+}
+
+.tray-content {
+  padding: 20px;
+  height: calc(100% - 70px);
+  overflow-y: auto;
+}
+
+#inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 4px;
+  background: rgba(255, 176, 0, 0.05);
+  padding: 10px;
+  border: 2px solid var(--c-amber-dim);
+  border-radius: 4px;
+  min-height: 200px;
+}
+
+/* Utility Classes */
+.hidden {
+  display: none !important;
+}
+
+.glow-text {
+  text-shadow: var(--glow);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  #game-container {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+    padding: 10px;
+  }
+  
+  .control-buttons {
+    flex-wrap: wrap;
+  }
+  
+  .control-btn {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+}
