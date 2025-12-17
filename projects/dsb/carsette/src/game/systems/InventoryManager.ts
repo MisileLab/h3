@@ -151,6 +151,28 @@ export class InventoryManager {
     return [...this.buffer];
   }
 
+  public consumeItem(itemId: string): boolean {
+    const trayIndex = this.tray.findIndex(item => item.id === itemId);
+    if (trayIndex !== -1) {
+      this.tray.splice(trayIndex, 1);
+      return true;
+    }
+
+    const bufferIndex = this.buffer.findIndex(item => item.id === itemId);
+    if (bufferIndex !== -1) {
+      this.buffer.splice(bufferIndex, 1);
+      return true;
+    }
+
+    if (this.itemsById.has(itemId)) {
+      this.clearItemFromGrid(itemId);
+      this.itemsById.delete(itemId);
+      return true;
+    }
+
+    return false;
+  }
+
   public setJammerPenalty(isActive: boolean): void {
     this.jammerPenalty = isActive ? 1 : 0;
   }

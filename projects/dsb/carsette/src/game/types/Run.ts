@@ -3,7 +3,7 @@ export interface IntentTarget {
   y: number;
 }
 
-export type EnemyIntentType = 'ATTACK_TILE' | 'PLACE_BARRIER' | 'IDLE';
+export type EnemyIntentType = 'ATTACK_TILE' | 'PLACE_BARRIER' | 'POUNCE' | 'IDLE';
 
 export interface EnemyIntent {
   enemyId: string;
@@ -24,7 +24,7 @@ export interface UnitStats {
 }
 
 export interface EnemyStats extends UnitStats {
-  kind: 'BLOCKER' | 'JAMMER';
+  kind: 'BLOCKER' | 'JAMMER' | 'HUNTER';
 }
 
 export interface EncounterConfig {

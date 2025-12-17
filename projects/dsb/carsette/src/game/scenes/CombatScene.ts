@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { UIManager } from '../../ui/UIManager';
 import { InventoryManager } from '../systems/InventoryManager';
 import { RunManager } from '../systems/RunManager';
+import { ItemData, ItemType } from '../types/Item';
 import { EnemyIntent, EnemyStats, NodeConfig } from '../types/Run';
 
 interface Battler {
@@ -19,7 +20,7 @@ interface Battler {
   sprite: Phaser.GameObjects.Rectangle;
   label: Phaser.GameObjects.Text;
   kind: 'ally' | 'enemy';
-  enemyKind?: 'BLOCKER' | 'JAMMER';
+  enemyKind?: 'BLOCKER' | 'JAMMER' | 'HUNTER';
 }
 
 interface CombatData {
@@ -49,6 +50,8 @@ export class CombatScene extends Phaser.Scene {
   private extractionStagesRequired: number = 0;
   private extractionZoneCenter?: { x: number; y: number };
   private extractionZoneRadius: number = 1;
+  private barriers: Map<string, Phaser.GameObjects.Rectangle> = new Map();
+  private rescueUnjamUsed: boolean = false;
 
   init(data: CombatData): void {
     this.node = RunManager.getInstance().getEpisode().nodes.find(n => n.id === data.nodeId)!;
@@ -104,9 +107,14 @@ export class CombatScene extends Phaser.Scene {
       { id: 'niko', name: 'NIKO ROVER', maxHp: 6, move: 4, range: 3, damage: 0, ap: 2, heal: 2 },
     ];
 
+    if (this.runManager.hasRescueJoined()) {
+      allyConfigs.push({ id: 'rescue', name: 'RESCUE STUDENT', maxHp: 5, move: 4, range: 2, damage: 0, ap: 2, heal: 0 });
+    }
+
     const positions = [
       { x: 1, y: 1 },
       { x: 1, y: 2 },
+      { x: 1, y: 3 },
     ];
 
     allyConfigs.forEach((cfg, index) => {
@@ -281,7 +289,11 @@ export class CombatScene extends Phaser.Scene {
       const distance = Math.abs(x - ally.gridX) + Math.abs(y - ally.gridY);
       if (distance <= ally.range && ally.ap > 0) {
         ally.ap -= 1;
-        this.resolveAttack(ally, x, y);
+        if (ally.id === 'rescue') {
+          this.useUnjam(x, y);
+        } else {
+          this.resolveAttack(ally, x, y);
+        }
       }
       this.clearHighlights();
       this.currentMode = 'idle';
@@ -329,6 +341,23 @@ export class CombatScene extends Phaser.Scene {
     this.checkEnemyStates();
   }
 
+  private useUnjam(targetX: number, targetY: number): void {
+    if (this.rescueUnjamUsed) {
+      this.uiManager.updateSystemMessage('UNJAM ALREADY USED');
+      return;
+    }
+    const key = `${targetX},${targetY}`;
+    const barrier = this.barriers.get(key);
+    if (barrier) {
+      barrier.destroy();
+      this.barriers.delete(key);
+      this.rescueUnjamUsed = true;
+      this.uiManager.updateSystemMessage('BARRIER REMOVED');
+      return;
+    }
+    this.uiManager.updateSystemMessage('NO BARRIER TO REMOVE');
+  }
+
   private checkEnemyStates(): void {
     this.enemies = this.enemies.filter(e => e.hp > 0);
     const jammerAlive = this.enemies.some(e => e.enemyKind === 'JAMMER');
@@ -352,6 +381,7 @@ export class CombatScene extends Phaser.Scene {
 
   private startPlayerTurn(): void {
     this.allies.forEach(ally => (ally.ap = 2));
+    this.rescueUnjamUsed = false;
     this.currentMode = 'idle';
     this.startTurnTimer();
     this.renderIntents();
@@ -412,7 +442,24 @@ export class CombatScene extends Phaser.Scene {
   }
 
   private followIntent(enemy: Battler, intent: EnemyIntent): void {
-    if (intent.type !== 'ATTACK_TILE') return;
+    if (intent.type === 'PLACE_BARRIER') {
+      const key = `${intent.target.x},${intent.target.y}`;
+      const occupied = this.allies.some(a => a.gridX === intent.target.x && a.gridY === intent.target.y) ||
+        this.enemies.some(e => e.gridX === intent.target.x && e.gridY === intent.target.y);
+      if (!occupied && !this.barriers.has(key)) {
+        const tile = this.grid[intent.target.y][intent.target.x];
+        const rect = this.add.rectangle(tile.x, tile.y, this.TILE_SIZE - 12, this.TILE_SIZE - 12, 0x594100, 0.9);
+        rect.setStrokeStyle(2, 0xffb000, 1);
+        this.barriers.set(key, rect);
+        this.uiManager.updateSystemMessage('BLOCKER DEPLOYED TAPE BARRIER');
+      }
+      return;
+    }
+
+    if (intent.type === 'POUNCE') {
+      this.resolvePounce(enemy, intent.target.x, intent.target.y);
+      return;
+    }
 
     // Move closer if out of range
     const distance = Math.abs(enemy.gridX - intent.target.x) + Math.abs(enemy.gridY - intent.target.y);
@@ -450,12 +497,55 @@ export class CombatScene extends Phaser.Scene {
     this.moveBattler(battler, x, y);
   }
 
+  private resolvePounce(enemy: Battler, targetX: number, targetY: number): void {
+    let x = enemy.gridX;
+    let y = enemy.gridY;
+    for (let i = 0; i < enemy.move; i++) {
+      if (x < targetX) x += 1;
+      else if (x > targetX) x -= 1;
+      else if (y < targetY) y += 1;
+      else if (y > targetY) y -= 1;
+    }
+    enemy.gridX = x;
+    enemy.gridY = y;
+    const tile = this.grid[y][x];
+    enemy.sprite.setPosition(tile.x, tile.y);
+    enemy.label.setPosition(tile.x, tile.y);
+
+    const ally = this.allies.find(a => a.gridX === enemy.gridX && a.gridY === enemy.gridY && a.hp > 0);
+    if (ally) {
+      ally.hp -= enemy.damage;
+      const dx = ally.gridX - enemy.gridX;
+      const dy = ally.gridY - enemy.gridY;
+      const pushX = ally.gridX + Math.sign(dx || 1);
+      const pushY = ally.gridY + Math.sign(dy || 0);
+      if (pushX >= 0 && pushX < this.GRID_SIZE && pushY >= 0 && pushY < this.GRID_SIZE) {
+        ally.gridX = pushX;
+        ally.gridY = pushY;
+        const tile = this.grid[pushY][pushX];
+        ally.sprite.setPosition(tile.x, tile.y);
+        ally.label.setPosition(tile.x, tile.y);
+      }
+      if (ally.hp <= 0) {
+        ally.sprite.destroy();
+        ally.label.destroy();
+      }
+      this.uiManager.updateSystemMessage('HUNTER POUNCE IMPACT');
+    }
+  }
+
   private computeEnemyIntents(): void {
     const intents: EnemyIntent[] = [];
     this.enemies.filter(e => e.hp > 0).forEach(enemy => {
       const nearest = this.findNearestAlly(enemy.gridX, enemy.gridY);
       const target = nearest ? { x: nearest.gridX, y: nearest.gridY } : { x: enemy.gridX, y: enemy.gridY };
-      intents.push({ enemyId: enemy.id, type: 'ATTACK_TILE', target });
+      if (enemy.enemyKind === 'HUNTER') {
+        intents.push({ enemyId: enemy.id, type: 'POUNCE', target });
+      } else if (enemy.enemyKind === 'BLOCKER' && Math.abs(enemy.gridX - target.x) + Math.abs(enemy.gridY - target.y) > enemy.range) {
+        intents.push({ enemyId: enemy.id, type: 'PLACE_BARRIER', target });
+      } else {
+        intents.push({ enemyId: enemy.id, type: 'ATTACK_TILE', target });
+      }
     });
     this.runManager.setPendingIntents(intents);
   }
@@ -497,8 +587,8 @@ export class CombatScene extends Phaser.Scene {
       if (this.node.id === 'N1' && stage >= this.extractionStagesRequired) {
         this.runManager.markPowerRestored();
       }
-      if (this.node.id === 'N3A' || this.node.id === 'N3B') {
-        if (this.runManager.getHeat() >= 5 && this.node.id === 'N3B' && stage === 2) {
+      if (this.node.id === 'N3A' || this.node.id === 'N3B' || this.node.id === 'N4A' || this.node.id === 'N4B') {
+        if (this.runManager.getHeat() >= 5 && (this.node.id === 'N3B' || this.node.id === 'N4B') && stage === 2) {
           this.spawnEnemy(
             {
               id: `blocker-reinforce-${Date.now()}`,
@@ -516,7 +606,7 @@ export class CombatScene extends Phaser.Scene {
         }
       }
       if (stage >= this.extractionStagesRequired) {
-        if (this.node.id === 'N3A' || this.node.id === 'N3B') {
+        if (this.node.id === 'N3A' || this.node.id === 'N3B' || this.node.id === 'N4A' || this.node.id === 'N4B') {
           this.runManager.markExtractionComplete();
         }
         this.finishNode(true);
@@ -526,6 +616,26 @@ export class CombatScene extends Phaser.Scene {
 
   private finishNode(skipAdvance?: boolean): void {
     if (!skipAdvance && this.extractionActive) return;
+    if (this.node.id === 'N1' && this.runManager.getEpisode().id === 'ep2') {
+      this.runManager.markRescueJoined();
+      this.uiManager.updateSystemMessage('RESCUE STUDENT JOINED');
+    }
+    if (this.node.id === 'N3' && this.runManager.getEpisode().id === 'ep2') {
+      this.runManager.markRelaySecured();
+      const relayCore: ItemData = {
+        id: `relay-core-${Date.now()}`,
+        name: 'RELAY CORE',
+        type: ItemType.CONSUMABLE,
+        shape: [[1, 1]],
+        rotation: 0,
+        maxAmmo: null,
+        currentAmmo: null,
+        scrapValue: 5,
+        description: 'Recovered alien relay core.',
+      };
+      this.inventoryManager.addItemToTray(relayCore);
+      this.uiManager.getInventoryUI()?.update();
+    }
     if (this.runManager.isRunComplete()) {
       this.runManager.setCurrentNodeById('RESULT');
       this.scene.start('ResultScene');

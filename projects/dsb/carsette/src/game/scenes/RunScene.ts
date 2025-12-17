@@ -15,7 +15,7 @@ export class RunScene extends Phaser.Scene {
   create(): void {
     this.runManager = RunManager.getInstance();
     this.uiManager = UIManager.getInstance();
-    this.uiManager.updateSystemMessage('EP1 // OUTSKIRTS RUN MAP');
+    this.uiManager.updateSystemMessage(`${this.runManager.getEpisode().name} // RUN MAP`);
     this.uiManager.updateHeat(this.runManager.getHeat());
     this.uiManager.updateStabilizer(this.runManager.getStabilizerCharges());
 
@@ -33,6 +33,9 @@ export class RunScene extends Phaser.Scene {
       const y = startY + index * 60;
       this.drawNode(node, centerX, y, index === this.runManager.getEpisode().nodes.indexOf(this.runManager.getCurrentNode()));
     });
+
+    this.renderToneChoices(centerX, startY + episode.nodes.length * 60 + 30);
+    this.renderExtractionBranches(centerX, startY + episode.nodes.length * 60 + 70);
 
     this.input.keyboard?.on('keydown-SPACE', () => {
       this.enterCurrentNode();
@@ -71,6 +74,83 @@ export class RunScene extends Phaser.Scene {
     });
     enterText.setInteractive({ useHandCursor: true });
     enterText.on('pointerdown', () => this.enterCurrentNode());
+  }
+
+  private renderToneChoices(x: number, y: number): void {
+    const tone = this.runManager.getToneFlag();
+    this.add.text(x, y - 16, 'DIALOG TONE', {
+      fontFamily: 'VT323',
+      fontSize: '14px',
+      color: '#FFB000',
+    }).setOrigin(0.5);
+
+    const choices: { label: string; value: string }[] = [
+      { label: 'EMPATHY', value: 'TONE_EMPATHY' },
+      { label: 'PRAGMATIC', value: 'TONE_PRAGMATIC' },
+      { label: 'CURIOUS', value: 'TONE_CURIOUS' },
+    ];
+
+    const offset = -120;
+    choices.forEach((choice, index) => {
+      const button = this.add.text(x + offset + index * 120, y, choice.label, {
+        fontFamily: 'VT323',
+        fontSize: '14px',
+        color: '#FFFFFF',
+        backgroundColor: tone === choice.value ? '#B026FF' : '#3d2a00',
+        padding: { left: 8, right: 8, top: 4, bottom: 4 },
+      }).setOrigin(0.5);
+      button.setInteractive({ useHandCursor: true });
+      button.on('pointerdown', () => {
+        this.runManager.setToneFlag(choice.value);
+        this.uiManager.updateSystemMessage(`TONE SET: ${choice.label}`);
+        this.scene.restart();
+      });
+    });
+  }
+
+  private renderExtractionBranches(x: number, y: number): void {
+    const hasBranchA = this.runManager.getEpisode().nodes.some(n => n.id === 'N3A' || n.id === 'N4A');
+    const hasBranchB = this.runManager.getEpisode().nodes.some(n => n.id === 'N3B' || n.id === 'N4B');
+    if (!hasBranchA || !hasBranchB) return;
+
+    const buttonA = this.add.text(x - 80, y, 'ROUTE A', {
+      fontFamily: 'VT323',
+      fontSize: '14px',
+      color: '#FFFFFF',
+      backgroundColor: '#3d2a00',
+      padding: { left: 8, right: 8, top: 4, bottom: 4 },
+    }).setOrigin(0.5);
+
+    const buttonB = this.add.text(x + 80, y, 'ROUTE B', {
+      fontFamily: 'VT323',
+      fontSize: '14px',
+      color: '#FFFFFF',
+      backgroundColor: '#3d2a00',
+      padding: { left: 8, right: 8, top: 4, bottom: 4 },
+    }).setOrigin(0.5);
+
+    buttonA.setInteractive({ useHandCursor: true });
+    buttonB.setInteractive({ useHandCursor: true });
+
+    buttonA.on('pointerdown', () => {
+      if (this.runManager.getEpisode().nodes.some(n => n.id === 'N3A')) {
+        this.runManager.setCurrentNodeById('N3A');
+      } else {
+        this.runManager.setCurrentNodeById('N4A');
+      }
+      this.uiManager.updateSystemMessage('ROUTE A SELECTED');
+      this.scene.restart();
+    });
+
+    buttonB.on('pointerdown', () => {
+      if (this.runManager.getEpisode().nodes.some(n => n.id === 'N3B')) {
+        this.runManager.setCurrentNodeById('N3B');
+      } else {
+        this.runManager.setCurrentNodeById('N4B');
+      }
+      this.uiManager.updateSystemMessage('ROUTE B SELECTED');
+      this.scene.restart();
+    });
   }
 
   private enterCurrentNode(): void {

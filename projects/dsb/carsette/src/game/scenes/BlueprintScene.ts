@@ -13,6 +13,9 @@ export class BlueprintScene extends Phaser.Scene {
   private pressBuilt: boolean = false;
   private cassetteCrafted: boolean = false;
   private patchCrafted: boolean = false;
+  private coolantCrafted: boolean = false;
+  private dewCollected: number = 0;
+  private isEp2: boolean = false;
   private statusText!: Phaser.GameObjects.Text;
 
   constructor() {
@@ -24,20 +27,26 @@ export class BlueprintScene extends Phaser.Scene {
     this.runManager = RunManager.getInstance();
     this.uiManager = UIManager.getInstance();
 
-    this.uiManager.updateSystemMessage('BLUEPRINT VIEW // SAFE ZONE');
+    this.isEp2 = this.runManager.getEpisode().id === 'ep2';
+
+    this.uiManager.updateSystemMessage(this.isEp2 ? 'MAKER FLOOR // WORKSHOP LOCKDOWN' : 'BLUEPRINT VIEW // SAFE ZONE');
     this.uiManager.updateHeat(this.runManager.getHeat());
     this.uiManager.updateStabilizer(this.runManager.getStabilizerCharges());
 
-    // Ensure baseline scrap for EP1 machines
-    if (this.inventoryManager.getScrapResources() < 6) {
-      this.inventoryManager.addScrap(6 - this.inventoryManager.getScrapResources());
+    if (!this.isEp2) {
+      // Ensure baseline scrap for EP1 machines
+      if (this.inventoryManager.getScrapResources() < 6) {
+        this.inventoryManager.addScrap(6 - this.inventoryManager.getScrapResources());
+      }
+    } else if (this.inventoryManager.getScrapResources() < 4) {
+      this.inventoryManager.addScrap(4 - this.inventoryManager.getScrapResources());
     }
     this.uiManager.getInventoryUI()?.update();
 
     const centerX = this.cameras.main.centerX;
     let posY = 80;
 
-    this.add.text(centerX, posY, 'MAINTENANCE YARD // BUILD LINE', {
+    this.add.text(centerX, posY, this.isEp2 ? 'COOLANT FAB // COLLECT + PRESS' : 'MAINTENANCE YARD // BUILD LINE', {
       fontFamily: 'VT323',
       fontSize: '26px',
       color: '#FFB000',
@@ -51,27 +60,39 @@ export class BlueprintScene extends Phaser.Scene {
       align: 'center',
     }).setOrigin(0.5);
 
-    posY += 40;
-    this.buildButton(centerX, posY, 'Build Extractor (2 SCRAP)', () => this.buildMachine('extractor'));
-    posY += 40;
-    this.buildButton(centerX, posY, 'Build Refiner (2 SCRAP)', () => this.buildMachine('refiner'));
-    posY += 40;
-    this.buildButton(centerX, posY, 'Build Press (2 SCRAP)', () => this.buildMachine('press'));
+    if (!this.isEp2) {
+      posY += 40;
+      this.buildButton(centerX, posY, 'Build Extractor (2 SCRAP)', () => this.buildMachine('extractor'));
+      posY += 40;
+      this.buildButton(centerX, posY, 'Build Refiner (2 SCRAP)', () => this.buildMachine('refiner'));
+      posY += 40;
+      this.buildButton(centerX, posY, 'Build Press (2 SCRAP)', () => this.buildMachine('press'));
 
-    posY += 60;
-    this.buildButton(centerX, posY, 'Craft Basic Attack Cassette', () => this.craftCassette());
-    posY += 40;
-    this.buildButton(centerX, posY, 'Craft Patch Kit', () => this.craftPatch());
+      posY += 60;
+      this.buildButton(centerX, posY, 'Craft Basic Attack Cassette', () => this.craftCassette());
+      posY += 40;
+      this.buildButton(centerX, posY, 'Craft Patch Kit', () => this.craftPatch());
 
-    posY += 60;
-    this.buildButton(centerX - 80, posY, 'Proceed: EXTRACT A', () => {
-      this.runManager.setCurrentNodeById('N3A');
-      this.scene.start('RunScene');
-    });
-    this.buildButton(centerX + 80, posY, 'Proceed: EXTRACT B', () => {
-      this.runManager.setCurrentNodeById('N3B');
-      this.scene.start('RunScene');
-    });
+      posY += 60;
+      this.buildButton(centerX - 80, posY, 'Proceed: EXTRACT A', () => {
+        this.runManager.setCurrentNodeById('N3A');
+        this.scene.start('RunScene');
+      });
+      this.buildButton(centerX + 80, posY, 'Proceed: EXTRACT B', () => {
+        this.runManager.setCurrentNodeById('N3B');
+        this.scene.start('RunScene');
+      });
+    } else {
+      posY += 40;
+      this.buildButton(centerX, posY, 'HARVEST RESONANT DEW (HEAT +1)', () => this.harvestDew());
+      posY += 40;
+      this.buildButton(centerX, posY, 'PRESS COOLANT (PLATE + DEW)', () => this.craftCoolant());
+      posY += 60;
+      this.buildButton(centerX, posY, 'Proceed: RELAY ROOM', () => {
+        this.runManager.setCurrentNodeById('N3');
+        this.scene.start('RunScene');
+      });
+    }
 
     this.refreshStatus();
   }
@@ -151,16 +172,84 @@ export class BlueprintScene extends Phaser.Scene {
     this.refreshStatus();
   }
 
+  private harvestDew(): void {
+    const dew: ItemData = {
+      id: `dew-${Date.now()}`,
+      name: 'RESONANT DEW',
+      type: ItemType.CONSUMABLE,
+      shape: [[1]],
+      rotation: 0,
+      maxAmmo: null,
+      currentAmmo: null,
+      scrapValue: 1,
+    };
+    this.inventoryManager.addItemToTray(dew);
+    this.runManager.addHeat(1);
+    this.uiManager.updateHeat(this.runManager.getHeat());
+    this.dewCollected += 1;
+    this.uiManager.getInventoryUI()?.update();
+    this.uiManager.updateSystemMessage('RESONANT DEW CAPTURED (HEAT +1)');
+    this.refreshStatus();
+  }
+
+  private craftCoolant(): void {
+    if (this.inventoryManager.getScrapResources() < 1) {
+      this.uiManager.updateSystemMessage('PLATE SHORTAGE: NEED 1 SCRAP');
+      return;
+    }
+
+    const dewId = this.inventoryManager
+      .getTray()
+      .concat(this.inventoryManager.getBuffer())
+      .find(item => item.name === 'RESONANT DEW')?.id;
+
+    if (!dewId) {
+      this.uiManager.updateSystemMessage('NEED RESONANT DEW');
+      return;
+    }
+
+    this.inventoryManager.consumeItem(dewId);
+    this.inventoryManager.addScrap(-1);
+
+    const coolant: ItemData = {
+      id: `coolant-${Date.now()}`,
+      name: 'COOLANT CAPSULE',
+      type: ItemType.CONSUMABLE,
+      shape: [[1, 1]],
+      rotation: 0,
+      maxAmmo: null,
+      currentAmmo: null,
+      scrapValue: 2,
+      description: 'Use in combat: +1 STAB or HEAT -1 (cap 2)',
+    };
+    this.inventoryManager.addItemToTray(coolant);
+    this.coolantCrafted = true;
+    this.runManager.markCoolantCrafted();
+    this.uiManager.getInventoryUI()?.update();
+    this.uiManager.updateSystemMessage('COOLANT READY');
+    this.refreshStatus();
+  }
+
   private refreshStatus(): void {
     const lines: string[] = [];
-    lines.push(`Extractor: ${this.extractorBuilt ? 'BUILT' : 'PENDING'} | Refiner: ${this.refinerBuilt ? 'BUILT' : 'PENDING'} | Press: ${this.pressBuilt ? 'BUILT' : 'PENDING'}`);
-    lines.push(`Cassette: ${this.cassetteCrafted ? 'READY' : 'PENDING'} | Patch: ${this.patchCrafted ? 'READY' : 'PENDING'}`);
+    if (!this.isEp2) {
+      lines.push(`Extractor: ${this.extractorBuilt ? 'BUILT' : 'PENDING'} | Refiner: ${this.refinerBuilt ? 'BUILT' : 'PENDING'} | Press: ${this.pressBuilt ? 'BUILT' : 'PENDING'}`);
+      lines.push(`Cassette: ${this.cassetteCrafted ? 'READY' : 'PENDING'} | Patch: ${this.patchCrafted ? 'READY' : 'PENDING'}`);
 
-    if (this.cassetteCrafted && this.patchCrafted) {
-      this.runManager.markProductionComplete();
-      lines.push('Production objective complete. Choose extraction route.');
+      if (this.cassetteCrafted && this.patchCrafted) {
+        this.runManager.markProductionComplete();
+        lines.push('Production objective complete. Choose extraction route.');
+      } else {
+        lines.push('Produce BASIC ATTACK CASSETTE + PATCH KIT to proceed.');
+      }
     } else {
-      lines.push('Produce BASIC ATTACK CASSETTE + PATCH KIT to proceed.');
+      lines.push(`Resonant Dew: ${this.dewCollected}`);
+      lines.push(`Coolant: ${this.coolantCrafted ? 'READY' : 'PENDING'}`);
+      lines.push('Goal: Craft at least one COOLANT CAPSULE.');
+      if (this.coolantCrafted) {
+        this.runManager.markProductionComplete();
+        lines.push('Proceed to Relay Room.');
+      }
     }
 
     this.statusText.setText(lines.join('\n'));

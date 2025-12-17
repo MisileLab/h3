@@ -487,6 +487,9 @@ export class InventoryUI {
       min-width: 150px;
     `;
 
+    const runManager = RunManager.getInstance();
+    const uiManager = UIManager.getInstance();
+
     // Item info
     const info = document.createElement('div');
     info.style.cssText = `
@@ -499,6 +502,7 @@ export class InventoryUI {
       <div style="font-size: 14px; color: #B026FF;">${item.type}</div>
       ${item.currentAmmo !== null ? `<div style="font-size: 14px;">Ammo: ${item.currentAmmo}/${item.maxAmmo}</div>` : ''}
       <div style="font-size: 14px;">Scrap: ${item.scrapValue}</div>
+      ${item.name === 'COOLANT CAPSULE' ? `<div style="font-size: 12px; color: #8cf;">HEAT MITIGATIONS USED: ${runManager.getCoolantMitigationsUsed()}/2</div>` : ''}
     `;
 
     // Actions
@@ -508,9 +512,6 @@ export class InventoryUI {
       flex-direction: column;
       gap: 4px;
     `;
-
-    const runManager = RunManager.getInstance();
-    const uiManager = UIManager.getInstance();
 
     // Rotate action
     const rotateBtn = this.createMenuButton('Rotate [R]', () => {
@@ -535,6 +536,34 @@ export class InventoryUI {
         this.closeContextMenu();
       });
       actions.appendChild(bufferBtn);
+    }
+
+    if (item.name === 'COOLANT CAPSULE') {
+      const stabBtn = this.createMenuButton('USE: +1 STAB CHARGE', () => {
+        this.inventoryManager.consumeItem(itemId);
+        runManager.addStabilizerCharge(1);
+        uiManager.updateStabilizer(runManager.getStabilizerCharges());
+        uiManager.updateSystemMessage('COOLANT USED // STAB +1');
+        this.update();
+        this.closeContextMenu();
+      });
+
+      const heatBtn = this.createMenuButton('USE: HEAT -1 (CAP 2)', () => {
+        if (!runManager.registerCoolantHeatMitigation()) {
+          uiManager.updateSystemMessage('HEAT MITIGATION CAP REACHED');
+          this.closeContextMenu();
+          return;
+        }
+        this.inventoryManager.consumeItem(itemId);
+        runManager.reduceHeat(1);
+        uiManager.updateHeat(runManager.getHeat());
+        uiManager.updateSystemMessage('COOLANT USED // HEAT -1');
+        this.update();
+        this.closeContextMenu();
+      });
+
+      actions.appendChild(stabBtn);
+      actions.appendChild(heatBtn);
     }
 
     // Scrap action
