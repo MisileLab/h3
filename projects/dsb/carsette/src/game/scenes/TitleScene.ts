@@ -66,7 +66,7 @@ export class TitleScene extends Phaser.Scene {
       repeat: -1,
     });
 
-    const startEp1 = this.add.text(centerX - 100, centerY + 190, 'START EP1', {
+    const startEp1 = this.add.text(centerX - 140, centerY + 190, 'START EP1', {
       fontFamily: 'VT323',
       fontSize: '18px',
       color: '#FFB000',
@@ -74,7 +74,15 @@ export class TitleScene extends Phaser.Scene {
       padding: { left: 8, right: 8, top: 6, bottom: 6 },
     }).setOrigin(0.5);
 
-    const startEp2 = this.add.text(centerX + 100, centerY + 190, 'START EP2', {
+    const startEp2 = this.add.text(centerX, centerY + 190, 'START EP2', {
+      fontFamily: 'VT323',
+      fontSize: '18px',
+      color: '#FFB000',
+      backgroundColor: '#3d2a00',
+      padding: { left: 8, right: 8, top: 6, bottom: 6 },
+    }).setOrigin(0.5);
+
+    const startEp3 = this.add.text(centerX + 140, centerY + 190, 'START EP3', {
       fontFamily: 'VT323',
       fontSize: '18px',
       color: '#FFB000',
@@ -84,9 +92,11 @@ export class TitleScene extends Phaser.Scene {
 
     startEp1.setInteractive({ useHandCursor: true });
     startEp2.setInteractive({ useHandCursor: true });
+    startEp3.setInteractive({ useHandCursor: true });
 
     startEp1.on('pointerdown', () => this.startEpisode('ep1'));
     startEp2.on('pointerdown', () => this.startEpisode('ep2'));
+    startEp3.on('pointerdown', () => this.startEpisode('ep3'));
   }
 
   private startEpisode(episodeId: string): void {

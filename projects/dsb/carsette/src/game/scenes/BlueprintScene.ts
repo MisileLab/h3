@@ -4,6 +4,10 @@ import { RunManager } from '../systems/RunManager';
 import { UIManager } from '../../ui/UIManager';
 import { ItemData, ItemType } from '../types/Item';
 
+interface BlueprintData {
+  nodeId?: string;
+}
+
 export class BlueprintScene extends Phaser.Scene {
   private inventoryManager!: InventoryManager;
   private runManager!: RunManager;
@@ -16,7 +20,13 @@ export class BlueprintScene extends Phaser.Scene {
   private coolantCrafted: boolean = false;
   private dewCollected: number = 0;
   private isEp2: boolean = false;
+  private isEp3: boolean = false;
+  private nodeId: string | null = null;
   private statusText!: Phaser.GameObjects.Text;
+
+  init(data: BlueprintData): void {
+    this.nodeId = data.nodeId ?? null;
+  }
 
   constructor() {
     super({ key: 'BlueprintScene' });
@@ -28,12 +38,21 @@ export class BlueprintScene extends Phaser.Scene {
     this.uiManager = UIManager.getInstance();
 
     this.isEp2 = this.runManager.getEpisode().id === 'ep2';
+    this.isEp3 = this.runManager.getEpisode().id === 'ep3';
 
-    this.uiManager.updateSystemMessage(this.isEp2 ? 'MAKER FLOOR // WORKSHOP LOCKDOWN' : 'BLUEPRINT VIEW // SAFE ZONE');
+    this.uiManager.updateSystemMessage(
+      this.isEp3
+        ? this.nodeId === 'N0'
+          ? 'SHELTER HUB // FIRST RULE'
+          : 'RESCUE SAFE ZONE'
+        : this.isEp2
+          ? 'MAKER FLOOR // WORKSHOP LOCKDOWN'
+          : 'BLUEPRINT VIEW // SAFE ZONE'
+    );
     this.uiManager.updateHeat(this.runManager.getHeat());
     this.uiManager.updateStabilizer(this.runManager.getStabilizerCharges());
 
-    if (!this.isEp2) {
+    if (!this.isEp2 && !this.isEp3) {
       // Ensure baseline scrap for EP1 machines
       if (this.inventoryManager.getScrapResources() < 6) {
         this.inventoryManager.addScrap(6 - this.inventoryManager.getScrapResources());
@@ -46,11 +65,22 @@ export class BlueprintScene extends Phaser.Scene {
     const centerX = this.cameras.main.centerX;
     let posY = 80;
 
-    this.add.text(centerX, posY, this.isEp2 ? 'COOLANT FAB // COLLECT + PRESS' : 'MAINTENANCE YARD // BUILD LINE', {
-      fontFamily: 'VT323',
-      fontSize: '26px',
-      color: '#FFB000',
-    }).setOrigin(0.5);
+    this.add.text(
+      centerX,
+      posY,
+      this.isEp2
+        ? 'COOLANT FAB // COLLECT + PRESS'
+        : this.isEp3
+          ? this.nodeId === 'N0'
+            ? 'SHELTER RULE // PREP'
+            : 'RESPITE // TRUST'
+          : 'MAINTENANCE YARD // BUILD LINE',
+      {
+        fontFamily: 'VT323',
+        fontSize: '26px',
+        color: '#FFB000',
+      }
+    ).setOrigin(0.5);
 
     posY += 50;
     this.statusText = this.add.text(centerX, posY, '', {
@@ -60,7 +90,7 @@ export class BlueprintScene extends Phaser.Scene {
       align: 'center',
     }).setOrigin(0.5);
 
-    if (!this.isEp2) {
+    if (!this.isEp2 && !this.isEp3) {
       posY += 40;
       this.buildButton(centerX, posY, 'Build Extractor (2 SCRAP)', () => this.buildMachine('extractor'));
       posY += 40;
@@ -82,7 +112,7 @@ export class BlueprintScene extends Phaser.Scene {
         this.runManager.setCurrentNodeById('N3B');
         this.scene.start('RunScene');
       });
-    } else {
+    } else if (this.isEp2) {
       posY += 40;
       this.buildButton(centerX, posY, 'HARVEST RESONANT DEW (HEAT +1)', () => this.harvestDew());
       posY += 40;
@@ -92,6 +122,36 @@ export class BlueprintScene extends Phaser.Scene {
         this.runManager.setCurrentNodeById('N3');
         this.scene.start('RunScene');
       });
+    } else {
+      posY += 30;
+      if (this.nodeId === 'N0') {
+        this.add.text(centerX, posY, 'FIRST RULE: DO NOT LEAVE STUDENTS ALONE', {
+          fontFamily: 'VT323',
+          fontSize: '18px',
+          color: '#B026FF',
+        }).setOrigin(0.5);
+        posY += 50;
+        this.buildButton(centerX, posY, 'Proceed to CLINIC RUN', () => {
+          this.runManager.setCurrentNodeById('N1');
+          this.scene.start('RunScene');
+        });
+      } else {
+        this.runManager.markMedicJoined();
+        this.add.text(centerX, posY, 'Rescue Medic joins. TRUST decision locked in.', {
+          fontFamily: 'VT323',
+          fontSize: '18px',
+          color: '#B026FF',
+        }).setOrigin(0.5);
+        posY += 40;
+        this.buildButton(centerX, posY, 'Craft Portable Barrier Kit (2 SCRAP)', () => this.craftBarrierKit());
+        posY += 40;
+        this.buildButton(centerX, posY, 'Craft Escort Strap (2 SCRAP)', () => this.craftEscortStrap());
+        posY += 50;
+        this.buildButton(centerX, posY, 'Proceed to ANCHOR APPROACH', () => {
+          this.runManager.setCurrentNodeById('N3');
+          this.scene.start('RunScene');
+        });
+      }
     }
 
     this.refreshStatus();
@@ -230,9 +290,53 @@ export class BlueprintScene extends Phaser.Scene {
     this.refreshStatus();
   }
 
+  private craftBarrierKit(): void {
+    if (this.inventoryManager.getScrapResources() < 2) {
+      this.uiManager.updateSystemMessage('NEED 2 SCRAP');
+      return;
+    }
+    this.inventoryManager.addScrap(-2);
+    const kit: ItemData = {
+      id: `barrier-kit-${Date.now()}`,
+      name: 'PORTABLE BARRIER KIT',
+      type: ItemType.CONSUMABLE,
+      shape: [[1]],
+      rotation: 0,
+      maxAmmo: null,
+      currentAmmo: null,
+      scrapValue: 3,
+      description: 'Deploy temporary cover in combat (1AP, 2 turns).',
+    };
+    this.inventoryManager.addItemToTray(kit);
+    this.uiManager.getInventoryUI()?.update();
+    this.uiManager.updateSystemMessage('BARRIER KIT READY');
+  }
+
+  private craftEscortStrap(): void {
+    if (this.inventoryManager.getScrapResources() < 2) {
+      this.uiManager.updateSystemMessage('NEED 2 SCRAP');
+      return;
+    }
+    this.inventoryManager.addScrap(-2);
+    const strap: ItemData = {
+      id: `escort-strap-${Date.now()}`,
+      name: 'ESCORT STRAP',
+      type: ItemType.CONSUMABLE,
+      shape: [[1]],
+      rotation: 0,
+      maxAmmo: null,
+      currentAmmo: null,
+      scrapValue: 2,
+      description: 'Use on rescued ally for push resistance.',
+    };
+    this.inventoryManager.addItemToTray(strap);
+    this.uiManager.getInventoryUI()?.update();
+    this.uiManager.updateSystemMessage('ESCORT STRAP READY');
+  }
+
   private refreshStatus(): void {
     const lines: string[] = [];
-    if (!this.isEp2) {
+    if (!this.isEp2 && !this.isEp3) {
       lines.push(`Extractor: ${this.extractorBuilt ? 'BUILT' : 'PENDING'} | Refiner: ${this.refinerBuilt ? 'BUILT' : 'PENDING'} | Press: ${this.pressBuilt ? 'BUILT' : 'PENDING'}`);
       lines.push(`Cassette: ${this.cassetteCrafted ? 'READY' : 'PENDING'} | Patch: ${this.patchCrafted ? 'READY' : 'PENDING'}`);
 
@@ -242,7 +346,7 @@ export class BlueprintScene extends Phaser.Scene {
       } else {
         lines.push('Produce BASIC ATTACK CASSETTE + PATCH KIT to proceed.');
       }
-    } else {
+    } else if (this.isEp2) {
       lines.push(`Resonant Dew: ${this.dewCollected}`);
       lines.push(`Coolant: ${this.coolantCrafted ? 'READY' : 'PENDING'}`);
       lines.push('Goal: Craft at least one COOLANT CAPSULE.');
@@ -250,6 +354,10 @@ export class BlueprintScene extends Phaser.Scene {
         this.runManager.markProductionComplete();
         lines.push('Proceed to Relay Room.');
       }
+    } else {
+      lines.push('Escort prep: keep Medic safe, disable anchor, extract.');
+      lines.push(`Tone: ${this.runManager.getToneFlag() ?? 'DEFAULT TRUST'}`);
+      lines.push('Optional crafts: Barrier Kit, Escort Strap.');
     }
 
     this.statusText.setText(lines.join('\n'));

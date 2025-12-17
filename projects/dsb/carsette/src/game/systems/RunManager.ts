@@ -1,5 +1,6 @@
 import { episode1 } from '../data/episode1';
 import { episode2 } from '../data/episode2';
+import { episode3 } from '../data/episode3';
 import { EnemyIntent, EpisodeConfig, NodeConfig } from '../types/Run';
 
 interface RunProgress {
@@ -10,6 +11,8 @@ interface RunProgress {
   rescueJoined: boolean;
   relaySecured: boolean;
   coolantCrafted: boolean;
+  medicJoined: boolean;
+  anchorDisabled: boolean;
 }
 
 export class RunManager {
@@ -18,9 +21,10 @@ export class RunManager {
   private availableEpisodes: Record<string, EpisodeConfig> = {
     [episode1.id]: episode1,
     [episode2.id]: episode2,
+    [episode3.id]: episode3,
   };
 
-  private episode: EpisodeConfig = episode2;
+  private episode: EpisodeConfig = episode3;
   private progress: RunProgress = {
     currentNodeIndex: 0,
     powerRestored: false,
@@ -29,6 +33,8 @@ export class RunManager {
     rescueJoined: false,
     relaySecured: false,
     coolantCrafted: false,
+    medicJoined: false,
+    anchorDisabled: false,
   };
   private heat: number = 0;
   private stabilizerCharges: number = 1;
@@ -53,6 +59,8 @@ export class RunManager {
       rescueJoined: false,
       relaySecured: false,
       coolantCrafted: false,
+      medicJoined: false,
+      anchorDisabled: false,
     };
     this.heat = 0;
     this.stabilizerCharges = 1;
@@ -111,8 +119,20 @@ export class RunManager {
     return this.progress.rescueJoined;
   }
 
+  public markMedicJoined(): void {
+    this.progress.medicJoined = true;
+  }
+
+  public hasMedicJoined(): boolean {
+    return this.progress.medicJoined;
+  }
+
   public markRelaySecured(): void {
     this.progress.relaySecured = true;
+  }
+
+  public markAnchorDisabled(): void {
+    this.progress.anchorDisabled = true;
   }
 
   public markCoolantCrafted(): void {
@@ -127,6 +147,10 @@ export class RunManager {
         this.progress.coolantCrafted &&
         this.progress.extractionComplete
       );
+    }
+
+    if (this.episode.id === 'ep3') {
+      return this.progress.medicJoined && this.progress.anchorDisabled && this.progress.extractionComplete;
     }
 
     return (

@@ -78,17 +78,24 @@ export class RunScene extends Phaser.Scene {
 
   private renderToneChoices(x: number, y: number): void {
     const tone = this.runManager.getToneFlag();
-    this.add.text(x, y - 16, 'DIALOG TONE', {
+    this.add.text(x, y - 16, this.runManager.getEpisode().id === 'ep3' ? 'TRUST STYLE' : 'DIALOG TONE', {
       fontFamily: 'VT323',
       fontSize: '14px',
       color: '#FFB000',
     }).setOrigin(0.5);
 
-    const choices: { label: string; value: string }[] = [
-      { label: 'EMPATHY', value: 'TONE_EMPATHY' },
-      { label: 'PRAGMATIC', value: 'TONE_PRAGMATIC' },
-      { label: 'CURIOUS', value: 'TONE_CURIOUS' },
-    ];
+    const choices: { label: string; value: string }[] =
+      this.runManager.getEpisode().id === 'ep3'
+        ? [
+            { label: 'TRUST: WARM', value: 'TRUST_STYLE_WARM' },
+            { label: 'TRUST: RULED', value: 'TRUST_STYLE_RULED' },
+            { label: 'TRUST: OBSERVE', value: 'TRUST_STYLE_OBSERVED' },
+          ]
+        : [
+            { label: 'EMPATHY', value: 'TONE_EMPATHY' },
+            { label: 'PRAGMATIC', value: 'TONE_PRAGMATIC' },
+            { label: 'CURIOUS', value: 'TONE_CURIOUS' },
+          ];
 
     const offset = -120;
     choices.forEach((choice, index) => {
@@ -109,8 +116,8 @@ export class RunScene extends Phaser.Scene {
   }
 
   private renderExtractionBranches(x: number, y: number): void {
-    const hasBranchA = this.runManager.getEpisode().nodes.some(n => n.id === 'N3A' || n.id === 'N4A');
-    const hasBranchB = this.runManager.getEpisode().nodes.some(n => n.id === 'N3B' || n.id === 'N4B');
+    const hasBranchA = this.runManager.getEpisode().nodes.some(n => n.id === 'N3A' || n.id === 'N4A' || n.id === 'N5A');
+    const hasBranchB = this.runManager.getEpisode().nodes.some(n => n.id === 'N3B' || n.id === 'N4B' || n.id === 'N5B');
     if (!hasBranchA || !hasBranchB) return;
 
     const buttonA = this.add.text(x - 80, y, 'ROUTE A', {
@@ -135,8 +142,10 @@ export class RunScene extends Phaser.Scene {
     buttonA.on('pointerdown', () => {
       if (this.runManager.getEpisode().nodes.some(n => n.id === 'N3A')) {
         this.runManager.setCurrentNodeById('N3A');
-      } else {
+      } else if (this.runManager.getEpisode().nodes.some(n => n.id === 'N4A')) {
         this.runManager.setCurrentNodeById('N4A');
+      } else {
+        this.runManager.setCurrentNodeById('N5A');
       }
       this.uiManager.updateSystemMessage('ROUTE A SELECTED');
       this.scene.restart();
@@ -145,8 +154,10 @@ export class RunScene extends Phaser.Scene {
     buttonB.on('pointerdown', () => {
       if (this.runManager.getEpisode().nodes.some(n => n.id === 'N3B')) {
         this.runManager.setCurrentNodeById('N3B');
-      } else {
+      } else if (this.runManager.getEpisode().nodes.some(n => n.id === 'N4B')) {
         this.runManager.setCurrentNodeById('N4B');
+      } else {
+        this.runManager.setCurrentNodeById('N5B');
       }
       this.uiManager.updateSystemMessage('ROUTE B SELECTED');
       this.scene.restart();
@@ -158,6 +169,8 @@ export class RunScene extends Phaser.Scene {
     if (node.type === 'combat') {
       this.scene.start('CombatScene', { nodeId: node.id });
     } else if (node.type === 'blueprint') {
+      this.scene.start('BlueprintScene', { nodeId: node.id });
+    } else if (node.type === 'dialogue') {
       this.scene.start('BlueprintScene', { nodeId: node.id });
     } else {
       this.scene.start('ResultScene');

@@ -3,7 +3,7 @@ import { UIManager } from '../../ui/UIManager';
 import { InventoryManager } from '../systems/InventoryManager';
 import { RunManager } from '../systems/RunManager';
 import { ItemData, ItemType } from '../types/Item';
-import { EnemyIntent, EnemyStats, NodeConfig } from '../types/Run';
+import { EnemyIntent, EnemyStats, IntentTarget, NodeConfig } from '../types/Run';
 
 interface Battler {
   id: string;
@@ -20,7 +20,7 @@ interface Battler {
   sprite: Phaser.GameObjects.Rectangle;
   label: Phaser.GameObjects.Text;
   kind: 'ally' | 'enemy';
-  enemyKind?: 'BLOCKER' | 'JAMMER' | 'HUNTER';
+  enemyKind?: 'BLOCKER' | 'JAMMER' | 'HUNTER' | 'WARDEN';
 }
 
 interface CombatData {
@@ -38,7 +38,7 @@ export class CombatScene extends Phaser.Scene {
   private allies: Battler[] = [];
   private enemies: Battler[] = [];
   private activeAllyIndex: number = 0;
-  private currentMode: 'idle' | 'move' | 'attack' = 'idle';
+  private currentMode: 'idle' | 'move' | 'attack' | 'shield' = 'idle';
   private highlightedTiles: Phaser.GameObjects.Rectangle[] = [];
   private intentMarkers: Phaser.GameObjects.Rectangle[] = [];
 
@@ -52,6 +52,16 @@ export class CombatScene extends Phaser.Scene {
   private extractionZoneRadius: number = 1;
   private barriers: Map<string, Phaser.GameObjects.Rectangle> = new Map();
   private rescueUnjamUsed: boolean = false;
+  private medicHealUsed: boolean = false;
+  private antiphaseUses: number = 0;
+  private shieldedUnits: Set<string> = new Set();
+  private resonanceNodes: IntentTarget[] = [];
+  private surgeTelegraph?: IntentTarget;
+  private surgeMarkers: Phaser.GameObjects.Rectangle[] = [];
+  private surgeIndex: number = 0;
+  private anchorProgress: number = 0;
+  private anchorRequired: number = 0;
+  private anchorConsole?: IntentTarget;
 
   init(data: CombatData): void {
     this.node = RunManager.getInstance().getEpisode().nodes.find(n => n.id === data.nodeId)!;
@@ -66,10 +76,17 @@ export class CombatScene extends Phaser.Scene {
     this.uiManager.updateHeat(this.runManager.getHeat());
     this.uiManager.updateStabilizer(this.runManager.getStabilizerCharges());
 
+    if (this.node.extractionHeatSpike) {
+      this.runManager.addHeat(this.node.extractionHeatSpike);
+      this.uiManager.updateHeat(this.runManager.getHeat());
+      this.uiManager.updateSystemMessage(`ENTRY HEAT +${this.node.extractionHeatSpike}`);
+    }
+
     this.createGrid();
     this.createAllies();
     this.createEnemies();
     this.configureExtraction();
+    this.configureResonance();
     this.bindControls();
 
     this.computeEnemyIntents();
@@ -111,10 +128,15 @@ export class CombatScene extends Phaser.Scene {
       allyConfigs.push({ id: 'rescue', name: 'RESCUE STUDENT', maxHp: 5, move: 4, range: 2, damage: 0, ap: 2, heal: 0 });
     }
 
+    if (this.runManager.hasMedicJoined()) {
+      allyConfigs.push({ id: 'medic', name: 'RESCUE MEDIC', maxHp: 5, move: 4, range: 3, damage: 0, ap: 2, heal: 2 });
+    }
+
     const positions = [
       { x: 1, y: 1 },
       { x: 1, y: 2 },
       { x: 1, y: 3 },
+      { x: 1, y: 4 },
     ];
 
     allyConfigs.forEach((cfg, index) => {
@@ -208,6 +230,17 @@ export class CombatScene extends Phaser.Scene {
     this.add.circle(tile.x, tile.y, 10, 0xb026ff, 0.5);
   }
 
+  private configureResonance(): void {
+    if (!this.node.encounter) return;
+    this.resonanceNodes = this.node.encounter.resonanceNodes ?? [];
+    this.anchorConsole = this.node.encounter.anchorConsole;
+    this.anchorRequired = this.node.encounter.anchorStagesRequired ?? 0;
+    if (this.anchorConsole) {
+      const tile = this.grid[this.anchorConsole.y][this.anchorConsole.x];
+      this.add.rectangle(tile.x, tile.y, this.TILE_SIZE - 8, this.TILE_SIZE - 8, 0x0088cc, 0.2).setStrokeStyle(2, 0x00ffff, 0.8);
+    }
+  }
+
   private bindControls(): void {
     const btnMove = document.getElementById('btn-move');
     const btnAttack = document.getElementById('btn-attack');
@@ -229,6 +262,7 @@ export class CombatScene extends Phaser.Scene {
 
     this.input.keyboard?.on('keydown-TAB', () => this.cycleActiveAlly());
     this.input.keyboard?.on('keydown-F', () => this.useStabilizer());
+    this.input.keyboard?.on('keydown-G', () => this.enterShieldMode());
   }
 
   private cycleActiveAlly(): void {
@@ -250,6 +284,17 @@ export class CombatScene extends Phaser.Scene {
     const ally = this.allies[this.activeAllyIndex];
     this.highlightRange(ally.gridX, ally.gridY, ally.range, 0xff0000);
     this.uiManager.updateSystemMessage('SELECT ATTACK TARGET');
+  }
+
+  private enterShieldMode(): void {
+    const ally = this.allies[this.activeAllyIndex];
+    if (ally.id !== 'medic') {
+      this.uiManager.updateSystemMessage('ANTIPHASE SHIELD: MEDIC ONLY');
+      return;
+    }
+    this.currentMode = 'shield';
+    this.highlightRange(ally.gridX, ally.gridY, ally.range, 0x00b0ff);
+    this.uiManager.updateSystemMessage('SELECT SHIELD TARGET');
   }
 
   private highlightRange(x: number, y: number, range: number, color: number): void {
@@ -286,14 +331,40 @@ export class CombatScene extends Phaser.Scene {
       this.clearHighlights();
       this.currentMode = 'idle';
     } else if (this.currentMode === 'attack') {
+      if (this.anchorConsole && x === this.anchorConsole.x && y === this.anchorConsole.y) {
+        const distance = Math.abs(x - ally.gridX) + Math.abs(y - ally.gridY);
+        if (distance <= 1 && ally.ap > 0) {
+          ally.ap -= 1;
+          this.anchorProgress += 1;
+          this.uiManager.updateSystemMessage(`ANCHOR DISABLE ${this.anchorProgress}/${this.anchorRequired || 3}`);
+          if (this.anchorProgress >= (this.anchorRequired || 3)) {
+            this.runManager.markAnchorDisabled();
+            this.uiManager.updateSystemMessage('ANCHOR DISABLED');
+            this.finishNode(true);
+            return;
+          }
+        }
+        this.clearHighlights();
+        this.currentMode = 'idle';
+        return;
+      }
       const distance = Math.abs(x - ally.gridX) + Math.abs(y - ally.gridY);
       if (distance <= ally.range && ally.ap > 0) {
         ally.ap -= 1;
         if (ally.id === 'rescue') {
           this.useUnjam(x, y);
+        } else if (ally.id === 'medic') {
+          this.applyTriage(ally, x, y);
         } else {
           this.resolveAttack(ally, x, y);
         }
+      }
+      this.clearHighlights();
+      this.currentMode = 'idle';
+    } else if (this.currentMode === 'shield') {
+      const distance = Math.abs(x - ally.gridX) + Math.abs(y - ally.gridY);
+      if (ally.id === 'medic' && distance <= ally.range && ally.ap > 0) {
+        this.applyAntiphaseShield(ally, x, y);
       }
       this.clearHighlights();
       this.currentMode = 'idle';
@@ -341,6 +412,37 @@ export class CombatScene extends Phaser.Scene {
     this.checkEnemyStates();
   }
 
+  private applyTriage(attacker: Battler, targetX: number, targetY: number): void {
+    const ally = this.allies.find(a => a.gridX === targetX && a.gridY === targetY && a.hp > 0);
+    if (!ally) {
+      this.uiManager.updateSystemMessage('TRIAGE: NEED ALLY TARGET');
+      return;
+    }
+    if (this.medicHealUsed) {
+      this.uiManager.updateSystemMessage('TRIAGE ALREADY USED');
+      return;
+    }
+    ally.hp = Math.min(ally.maxHp, ally.hp + (attacker.heal ?? 2));
+    this.medicHealUsed = true;
+    this.uiManager.updateSystemMessage(`TRIAGE PATCH +${attacker.heal ?? 2}`);
+  }
+
+  private applyAntiphaseShield(attacker: Battler, targetX: number, targetY: number): void {
+    const ally = this.allies.find(a => a.gridX === targetX && a.gridY === targetY && a.hp > 0);
+    if (!ally) {
+      this.uiManager.updateSystemMessage('ANTIPHASE: NEED ALLY');
+      return;
+    }
+    if (this.antiphaseUses >= 2) {
+      this.uiManager.updateSystemMessage('ANTIPHASE LIMIT REACHED');
+      return;
+    }
+    attacker.ap -= 1;
+    this.antiphaseUses += 1;
+    this.shieldedUnits.add(ally.id);
+    this.uiManager.updateSystemMessage(`ANTIPHASE ON ${ally.name}`);
+  }
+
   private useUnjam(targetX: number, targetY: number): void {
     if (this.rescueUnjamUsed) {
       this.uiManager.updateSystemMessage('UNJAM ALREADY USED');
@@ -382,7 +484,9 @@ export class CombatScene extends Phaser.Scene {
   private startPlayerTurn(): void {
     this.allies.forEach(ally => (ally.ap = 2));
     this.rescueUnjamUsed = false;
+    this.medicHealUsed = false;
     this.currentMode = 'idle';
+    this.resolveResonanceSurge();
     this.startTurnTimer();
     this.renderIntents();
     this.uiManager.updateSystemMessage('YOUR TURN');
@@ -437,6 +541,7 @@ export class CombatScene extends Phaser.Scene {
       this.followIntent(enemy, intent);
     });
 
+    this.telegraphSurge();
     this.computeEnemyIntents();
     this.startPlayerTurn();
   }
@@ -458,6 +563,11 @@ export class CombatScene extends Phaser.Scene {
 
     if (intent.type === 'POUNCE') {
       this.resolvePounce(enemy, intent.target.x, intent.target.y);
+      return;
+    }
+
+    if (intent.type === 'ANCHOR_PULSE') {
+      this.resolveAnchorPulse(enemy, intent.target.x, intent.target.y);
       return;
     }
 
@@ -534,6 +644,28 @@ export class CombatScene extends Phaser.Scene {
     }
   }
 
+  private resolveAnchorPulse(enemy: Battler, targetX: number, targetY: number): void {
+    const distance = Math.abs(enemy.gridX - targetX) + Math.abs(enemy.gridY - targetY);
+    if (distance > enemy.range) {
+      const steps = Math.min(enemy.move, distance - enemy.range);
+      this.moveToward(enemy, targetX, targetY, steps);
+    }
+    const ally = this.allies.find(a => a.gridX === targetX && a.gridY === targetY && a.hp > 0);
+    if (ally) {
+      ally.hp -= enemy.damage;
+      const pushY = Math.min(this.GRID_SIZE - 1, ally.gridY + 1);
+      ally.gridY = pushY;
+      const tile = this.grid[ally.gridY][ally.gridX];
+      ally.sprite.setPosition(tile.x, tile.y);
+      ally.label.setPosition(tile.x, tile.y);
+      if (ally.hp <= 0) {
+        ally.sprite.destroy();
+        ally.label.destroy();
+      }
+    }
+    this.uiManager.updateSystemMessage('ANCHOR PULSE DETONATED');
+  }
+
   private computeEnemyIntents(): void {
     const intents: EnemyIntent[] = [];
     this.enemies.filter(e => e.hp > 0).forEach(enemy => {
@@ -541,6 +673,9 @@ export class CombatScene extends Phaser.Scene {
       const target = nearest ? { x: nearest.gridX, y: nearest.gridY } : { x: enemy.gridX, y: enemy.gridY };
       if (enemy.enemyKind === 'HUNTER') {
         intents.push({ enemyId: enemy.id, type: 'POUNCE', target });
+      } else if (enemy.enemyKind === 'WARDEN') {
+        const focus = this.anchorConsole ?? target;
+        intents.push({ enemyId: enemy.id, type: 'ANCHOR_PULSE', target: focus });
       } else if (enemy.enemyKind === 'BLOCKER' && Math.abs(enemy.gridX - target.x) + Math.abs(enemy.gridY - target.y) > enemy.range) {
         intents.push({ enemyId: enemy.id, type: 'PLACE_BARRIER', target });
       } else {
@@ -575,12 +710,32 @@ export class CombatScene extends Phaser.Scene {
     });
   }
 
+  private renderSurgeTelegraph(): void {
+    this.surgeMarkers.forEach(marker => marker.destroy());
+    this.surgeMarkers = [];
+    if (!this.surgeTelegraph) return;
+    const tile = this.grid[this.surgeTelegraph.y][this.surgeTelegraph.x];
+    const marker = this.add.rectangle(tile.x, tile.y, this.TILE_SIZE - 10, this.TILE_SIZE - 10, 0x00ffff, 0.15);
+    marker.setStrokeStyle(2, 0x00ffff, 0.8);
+    this.surgeMarkers.push(marker);
+  }
+
   private resolveExtractionProgress(): void {
     if (!this.extractionActive || !this.extractionZoneCenter) return;
     const inZone = this.allies.some(ally => {
       const dist = Math.abs(ally.gridX - this.extractionZoneCenter!.x) + Math.abs(ally.gridY - this.extractionZoneCenter!.y);
       return dist <= this.extractionZoneRadius && ally.hp > 0;
     });
+    const medicRequired = this.runManager.hasMedicJoined();
+    const medicInZone = this.allies.some(
+      ally =>
+        ally.id === 'medic' &&
+        ally.hp > 0 &&
+        Math.abs(ally.gridX - this.extractionZoneCenter!.x) + Math.abs(ally.gridY - this.extractionZoneCenter!.y) <= this.extractionZoneRadius
+    );
+    if (medicRequired && !medicInZone) {
+      return;
+    }
     if (inZone) {
       const stage = this.runManager.incrementExtractionStage(this.node.id);
       this.uiManager.updateSystemMessage(`UPLOAD STAGE ${stage}/${this.extractionStagesRequired}`);
@@ -606,7 +761,14 @@ export class CombatScene extends Phaser.Scene {
         }
       }
       if (stage >= this.extractionStagesRequired) {
-        if (this.node.id === 'N3A' || this.node.id === 'N3B' || this.node.id === 'N4A' || this.node.id === 'N4B') {
+        if (
+          this.node.id === 'N3A' ||
+          this.node.id === 'N3B' ||
+          this.node.id === 'N4A' ||
+          this.node.id === 'N4B' ||
+          this.node.id === 'N5A' ||
+          this.node.id === 'N5B'
+        ) {
           this.runManager.markExtractionComplete();
         }
         this.finishNode(true);
@@ -614,11 +776,61 @@ export class CombatScene extends Phaser.Scene {
     }
   }
 
+  private telegraphSurge(): void {
+    if (!this.resonanceNodes.length || this.runManager.getHeat() < 7) {
+      this.surgeTelegraph = undefined;
+      this.renderSurgeTelegraph();
+      return;
+    }
+    const target = this.resonanceNodes[this.surgeIndex % this.resonanceNodes.length];
+    this.surgeIndex += 1;
+    this.surgeTelegraph = target;
+    this.uiManager.updateSystemMessage('RESONANCE SURGE INCOMING');
+    this.renderSurgeTelegraph();
+  }
+
+  private resolveResonanceSurge(): void {
+    if (!this.surgeTelegraph) return;
+    const tile = this.grid[this.surgeTelegraph.y][this.surgeTelegraph.x];
+    this.uiManager.updateSystemMessage('RESONANCE SURGE');
+    const impacted = this.allies.filter(a => a.gridX === this.surgeTelegraph!.x && a.gridY === this.surgeTelegraph!.y && a.hp > 0);
+    impacted.forEach(ally => {
+      if (this.shieldedUnits.has(ally.id)) {
+        this.shieldedUnits.delete(ally.id);
+        this.uiManager.updateSystemMessage(`ANTIPHASE BLOCKED SURGE ON ${ally.name}`);
+        return;
+      }
+      ally.hp -= 1;
+      if (ally.hp <= 0) {
+        ally.sprite.destroy();
+        ally.label.destroy();
+      } else {
+        const pushY = Math.min(this.GRID_SIZE - 1, ally.gridY + 1);
+        ally.gridY = pushY;
+        const pushTile = this.grid[pushY][ally.gridX];
+        ally.sprite.setPosition(pushTile.x, pushTile.y);
+        ally.label.setPosition(pushTile.x, pushTile.y);
+      }
+    });
+    const surgeMark = this.add.text(tile.x, tile.y, 'SURGE', {
+      fontFamily: 'VT323',
+      fontSize: '12px',
+      color: '#00ffff',
+    }).setOrigin(0.5);
+    this.time.delayedCall(400, () => surgeMark.destroy());
+    this.surgeTelegraph = undefined;
+    this.renderSurgeTelegraph();
+  }
+
   private finishNode(skipAdvance?: boolean): void {
     if (!skipAdvance && this.extractionActive) return;
     if (this.node.id === 'N1' && this.runManager.getEpisode().id === 'ep2') {
       this.runManager.markRescueJoined();
       this.uiManager.updateSystemMessage('RESCUE STUDENT JOINED');
+    }
+    if (this.node.id === 'N1' && this.runManager.getEpisode().id === 'ep3') {
+      this.runManager.markMedicJoined();
+      this.uiManager.updateSystemMessage('RESCUE MEDIC FREED');
     }
     if (this.node.id === 'N3' && this.runManager.getEpisode().id === 'ep2') {
       this.runManager.markRelaySecured();

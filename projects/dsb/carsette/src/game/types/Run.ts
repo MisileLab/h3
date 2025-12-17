@@ -3,7 +3,7 @@ export interface IntentTarget {
   y: number;
 }
 
-export type EnemyIntentType = 'ATTACK_TILE' | 'PLACE_BARRIER' | 'POUNCE' | 'IDLE';
+export type EnemyIntentType = 'ATTACK_TILE' | 'PLACE_BARRIER' | 'POUNCE' | 'ANCHOR_PULSE' | 'IDLE';
 
 export interface EnemyIntent {
   enemyId: string;
@@ -24,7 +24,7 @@ export interface UnitStats {
 }
 
 export interface EnemyStats extends UnitStats {
-  kind: 'BLOCKER' | 'JAMMER' | 'HUNTER';
+  kind: 'BLOCKER' | 'JAMMER' | 'HUNTER' | 'WARDEN';
 }
 
 export interface EncounterConfig {
@@ -36,9 +36,12 @@ export interface EncounterConfig {
     baseStages: number;
     branch: 'A' | 'B';
   };
+  resonanceNodes?: IntentTarget[];
+  anchorConsole?: IntentTarget;
+  anchorStagesRequired?: number;
 }
 
-export type NodeType = 'combat' | 'blueprint' | 'result';
+export type NodeType = 'combat' | 'blueprint' | 'result' | 'dialogue';
 
 export interface NodeConfig {
   id: string;
@@ -46,6 +49,7 @@ export interface NodeConfig {
   description: string;
   type: NodeType;
   encounter?: EncounterConfig;
+  extractionHeatSpike?: number;
 }
 
 export interface EpisodeConfig {
