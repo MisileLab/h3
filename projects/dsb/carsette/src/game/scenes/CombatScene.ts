@@ -206,10 +206,18 @@ export class CombatScene extends Phaser.Scene {
     const btnInventory = document.getElementById('btn-inventory');
     const btnEndTurn = document.getElementById('btn-end-turn');
 
-    btnMove && (btnMove.onclick = () => this.enterMoveMode());
-    btnAttack && (btnAttack.onclick = () => this.enterAttackMode());
-    btnInventory && (btnInventory.onclick = () => this.uiManager.toggleInventory());
-    btnEndTurn && (btnEndTurn.onclick = () => this.endPlayerTurn());
+    if (btnMove) {
+      btnMove.onclick = () => this.enterMoveMode();
+    }
+    if (btnAttack) {
+      btnAttack.onclick = () => this.enterAttackMode();
+    }
+    if (btnInventory) {
+      btnInventory.onclick = () => this.uiManager.toggleInventory();
+    }
+    if (btnEndTurn) {
+      btnEndTurn.onclick = () => this.endPlayerTurn();
+    }
 
     this.input.keyboard?.on('keydown-TAB', () => this.cycleActiveAlly());
     this.input.keyboard?.on('keydown-F', () => this.useStabilizer());
