@@ -1,4 +1,5 @@
 import { ItemData, ItemRotation, ItemShape, PlacedItem } from '../types/Item';
+import { RunManager } from './RunManager';
 
 /**
  * Grid dimensions for the main inventory
@@ -34,6 +35,14 @@ export class InventoryManager {
   private tray: ItemData[];
 
   /**
+   * Buffer slots for temporary storage (different from tray)
+   */
+  private buffer: ItemData[];
+
+  private readonly baseBufferCapacity: number = 2;
+  private jammerPenalty: number = 0;
+
+  /**
    * Map of all items by their ID for quick lookup
    */
   private itemsById: Map<string, PlacedItem>;
@@ -46,6 +55,7 @@ export class InventoryManager {
   private constructor() {
     this.mainGrid = this.createEmptyGrid();
     this.tray = [];
+    this.buffer = [];
     this.itemsById = new Map();
     this.scrapResources = 0;
   }
@@ -82,10 +92,71 @@ export class InventoryManager {
   }
 
   /**
+   * Move a tray item into the buffer (used by right-click shortcuts)
+   */
+  public moveTrayItemToBuffer(itemId: string): { success: boolean; overflow: boolean; lostItem?: ItemData } {
+    const index = this.tray.findIndex(item => item.id === itemId);
+    if (index === -1) {
+      return { success: false, overflow: false };
+    }
+
+    const item = this.tray.splice(index, 1)[0];
+    const result = this.addItemToBuffer(item);
+    return { success: true, overflow: result.overflow, lostItem: result.lostItem };
+  }
+
+  /**
+   * Add an item to the buffer, respecting capacity and overflow rules
+   */
+  public addItemToBuffer(item: ItemData): { overflow: boolean; lostItem?: ItemData } {
+    this.buffer.push(item);
+
+    const capacity = this.getBufferCapacity();
+    if (this.buffer.length > capacity) {
+      const lostItem = this.evictLowestValueFromBuffer();
+      RunManager.getInstance().addHeat(1);
+      return { overflow: true, lostItem };
+    }
+
+    return { overflow: false };
+  }
+
+  /**
+   * Remove the lowest scrap value item from the buffer (DATA SPILL)
+   */
+  private evictLowestValueFromBuffer(): ItemData | undefined {
+    if (this.buffer.length === 0) {
+      return undefined;
+    }
+
+    let lowestIndex = 0;
+    for (let i = 1; i < this.buffer.length; i++) {
+      if (this.buffer[i].scrapValue < this.buffer[lowestIndex].scrapValue) {
+        lowestIndex = i;
+      }
+    }
+
+    const [removed] = this.buffer.splice(lowestIndex, 1);
+    return removed;
+  }
+
+  /**
    * Get all items in the tray
    */
   public getTray(): ItemData[] {
     return [...this.tray];
+  }
+
+  public getBuffer(): ItemData[] {
+    return [...this.buffer];
+  }
+
+  public setJammerPenalty(isActive: boolean): void {
+    this.jammerPenalty = isActive ? 1 : 0;
+  }
+
+  public getBufferCapacity(): number {
+    return Math.max(0, this.baseBufferCapacity - this.jammerPenalty);
   }
 
   /**
@@ -108,6 +179,10 @@ export class InventoryManager {
    */
   public getScrapResources(): number {
     return this.scrapResources;
+  }
+
+  public addScrap(amount: number): void {
+    this.scrapResources = Math.max(0, this.scrapResources + amount);
   }
 
   /**
@@ -368,6 +443,7 @@ export class InventoryManager {
   public reset(): void {
     this.mainGrid = this.createEmptyGrid();
     this.tray = [];
+    this.buffer = [];
     this.itemsById.clear();
     this.scrapResources = 0;
   }

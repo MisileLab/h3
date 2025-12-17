@@ -66,9 +66,9 @@ export class TitleScene extends Phaser.Scene {
     // Click to start with glitch effect
     this.input.once('pointerdown', () => {
       this.triggerGlitchEffect();
-      
+
       this.time.delayedCall(600, () => {
-        this.scene.start('CampusScene');
+        this.scene.start('RunScene');
       });
     });
   }
