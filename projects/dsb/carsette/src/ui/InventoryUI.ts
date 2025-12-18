@@ -1,5 +1,7 @@
 import { InventoryManager } from '../game/systems/InventoryManager';
+import { RunManager } from '../game/systems/RunManager';
 import { ItemData, ItemRotation } from '../game/types/Item';
+import { UIManager } from './UIManager';
 
 /**
  * Drag state interface
@@ -40,6 +42,8 @@ export class InventoryUI {
   private inventoryManager: InventoryManager;
   private containerElement: HTMLElement | null = null;
   private trayElement: HTMLElement | null = null;
+  private bufferElement: HTMLElement | null = null;
+  private bufferLabelElement: HTMLElement | null = null;
   private gridElement: HTMLElement | null = null;
   private scrapValueElement: HTMLElement | null = null;
 
@@ -155,6 +159,39 @@ export class InventoryUI {
     traySection.appendChild(trayLabel);
     traySection.appendChild(this.trayElement);
 
+    // Buffer section
+    const bufferSection = document.createElement('div');
+    bufferSection.style.cssText = `
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    `;
+
+    this.bufferLabelElement = document.createElement('div');
+    this.bufferLabelElement.textContent = 'BUFFER (2)';
+    this.bufferLabelElement.style.cssText = `
+      font-family: 'VT323', monospace;
+      font-size: 14px;
+      color: #FFB000;
+      text-transform: uppercase;
+    `;
+
+    this.bufferElement = document.createElement('div');
+    this.bufferElement.id = 'inventory-buffer';
+    this.bufferElement.style.cssText = `
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-height: 48px;
+      padding: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid #FFB000;
+      border-radius: 4px;
+    `;
+
+    bufferSection.appendChild(this.bufferLabelElement);
+    bufferSection.appendChild(this.bufferElement);
+
     // Create main grid section
     const gridSection = document.createElement('div');
     gridSection.style.cssText = `
@@ -215,6 +252,7 @@ export class InventoryUI {
     // Assemble structure
     this.containerElement.appendChild(scrapHeader);
     this.containerElement.appendChild(traySection);
+    this.containerElement.appendChild(bufferSection);
     this.containerElement.appendChild(gridSection);
     inventoryGridElement.appendChild(this.containerElement);
   }
@@ -449,6 +487,9 @@ export class InventoryUI {
       min-width: 150px;
     `;
 
+    const runManager = RunManager.getInstance();
+    const uiManager = UIManager.getInstance();
+
     // Item info
     const info = document.createElement('div');
     info.style.cssText = `
@@ -461,6 +502,7 @@ export class InventoryUI {
       <div style="font-size: 14px; color: #B026FF;">${item.type}</div>
       ${item.currentAmmo !== null ? `<div style="font-size: 14px;">Ammo: ${item.currentAmmo}/${item.maxAmmo}</div>` : ''}
       <div style="font-size: 14px;">Scrap: ${item.scrapValue}</div>
+      ${item.name === 'COOLANT CAPSULE' ? `<div style="font-size: 12px; color: #8cf;">HEAT MITIGATIONS USED: ${runManager.getCoolantMitigationsUsed()}/2</div>` : ''}
     `;
 
     // Actions
@@ -479,6 +521,50 @@ export class InventoryUI {
       }
       this.closeContextMenu();
     });
+
+    const isInTray = this.inventoryManager.getTray().some(trayItem => trayItem.id === itemId);
+    if (isInTray) {
+      const bufferBtn = this.createMenuButton('Send to Buffer', () => {
+        const result = this.inventoryManager.moveTrayItemToBuffer(itemId);
+        if (result.success) {
+          if (result.overflow) {
+            uiManager.updateHeat(runManager.getHeat());
+            uiManager.updateSystemMessage('DATA SPILL // BUFFER OVERFLOW');
+          }
+          this.update();
+        }
+        this.closeContextMenu();
+      });
+      actions.appendChild(bufferBtn);
+    }
+
+    if (item.name === 'COOLANT CAPSULE') {
+      const stabBtn = this.createMenuButton('USE: +1 STAB CHARGE', () => {
+        this.inventoryManager.consumeItem(itemId);
+        runManager.addStabilizerCharge(1);
+        uiManager.updateStabilizer(runManager.getStabilizerCharges());
+        uiManager.updateSystemMessage('COOLANT USED // STAB +1');
+        this.update();
+        this.closeContextMenu();
+      });
+
+      const heatBtn = this.createMenuButton('USE: HEAT -1 (CAP 2)', () => {
+        if (!runManager.registerCoolantHeatMitigation()) {
+          uiManager.updateSystemMessage('HEAT MITIGATION CAP REACHED');
+          this.closeContextMenu();
+          return;
+        }
+        this.inventoryManager.consumeItem(itemId);
+        runManager.reduceHeat(1);
+        uiManager.updateHeat(runManager.getHeat());
+        uiManager.updateSystemMessage('COOLANT USED // HEAT -1');
+        this.update();
+        this.closeContextMenu();
+      });
+
+      actions.appendChild(stabBtn);
+      actions.appendChild(heatBtn);
+    }
 
     // Scrap action
     const scrapBtn = this.createMenuButton(`Scrap (+${item.scrapValue})`, () => {
@@ -750,6 +836,7 @@ export class InventoryUI {
   public update(): void {
     this.updateScrapValue();
     this.updateTray();
+    this.updateBuffer();
     this.updateGrid();
   }
 
@@ -786,6 +873,35 @@ export class InventoryUI {
     trayItems.forEach(item => {
       const itemElement = this.createItemElement(item);
       this.trayElement!.appendChild(itemElement);
+    });
+  }
+
+  private updateBuffer(): void {
+    if (!this.bufferElement || !this.bufferLabelElement) return;
+
+    const bufferElement = this.bufferElement;
+    bufferElement.innerHTML = '';
+    const bufferItems = this.inventoryManager.getBuffer();
+    this.bufferLabelElement.textContent = `BUFFER (${this.inventoryManager.getBufferCapacity()})`;
+
+    if (bufferItems.length === 0) {
+      const emptyMessage = document.createElement('div');
+      emptyMessage.textContent = 'Empty';
+      emptyMessage.style.cssText = `
+        color: rgba(255, 176, 0, 0.5);
+        font-family: 'VT323', monospace;
+        font-size: 14px;
+        padding: 4px;
+      `;
+      bufferElement.appendChild(emptyMessage);
+      return;
+    }
+
+    bufferItems.forEach(item => {
+      const itemElement = this.createItemElement(item);
+      itemElement.style.background = 'rgba(89, 65, 0, 0.4)';
+      itemElement.style.border = '2px solid #FFB000';
+      bufferElement.appendChild(itemElement);
     });
   }
 

@@ -5,6 +5,8 @@ export class UIManager {
   
   private powerElement: HTMLElement | null;
   private dataElement: HTMLElement | null;
+  private heatElement: HTMLElement | null;
+  private stabElement: HTMLElement | null;
   private systemMessageElement: HTMLElement | null;
   private timerElement: HTMLElement | null;
   private dataTray: HTMLElement | null;
@@ -14,6 +16,8 @@ export class UIManager {
   private constructor() {
     this.powerElement = document.getElementById('power-value');
     this.dataElement = document.getElementById('data-value');
+    this.heatElement = document.getElementById('heat-value');
+    this.stabElement = document.getElementById('stab-value');
     this.systemMessageElement = document.getElementById('system-message');
     this.timerElement = document.getElementById('timer-value');
     this.dataTray = document.getElementById('data-tray');
@@ -54,6 +58,18 @@ export class UIManager {
   public updateData(value: number): void {
     if (this.dataElement) {
       this.dataElement.textContent = value.toString();
+    }
+  }
+
+  public updateHeat(value: number): void {
+    if (this.heatElement) {
+      this.heatElement.textContent = value.toString();
+    }
+  }
+
+  public updateStabilizer(value: number): void {
+    if (this.stabElement) {
+      this.stabElement.textContent = value.toString();
     }
   }
 
