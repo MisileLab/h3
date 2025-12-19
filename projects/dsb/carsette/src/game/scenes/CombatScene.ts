@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { UIManager } from '../../ui/UIManager';
+import { StoryManager } from '../story/StoryManager';
 import { InventoryManager } from '../systems/InventoryManager';
 import { RunManager } from '../systems/RunManager';
 import { ItemData, ItemType } from '../types/Item';
@@ -28,9 +29,15 @@ interface CombatData {
 }
 
 export class CombatScene extends Phaser.Scene {
+  constructor() {
+    super({ key: 'CombatScene' });
+  }
+
   private uiManager!: UIManager;
+  private storyManager!: StoryManager;
   private inventoryManager!: InventoryManager;
   private runManager!: RunManager;
+  private jammerWasAlive: boolean = false;
   private node!: NodeConfig;
   private grid: Phaser.GameObjects.Rectangle[][] = [];
   private readonly GRID_SIZE = 8;
@@ -71,6 +78,9 @@ export class CombatScene extends Phaser.Scene {
     this.uiManager = UIManager.getInstance();
     this.inventoryManager = InventoryManager.getInstance();
     this.runManager = RunManager.getInstance();
+    this.storyManager = StoryManager.getInstance();
+    this.storyManager.setEpisodeId(this.runManager.getEpisode().id);
+    this.triggerNodeEnterStory();
 
     this.uiManager.updateSystemMessage(`COMBAT // ${this.node.name}`);
     this.uiManager.updateHeat(this.runManager.getHeat());
@@ -91,6 +101,34 @@ export class CombatScene extends Phaser.Scene {
 
     this.computeEnemyIntents();
     this.startPlayerTurn();
+  }
+
+  private isEp1(): boolean {
+    return this.runManager.getEpisode().id === 'ep1';
+  }
+
+  private triggerNodeEnterStory(): void {
+    if (!this.isEp1()) return;
+
+    if (this.node.id === 'N0') {
+      this.storyManager.trigger('TRG_N0_ENTER');
+      return;
+    }
+
+    if (this.node.id === 'N1') {
+      this.storyManager.trigger('TRG_N1_ENTER');
+      this.storyManager.trigger('TRG_STAB_GIVE');
+      return;
+    }
+
+    if (this.node.id === 'N3A') {
+      this.storyManager.trigger('TRG_N3A_ENTER');
+      return;
+    }
+
+    if (this.node.id === 'N3B') {
+      this.storyManager.trigger('TRG_N3B_ENTER');
+    }
   }
 
   private createGrid(): void {
@@ -228,6 +266,10 @@ export class CombatScene extends Phaser.Scene {
 
     const tile = this.grid[extraction.console.y][extraction.console.x];
     this.add.circle(tile.x, tile.y, 10, 0xb026ff, 0.5);
+
+    if (this.isEp1() && this.node.id === 'N1') {
+      this.storyManager.trigger('TRG_BREAKER_SEEN');
+    }
   }
 
   private configureResonance(): void {
@@ -244,6 +286,7 @@ export class CombatScene extends Phaser.Scene {
   private bindControls(): void {
     const btnMove = document.getElementById('btn-move');
     const btnAttack = document.getElementById('btn-attack');
+    const btnSwitch = document.getElementById('btn-switch');
     const btnInventory = document.getElementById('btn-inventory');
     const btnEndTurn = document.getElementById('btn-end-turn');
 
@@ -253,16 +296,33 @@ export class CombatScene extends Phaser.Scene {
     if (btnAttack) {
       btnAttack.onclick = () => this.enterAttackMode();
     }
+    if (btnSwitch) {
+      btnSwitch.onclick = () => this.cycleActiveAlly();
+    }
     if (btnInventory) {
-      btnInventory.onclick = () => this.uiManager.toggleInventory();
+      btnInventory.onclick = () => this.toggleInventory();
     }
     if (btnEndTurn) {
       btnEndTurn.onclick = () => this.endPlayerTurn();
     }
 
-    this.input.keyboard?.on('keydown-TAB', () => this.cycleActiveAlly());
+    this.input.keyboard?.on('keydown-TAB', (event: KeyboardEvent) => {
+      event.preventDefault();
+      this.toggleInventory();
+    });
+    this.input.keyboard?.on('keydown-C', () => this.cycleActiveAlly());
     this.input.keyboard?.on('keydown-F', () => this.useStabilizer());
     this.input.keyboard?.on('keydown-G', () => this.enterShieldMode());
+  }
+
+  private toggleInventory(): void {
+    this.uiManager.toggleInventory();
+
+    if (this.isEp1() && this.node.id === 'N0') {
+      this.storyManager.trigger('TRG_TRAY_EXPLAIN');
+      this.storyManager.trigger('TRG_TETRIS_EXPLAIN');
+      this.storyManager.trigger('TRG_HEAT_INTRO');
+    }
   }
 
   private cycleActiveAlly(): void {
@@ -284,6 +344,10 @@ export class CombatScene extends Phaser.Scene {
     const ally = this.allies[this.activeAllyIndex];
     this.highlightRange(ally.gridX, ally.gridY, ally.range, 0xff0000);
     this.uiManager.updateSystemMessage('SELECT ATTACK TARGET');
+
+    if (this.isEp1() && this.node.id === 'N0') {
+      this.storyManager.trigger('TRG_TUT_NORNG_FIRST');
+    }
   }
 
   private enterShieldMode(): void {
@@ -463,6 +527,12 @@ export class CombatScene extends Phaser.Scene {
   private checkEnemyStates(): void {
     this.enemies = this.enemies.filter(e => e.hp > 0);
     const jammerAlive = this.enemies.some(e => e.enemyKind === 'JAMMER');
+
+    if (this.isEp1() && this.node.id === 'N1' && jammerAlive && !this.jammerWasAlive) {
+      this.storyManager.trigger('TRG_JAMMER_SPAWN_FIRST');
+    }
+    this.jammerWasAlive = jammerAlive;
+
     this.inventoryManager.setJammerPenalty(jammerAlive);
     this.uiManager.getInventoryUI()?.update();
 
@@ -478,6 +548,10 @@ export class CombatScene extends Phaser.Scene {
       this.uiManager.updateStabilizer(this.runManager.getStabilizerCharges());
       this.uiManager.updateHeat(this.runManager.getHeat());
       this.uiManager.updateSystemMessage('STABILIZER ENGAGED +10s (HEAT +1)');
+
+      if (this.isEp1() && this.node.id === 'N1') {
+        this.storyManager.trigger('TRG_STAB_USE_FIRST');
+      }
     }
   }
 
@@ -489,6 +563,11 @@ export class CombatScene extends Phaser.Scene {
     this.resolveResonanceSurge();
     this.startTurnTimer();
     this.renderIntents();
+
+    if (this.isEp1() && this.node.id === 'N0') {
+      this.storyManager.trigger('TRG_TUT_INTENT_FIRST');
+    }
+
     this.uiManager.updateSystemMessage('YOUR TURN');
   }
 
@@ -496,6 +575,11 @@ export class CombatScene extends Phaser.Scene {
     this.turnTimer = 30;
     this.isTimerActive = true;
     this.uiManager.updateTimer(this.turnTimer);
+
+    if (this.isEp1() && this.node.id === 'N0') {
+      this.storyManager.trigger('TRG_TUT_TIMER_START');
+    }
+
     this.timerEvent?.remove();
     this.timerEvent = this.time.addEvent({ delay: 1000, loop: true, callback: this.updateTimer, callbackScope: this });
   }
@@ -504,6 +588,11 @@ export class CombatScene extends Phaser.Scene {
     if (!this.isTimerActive) return;
     this.turnTimer -= 1;
     this.uiManager.updateTimer(this.turnTimer);
+
+    if (this.turnTimer === 10 && this.isEp1() && this.node.id === 'N0') {
+      this.storyManager.trigger('TRG_TIMER_10S');
+    }
+
     if (this.turnTimer <= 5) {
       this.uiManager.setTimerWarning(true);
     }
@@ -518,6 +607,11 @@ export class CombatScene extends Phaser.Scene {
     this.runManager.addHeat(1);
     this.uiManager.updateHeat(this.runManager.getHeat());
     this.uiManager.updateSystemMessage('SYSTEM HALTED // HEAT +1');
+
+    if (this.isEp1() && this.node.id === 'N0') {
+      this.storyManager.trigger('TRG_HALTED_FIRST');
+    }
+
     this.time.delayedCall(400, () => this.endPlayerTurn());
   }
 
@@ -586,6 +680,10 @@ export class CombatScene extends Phaser.Scene {
         if (enemy.enemyKind === 'JAMMER') {
           this.runManager.addHeat(1);
           this.uiManager.updateHeat(this.runManager.getHeat());
+
+          if (this.isEp1() && this.node.id === 'N1') {
+            this.storyManager.trigger('TRG_JAMMER_EMP_HIT_FIRST');
+          }
         }
         if (ally.hp <= 0) {
           ally.sprite.destroy();
@@ -720,6 +818,51 @@ export class CombatScene extends Phaser.Scene {
     this.surgeMarkers.push(marker);
   }
 
+  private handleEp1ExtractionStory(stage: number): void {
+    if (!this.isEp1()) return;
+
+    if (this.node.id === 'N1') {
+      if (stage === 1) {
+        this.storyManager.trigger('TRG_BREAKER_UPLOAD_1');
+      }
+      if (stage >= this.extractionStagesRequired) {
+        this.storyManager.trigger('TRG_BREAKER_UPLOAD_2');
+      }
+      return;
+    }
+
+    if (this.node.id === 'N3A') {
+      if (stage === 1) {
+        this.storyManager.trigger('TRG_UPLOAD_START_A');
+        this.storyManager.trigger('TRG_UPLOAD_STEP_A_1');
+      }
+      if (this.runManager.getHeat() >= 4) {
+        this.storyManager.trigger('TRG_UPLOAD_HEAT_WARN');
+      }
+      if (stage >= this.extractionStagesRequired) {
+        this.storyManager.trigger('TRG_UPLOAD_COMPLETE_A');
+      }
+      return;
+    }
+
+    if (this.node.id === 'N3B') {
+      if (stage === 1) {
+        this.storyManager.trigger('TRG_UPLOAD_START_B');
+        this.storyManager.trigger('TRG_UPLOAD_STEP_B_1');
+      }
+      if (stage === 2) {
+        this.storyManager.trigger('TRG_UPLOAD_STEP_B_2');
+        this.storyManager.trigger('TRG_RESCUE_THREAD_UNLOCK');
+      }
+      if (this.runManager.getHeat() >= 4) {
+        this.storyManager.trigger('TRG_UPLOAD_HEAT_WARN_B');
+      }
+      if (stage >= this.extractionStagesRequired) {
+        this.storyManager.trigger('TRG_UPLOAD_COMPLETE_B');
+      }
+    }
+  }
+
   private resolveExtractionProgress(): void {
     if (!this.extractionActive || !this.extractionZoneCenter) return;
     const inZone = this.allies.some(ally => {
@@ -739,6 +882,7 @@ export class CombatScene extends Phaser.Scene {
     if (inZone) {
       const stage = this.runManager.incrementExtractionStage(this.node.id);
       this.uiManager.updateSystemMessage(`UPLOAD STAGE ${stage}/${this.extractionStagesRequired}`);
+      this.handleEp1ExtractionStory(stage);
       if (this.node.id === 'N1' && stage >= this.extractionStagesRequired) {
         this.runManager.markPowerRestored();
       }
@@ -769,7 +913,7 @@ export class CombatScene extends Phaser.Scene {
           this.node.id === 'N5A' ||
           this.node.id === 'N5B'
         ) {
-          this.runManager.markExtractionComplete();
+          this.runManager.markExtractionComplete(this.node.id);
         }
         this.finishNode(true);
       }
@@ -824,6 +968,10 @@ export class CombatScene extends Phaser.Scene {
 
   private finishNode(skipAdvance?: boolean): void {
     if (!skipAdvance && this.extractionActive) return;
+
+    if (this.isEp1() && this.node.id === 'N0') {
+      this.storyManager.trigger('TRG_N0_CLEAR');
+    }
     if (this.node.id === 'N1' && this.runManager.getEpisode().id === 'ep2') {
       this.runManager.markRescueJoined();
       this.uiManager.updateSystemMessage('RESCUE STUDENT JOINED');

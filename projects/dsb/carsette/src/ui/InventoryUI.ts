@@ -1,5 +1,6 @@
 import { InventoryManager } from '../game/systems/InventoryManager';
 import { RunManager } from '../game/systems/RunManager';
+import { StoryManager } from '../game/story/StoryManager';
 import { ItemData, ItemRotation } from '../game/types/Item';
 import { UIManager } from './UIManager';
 
@@ -489,6 +490,8 @@ export class InventoryUI {
 
     const runManager = RunManager.getInstance();
     const uiManager = UIManager.getInstance();
+    const storyManager = StoryManager.getInstance();
+    storyManager.setEpisodeId(runManager.getEpisode().id);
 
     // Item info
     const info = document.createElement('div');
@@ -527,9 +530,11 @@ export class InventoryUI {
       const bufferBtn = this.createMenuButton('Send to Buffer', () => {
         const result = this.inventoryManager.moveTrayItemToBuffer(itemId);
         if (result.success) {
+          storyManager.trigger('TRG_BUFFER_EXPLAIN');
           if (result.overflow) {
             uiManager.updateHeat(runManager.getHeat());
             uiManager.updateSystemMessage('DATA SPILL // BUFFER OVERFLOW');
+            storyManager.trigger('TRG_BUFFER_OVERFLOW_FIRST');
           }
           this.update();
         }

@@ -39,6 +39,9 @@
     <!-- CRT Screen: Contains Phaser Canvas -->
     <div id="game-screen">
       <div id="phaser-container"></div>
+
+      <!-- Story Console (Diegetic Log) -->
+      <div id="story-console" class="story-console" aria-live="polite"></div>
       
       <!-- Scanline Overlay -->
       <div class="scanlines"></div>
@@ -52,6 +55,7 @@
       <div class="control-buttons">
         <button class="control-btn" id="btn-move">MOVE</button>
         <button class="control-btn" id="btn-attack">ATTACK</button>
+        <button class="control-btn" id="btn-switch">SWITCH</button>
         <button class="control-btn" id="btn-inventory">INVENTORY</button>
         <button class="control-btn" id="btn-end-turn">END TURN</button>
       </div>

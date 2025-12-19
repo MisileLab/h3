@@ -40,6 +40,7 @@ export class RunManager {
   private stabilizerCharges: number = 1;
   private pendingIntents: EnemyIntent[] = [];
   private extractionStages: Record<string, number> = {};
+  private lastExtractionNodeId: string | null = null;
   private toneFlag: string | null = null;
   private coolantHeatMitigations: number = 0;
 
@@ -66,6 +67,7 @@ export class RunManager {
     this.stabilizerCharges = 1;
     this.pendingIntents = [];
     this.extractionStages = {};
+    this.lastExtractionNodeId = null;
     this.toneFlag = null;
     this.coolantHeatMitigations = 0;
   }
@@ -107,8 +109,15 @@ export class RunManager {
     this.progress.productionComplete = true;
   }
 
-  public markExtractionComplete(): void {
+  public markExtractionComplete(nodeId?: string): void {
     this.progress.extractionComplete = true;
+    if (nodeId) {
+      this.lastExtractionNodeId = nodeId;
+    }
+  }
+
+  public getLastExtractionNodeId(): string | null {
+    return this.lastExtractionNodeId;
   }
 
   public markRescueJoined(): void {

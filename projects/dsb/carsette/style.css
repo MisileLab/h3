@@ -115,6 +115,28 @@ body {
   height: 100% !important;
 }
 
+/* Story Console */
+.story-console {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  max-height: 160px;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 176, 0, 0.35);
+  border-radius: 6px;
+  font-family: var(--font-code);
+  font-size: 12px;
+  line-height: 1.25;
+  color: var(--c-amber);
+  text-shadow: var(--glow);
+  white-space: pre-line;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 50;
+}
+
 /* Scanlines Effect */
 .scanlines {
   position: absolute;

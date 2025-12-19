@@ -1,4 +1,6 @@
 import Phaser from 'phaser';
+import { ProgressManager } from '../systems/ProgressManager';
+import { StoryManager } from '../story/StoryManager';
 import { RunManager } from '../systems/RunManager';
 
 export class TitleScene extends Phaser.Scene {
@@ -6,6 +8,8 @@ export class TitleScene extends Phaser.Scene {
   private startText!: Phaser.GameObjects.Text;
   private asciiLogo!: Phaser.GameObjects.Text;
   private runManager!: RunManager;
+  private progressManager!: ProgressManager;
+
 
   constructor() {
     super({ key: 'TitleScene' });
@@ -13,8 +17,10 @@ export class TitleScene extends Phaser.Scene {
 
   create(): void {
     this.runManager = RunManager.getInstance();
+    this.progressManager = ProgressManager.getInstance();
     const centerX = this.cameras.main.centerX;
     const centerY = this.cameras.main.centerY;
+
 
     // ASCII Logo
     const logo = `
@@ -50,7 +56,7 @@ export class TitleScene extends Phaser.Scene {
     this.titleText.setOrigin(0.5);
 
     // Start instruction
-    this.startText = this.add.text(centerX, centerY + 150, 'CLICK TO INITIALIZE', {
+    this.startText = this.add.text(centerX, centerY + 150, this.getProgressLine(), {
       fontFamily: 'VT323',
       fontSize: '20px',
       color: '#594100',
@@ -66,46 +72,67 @@ export class TitleScene extends Phaser.Scene {
       repeat: -1,
     });
 
-    const startEp1 = this.add.text(centerX - 140, centerY + 190, 'START EP1', {
+    const buttonY = centerY + 190;
+
+    const startButton = this.add.text(centerX - 80, buttonY, 'START', {
       fontFamily: 'VT323',
       fontSize: '18px',
       color: '#FFB000',
       backgroundColor: '#3d2a00',
-      padding: { left: 8, right: 8, top: 6, bottom: 6 },
+      padding: { left: 12, right: 12, top: 6, bottom: 6 },
     }).setOrigin(0.5);
 
-    const startEp2 = this.add.text(centerX, centerY + 190, 'START EP2', {
+    const resetButton = this.add.text(centerX + 80, buttonY, 'RESET', {
       fontFamily: 'VT323',
       fontSize: '18px',
       color: '#FFB000',
       backgroundColor: '#3d2a00',
-      padding: { left: 8, right: 8, top: 6, bottom: 6 },
+      padding: { left: 12, right: 12, top: 6, bottom: 6 },
     }).setOrigin(0.5);
 
-    const startEp3 = this.add.text(centerX + 140, centerY + 190, 'START EP3', {
-      fontFamily: 'VT323',
-      fontSize: '18px',
-      color: '#FFB000',
-      backgroundColor: '#3d2a00',
-      padding: { left: 8, right: 8, top: 6, bottom: 6 },
-    }).setOrigin(0.5);
+    startButton.setInteractive({ useHandCursor: true });
+    resetButton.setInteractive({ useHandCursor: true });
 
-    startEp1.setInteractive({ useHandCursor: true });
-    startEp2.setInteractive({ useHandCursor: true });
-    startEp3.setInteractive({ useHandCursor: true });
+    startButton.on('pointerdown', () => this.startNextEpisode());
+    resetButton.on('pointerdown', () => this.resetProgress());
 
-    startEp1.on('pointerdown', () => this.startEpisode('ep1'));
-    startEp2.on('pointerdown', () => this.startEpisode('ep2'));
-    startEp3.on('pointerdown', () => this.startEpisode('ep3'));
+  }
+
+  private startNextEpisode(): void {
+    const nextEpisodeId = this.progressManager.getNextEpisodeId();
+    this.startEpisode(nextEpisodeId);
+  }
+
+  private resetProgress(): void {
+    this.progressManager.resetProgress();
+
+    const story = StoryManager.getInstance();
+    story.setEpisodeId('ep1');
+    story.resetRun();
+
+    this.runManager.setEpisode('ep1');
+    this.startText.setText(this.getProgressLine());
+  }
+
+  private getProgressLine(): string {
+    const completed = this.progressManager.getCompletedEpisodes();
+    if (completed.length >= 3) return 'ALL EPISODES COMPLETE // REPLAY EP3';
+    return `NEXT EPISODE: ${this.progressManager.getNextEpisodeId().toUpperCase()}`;
   }
 
   private startEpisode(episodeId: string): void {
     this.triggerGlitchEffect();
+
+    const story = StoryManager.getInstance();
+    story.setEpisodeId(episodeId);
+    story.resetRun();
+
     this.runManager.setEpisode(episodeId);
     this.time.delayedCall(600, () => {
       this.scene.start('RunScene');
     });
   }
+
 
   private triggerGlitchEffect(): void {
     // Add glitch class to container

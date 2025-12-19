@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { InventoryManager } from '../systems/InventoryManager';
 import { RunManager } from '../systems/RunManager';
+import { StoryManager } from '../story/StoryManager';
 import { UIManager } from '../../ui/UIManager';
 import { ItemData, ItemType } from '../types/Item';
 
@@ -11,6 +12,7 @@ interface BlueprintData {
 export class BlueprintScene extends Phaser.Scene {
   private inventoryManager!: InventoryManager;
   private runManager!: RunManager;
+  private storyManager!: StoryManager;
   private uiManager!: UIManager;
   private extractorBuilt: boolean = false;
   private refinerBuilt: boolean = false;
@@ -35,10 +37,17 @@ export class BlueprintScene extends Phaser.Scene {
   create(): void {
     this.inventoryManager = InventoryManager.getInstance();
     this.runManager = RunManager.getInstance();
+    this.storyManager = StoryManager.getInstance();
+    this.storyManager.setEpisodeId(this.runManager.getEpisode().id);
     this.uiManager = UIManager.getInstance();
 
     this.isEp2 = this.runManager.getEpisode().id === 'ep2';
     this.isEp3 = this.runManager.getEpisode().id === 'ep3';
+
+    if (!this.isEp2 && !this.isEp3 && this.nodeId === 'N2') {
+      this.storyManager.trigger('TRG_N2_ENTER');
+      this.storyManager.trigger('TRG_BLUEPRINT_INTRO');
+    }
 
     this.uiManager.updateSystemMessage(
       this.isEp3
@@ -180,6 +189,17 @@ export class BlueprintScene extends Phaser.Scene {
     if (kind === 'extractor') this.extractorBuilt = true;
     if (kind === 'refiner') this.refinerBuilt = true;
     if (kind === 'press') this.pressBuilt = true;
+
+    if (!this.isEp2 && !this.isEp3 && this.nodeId === 'N2') {
+      if (kind === 'extractor') this.storyManager.trigger('TRG_PLACE_EXTRACTOR');
+      if (kind === 'refiner') this.storyManager.trigger('TRG_PLACE_REFINER');
+      if (kind === 'press') this.storyManager.trigger('TRG_PLACE_PRESS');
+
+      if (this.extractorBuilt && this.refinerBuilt && this.pressBuilt) {
+        this.storyManager.trigger('TRG_LINE_CONNECTED');
+      }
+    }
+
     this.uiManager.getInventoryUI()?.update();
     this.refreshStatus();
   }
@@ -205,6 +225,11 @@ export class BlueprintScene extends Phaser.Scene {
     this.uiManager.getInventoryUI()?.update();
     this.cassetteCrafted = true;
     this.uiManager.updateSystemMessage('CASSETTE PRODUCED');
+
+    if (!this.isEp2 && !this.isEp3 && this.nodeId === 'N2') {
+      this.storyManager.trigger('TRG_PRODUCE_CASSETTE_FIRST');
+    }
+
     this.refreshStatus();
   }
 
@@ -229,6 +254,11 @@ export class BlueprintScene extends Phaser.Scene {
     this.uiManager.getInventoryUI()?.update();
     this.patchCrafted = true;
     this.uiManager.updateSystemMessage('PATCH KIT READY');
+
+    if (!this.isEp2 && !this.isEp3 && this.nodeId === 'N2') {
+      this.storyManager.trigger('TRG_PRODUCE_KIT_FIRST');
+    }
+
     this.refreshStatus();
   }
 
@@ -342,6 +372,10 @@ export class BlueprintScene extends Phaser.Scene {
 
       if (this.cassetteCrafted && this.patchCrafted) {
         this.runManager.markProductionComplete();
+        if (this.nodeId === 'N2') {
+          this.storyManager.trigger('TRG_N2_OBJECTIVE_COMPLETE');
+          this.storyManager.trigger('TRG_EXTRACT_CHOICE');
+        }
         lines.push('Production objective complete. Choose extraction route.');
       } else {
         lines.push('Produce BASIC ATTACK CASSETTE + PATCH KIT to proceed.');
