@@ -236,6 +236,7 @@
         "nix-index-database": "nix-index-database",
         "nixpkgs": "nixpkgs",
         "sops-nix": "sops-nix",
+        "stable": "stable",
         "zig": "zig"
       }
     },
@@ -256,6 +257,22 @@
       "original": {
         "owner": "Mic92",
         "repo": "sops-nix",
+        "type": "github"
+      }
+    },
+    "stable": {
+      "locked": {
+        "lastModified": 1765779637,
+        "narHash": "sha256-KJ2wa/BLSrTqDjbfyNx70ov/HdgNBCBBSQP3BIzKnv4=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "1306659b587dc277866c7b69eb97e5f07864d8c4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-unstable",
+        "repo": "nixpkgs",
         "type": "github"
       }
     },
