@@ -7,7 +7,7 @@ requires-python = ">=3.14,<3.15"
 dependencies = [
   "gradio==6.1.0",
   "inquirer==3.4.1",
-  "langchain-memgraph==0.1.11",
+  "langchain-memgraph==0.1.12",
   "mem0ai[graph]@git+https://github.com/misilelab/mem0",
   "puremagic==1.30",
   "pydantic-ai-slim[duckduckgo,logfire,openai,mcp]==1.36.0",
