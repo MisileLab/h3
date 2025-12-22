@@ -180,8 +180,13 @@
       this.currentWordIndex = 0;
       this.onComplete = onComplete || null;
       
-      // Start animation automatically after a short delay
-      setTimeout(() => this.startAnimation(), 1500);
+      const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const isMobile = window.matchMedia('(max-width: 639px)').matches;
+
+      // Start animation automatically after a short delay if not reduced motion/mobile
+      if (!isReducedMotion && !isMobile) {
+        setTimeout(() => this.startAnimation(), 1500);
+      }
     }
     
     async startAnimation() {

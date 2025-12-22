@@ -71,7 +71,9 @@ import Base from "../components/base.astro"
 
       // WebGL Context
       const gl = canvas.getContext('webgl', { alpha: true, antialias: true });
-      if (!gl) return; // Fail gracefully to fallback
+      if (!gl) {
+        return; // Fail gracefully to fallback
+      }
 
       // Hide fallback, show canvas
       canvas.style.opacity = '1';
@@ -150,6 +152,8 @@ import Base from "../components/base.astro"
         
         uniform float u_time;
         uniform float u_aspect;
+        uniform float u_scale;
+        uniform float u_point_px;
         
         void main() {
             float duration = 1.2;
@@ -167,13 +171,10 @@ import Base from "../components/base.astro"
             vec2 projected = pos.xy * scale;
             projected.x /= u_aspect;
             
-            // Adjust scene scale to fit canvas
-            float sceneScale = 0.13;
-            
-            gl_Position = vec4(projected * sceneScale, 0.0, 1.0);
+            gl_Position = vec4(projected * u_scale, 0.0, 1.0);
             
             // Size dynamic based on perspective and resolution
-            gl_PointSize = 16.0 * scale; 
+            gl_PointSize = u_point_px * scale; 
         }
       `;
 
@@ -234,6 +235,8 @@ import Base from "../components/base.astro"
       // Uniforms
       const uTime = gl.getUniformLocation(program, 'u_time');
       const uAspect = gl.getUniformLocation(program, 'u_aspect');
+      const uScale = gl.getUniformLocation(program, 'u_scale');
+      const uPointPx = gl.getUniformLocation(program, 'u_point_px');
       const uColor = gl.getUniformLocation(program, 'u_color');
 
       gl.uniform3fv(uColor, COLOR_INDIGO);
@@ -247,15 +250,26 @@ import Base from "../components/base.astro"
         const elapsed = (timestamp - startTime) / 1000;
 
         // Resize
-        const displayWidth = canvas!.clientWidth;
-        const displayHeight = canvas!.clientHeight;
+        const dpr = window.devicePixelRatio || 1;
+        const displayWidth = Math.round(canvas!.clientWidth * dpr);
+        const displayHeight = Math.round(canvas!.clientHeight * dpr);
+        
         if (canvas!.width !== displayWidth || canvas!.height !== displayHeight) {
           canvas!.width = displayWidth;
           canvas!.height = displayHeight;
           gl!.viewport(0, 0, canvas!.width, canvas!.height);
         }
 
-        gl!.uniform1f(uAspect, canvas!.width / canvas!.height);
+        const aspect = canvas!.width / canvas!.height;
+        const baseScale = 0.13;
+        const responsiveScale = Math.min(baseScale, aspect / 11.0);
+        const pointPx = (canvas!.width * 0.5) * (responsiveScale / aspect) * 0.9;
+
+
+
+        gl!.uniform1f(uAspect, aspect);
+        gl!.uniform1f(uScale, responsiveScale);
+        gl!.uniform1f(uPointPx, pointPx);
         gl!.uniform1f(uTime, elapsed);
 
         gl!.clearColor(0, 0, 0, 0);
