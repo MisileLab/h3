@@ -63,7 +63,7 @@ import Base from "../components/base.astro"
       const COLOR_INDIGO = [0.39, 0.40, 0.95]; // #6366f1 indigo-500 match
       
       // Check environment
-      const canvas = document.getElementById(CANVAS_ID);
+      const canvas = document.getElementById(CANVAS_ID) as HTMLCanvasElement | null;
       const fallback = document.getElementById(FALLBACK_ID);
       const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       
@@ -75,11 +75,11 @@ import Base from "../components/base.astro"
 
       // Hide fallback, show canvas
       canvas.style.opacity = '1';
-      fallback.style.opacity = '0';
+      if (fallback) fallback.style.opacity = '0';
 
       // --- Geometry Generation (Misile Grid) ---
       // Grid: 5 units high. M=5w, I=1w, S=4w, L=3w, E=3w. Spacing=1.
-      const letters = {
+      const letters: Record<string, number[][]> = {
         'M': [[0,0],[0,1],[0,2],[0,3],[0,4],[4,0],[4,1],[4,2],[4,3],[4,4],[1,1],[2,2],[3,1]],
         'I': [[0,0],[0,1],[0,2],[0,3],[0,4]],
         'S': [[1,0],[2,0],[3,0],[0,1],[1,2],[2,2],[3,3],[0,4],[1,4],[2,4]],
@@ -88,10 +88,10 @@ import Base from "../components/base.astro"
       };
       const word = "MISILE";
       const spacing = 1;
-      let points = [];
+      let points: number[][] = [];
       let cursorX = 0;
 
-      const getWidth = (char) => {
+      const getWidth = (char: string) => {
         if(char === 'M') return 5;
         if(char === 'I') return 1;
         if(char === 'S') return 4;
@@ -186,8 +186,9 @@ import Base from "../components/base.astro"
       `;
 
       // Compile Shader Helper
-      function createShader(gl, type, source) {
+      function createShader(gl: WebGLRenderingContext, type: number, source: string) {
         const shader = gl.createShader(type);
+        if (!shader) return null;
         gl.shaderSource(shader, source);
         gl.compileShader(shader);
         if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
@@ -200,7 +201,12 @@ import Base from "../components/base.astro"
 
       const vs = createShader(gl, gl.VERTEX_SHADER, vsSource);
       const fs = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
+      
+      if (!vs || !fs) return;
+
       const program = gl.createProgram();
+      if (!program) return;
+      
       gl.attachShader(program, vs);
       gl.attachShader(program, fs);
       gl.linkProgram(program);
@@ -233,36 +239,36 @@ import Base from "../components/base.astro"
       gl.uniform3fv(uColor, COLOR_INDIGO);
 
       // --- Animation Loop ---
-      let startTime = null;
+      let startTime: number | null = null;
       const MAX_DURATION = 3.0; // Stop loop after this many seconds to save battery
 
-      function frame(timestamp) {
+      function frame(timestamp: number) {
         if (!startTime) startTime = timestamp;
         const elapsed = (timestamp - startTime) / 1000;
 
         // Resize
-        const displayWidth = canvas.clientWidth;
-        const displayHeight = canvas.clientHeight;
-        if (canvas.width !== displayWidth || canvas.height !== displayHeight) {
-          canvas.width = displayWidth;
-          canvas.height = displayHeight;
-          gl.viewport(0, 0, canvas.width, canvas.height);
+        const displayWidth = canvas!.clientWidth;
+        const displayHeight = canvas!.clientHeight;
+        if (canvas!.width !== displayWidth || canvas!.height !== displayHeight) {
+          canvas!.width = displayWidth;
+          canvas!.height = displayHeight;
+          gl!.viewport(0, 0, canvas!.width, canvas!.height);
         }
 
-        gl.uniform1f(uAspect, canvas.width / canvas.height);
-        gl.uniform1f(uTime, elapsed);
+        gl!.uniform1f(uAspect, canvas!.width / canvas!.height);
+        gl!.uniform1f(uTime, elapsed);
 
-        gl.clearColor(0, 0, 0, 0);
-        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl!.clearColor(0, 0, 0, 0);
+        gl!.clear(gl!.COLOR_BUFFER_BIT);
 
-        gl.drawArrays(gl.POINTS, 0, instances);
+        gl!.drawArrays(gl!.POINTS, 0, instances);
 
         if (elapsed < MAX_DURATION) {
           requestAnimationFrame(frame);
         } else {
           // Ensure final state is drawn
-          gl.uniform1f(uTime, MAX_DURATION);
-          gl.drawArrays(gl.POINTS, 0, instances);
+          gl!.uniform1f(uTime, MAX_DURATION);
+          gl!.drawArrays(gl!.POINTS, 0, instances);
         }
       }
 
