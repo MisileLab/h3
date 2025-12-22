@@ -14,26 +14,259 @@ import Base from "../components/base.astro"
       })
     </script>
   </Fragment>
-	<div class="w-full min-h-screen relative p-4">
-    <!-- Main Content Section - Centered -->
-    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+  
+  <div class="page-container relative flex min-h-screen flex-col items-center justify-center overflow-hidden py-12">
+    <!-- Main Content Section -->
+    <div class="w-full max-w-4xl z-10">
       <div class="flex flex-col items-center text-center">
-        <p class="text-3xl sm:text-4xl lg:text-6xl font-bold mb-4 sm:mb-6">Misile</p>
-        <div class="flex flex-wrap justify-center items-center text-base sm:text-xl lg:text-3xl font-normal text-indigo-200 gap-1 sm:gap-2 mb-3 sm:mb-4">
-          <a href="/projects" class="hover:text-white transition-colors">Projects</a>
-          <span class="text-indigo-300">|</span>
-          <a href="/en/blog" class="hover:text-white transition-colors">Blog</a>
-          <span class="text-indigo-300">|</span>
-          <a href="/contact" class="hover:text-white transition-colors">Contact</a>
-          <span class="text-indigo-300">|</span>
-          <a href="https://mail.misile.xyz" class="hover:text-white transition-colors">Subscribe</a>
+        
+        <!-- Hero Animation Container -->
+        <div class="relative flex justify-center items-center mb-6 sm:mb-8 select-none w-full h-[120px] sm:h-[160px] lg:h-[220px]">
+          <!-- WebGL Canvas -->
+          <canvas id="hero-canvas" class="absolute inset-0 w-full h-full z-10 opacity-0 transition-opacity duration-1000"></canvas>
+          <!-- Fallback Text (Visible on load/reduced motion, hidden by JS) -->
+          <h1 id="hero-fallback" class="misile-brand text-6xl sm:text-7xl lg:text-9xl font-bold text-indigo-500 tracking-tight relative z-0 transition-opacity duration-500">Misile</h1>
         </div>
-        <div class="flex flex-wrap justify-center items-center text-sm sm:text-lg lg:text-2xl text-indigo-200 cursor-pointer gap-1 sm:gap-2" id="crypto">
-          <span>Donate</span>
-          <p class="bg-gray-950 text-indigo-300 px-2 py-1 rounded">XMR</p>
-          <span class="sm:text-base lg:text-lg">(Click to Copy)</span>
+
+        <div class="flex flex-wrap justify-center items-center text-base sm:text-xl lg:text-3xl font-normal text-indigo-200 gap-4 sm:gap-6 mb-6 relative z-20">
+          <a href="/projects" class="hover:text-white transition-colors hover:underline decoration-indigo-500/50 underline-offset-8">Projects</a>
+          <span class="text-indigo-500/50">|</span>
+          <a href="/en/blog" class="hover:text-white transition-colors hover:underline decoration-indigo-500/50 underline-offset-8">Blog</a>
+          <span class="text-indigo-500/50">|</span>
+          <a href="/contact" class="hover:text-white transition-colors hover:underline decoration-indigo-500/50 underline-offset-8">Contact</a>
+          <span class="text-indigo-500/50">|</span>
+          <a href="https://mail.misile.xyz" class="hover:text-white transition-colors hover:underline decoration-indigo-500/50 underline-offset-8">Subscribe</a>
         </div>
+        
+        <button class="group flex flex-wrap justify-center items-center text-sm sm:text-lg lg:text-xl text-indigo-300 hover:text-indigo-100 transition-all duration-300 gap-2 relative z-20 px-4 py-2 rounded-full hover:bg-indigo-900/20 border border-transparent hover:border-indigo-500/30" id="crypto">
+          <span class="font-medium">Donate</span>
+          <span class="bg-indigo-900/50 text-indigo-200 px-2 py-0.5 rounded text-xs sm:text-sm font-mono border border-indigo-500/20">XMR</span>
+          <span class="text-indigo-400 group-hover:text-indigo-300 text-xs sm:text-sm transition-colors opacity-70 group-hover:opacity-100">(Click to Copy)</span>
+        </button>
       </div>
     </div>
-	</div>
+  </div>
+
+  <style>
+    /* Fallback and Reduced Motion Styles */
+    @media (prefers-reduced-motion: reduce) {
+      #hero-canvas { display: none !important; }
+      #hero-fallback { opacity: 1 !important; }
+    }
+  </style>
+
+  <script>
+    (function() {
+      // Configuration
+      const CANVAS_ID = 'hero-canvas';
+      const FALLBACK_ID = 'hero-fallback';
+      const COLOR_INDIGO = [0.39, 0.40, 0.95]; // #6366f1 indigo-500 match
+      
+      // Check environment
+      const canvas = document.getElementById(CANVAS_ID);
+      const fallback = document.getElementById(FALLBACK_ID);
+      const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      
+      if (!canvas || isReducedMotion) return;
+
+      // WebGL Context
+      const gl = canvas.getContext('webgl', { alpha: true, antialias: true });
+      if (!gl) return; // Fail gracefully to fallback
+
+      // Hide fallback, show canvas
+      canvas.style.opacity = '1';
+      fallback.style.opacity = '0';
+
+      // --- Geometry Generation (Misile Grid) ---
+      // Grid: 5 units high. M=5w, I=1w, S=4w, L=3w, E=3w. Spacing=1.
+      const letters = {
+        'M': [[0,0],[0,1],[0,2],[0,3],[0,4],[4,0],[4,1],[4,2],[4,3],[4,4],[1,1],[2,2],[3,1]],
+        'I': [[0,0],[0,1],[0,2],[0,3],[0,4]],
+        'S': [[1,0],[2,0],[3,0],[0,1],[1,2],[2,2],[3,3],[0,4],[1,4],[2,4]],
+        'L': [[0,0],[0,1],[0,2],[0,3],[0,4],[1,4],[2,4]],
+        'E': [[0,0],[1,0],[2,0],[0,1],[0,2],[1,2],[0,3],[0,4],[1,4],[2,4]]
+      };
+      const word = "MISILE";
+      const spacing = 1;
+      let points = [];
+      let cursorX = 0;
+
+      const getWidth = (char) => {
+        if(char === 'M') return 5;
+        if(char === 'I') return 1;
+        if(char === 'S') return 4;
+        return 3; // L, E
+      };
+
+      for (let char of word) {
+        const shape = letters[char];
+        if (shape) {
+          shape.forEach(([x, y]) => {
+            // Flip Y so 0 is bottom-left for easier thinking, 
+            // or keep 0 as top-left (screen coords). 
+            // Let's use 0 as top (rendering will flip y).
+            points.push([cursorX + x, y]);
+          });
+        }
+        cursorX += getWidth(char) + spacing;
+      }
+
+      // Center the grid
+      const totalWidth = cursorX - spacing; // 22
+      const totalHeight = 5;
+      
+      const instances = points.length;
+      const dataArray = new Float32Array(instances * 6); // targetXY(2), startXYZ(3), delay(1)
+
+      // Populate Data
+      points.forEach((pt, i) => {
+        // Target: Centered around (0,0)
+        const tx = pt[0] - totalWidth / 2 + 0.5;
+        const ty = -(pt[1] - totalHeight / 2 + 0.5); // Flip Y to be upright
+        
+        // Start: Random position "above" and scattered
+        const angle = Math.random() * Math.PI * 2;
+        const dist = 15 + Math.random() * 15;
+        const sx = Math.cos(angle) * dist;
+        const sy = Math.sin(angle) * dist;
+        const sz = 15 + Math.random() * 20; // High up in Z
+        
+        const delay = Math.random() * 0.6;
+
+        const idx = i * 6;
+        dataArray[idx] = tx;
+        dataArray[idx+1] = ty;
+        dataArray[idx+2] = sx;
+        dataArray[idx+3] = sy;
+        dataArray[idx+4] = sz;
+        dataArray[idx+5] = delay;
+      });
+
+      // --- Shaders ---
+      const vsSource = `
+        attribute vec2 a_target;
+        attribute vec3 a_start;
+        attribute float a_delay;
+        
+        uniform float u_time;
+        uniform float u_aspect;
+        
+        void main() {
+            float duration = 1.2;
+            float t = clamp((u_time - a_delay) / duration, 0.0, 1.0);
+            
+            // Cubic ease out
+            t = 1.0 - pow(1.0 - t, 3.0);
+            
+            vec3 pos = mix(a_start, vec3(a_target, 0.0), t);
+            
+            // Camera setup: Top-down-ish perspective
+            float camZ = 35.0;
+            float scale = camZ / (camZ - pos.z);
+            
+            vec2 projected = pos.xy * scale;
+            projected.x /= u_aspect;
+            
+            // Adjust scene scale to fit canvas
+            float sceneScale = 0.13;
+            
+            gl_Position = vec4(projected * sceneScale, 0.0, 1.0);
+            
+            // Size dynamic based on perspective and resolution
+            gl_PointSize = 16.0 * scale; 
+        }
+      `;
+
+      const fsSource = `
+        precision mediump float;
+        uniform vec3 u_color;
+        void main() {
+          gl_FragColor = vec4(u_color, 1.0);
+        }
+      `;
+
+      // Compile Shader Helper
+      function createShader(gl, type, source) {
+        const shader = gl.createShader(type);
+        gl.shaderSource(shader, source);
+        gl.compileShader(shader);
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+          console.error(gl.getShaderInfoLog(shader));
+          gl.deleteShader(shader);
+          return null;
+        }
+        return shader;
+      }
+
+      const vs = createShader(gl, gl.VERTEX_SHADER, vsSource);
+      const fs = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
+      const program = gl.createProgram();
+      gl.attachShader(program, vs);
+      gl.attachShader(program, fs);
+      gl.linkProgram(program);
+      gl.useProgram(program);
+
+      // Buffers
+      const buffer = gl.createBuffer();
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+      gl.bufferData(gl.ARRAY_BUFFER, dataArray, gl.STATIC_DRAW);
+
+      const stride = 6 * 4;
+      const locTarget = gl.getAttribLocation(program, 'a_target');
+      const locStart = gl.getAttribLocation(program, 'a_start');
+      const locDelay = gl.getAttribLocation(program, 'a_delay');
+
+      gl.enableVertexAttribArray(locTarget);
+      gl.vertexAttribPointer(locTarget, 2, gl.FLOAT, false, stride, 0);
+
+      gl.enableVertexAttribArray(locStart);
+      gl.vertexAttribPointer(locStart, 3, gl.FLOAT, false, stride, 2 * 4);
+
+      gl.enableVertexAttribArray(locDelay);
+      gl.vertexAttribPointer(locDelay, 1, gl.FLOAT, false, stride, 5 * 4);
+
+      // Uniforms
+      const uTime = gl.getUniformLocation(program, 'u_time');
+      const uAspect = gl.getUniformLocation(program, 'u_aspect');
+      const uColor = gl.getUniformLocation(program, 'u_color');
+
+      gl.uniform3fv(uColor, COLOR_INDIGO);
+
+      // --- Animation Loop ---
+      let startTime = null;
+      const MAX_DURATION = 3.0; // Stop loop after this many seconds to save battery
+
+      function frame(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const elapsed = (timestamp - startTime) / 1000;
+
+        // Resize
+        const displayWidth = canvas.clientWidth;
+        const displayHeight = canvas.clientHeight;
+        if (canvas.width !== displayWidth || canvas.height !== displayHeight) {
+          canvas.width = displayWidth;
+          canvas.height = displayHeight;
+          gl.viewport(0, 0, canvas.width, canvas.height);
+        }
+
+        gl.uniform1f(uAspect, canvas.width / canvas.height);
+        gl.uniform1f(uTime, elapsed);
+
+        gl.clearColor(0, 0, 0, 0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+
+        gl.drawArrays(gl.POINTS, 0, instances);
+
+        if (elapsed < MAX_DURATION) {
+          requestAnimationFrame(frame);
+        } else {
+          // Ensure final state is drawn
+          gl.uniform1f(uTime, MAX_DURATION);
+          gl.drawArrays(gl.POINTS, 0, instances);
+        }
+      }
+
+      requestAnimationFrame(frame);
+    })();
+  </script>
 </Base>

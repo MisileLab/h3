@@ -15,6 +15,7 @@ import "../styles/global.css"
     <meta name="generator" content={Astro.generator} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <style is:global>
+    @reference "tailwindcss/theme";
     @font-face {
       font-family: 'Iosevka';
       src: url('/fonts/Iosevka/Iosevka-Regular.woff2') format('Woff');
@@ -29,6 +30,23 @@ import "../styles/global.css"
     p, span, h1, h2, h3, h4, h5, h6 {
       width: fit-content;
       height: fit-content;
+    }
+    
+    /* Global Container Utilities */
+    .page-container {
+      @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+    }
+    
+    .content-container {
+      @apply mx-auto w-full max-w-3xl px-4 sm:px-6;
+    }
+
+    /* Global Link Styles */
+    a {
+      @apply transition-colors duration-200 ease-in-out outline-none;
+    }
+    a:focus-visible {
+      @apply ring-2 ring-indigo-400 ring-offset-2 ring-offset-gray-950 rounded-sm;
     }
     </style>
     {!rewind && <style is:global>* {font-family: 'Iosevka', 'SarasaMono';}</style>}
