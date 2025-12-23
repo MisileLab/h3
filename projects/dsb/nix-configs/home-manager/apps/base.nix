@@ -24,7 +24,7 @@ in
         portablemc miniserve openssl transmission_4 attic-client
         yt-dlp magic-wormhole ansifilter b3sum git-crypt inxi age sops
         distrobox nnn cht-sh httpie curlie silver-searcher
-        mcfly choose sd duf jrnl
+        mcfly choose sd duf jrnl yazi
         (writeScript "manual" ''
           ${pkgs.glow}/bin/glow -p ~/.config/home-manager/manual.md
         '')
