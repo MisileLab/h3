@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{pkgs, stablep, ...}: {
   home.packages = with pkgs; [
     # file
     axel wget file wgetpaste convmv ouch duperemove
@@ -12,7 +12,10 @@
     killall screen
   ];
   programs = {
-    mpv.enable = true;
+    mpv = {
+      enable = true;
+      package = stablep.mpv;
+    };
     zoxide = {
       enable = true;
       options = ["--cmd cd"];
