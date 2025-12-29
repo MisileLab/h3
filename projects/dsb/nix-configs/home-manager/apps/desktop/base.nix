@@ -11,7 +11,7 @@
   home = {
     packages = with pkgs; [
       brightnessctl clipman wl-clipboard pavucontrol
-      imagemagick loupe xfce.thunar
+      imagemagick loupe thunar
       galaxy-buds-client firefoxpwa gparted
       gimp3 telegram-desktop xournalpp zotero headsetcontrol
       appflowy virt-manager prismlauncher
