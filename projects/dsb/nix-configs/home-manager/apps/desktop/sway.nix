@@ -213,6 +213,7 @@ titlebar_padding 1
       }
       .modules-center * {
         color: @text;
+        min-height: 40px;
       }
       .modules-right *, #custom-clock, #custom-utc-clock {
         ${returnColorCSS({r=147;g=153;b=178;a=0.6;addi=''
