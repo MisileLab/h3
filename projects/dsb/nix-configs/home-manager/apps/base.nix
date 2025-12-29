@@ -1,4 +1,4 @@
-{lib, config, pkgs, stablep, zigpkgs, ...}:
+{lib, config, pkgs, zigpkgs, ...}:
 let
   writeScript = name: content: pkgs.writeShellScriptBin name "${content} $@";
   completions = [
@@ -22,7 +22,7 @@ in
       packages = with pkgs; [
         sbctl bluez cryptsetup smartmontools borgbackup rclone pulsemixer
         portablemc miniserve openssl transmission_4 attic-client
-        (stablep.yt-dlp) magic-wormhole ansifilter b3sum git-crypt inxi age sops
+        yt-dlp magic-wormhole ansifilter b3sum git-crypt inxi age sops
         distrobox nnn cht-sh httpie curlie silver-searcher
         mcfly choose sd duf jrnl yazi
         (writeScript "manual" ''
