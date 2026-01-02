@@ -13,7 +13,7 @@ dependencies = [
   "opencv-python-headless==4.12.0.88",
   "polars==1.36.1",
   "pdf2image==1.17.0",
-  "pillow==12.0.0",
+  "pillow==12.1.0",
   "pypdf==6.5.0",
   "pydantic==2.12.5",
   "rich==14.2.0",
