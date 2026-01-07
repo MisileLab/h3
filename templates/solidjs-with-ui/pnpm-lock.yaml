@@ -25,7 +25,7 @@ importers:
         version: 1.0.7(tailwindcss@4.1.18)
       vite-tsconfig-paths:
         specifier: 6.0.3
-        version: 6.0.3(typescript@5.9.3)(vite@7.3.0)
+        version: 6.0.3(typescript@5.9.3)(vite@7.3.1)
     devDependencies:
       autoprefixer:
         specifier: 10.4.23
@@ -38,7 +38,7 @@ importers:
         version: 8.5.6
       solid-devtools:
         specifier: 0.34.4
-        version: 0.34.4(solid-js@1.9.10)(vite@7.3.0)
+        version: 0.34.4(solid-js@1.9.10)(vite@7.3.1)
       tailwind-merge:
         specifier: 3.4.0
         version: 3.4.0
@@ -49,11 +49,11 @@ importers:
         specifier: 5.9.3
         version: 5.9.3
       vite:
-        specifier: 7.3.0
-        version: 7.3.0
+        specifier: 7.3.1
+        version: 7.3.1
       vite-plugin-solid:
         specifier: 2.11.10
-        version: 2.11.10(solid-js@1.9.10)(vite@7.3.0)
+        version: 2.11.10(solid-js@1.9.10)(vite@7.3.1)
 
 packages:
 
@@ -822,8 +822,8 @@ packages:
       vite:
         optional: true
 
-  vite@7.3.0:
-    resolution: {integrity: sha512-dZwN5L1VlUBewiP6H9s2+B3e3Jg96D0vzN+Ry73sOefebhYr9f94wwkMNN/9ouoU8pV1BqA1d1zGk8928cx0rg==}
+  vite@7.3.1:
+    resolution: {integrity: sha512-w+N7Hifpc3gRjZ63vYBXA56dvvRlNWRczTdmCBBa+CotUzAPf5b7YMdMR/8CQoeYE5LX3W4wj6RYTgonm1b9DA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
@@ -1517,7 +1517,7 @@ snapshots:
 
   seroval@1.3.2: {}
 
-  solid-devtools@0.34.4(solid-js@1.9.10)(vite@7.3.0):
+  solid-devtools@0.34.4(solid-js@1.9.10)(vite@7.3.1):
     dependencies:
       '@babel/core': 7.28.5
       '@babel/plugin-syntax-typescript': 7.27.1(@babel/core@7.28.5)
@@ -1526,7 +1526,7 @@ snapshots:
       '@solid-devtools/shared': 0.20.0(solid-js@1.9.10)
       solid-js: 1.9.10
     optionalDependencies:
-      vite: 7.3.0
+      vite: 7.3.1
     transitivePeerDependencies:
       - supports-color
 
@@ -1584,7 +1584,7 @@ snapshots:
       escalade: 3.2.0
       picocolors: 1.1.1
 
-  vite-plugin-solid@2.11.10(solid-js@1.9.10)(vite@7.3.0):
+  vite-plugin-solid@2.11.10(solid-js@1.9.10)(vite@7.3.1):
     dependencies:
       '@babel/core': 7.28.5
       '@types/babel__core': 7.20.5
@@ -1592,23 +1592,23 @@ snapshots:
       merge-anything: 5.1.7
       solid-js: 1.9.10
       solid-refresh: 0.6.3(solid-js@1.9.10)
-      vite: 7.3.0
-      vitefu: 1.1.1(vite@7.3.0)
+      vite: 7.3.1
+      vitefu: 1.1.1(vite@7.3.1)
     transitivePeerDependencies:
       - supports-color
 
-  vite-tsconfig-paths@6.0.3(typescript@5.9.3)(vite@7.3.0):
+  vite-tsconfig-paths@6.0.3(typescript@5.9.3)(vite@7.3.1):
     dependencies:
       debug: 4.4.3
       globrex: 0.1.2
       tsconfck: 3.1.6(typescript@5.9.3)
     optionalDependencies:
-      vite: 7.3.0
+      vite: 7.3.1
     transitivePeerDependencies:
       - supports-color
       - typescript
 
-  vite@7.3.0:
+  vite@7.3.1:
     dependencies:
       esbuild: 0.27.2
       fdir: 6.5.0(picomatch@4.0.3)
@@ -1619,8 +1619,8 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
-  vitefu@1.1.1(vite@7.3.0):
+  vitefu@1.1.1(vite@7.3.1):
     optionalDependencies:
-      vite: 7.3.0
+      vite: 7.3.1
 
   yallist@3.1.1: {}
