@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.14,<3.15"
 dependencies = [
   "click==8.3.1",
-  "langchain==1.2.1",
+  "langchain==1.2.2",
   "langchain-openai==1.1.7",
   "numpy==2.4.0",
   "openai==2.14.0",
