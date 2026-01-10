@@ -9,7 +9,7 @@ dependencies = [
   "flask==3.1.2",
   "httpx==0.28.1",
   "lxml==6.0.2",
-  "numpy==2.4.0",
+  "numpy==2.4.1",
   # "pwntools==4.15.0",
   "requests==2.32.5",
   "tqdm==4.67.1",
