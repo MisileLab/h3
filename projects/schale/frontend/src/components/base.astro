@@ -1,19 +1,53 @@
 ---
 export interface Props {
   rewind?: boolean
+  title?: string
+  description?: string
+  image?: string
+  ogType?: "website" | "article"
+  lang?: string
 }
-let {rewind = false} = Astro.props;
-Astro.response.headers.set('onion-location', `http://b723cfcf6psmade7vqldtbc332nhhrwy52wvka3afy5s5257pzbqswid.onion${Astro.url.pathname}`)
+const {
+  rewind = false,
+  title,
+  description,
+  image,
+  ogType = "website",
+  lang
+} = Astro.props
+const site = Astro.site ?? new URL("https://misile.xyz")
+const canonical = new URL(Astro.url.pathname, site)
+const pageLang = lang ?? (Astro.url.pathname.startsWith("/ko") ? "ko" : "en")
+const siteName = "Misile"
+const fullTitle = title ? `${title} | ${siteName}` : siteName
+const metaDescription = description ?? "Misile personal site, projects, and blog."
+const twitterCard = image ? "summary_large_image" : "summary"
+Astro.response.headers.set("onion-location", `http://b723cfcf6psmade7vqldtbc332nhhrwy52wvka3afy5s5257pzbqswid.onion${Astro.url.pathname}`)
 import "../styles/global.css"
 ---
 
-<html lang="en">
+<html lang={pageLang}>
   <head>
-    <slot name="head" />
+    <title>{fullTitle}</title>
+    <link rel="canonical" href={canonical} />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={metaDescription} />
+    <meta name="robots" content="index,follow" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={metaDescription} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:locale" content={pageLang === "ko" ? "ko_KR" : "en_US"} />
+    {image && <meta property="og:image" content={image} />}
+    <meta name="twitter:card" content={twitterCard} />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={metaDescription} />
+    {image && <meta name="twitter:image" content={image} />}
     <meta name="generator" content={Astro.generator} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <slot name="head" />
     <style is:global>
     @reference "tailwindcss/theme";
     @font-face {

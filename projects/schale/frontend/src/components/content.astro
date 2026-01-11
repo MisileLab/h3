@@ -13,10 +13,7 @@ const {title, description, date, isnews, rewind = true} = Astro.props;
 if (import.meta.env.PROD && date === 0) {throw Error("It is just draft.")}
 ---
 
-<Base rewind={rewind}>
-  <Fragment slot="head">
-    <title>{title}</title>
-  </Fragment>
+<Base rewind={rewind} title={title} description={description} ogType="article">
   <div class="content-container my-8 md:my-12">
     <div class="flex flex-col border-b border-indigo-500/30 pb-8 mb-8">
       <h1 class="text-4xl md:text-5xl font-bold text-indigo-50 mb-4">{title}</h1>

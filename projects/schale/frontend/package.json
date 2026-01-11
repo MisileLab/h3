@@ -7,7 +7,13 @@
     "start": "astro dev",
     "build": "astro check && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "lint": "oxlint \"src\" \"astro.config.mjs\" && eslint .",
+    "lint:fix": "oxlint \"src\" \"astro.config.mjs\" --fix && eslint . --fix",
+    "lint:ox": "oxlint \"src\" \"astro.config.mjs\"",
+    "lint:ox:fix": "oxlint \"src\" \"astro.config.mjs\" --fix",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check ."
   },
   "dependencies": {
     "@astrojs/check": "0.9.6",
@@ -22,5 +28,13 @@
     "tailwindcss": "4.1.18",
     "typescript": "5.9.3"
   },
-  "packageManager": "pnpm@11.0.0-dev.1005+sha512.91f84a392eea348ea4852a182912d2520273a4336f933b78cc44bc931eb999923c097e9433a9b355adc1f725725ea99082fc9f032a559df832632e764c92c798"
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@typescript-eslint/parser": "^8.52.0",
+    "eslint": "^9.39.2",
+    "eslint-plugin-astro": "^1.5.0",
+    "eslint-plugin-oxlint": "^1.38.0",
+    "oxfmt": "^0.23.0",
+    "oxlint": "^1.38.0"
+  }
 }
