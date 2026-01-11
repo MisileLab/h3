@@ -11,5 +11,5 @@ dependencies = [
   "tqdm==4.67.1",
   "pygithub==2.8.1",
   "minio==7.2.20",
-  "tomli==2.3.0",
+  "tomli==2.4.0",
 ]
