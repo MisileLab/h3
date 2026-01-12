@@ -1945,9 +1945,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"astro@npm:5.16.8":
-  version: 5.16.8
-  resolution: "astro@npm:5.16.8"
+"astro@npm:5.16.9":
+  version: 5.16.9
+  resolution: "astro@npm:5.16.9"
   dependencies:
     "@astrojs/compiler": "npm:^2.13.0"
     "@astrojs/internal-helpers": "npm:0.7.5"
@@ -2018,7 +2018,7 @@ __metadata:
       optional: true
   bin:
     astro: astro.js
-  checksum: 10c0/0d1d38c6ad0bb724cd26e28092e7d84ec4287e1732359dfc4a36358665cbc491c08839eec074447132f6e9e2c5d0681fca3a9902a9d8f5846671faaa5b34f67f
+  checksum: 10c0/5b5f35330dee3da9f33f2f5424d62a6d7dd3ec807af106d53a51205044af8c677d436043e1b22e8839e258a19d8a581ef3b47b0550404bf93ea8d4b011abac94
   languageName: node
   linkType: hard
 
@@ -2044,7 +2044,7 @@ __metadata:
     "@misile/satellite": "npm:0.0.5"
     "@tailwindcss/vite": "npm:4.1.18"
     "@typescript-eslint/parser": "npm:^8.52.0"
-    astro: "npm:5.16.8"
+    astro: "npm:5.16.9"
     dayjs: "npm:1.11.19"
     eslint: "npm:^9.39.2"
     eslint-plugin-astro: "npm:^1.5.0"
