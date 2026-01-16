@@ -100,16 +100,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@astrojs/node@npm:9.5.1":
-  version: 9.5.1
-  resolution: "@astrojs/node@npm:9.5.1"
+"@astrojs/node@npm:9.5.2":
+  version: 9.5.2
+  resolution: "@astrojs/node@npm:9.5.2"
   dependencies:
     "@astrojs/internal-helpers": "npm:0.7.5"
-    send: "npm:^1.2.0"
+    send: "npm:^1.2.1"
     server-destroy: "npm:^1.0.1"
   peerDependencies:
     astro: ^5.14.3
-  checksum: 10c0/be25ff17867c86892f27399b803fe6538477b7539524fb07f845b88c55b8c50aa9de0f1a7d890b0047e7cdb163aca1f21b02371095de103c7e4feca9c4189837
+  checksum: 10c0/dc5e977332d5d01d6595251988f90a27a5cac7d6865a9d39710e5b89e2a402dfd1f43a9f320007cbb89a1dd972c8b7ee6402a7ec6c2f4e8ba5ff39588c804279
   languageName: node
   linkType: hard
 
@@ -122,14 +122,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@astrojs/sitemap@npm:3.6.1":
-  version: 3.6.1
-  resolution: "@astrojs/sitemap@npm:3.6.1"
+"@astrojs/sitemap@npm:3.7.0":
+  version: 3.7.0
+  resolution: "@astrojs/sitemap@npm:3.7.0"
   dependencies:
     sitemap: "npm:^8.0.2"
     stream-replace-string: "npm:^2.0.0"
     zod: "npm:^3.25.76"
-  checksum: 10c0/eba13a16fe03eb06c1d5010807d34faf560bd1c22cea40430724ea9999725ac362b10a49d0b97efc7a42a776126110db5ba1c376587a40726e1681cdf954ecff
+  checksum: 10c0/17b117881143da9bea3d348ba119d9ad9a3d1db55eb5efe81b97620c3f655e8d6b7306e6e92713d2cc67b0b2a10192f0825373b74bb6aa0ba99d50785990c1c0
   languageName: node
   linkType: hard
 
@@ -1972,9 +1972,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"astro@npm:5.16.9":
-  version: 5.16.9
-  resolution: "astro@npm:5.16.9"
+"astro@npm:5.16.10":
+  version: 5.16.10
+  resolution: "astro@npm:5.16.10"
   dependencies:
     "@astrojs/compiler": "npm:^2.13.0"
     "@astrojs/internal-helpers": "npm:0.7.5"
@@ -1995,7 +1995,7 @@ __metadata:
     debug: "npm:^4.4.3"
     deterministic-object-hash: "npm:^2.0.2"
     devalue: "npm:^5.6.1"
-    diff: "npm:^5.2.0"
+    diff: "npm:^8.0.3"
     dlv: "npm:^1.1.3"
     dset: "npm:^3.1.4"
     es-module-lexer: "npm:^1.7.0"
@@ -2045,7 +2045,7 @@ __metadata:
       optional: true
   bin:
     astro: astro.js
-  checksum: 10c0/5b5f35330dee3da9f33f2f5424d62a6d7dd3ec807af106d53a51205044af8c677d436043e1b22e8839e258a19d8a581ef3b47b0550404bf93ea8d4b011abac94
+  checksum: 10c0/46a30ceb279f8dca84d36e737013f8b966764302a3db7c1a84c82b1e3be586010d30ccd9609ccaf0908a59db60e534de0508f41b365ce4d6ecdd2235721e6558
   languageName: node
   linkType: hard
 
@@ -2065,13 +2065,13 @@ __metadata:
   resolution: "astrojs@workspace:."
   dependencies:
     "@astrojs/check": "npm:0.9.6"
-    "@astrojs/node": "npm:9.5.1"
-    "@astrojs/sitemap": "npm:3.6.1"
+    "@astrojs/node": "npm:9.5.2"
+    "@astrojs/sitemap": "npm:3.7.0"
     "@eslint/js": "npm:^9.39.2"
     "@misile/satellite": "npm:0.0.5"
     "@tailwindcss/vite": "npm:4.1.18"
     "@typescript-eslint/parser": "npm:^8.52.0"
-    astro: "npm:5.16.9"
+    astro: "npm:5.16.10"
     dayjs: "npm:1.11.19"
     eslint: "npm:^9.39.2"
     eslint-plugin-astro: "npm:^1.5.0"
@@ -2521,10 +2521,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"diff@npm:^5.2.0":
-  version: 5.2.0
-  resolution: "diff@npm:5.2.0"
-  checksum: 10c0/aed0941f206fe261ecb258dc8d0ceea8abbde3ace5827518ff8d302f0fc9cc81ce116c4d8f379151171336caf0516b79e01abdc1ed1201b6440d895a66689eb4
+"diff@npm:^8.0.3":
+  version: 8.0.3
+  resolution: "diff@npm:8.0.3"
+  checksum: 10c0/d29321c70d3545fdcb56c5fdd76028c3f04c012462779e062303d4c3c531af80d2c360c26b871e6e2b9a971d2422d47e1779a859106c4cac4b5d2d143df70e20
   languageName: node
   linkType: hard
 
@@ -5418,7 +5418,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"send@npm:^1.2.0":
+"send@npm:^1.2.1":
   version: 1.2.1
   resolution: "send@npm:1.2.1"
   dependencies:
