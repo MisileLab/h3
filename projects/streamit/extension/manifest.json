@@ -1,0 +1,48 @@
+{
+  "manifest_version": 3,
+  "name": "StreamIt - Real-time Captions",
+  "version": "0.1.0",
+  "description": "Real-time caption overlay for Twitch and YouTube using OpenAI",
+  "permissions": [
+    "tabs",
+    "tabCapture",
+    "storage",
+    "offscreen"
+  ],
+  "host_permissions": [
+    "https://www.twitch.tv/*",
+    "https://www.youtube.com/*"
+  ],
+  "background": {
+    "service_worker": "dist/sw.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.twitch.tv/*",
+        "https://www.youtube.com/*"
+      ],
+      "js": ["dist/content.js"],
+      "css": ["overlay.css"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "StreamIt Captions"
+  },
+  "offscreen": {
+    "document": "offscreen.html"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["dist/worklet-processor.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

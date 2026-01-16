@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamIt Captions</title>
+    <style>
+        body {
+            width: 320px;
+            padding: 16px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .header h1 {
+            font-size: 18px;
+            margin: 0 0 4px 0;
+        }
+
+        .header p {
+            font-size: 12px;
+            color: #666;
+            margin: 0;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #2196F3;
+        }
+
+        .status {
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .status.disconnected {
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        .status.connected {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+
+        .status.error {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .status.reconnecting {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .button.primary {
+            background: #2196F3;
+            color: white;
+        }
+
+        .button.primary:hover:not(:disabled) {
+            background: #1976D2;
+        }
+
+        .button.danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .button.danger:hover:not(:disabled) {
+            background: #d32f2f;
+        }
+
+        .caption-settings {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #eee;
+        }
+
+        .caption-settings h3 {
+            font-size: 14px;
+            margin: 0 0 12px 0;
+        }
+
+        .range-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .range-group input[type="range"] {
+            flex: 1;
+        }
+
+        .range-group span {
+            font-size: 12px;
+            min-width: 32px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>StreamIt Captions</h1>
+        <p>Real-time captions for Twitch & YouTube</p>
+    </div>
+
+    <div id="status" class="status disconnected">Disconnected</div>
+
+    <div class="form-group">
+        <label for="server-url">Server URL</label>
+        <input
+            type="text"
+            id="server-url"
+            placeholder="ws://localhost:8000/ws/viewer"
+        >
+    </div>
+
+    <div class="form-group">
+        <label for="user-token">User Token</label>
+        <input
+            type="password"
+            id="user-token"
+            placeholder="Enter your token"
+        >
+    </div>
+
+    <div class="form-group">
+        <label for="language">Language</label>
+        <select id="language">
+            <option value="auto">Auto-detect</option>
+            <option value="ko">Korean</option>
+            <option value="en">English</option>
+        </select>
+    </div>
+
+    <button id="start-btn" class="button primary">Start Captions</button>
+    <button id="stop-btn" class="button danger" disabled>Stop</button>
+
+    <div class="caption-settings">
+        <h3>Caption Settings</h3>
+
+        <div class="form-group">
+            <label for="font-size">Font Size (<span id="font-size-value">24</span>px)</label>
+            <div class="range-group">
+                <input type="range" id="font-size" min="16" max="48" value="24">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="background-opacity">Background Opacity (<span id="background-opacity-value">70</span>%)</label>
+            <div class="range-group">
+                <input type="range" id="background-opacity" min="0" max="100" value="70">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="position">Position</label>
+            <select id="position">
+                <option value="bottom">Bottom</option>
+                <option value="top">Top</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="max-lines">Max Lines</label>
+            <select id="max-lines">
+                <option value="1">1 line</option>
+                <option value="2">2 lines</option>
+                <option value="3">3 lines</option>
+            </select>
+        </div>
+    </div>
+
+    <script src="dist/popup.js" type="module"></script>
+</body>
+</html>

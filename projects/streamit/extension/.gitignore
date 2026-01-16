@@ -1,0 +1,15 @@
+# Build output
+dist/
+*.js.map
+
+# Yarn PnP
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# Node
+node_modules/
