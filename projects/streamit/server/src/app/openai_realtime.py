@@ -22,7 +22,7 @@ class OpenAIRealtimeClient:
         on_transcript_delta: TranscriptCallback,
         on_transcript_completed: TranscriptCallback,
         on_error: ErrorCallback,
-        model: str = "gpt-4o-realtime-preview",
+        model: str = "gpt-realtime",
     ):
         self.on_transcript_delta = on_transcript_delta
         self.on_transcript_completed = on_transcript_completed

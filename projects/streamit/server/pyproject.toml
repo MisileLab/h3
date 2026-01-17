@@ -11,6 +11,8 @@ dependencies = [
     "pydantic>=2.4.2",
     "pydantic-settings>=2.1.0",
     "pytest>=9.0.2",
+    "blake3>=1.0.8",
+    "openai>=2.15.0",
 ]
 
 [project.optional-dependencies]

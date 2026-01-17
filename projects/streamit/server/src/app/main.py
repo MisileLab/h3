@@ -1,6 +1,5 @@
 import asyncio
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Query
-from typing import Optional
 
 from app.config import settings
 from app.auth import validate_token, hash_token
@@ -48,7 +47,7 @@ async def websocket_viewer(
         await websocket.close(code=1008, reason="Limit exceeded")
         return
 
-    openai_client: Optional[OpenAIRealtimeClient] = None
+    openai_client: OpenAIRealtimeClient | None = None
     total_bytes = 0
     language = "auto"
     session_active = False

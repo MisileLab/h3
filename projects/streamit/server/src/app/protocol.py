@@ -3,7 +3,6 @@ Protocol message definitions and validation using Pydantic.
 """
 
 from pydantic import BaseModel
-from typing import Optional, Literal
 from enum import Enum
 
 
@@ -21,7 +20,7 @@ class MessageType(str, Enum):
 class StartMessage(BaseModel):
     """Client start message."""
 
-    type: Literal["start"] = "start"
+    type = "start"
     lang: str = "auto"
     clientSessionId: str
     platformHint: str = "unknown"
@@ -30,38 +29,38 @@ class StartMessage(BaseModel):
 class StopMessage(BaseModel):
     """Client stop message."""
 
-    type: Literal["stop"] = "stop"
+    type = "stop"
 
 
 class PartialTranscriptMessage(BaseModel):
     """Server partial transcript message."""
 
-    type: Literal["partial"] = "partial"
+    type = "partial"
     text: str
 
 
 class FinalTranscriptMessage(BaseModel):
     """Server final transcript message."""
 
-    type: Literal["final"] = "final"
+    type = "final"
     text: str
 
 
 class InfoMessage(BaseModel):
     """Server info message (latency, usage)."""
 
-    type: Literal["info"] = "info"
-    latencyMs: Optional[int] = None
-    secondsUsed: Optional[float] = None
-    message: Optional[str] = None
+    type = "info"
+    latencyMs: int | None = None
+    secondsUsed: float | None = None
+    message: str | None = None
 
 
 class ErrorMessage(BaseModel):
     """Server error message."""
 
-    type: Literal["error"] = "error"
+    type = "error"
     message: str
-    code: Optional[str] = None
+    code: str | None = None
 
 
 InboundMessage = StartMessage | StopMessage

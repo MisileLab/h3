@@ -2,7 +2,8 @@
 Simple token authentication for viewer connections.
 """
 
-import hashlib
+from blake3 import blake3
+
 from app.config import settings
 from app.logging_setup import logger
 
@@ -42,4 +43,4 @@ def hash_token(token: str) -> str:
     Returns:
         SHA256 hash of token (first 8 chars)
     """
-    return hashlib.sha256(token.encode()).hexdigest()[:8]
+    return blake3(token.encode()).hexdigest()[:8]

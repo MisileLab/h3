@@ -3,7 +3,7 @@ import type {
   PopupToSwMessage,
   ServerMessage,
   AudioFrameMessage,
-} from './types';
+} from "./types";
 
 let offscreenPort: chrome.runtime.Port | null = null;
 let ws: WebSocket | null = null;
@@ -19,16 +19,16 @@ async function createOffscreenDocument(): Promise<void> {
   }
 
   await chrome.offscreen.createDocument({
-    url: 'offscreen.html',
+    url: "offscreen.html",
     reasons: [chrome.offscreen.Reason.AUDIO_PLAYBACK],
-    justification: 'Need AudioWorklet for audio processing',
+    justification: "Need AudioWorklet for audio processing",
   });
 }
 
 async function sendToOffscreen(message: object): Promise<void> {
   if (!offscreenPort) {
     await createOffscreenDocument();
-    offscreenPort = chrome.runtime.connect({ name: 'sw' });
+    offscreenPort = chrome.runtime.connect({ name: "sw" });
   }
 
   offscreenPort.postMessage(message);
@@ -50,51 +50,58 @@ async function handleStartCaptions(message: {
     // Verify tab exists
     await chrome.tabs.get(tabId);
 
-    const streamId = await chrome.tabCapture.capture({audio: true, video: false}, (stream) => {
-      if (stream) {
-        sendToOffscreen({
-          type: 'START_AUDIO',
-          streamId: stream.id,
-        });
-      }
-    });
+    const streamId = chrome.tabCapture.capture(
+      { audio: true, video: false },
+      (stream) => {
+        if (stream) {
+          sendToOffscreen({
+            type: "START_AUDIO",
+            streamId: stream.id,
+          });
+        }
+      },
+    );
 
     await sendToOffscreen({
-      type: 'START_AUDIO',
+      type: "START_AUDIO",
       streamId,
     });
 
     await connectWebSocket(language, settings);
-    sendStatusUpdate('connected', 'Connected');
+    sendStatusUpdate("connected", "Connected");
   } catch (error) {
-    console.error('Failed to start captions:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    sendStatusUpdate('error', `Start failed: ${errorMessage}`);
+    console.error("Failed to start captions:", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    sendStatusUpdate("error", `Start failed: ${errorMessage}`);
     await cleanup();
   }
 }
 
-async function connectWebSocket(language: string, settings: ExtensionSettings): Promise<boolean> {
+async function connectWebSocket(
+  language: string,
+  settings: ExtensionSettings,
+): Promise<boolean> {
   if (!wsUrl || !storedUserToken) {
-    sendStatusUpdate('error', 'Missing config');
+    sendStatusUpdate("error", "Missing config");
     return false;
   }
 
   try {
     const url = new URL(wsUrl);
-    url.searchParams.set('token', storedUserToken);
+    url.searchParams.set("token", storedUserToken);
 
     ws = new WebSocket(url.toString());
     reconnectAttempts = 0;
 
-    ws.binaryType = 'arraybuffer';
+    ws.binaryType = "arraybuffer";
 
     ws.onopen = async () => {
-      console.log('WebSocket connected');
+      console.log("WebSocket connected");
       reconnectAttempts = 0;
 
       const startMessage = {
-        type: 'start',
+        type: "start",
         lang: language,
         clientSessionId: generateUUID(),
         platformHint: await detectPlatform(),
@@ -103,7 +110,7 @@ async function connectWebSocket(language: string, settings: ExtensionSettings): 
       ws?.send(JSON.stringify(startMessage));
 
       await sendToOffscreen({
-        type: 'UPDATE_SETTINGS',
+        type: "UPDATE_SETTINGS",
         settings,
       });
     };
@@ -113,18 +120,18 @@ async function connectWebSocket(language: string, settings: ExtensionSettings): 
         const data = JSON.parse(event.data as string) as ServerMessage;
         handleServerMessage(data);
       } catch (error) {
-        console.error('Failed to parse server message:', error);
+        console.error("Failed to parse server message:", error);
       }
     };
 
     ws.onerror = (error) => {
-      console.error('WebSocket error:', error);
-      sendStatusUpdate('error', 'Connection error');
+      console.error("WebSocket error:", error);
+      sendStatusUpdate("error", "Connection error");
     };
 
     ws.onclose = () => {
-      console.log('WebSocket closed');
-      sendStatusUpdate('disconnected', 'Disconnected');
+      console.log("WebSocket closed");
+      sendStatusUpdate("disconnected", "Disconnected");
 
       if (reconnectAttempts < 10) {
         scheduleReconnect(language, settings);
@@ -133,22 +140,29 @@ async function connectWebSocket(language: string, settings: ExtensionSettings): 
 
     return true;
   } catch (error) {
-    console.error('WebSocket connection failed:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    sendStatusUpdate('error', `Connection failed: ${errorMessage}`);
+    console.error("WebSocket connection failed:", error);
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    sendStatusUpdate("error", `Connection failed: ${errorMessage}`);
     return false;
   }
 }
 
-function scheduleReconnect(language: string, settings: ExtensionSettings): void {
+function scheduleReconnect(
+  language: string,
+  settings: ExtensionSettings,
+): void {
   if (reconnectTimer) {
     clearTimeout(reconnectTimer);
   }
 
   reconnectAttempts++;
-  const delay = Math.min(1000 * Math.pow(2, reconnectAttempts), MAX_RECONNECT_DELAY);
+  const delay = Math.min(
+    1000 * Math.pow(2, reconnectAttempts),
+    MAX_RECONNECT_DELAY,
+  );
 
-  sendStatusUpdate('reconnecting', `Reconnecting in ${delay / 1000}s...`);
+  sendStatusUpdate("reconnecting", `Reconnecting in ${delay / 1000}s...`);
 
   reconnectTimer = setTimeout(async () => {
     await connectWebSocket(language, settings);
@@ -156,58 +170,63 @@ function scheduleReconnect(language: string, settings: ExtensionSettings): void 
 }
 
 function handleServerMessage(data: ServerMessage): void {
-  if (data.type === 'partial') {
+  if (data.type === "partial") {
     chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
       if (tab?.id) {
         chrome.tabs.sendMessage(tab.id, {
-          type: 'CAPTION_PARTIAL',
+          type: "CAPTION_PARTIAL",
           text: data.text,
         });
       }
     });
-  } else if (data.type === 'final') {
+  } else if (data.type === "final") {
     chrome.tabs.query({ active: true, currentWindow: true }, ([tab]) => {
       if (tab?.id) {
         chrome.tabs.sendMessage(tab.id, {
-          type: 'CAPTION_FINAL',
+          type: "CAPTION_FINAL",
           text: data.text,
         });
       }
     });
-  } else if (data.type === 'info') {
-    console.log('Info from server:', data.message);
+  } else if (data.type === "info") {
+    console.log("Info from server:", data.message);
     if (data.secondsUsed !== undefined) {
-      sendStatusUpdate('connected', `Connected (${data.secondsUsed.toFixed(1)}s)`);
+      sendStatusUpdate(
+        "connected",
+        `Connected (${data.secondsUsed.toFixed(1)}s)`,
+      );
     }
-  } else if (data.type === 'error') {
-    console.error('Error from server:', data.message);
-    sendStatusUpdate('error', data.message);
+  } else if (data.type === "error") {
+    console.error("Error from server:", data.message);
+    sendStatusUpdate("error", data.message);
     cleanup();
   }
 }
 
 async function handleStopCaptions(): Promise<void> {
-  console.log('Stopping captions');
+  console.log("Stopping captions");
   await cleanup();
-  sendStatusUpdate('disconnected', 'Stopped');
+  sendStatusUpdate("disconnected", "Stopped");
 }
 
-async function handleUpdateSettings(message: { settings: ExtensionSettings }): Promise<void> {
+async function handleUpdateSettings(message: {
+  settings: ExtensionSettings;
+}): Promise<void> {
   await sendToOffscreen({
-    type: 'UPDATE_SETTINGS',
+    type: "UPDATE_SETTINGS",
     settings: message.settings,
   });
 
   if (ws && ws.readyState === WebSocket.OPEN) {
     await sendToOffscreen({
-      type: 'RESUME_AUDIO',
+      type: "RESUME_AUDIO",
     });
   }
 }
 
 function sendStatusUpdate(status: string, message: string): void {
   chrome.runtime.sendMessage({
-    type: 'STATUS_UPDATE',
+    type: "STATUS_UPDATE",
     status,
     message,
   });
@@ -221,7 +240,7 @@ async function cleanup(): Promise<void> {
 
   reconnectAttempts = 0;
 
-  await sendToOffscreen({ type: 'STOP_AUDIO' });
+  await sendToOffscreen({ type: "STOP_AUDIO" });
 
   if (ws) {
     ws.close();
@@ -233,37 +252,44 @@ async function cleanup(): Promise<void> {
 }
 
 function generateUUID(): string {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
     const r = (Math.random() * 16) | 0;
-    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    const v = c === "x" ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
 }
 
 async function detectPlatform(): Promise<string> {
   try {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    const [tab] = await chrome.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
     if (tab?.url) {
-      const {hostname} = new URL(tab.url);
-      if (hostname.includes('youtube')) {
-        return 'youtube';
+      const { hostname } = new URL(tab.url);
+      if (hostname.includes("youtube")) {
+        return "youtube";
       }
-      if (hostname.includes('twitch')) {
-        return 'twitch';
+      if (hostname.includes("twitch")) {
+        return "twitch";
       }
     }
   } catch {
     // Ignore errors
   }
-  return 'unknown';
+  return "unknown";
 }
 
 chrome.runtime.onConnect.addListener((port) => {
-  if (port.name === 'offscreen') {
+  if (port.name === "offscreen") {
     offscreenPort = port;
 
     port.onMessage.addListener(async (message: AudioFrameMessage) => {
-      if (message.type === 'AUDIO_FRAME' && (ws && ws.readyState === WebSocket.OPEN)) {
+      if (
+        message.type === "AUDIO_FRAME" &&
+        ws &&
+        ws.readyState === WebSocket.OPEN
+      ) {
         ws.send(message.data);
       }
     });
@@ -276,13 +302,13 @@ chrome.runtime.onConnect.addListener((port) => {
 
 chrome.runtime.onMessage.addListener((message: PopupToSwMessage) => {
   switch (message.type) {
-    case 'START_CAPTIONS':
+    case "START_CAPTIONS":
       handleStartCaptions(message);
       break;
-    case 'STOP_CAPTIONS':
+    case "STOP_CAPTIONS":
       handleStopCaptions();
       break;
-    case 'UPDATE_SETTINGS':
+    case "UPDATE_SETTINGS":
       handleUpdateSettings(message);
       break;
   }
