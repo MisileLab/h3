@@ -252,4 +252,4 @@ streamit/
 
 ## License
 
-MIT
+MisileLab License (for now)
