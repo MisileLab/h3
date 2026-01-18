@@ -6,10 +6,12 @@ const defaultSettings: ExtensionSettings = {
   serverUrl: "ws://localhost:8000/ws/viewer",
   userToken: "",
   language: "auto",
+  targetLanguage: "auto",
   fontSize: 24,
   backgroundOpacity: 70,
   position: "bottom",
   maxLines: 2,
+  captionsMuted: false,
 };
 
 function getElement<T extends HTMLElement>(id: string): T {
@@ -28,9 +30,27 @@ async function loadSettings(): Promise<void> {
   getElement<HTMLInputElement>("server-url").value = defaultSettings.serverUrl;
   getElement<HTMLInputElement>("user-token").value = defaultSettings.userToken;
   getElement<HTMLSelectElement>("language").value = defaultSettings.language;
+  getElement<HTMLSelectElement>("target-language").value =
+    defaultSettings.targetLanguage;
   getElement<HTMLInputElement>("font-size").value = String(
     defaultSettings.fontSize,
   );
+
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (tab?.id) {
+    const key = await chrome.runtime.sendMessage({
+      type: "GET_VIDEO_KEY",
+      tabId: tab.id,
+    });
+    if (typeof key === "string") {
+      const storageKey = `disabled:${key}`;
+      const stored = await chrome.storage.sync.get(storageKey);
+      getElement<HTMLInputElement>("disable-current-video").checked = Boolean(
+        stored[storageKey],
+      );
+    }
+  }
+
   getElement<HTMLInputElement>("background-opacity").value = String(
     defaultSettings.backgroundOpacity,
   );
@@ -38,6 +58,8 @@ async function loadSettings(): Promise<void> {
   getElement<HTMLSelectElement>("max-lines").value = String(
     defaultSettings.maxLines,
   );
+  getElement<HTMLInputElement>("mute-captions").checked =
+    defaultSettings.captionsMuted;
 
   updateDisplayValues();
 }
@@ -47,6 +69,7 @@ async function saveSettings(): Promise<void> {
     serverUrl: getElement<HTMLInputElement>("server-url").value.trim(),
     userToken: getElement<HTMLInputElement>("user-token").value.trim(),
     language: getElement<HTMLSelectElement>("language").value,
+    targetLanguage: getElement<HTMLSelectElement>("target-language").value,
     fontSize: parseInt(getElement<HTMLInputElement>("font-size").value),
     backgroundOpacity: parseInt(
       getElement<HTMLInputElement>("background-opacity").value,
@@ -55,7 +78,10 @@ async function saveSettings(): Promise<void> {
       | "top"
       | "bottom",
     maxLines: parseInt(getElement<HTMLSelectElement>("max-lines").value),
+    captionsMuted: getElement<HTMLInputElement>("mute-captions").checked,
   };
+
+  defaultSettings.targetLanguage = settings.targetLanguage;
   await chrome.storage.sync.set(settings);
   Object.assign(defaultSettings, settings);
 }
@@ -87,6 +113,7 @@ async function startCaptions(): Promise<void> {
   const serverUrl = getElement<HTMLInputElement>("server-url").value.trim();
   const userToken = getElement<HTMLInputElement>("user-token").value.trim();
   const language = getElement<HTMLSelectElement>("language").value;
+  const targetLanguage = getElement<HTMLSelectElement>("target-language").value;
 
   if (!serverUrl || !userToken) {
     setStatus("error", "Please fill in server URL and token");
@@ -112,6 +139,7 @@ async function startCaptions(): Promise<void> {
       serverUrl,
       userToken,
       language,
+      targetLanguage,
       tabId: tab.id,
       settings: defaultSettings,
     });
@@ -120,6 +148,7 @@ async function startCaptions(): Promise<void> {
     getElement<HTMLButtonElement>("start-btn").disabled = true;
     getElement<HTMLButtonElement>("stop-btn").disabled = false;
   } catch (error) {
+
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error";
     setStatus("error", `Failed to start: ${errorMessage}`);
@@ -151,19 +180,39 @@ function applySettings(): void {
   });
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
-  await loadSettings();
+  document.addEventListener("DOMContentLoaded", async () => {
+    await loadSettings();
 
-  getElement("start-btn").addEventListener("click", startCaptions);
-  getElement("stop-btn").addEventListener("click", stopCaptions);
+    getElement("start-btn").addEventListener("click", startCaptions);
+    getElement("stop-btn").addEventListener("click", stopCaptions);
 
-  getElement("font-size").addEventListener("input", () => {
-    defaultSettings.fontSize = parseInt(
-      getElement<HTMLInputElement>("font-size").value,
-    );
-    updateDisplayValues();
-    applySettings();
-  });
+    getElement("disable-current-video").addEventListener("change", async () => {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (!tab?.id) {
+        return;
+      }
+      const key = await chrome.runtime.sendMessage({
+        type: "GET_VIDEO_KEY",
+        tabId: tab.id,
+      });
+      if (typeof key !== "string") {
+        return;
+      }
+      const storageKey = `disabled:${key}`;
+      const checked = getElement<HTMLInputElement>(
+        "disable-current-video",
+      ).checked;
+      await chrome.storage.sync.set({ [storageKey]: checked });
+    });
+
+    getElement("font-size").addEventListener("input", () => {
+      defaultSettings.fontSize = parseInt(
+        getElement<HTMLInputElement>("font-size").value,
+      );
+      updateDisplayValues();
+      applySettings();
+    });
+
 
   getElement("background-opacity").addEventListener("input", () => {
     defaultSettings.backgroundOpacity = parseInt(
@@ -183,6 +232,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     defaultSettings.maxLines = parseInt(
       getElement<HTMLSelectElement>("max-lines").value,
     );
+    applySettings();
+  });
+
+  getElement("target-language").addEventListener("change", () => {
+    defaultSettings.targetLanguage = getElement<HTMLSelectElement>(
+      "target-language",
+    ).value;
+    saveSettings();
+  });
+
+  getElement("mute-captions").addEventListener("change", () => {
+    defaultSettings.captionsMuted = getElement<HTMLInputElement>(
+      "mute-captions",
+    ).checked;
     applySettings();
   });
 

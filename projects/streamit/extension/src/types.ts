@@ -5,12 +5,14 @@ export interface CaptionSettings {
   backgroundOpacity: number;
   position: 'top' | 'bottom';
   maxLines: number;
+  captionsMuted: boolean;
 }
 
 export interface ExtensionSettings extends CaptionSettings {
   serverUrl: string;
   userToken: string;
   language: string;
+  targetLanguage: string;
 }
 
 // Messages from popup/background to content script
@@ -45,6 +47,7 @@ export interface StartCaptionsMessage {
   serverUrl: string;
   userToken: string;
   language: string;
+  targetLanguage: string;
   tabId: number;
   settings: ExtensionSettings;
 }
@@ -58,10 +61,16 @@ export interface UpdateSettingsSwMessage {
   settings: ExtensionSettings;
 }
 
+export interface GetVideoKeyMessage {
+  type: 'GET_VIDEO_KEY';
+  tabId: number;
+}
+
 export type PopupToSwMessage =
   | StartCaptionsMessage
   | StopCaptionsMessage
-  | UpdateSettingsSwMessage;
+  | UpdateSettingsSwMessage
+  | GetVideoKeyMessage;
 
 // Messages from service worker to popup
 export interface StatusUpdateMessage {

@@ -1,6 +1,8 @@
 import asyncio
+import hashlib
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Query
 
+from app.audio_cache import AudioCache
 from app.config import settings
 from app.auth import validate_token, hash_token
 from app.meter import UsageMeter
@@ -13,6 +15,8 @@ from app.protocol import (
     ErrorMessage,
 )
 from app.logging_setup import logger
+
+cache = AudioCache("data/audio_cache.sqlite3")
 
 app = FastAPI(title="StreamIt Real-time Caption Proxy")
 
@@ -50,6 +54,7 @@ async def websocket_viewer(
     openai_client: OpenAIRealtimeClient | None = None
     total_bytes = 0
     language = "auto"
+    target_language = "auto"
     session_active = False
 
     async def on_transcript_delta(text: str):
@@ -63,6 +68,13 @@ async def websocket_viewer(
         """Forward final transcript to viewer."""
         try:
             await websocket.send_json(FinalTranscriptMessage(text=text).model_dump())
+            if openai_client and openai_client.current_audio_hash:
+                cache.set(
+                    openai_client.current_audio_hash,
+                    target_language,
+                    text,
+                )
+                openai_client.current_audio_hash = None
         except Exception as e:
             logger.error(f"Failed to send final: {e}")
 
@@ -73,16 +85,31 @@ async def websocket_viewer(
         except Exception as e:
             logger.error(f"Failed to send error: {e}")
 
+    async def on_translation(text: str):
+        """Forward translated transcript to viewer."""
+        try:
+            await websocket.send_json(FinalTranscriptMessage(text=text).model_dump())
+            if openai_client and openai_client.current_audio_hash:
+                cache.set(
+                    openai_client.current_audio_hash,
+                    target_language,
+                    text,
+                )
+                openai_client.current_audio_hash = None
+        except Exception as e:
+            logger.error(f"Failed to send translation: {e}")
+
     try:
         openai_client = OpenAIRealtimeClient(
             on_transcript_delta=on_transcript_delta,
             on_transcript_completed=on_transcript_completed,
+            on_translation=on_translation,
             on_error=on_openai_error,
         )
 
         async def handle_viewer_messages():
             """Handle messages from viewer extension."""
-            nonlocal language, session_active, total_bytes
+            nonlocal language, target_language, session_active, total_bytes
 
             try:
                 async for message in websocket.iter_json():
@@ -92,13 +119,19 @@ async def websocket_viewer(
                         try:
                             start_msg = StartMessage(**message)
                             language = start_msg.lang
+                            target_language = start_msg.targetLang
                             logger.info(
-                                f"Start request: {start_msg.clientSessionId}, "
-                                f"lang={language}, platform={start_msg.platformHint}"
+                                "Start request: %s, lang=%s, target=%s, platform=%s",
+                                start_msg.clientSessionId,
+                                language,
+                                target_language,
+                                start_msg.platformHint,
                             )
 
                             if not session_active:
-                                success = await openai_client.connect(language)
+                                success = await openai_client.connect(
+                                    language, target_language
+                                )
                                 if success:
                                     session_active = True
 
@@ -149,7 +182,17 @@ async def websocket_viewer(
             try:
                 async for message in websocket.iter_bytes():
                     if session_active and openai_client.is_connected:
-                        await openai_client.send_audio(message)
+                        audio_hash = hashlib.blake2b(
+                            message, digest_size=16
+                        ).hexdigest()
+                        cached = cache.get(audio_hash, target_language)
+                        if cached:
+                            await websocket.send_json(
+                                FinalTranscriptMessage(text=cached).model_dump()
+                            )
+                        else:
+                            openai_client.current_audio_hash = audio_hash
+                            await openai_client.send_audio(message)
                         total_bytes += len(message)
 
                         UsageMeter.add_bytes(token, len(message))

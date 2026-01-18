@@ -55,12 +55,24 @@ async function startAudio(streamId: string): Promise<void> {
 
     audioWorkletNode.port.onmessage = (event: MessageEvent) => {
       if (event.data.type === 'AUDIO_FRAME') {
-        swPort.postMessage({
-          type: 'AUDIO_FRAME',
-          data: event.data.data,
-        });
+        try {
+          swPort.postMessage({
+            type: 'AUDIO_FRAME',
+            data: event.data.data,
+          });
+        } catch (error) {
+          console.warn('Failed to post audio frame:', error);
+          audioWorkletNode?.disconnect();
+          audioWorkletNode = null;
+        }
       }
     };
+
+    swPort.onDisconnect.addListener(() => {
+      if (audioWorkletNode) {
+        audioWorkletNode.port.onmessage = null;
+      }
+    });
 
     audioWorkletNode.port.postMessage({
       type: 'INIT',
@@ -95,7 +107,9 @@ function stopAudio(): void {
   }
 
   if (audioStream) {
-    audioStream.getTracks().forEach((track) => track.stop());
+    audioStream.getTracks().forEach((track) => {
+      track.stop();
+    });
     audioStream = null;
   }
 }

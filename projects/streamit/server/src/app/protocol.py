@@ -2,8 +2,10 @@
 Protocol message definitions and validation using Pydantic.
 """
 
-from pydantic import BaseModel
 from enum import Enum
+from typing import Literal
+
+from pydantic import BaseModel
 
 
 class MessageType(str, Enum):
@@ -20,8 +22,9 @@ class MessageType(str, Enum):
 class StartMessage(BaseModel):
     """Client start message."""
 
-    type = "start"
+    type: Literal["start"] = "start"
     lang: str = "auto"
+    targetLang: str = "auto"
     clientSessionId: str
     platformHint: str = "unknown"
 
@@ -29,27 +32,27 @@ class StartMessage(BaseModel):
 class StopMessage(BaseModel):
     """Client stop message."""
 
-    type = "stop"
+    type: Literal["stop"] = "stop"
 
 
 class PartialTranscriptMessage(BaseModel):
     """Server partial transcript message."""
 
-    type = "partial"
+    type: Literal["partial"] = "partial"
     text: str
 
 
 class FinalTranscriptMessage(BaseModel):
     """Server final transcript message."""
 
-    type = "final"
+    type: Literal["final"] = "final"
     text: str
 
 
 class InfoMessage(BaseModel):
     """Server info message (latency, usage)."""
 
-    type = "info"
+    type: Literal["info"] = "info"
     latencyMs: int | None = None
     secondsUsed: float | None = None
     message: str | None = None
@@ -58,7 +61,7 @@ class InfoMessage(BaseModel):
 class ErrorMessage(BaseModel):
     """Server error message."""
 
-    type = "error"
+    type: Literal["error"] = "error"
     message: str
     code: str | None = None
 

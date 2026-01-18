@@ -172,7 +172,7 @@
     </div>
 
     <div class="form-group">
-        <label for="language">Language</label>
+        <label for="language">Video Language</label>
         <select id="language">
             <option value="auto">Auto-detect</option>
             <option value="ko">Korean</option>
@@ -180,11 +180,34 @@
         </select>
     </div>
 
+    <div class="form-group">
+        <label for="target-language">Target Language</label>
+        <select id="target-language">
+            <option value="auto">Same as source</option>
+            <option value="ko">Korean</option>
+            <option value="en">English</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>
+            <input type="checkbox" id="disable-current-video">
+            Disable captions for this video
+        </label>
+    </div>
+
     <button id="start-btn" class="button primary">Start Captions</button>
     <button id="stop-btn" class="button danger" disabled>Stop</button>
 
     <div class="caption-settings">
         <h3>Caption Settings</h3>
+
+        <div class="form-group">
+            <label>
+                <input type="checkbox" id="mute-captions">
+                Mute captions
+            </label>
+        </div>
 
         <div class="form-group">
             <label for="font-size">Font Size (<span id="font-size-value">24</span>px)</label>

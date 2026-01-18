@@ -15,6 +15,7 @@ class Settings(BaseSettings):
 
     openai_api_key: str = ""
     openai_ws_url: str = "wss://api.openai.com/v1/realtime"
+    translation_model: str = "gpt-5-nano"
     host: str = "0.0.0.0"
     port: int = 8000
     log_level: str = "info"

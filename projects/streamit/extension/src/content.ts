@@ -7,6 +7,7 @@ let settings: CaptionSettings = {
   backgroundOpacity: 70,
   position: "bottom",
   maxLines: 2,
+  captionsMuted: false,
 };
 
 function createOverlay(): HTMLDivElement {
@@ -33,7 +34,7 @@ function updateOverlayPosition(): void {
 }
 
 function addCaption(text: string, isPartial: boolean = false): void {
-  if (!text || !text.trim()) {
+  if (!text || !text.trim() || settings.captionsMuted) {
     return;
   }
 
@@ -72,8 +73,13 @@ function clearCaptions(): void {
 }
 
 function updateSettings(newSettings: Partial<CaptionSettings>): void {
+  const wasMuted = settings.captionsMuted;
   Object.assign(settings, newSettings);
   updateOverlayPosition();
+  if (!wasMuted && settings.captionsMuted) {
+    clearCaptions();
+    return;
+  }
   renderCaptions();
 }
 

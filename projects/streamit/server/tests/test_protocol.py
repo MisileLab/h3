@@ -20,6 +20,7 @@ class TestProtocolMessages:
         msg = StartMessage(clientSessionId="test-123")
         assert msg.type == "start"
         assert msg.lang == "auto"
+        assert msg.targetLang == "auto"
         assert msg.platformHint == "unknown"
 
     def test_stop_message_valid(self):

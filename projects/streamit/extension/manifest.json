@@ -9,6 +9,7 @@
     "storage",
     "offscreen"
   ],
+  "minimum_chrome_version": "116",
   "host_permissions": [
     "https://www.twitch.tv/*",
     "https://www.youtube.com/*"
@@ -30,9 +31,6 @@
   "action": {
     "default_popup": "popup.html",
     "default_title": "StreamIt Captions"
-  },
-  "offscreen": {
-    "document": "offscreen.html"
   },
   "icons": {
     "16": "icons/icon16.png",

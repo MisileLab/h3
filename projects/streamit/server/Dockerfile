@@ -8,9 +8,9 @@ RUN apt-get update && apt-get install -y \
 
 COPY pyproject.toml .
 COPY uv.lock .
+COPY src ./src
 
 RUN uv sync
-COPY app ./app
 
 EXPOSE 8000
 
