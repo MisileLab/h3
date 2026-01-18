@@ -175,7 +175,7 @@ requires-dist = [
     { name = "lxml", specifier = ">=6.0.0" },
     { name = "numpy", specifier = "==2.4.1" },
     { name = "openai", specifier = "==2.15.0" },
-    { name = "opencv-python-headless", specifier = "==4.12.0.88" },
+    { name = "opencv-python-headless", specifier = "==4.13.0.90" },
     { name = "pdf2image", specifier = "==1.17.0" },
     { name = "pillow", specifier = "==12.1.0" },
     { name = "polars", specifier = "==1.37.1" },
