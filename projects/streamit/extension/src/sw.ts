@@ -50,6 +50,10 @@ async function createOffscreenDocument(): Promise<void> {
   });
 }
 
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 async function sendToOffscreen(message: object): Promise<void> {
   if (!offscreenPort) {
     await createOffscreenDocument();
@@ -110,7 +114,7 @@ async function handleStartCaptions(message: {
         activeCapture.status !== "error",
     );
     if (hasActiveCapture) {
-      sendStatusUpdate("connected", "Already capturing this tab");
+      sendStatusUpdate("error", "This tab is already being captured");
       return;
     }
 
@@ -131,9 +135,25 @@ async function handleStartCaptions(message: {
     // Verify tab exists
     await chrome.tabs.get(tabId);
 
-    const streamId = await chrome.tabCapture.getMediaStreamId({
-      targetTabId: tabId,
-    });
+    let streamId: string | null = null;
+    const retryAttempts = 3;
+    for (let attempt = 0; attempt < retryAttempts; attempt++) {
+      try {
+        streamId = await chrome.tabCapture.getMediaStreamId({
+          targetTabId: tabId,
+        });
+        if (streamId) {
+          break;
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          if (!error.message.includes("active stream")) {
+            throw error;
+          }
+        }
+      }
+      await delay(300);
+    }
 
     if (!streamId) {
       throw new Error("Failed to get tab audio stream");
@@ -351,6 +371,8 @@ async function cleanup(): Promise<void> {
   wsUrl = null;
   storedUserToken = null;
   captureTabId = null;
+
+  await delay(250);
 }
 
 function generateUUID(): string {

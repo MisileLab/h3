@@ -1,5 +1,4 @@
 import base64
-import base64
 import logging
 from typing import Awaitable, Callable, Any
 
@@ -76,17 +75,24 @@ class OpenAIRealtimeClient:
 
         await self.conn.session.update(
             session={
-                "input_audio_format": "pcm16",
-                "input_audio_transcription": transcription_config,
-                "turn_detection": {
-                    "type": "server_vad",
-                    "threshold": 0.5,
-                    "prefix_padding_ms": 300,
-                    "silence_duration_ms": 500,
-                    "create_response": False,
-                    "interrupt_response": False,
+                "type": "transcription",
+                "audio": {
+                    "input": {
+                        "format": {
+                            "type": "audio/pcm",
+                            "rate": 24000,
+                        },
+                        "transcription": transcription_config,
+                        "turn_detection": {
+                            "type": "server_vad",
+                            "threshold": 0.5,
+                            "prefix_padding_ms": 300,
+                            "silence_duration_ms": 500,
+                            "create_response": False,
+                            "interrupt_response": False,
+                        },
+                    }
                 },
-                "modalities": ["text"],
             }
         )
 

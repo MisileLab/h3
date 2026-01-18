@@ -130,7 +130,7 @@ export interface ServerFinalMessage {
 
 export interface ServerInfoMessage {
   type: 'info';
-  message: string;
+  message?: string;
   secondsUsed?: number;
 }
 
